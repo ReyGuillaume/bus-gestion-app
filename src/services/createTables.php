@@ -3,74 +3,26 @@
 // accès à une fonction bdd() qui renvoie cette instance de PDO
 include "./connexion.php";
 
-function create_table_code() {
-    $sql = "CREATE TABLE IF NOT EXISTS Code (
-        `id` INT NOT NULL AUTO_INCREMENT,
-        `login` VARCHAR(50) NOT NULL,
-        `password` VARCHAR(64) NOT NULL,
-        CONSTRAINT pk_cod PRIMARY KEY (id)
-    )";
-    $stm = bdd()->query($sql);
-}
-
-
-function create_table_director() {
-    $sql = "CREATE TABLE IF NOT EXISTS Director (
-        `id` INT NOT NULL AUTO_INCREMENT,
-        `name` VARCHAR(50) NOT NULL,
-        `firstname` VARCHAR(50) NOT NULL,
-        `email` VARCHAR(255) NOT NULL,
-        `id_code` INT NOT NULL,
-        CONSTRAINT pk_dir PRIMARY KEY (id),
-        CONSTRAINT fk_dir_code FOREIGN KEY (id_code) REFERENCES Code (id)
-    )";
-    $stm = bdd()->query($sql);
-}
-
-
-function create_table_manager() {
-    $sql = "CREATE TABLE IF NOT EXISTS Manager (
-        `id` INT NOT NULL AUTO_INCREMENT,
-        `name` VARCHAR(50) NOT NULL,
-        `firstname` VARCHAR(50) NOT NULL,
-        `email` VARCHAR(255) NOT NULL,
-        `id_code` INT NOT NULL,
-        CONSTRAINT pk_mana PRIMARY KEY (id),
-        CONSTRAINT fk_mana_code FOREIGN KEY (id_code) REFERENCES Code (id)
-    )";
-    $stm = bdd()->query($sql);
-}
-
-
-function create_table_driver() {
-    $sql = "CREATE TABLE IF NOT EXISTS Driver (
-        `id` INT NOT NULL AUTO_INCREMENT,
-        `name` VARCHAR(50) NOT NULL,
-        `firstname` VARCHAR(50) NOT NULL,
-        `email` VARCHAR(255) NOT NULL,
-        `id_code` INT NOT NULL,
-        CONSTRAINT pk_dri PRIMARY KEY (id),
-        CONSTRAINT fk_dri_code FOREIGN KEY (id_code) REFERENCES Code (id)
-    )";
-    $stm = bdd()->query($sql);
-}
-
-
+/**
+ * Execute la requête SQL qui crée la table BusType
+ */
 function create_table_bus_type() {
     $sql = "CREATE TABLE IF NOT EXISTS BusType (
         `id` INT NOT NULL AUTO_INCREMENT,
         `name` VARCHAR(50),
         `nb_places` int NOT NULL,
-        CONSTRAINT pk_bustype PRIMARY KEY (id)
+        CONSTRAINT pk_bustype PRIMARY KEY (id),
+        CONSTRAINT uq_bustype_nameplaces UNIQUE (name, nb_places)
     )";
     $stm = bdd()->query($sql);
 }
 
-
+/**
+ * Execute la requête SQL qui crée la table Bus
+ */
 function create_table_bus() {
     $sql = "CREATE TABLE IF NOT EXISTS Bus (
         `id` INT NOT NULL AUTO_INCREMENT,
-        `name` VARCHAR(50),
         `id_bus_type` INT NOT NULL, 
         CONSTRAINT pk_bus PRIMARY KEY (id),
         CONSTRAINT fk_bus_typ FOREIGN KEY (id_bus_type) REFERENCES BusType (id)
@@ -78,83 +30,144 @@ function create_table_bus() {
     $stm = bdd()->query($sql);
 }
 
-
-// function create_table_time_slot_type() {
-//     $sql = "CREATE TABLE IF NOT EXISTS TimeSlotType (
-//         `id` INT NOT NULL AUTO_INCREMENT,
-//         `name` VARCHAR(50) NOT NULL,
-//         CONSTRAINT pk_timeslottype PRIMARY KEY (id)
-//     )";
-//     $stm = bdd()->query($sql);
-// }
-
-
-// function create_table_time_slot() {
-//     $sql = "CREATE TABLE IF NOT EXISTS TimeSlot (
-//         `id` INT NOT NULL AUTO_INCREMENT,
-//         `begining` DATETIME NOT NULL,
-//         `end` DATETIME NOT NULL,
-//         `id_time_slot_type` INT NOT NULL,
-//         `id_driver` INT NOT NULL,
-//         `id_bus` INT NOT NULL,
-//         CONSTRAINT pk_timeslot PRIMARY KEY (id),
-//         CONSTRAINT fk_timeslot_typ FOREIGN KEY (id_time_slot_type) REFERENCES TimeSlotType (id),
-//         CONSTRAINT fk_timeslot_dri FOREIGN KEY (id_driver) REFERENCES Driver (id),
-//         CONSTRAINT fk_timeslot_bus FOREIGN KEY (id_bus) REFERENCES Bus (id)
-//     )";
-//     $stm = bdd()->query($sql);
-// }
-
-
-function create_table_unavailability() {
-    $sql = "CREATE TABLE IF NOT EXISTS Unavailability (
+/**
+ * Execute la requête SQL qui crée la table TimeSlotType
+ */
+function create_table_time_slot_type() {
+    $sql = "CREATE TABLE IF NOT EXISTS TimeSlotType (
         `id` INT NOT NULL AUTO_INCREMENT,
-        `begining` DATETIME NOT NULL,
-        `end` DATETIME NOT NULL,
-        `id_driver` INT NOT NULL,
-        CONSTRAINT pk_unav PRIMARY KEY (id),
-        CONSTRAINT fk_unav_dri FOREIGN KEY (id_driver) REFERENCES Driver (id)
+        `name` VARCHAR(50) NOT NULL,
+        CONSTRAINT pk_timeslottype PRIMARY KEY (id),
+        CONSTRAINT uq_timeslottype_name UNIQUE (name)
     )";
     $stm = bdd()->query($sql);
 }
 
-
-function create_table_meeting() {
-    $sql = "CREATE TABLE IF NOT EXISTS Meeting (
+/**
+ * Execute la requête SQL qui crée la table TimeSlot
+ */
+function create_table_time_slot() {
+    $sql = "CREATE TABLE IF NOT EXISTS TimeSlot (
         `id` INT NOT NULL AUTO_INCREMENT,
         `begining` DATETIME NOT NULL,
         `end` DATETIME NOT NULL,
-        `id_director` INT NOT NULL,
-        CONSTRAINT pk_meet PRIMARY KEY (id),
-        CONSTRAINT fk_meet_dir FOREIGN KEY (id_director) REFERENCES Director (id)
+        `id_time_slot_type` INT NOT NULL,
+        CONSTRAINT pk_timeslot PRIMARY KEY (id),
+        CONSTRAINT fk_timeslot FOREIGN KEY (id_time_slot_type) REFERENCES TimeSlotType (id)
     )";
     $stm = bdd()->query($sql);
 }
 
-
-function create_table_driving() {
-    $sql = "CREATE TABLE IF NOT EXISTS Driving (
+/**
+ * Execute la requête SQL qui crée la table UserType
+ */
+function create_table_user_type() {
+    $sql = "CREATE TABLE IF NOT EXISTS UserType (
         `id` INT NOT NULL AUTO_INCREMENT,
-        `begining` DATETIME NOT NULL,
-        `end` DATETIME NOT NULL,
-        `id_driver` INT NOT NULL,
+        `name` VARCHAR(50) NOT NULL,
+        CONSTRAINT pk_usertype PRIMARY KEY (id),
+        CONSTRAINT uq_usertype_name UNIQUE (name)
+    )";
+    $stm = bdd()->query($sql);
+}
+
+/**
+ * Execute la requête SQL qui crée la table Code
+ */
+function create_table_code() {
+    $sql = "CREATE TABLE IF NOT EXISTS Code (
+        `login` VARCHAR(50) NOT NULL,
+        `password` VARCHAR(64) NOT NULL,
+        CONSTRAINT pk_code PRIMARY KEY (login)
+    )";
+    $stm = bdd()->query($sql);
+}
+
+/**
+ * Execute la requête SQL qui crée la table User
+ */
+function create_table_user() {
+    $sql = "CREATE TABLE IF NOT EXISTS User (
+        `id` INT NOT NULL AUTO_INCREMENT,
+        `name` VARCHAR(50) NOT NULL,
+        `firstname` VARCHAR(50) NOT NULL,
+        `birth_date` DATE,
+        `email` VARCHAR(255) NOT NULL,
+        `id_user_type` INT NOT NULL,
+        `login` VARCHAR(50) NOT NULL,
+        CONSTRAINT pk_user PRIMARY KEY (id),
+        CONSTRAINT fk_user_usertype FOREIGN KEY (id_user_type) REFERENCES UserType (id),
+        CONSTRAINT fk_user_log FOREIGN KEY (login) REFERENCES Code (login)
+    )";
+    $stm = bdd()->query($sql);
+}
+
+/**
+ * Execute la requête SQL qui crée la table Bus_TimeSlot
+ */
+function create_table_bus_time_slot() {
+    $sql = "CREATE TABLE IF NOT EXISTS Bus_TimeSlot (
         `id_bus` INT NOT NULL,
-        CONSTRAINT pk_driving PRIMARY KEY (id),
-        CONSTRAINT fk_driving_dri FOREIGN KEY (id_driver) REFERENCES Driver (id),
-        CONSTRAINT fk_driving_bus FOREIGN KEY (id_bus) REFERENCES Bus (id)
+        `id_time_slot` INT NOT NULL,
+        CONSTRAINT pk_bustimeslot PRIMARY KEY (id_bus, id_time_slot),
+        CONSTRAINT fk_bustimeslot_bus FOREIGN KEY (id_bus) REFERENCES Bus (id),
+        CONSTRAINT fk_bustimeslot_timeslot FOREIGN KEY (id_time_slot) REFERENCES TimeSlot (id)
     )";
     $stm = bdd()->query($sql);
 }
 
-create_table_code();
+/**
+ * Execute la requête SQL qui crée la table User_TimeSlot
+ */
+function create_table_user_time_slot() {
+    $sql = "CREATE TABLE IF NOT EXISTS User_TimeSlot (
+        `id_user` INT NOT NULL,
+        `id_time_slot` INT NOT NULL,
+        CONSTRAINT pk_usertimeslot PRIMARY KEY (id_user, id_time_slot),
+        CONSTRAINT fk_usertimeslot_user FOREIGN KEY (id_user) REFERENCES User (id),
+        CONSTRAINT fk_usertimeslot_timeslot FOREIGN KEY (id_time_slot) REFERENCES TimeSlot (id)
+    )";
+    $stm = bdd()->query($sql);
+}
 
-create_table_director();
-create_table_manager();
-create_table_driver();
 
+// ==================== Création des tables de la base ====================
 create_table_bus_type();
 create_table_bus();
+create_table_time_slot_type();
+create_table_time_slot();
+create_table_user_type();
+create_table_code();
+create_table_user();
+create_table_bus_time_slot();
+create_table_user_time_slot();
 
-create_table_unavailability();
-create_table_driving();
-create_table_meeting();
+
+// ==================== Instanciation des types de créneaux ====================
+$timeSlotTypes = array('Conduite', 'Réunion', 'Indisponibilité');
+
+foreach ($timeSlotTypes as $type) {
+    $sql = "INSERT INTO TimeSlotType (`name`) VALUE ('{$type}')";
+    bdd()->query($sql);
+}
+
+
+// ==================== Instanciation des types d'utilisateurs ====================
+$userTypes = array('Directeur', 'Responsable Logistique', 'Conducteur');
+
+foreach ($userTypes as $type) {
+    $sql = "INSERT INTO UserType (`name`) VALUE ('{$type}')";
+    bdd()->query($sql);
+}
+
+
+// ==================== Instanciation des types de bus ====================
+$busTypes = array(
+    "grand" => 50,
+    "petit" => 20
+);
+
+foreach ($busTypes as $name => $nbPlaces) {
+    $sql = "INSERT INTO BusType (`name`, `nb_places`) VALUE ('{$name}', {$nbPlaces})";
+    bdd()->query($sql);
+}
