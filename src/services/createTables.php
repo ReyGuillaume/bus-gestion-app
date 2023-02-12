@@ -1,6 +1,5 @@
 <?php
-// accès à une variable $db instance de PDO
-// accès à une fonction bdd() qui renvoie cette instance de PDO
+// accès à une fonction bdd() qui renvoie une instance de PDO
 include "./connexion.php";
 
 /**
@@ -78,7 +77,8 @@ function create_table_code() {
     $sql = "CREATE TABLE IF NOT EXISTS Code (
         `login` VARCHAR(50) NOT NULL,
         `password` VARCHAR(64) NOT NULL,
-        CONSTRAINT pk_code PRIMARY KEY (login)
+        CONSTRAINT pk_code PRIMARY KEY (login),
+        CONSTRAINT uq_code_logpwd UNIQUE (login, password)
     )";
     $stm = bdd()->query($sql);
 }
@@ -97,7 +97,8 @@ function create_table_user() {
         `login` VARCHAR(50) NOT NULL,
         CONSTRAINT pk_user PRIMARY KEY (id),
         CONSTRAINT fk_user_usertype FOREIGN KEY (id_user_type) REFERENCES UserType (id),
-        CONSTRAINT fk_user_log FOREIGN KEY (login) REFERENCES Code (login)
+        CONSTRAINT fk_user_log FOREIGN KEY (login) REFERENCES Code (login),
+        CONSTRAINT uq_user_email UNIQUE (email)
     )";
     $stm = bdd()->query($sql);
 }
