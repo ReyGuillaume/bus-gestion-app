@@ -1,6 +1,6 @@
 <?php
 // accès à une fonction bdd() qui renvoie une instance de PDO
-include "../connexion.php";
+include_once "../connexion.php";
 
 // ======================== Bus ========================
 
@@ -85,7 +85,25 @@ function modify_bus($id, $id_bus_type) {
     return false;
 }
 
-// fonctions de modifications de types de bus ???
+/**
+    Modifie les informations d'un type de bus à savoir le nom et le nombre de places si le couple de valeurs (name, nb_places) n'est pas déjà présent dans la table.
+
+    @param id : entier correspondant à l'id du type de bus à modifier.
+    @param name : chaine de caractère correspondant au nouveau nom du type de bus.
+    @param nb_places : entier correspondant au nouveau nombre de places du type de bus.
+
+    @return boolean si la modification est un succès.
+ */
+function modify_bus_type($id, $name, $nb_places) {
+    if(bdd()->query("SELECT * FROM BusType WHERE name = '{$name}' AND nb_places = {$nb_places}")->fetch()) {
+        return false;
+    } else if (bdd()->query("SELECT * FROM BusType WHERE id = {$id}")->fetch()) {
+        bdd()->query("UPDATE `BusType` SET `name`='{$name}', `nb_places`={$nb_places} WHERE id = {$id}");
+        return true;
+    } else {
+        return false;
+    }
+}
 
 /**
     Supprime un bus selon son id.
@@ -143,6 +161,9 @@ switch ($_GET['function']) {
     case 'updatebus':     // id, type
         $res = modify_bus($_GET['id'], $_GET['type']);
         break;
+    case 'updatebustype':     // id, name, nb
+        $res = modify_bus_type($_GET['id'], $_GET['name'], $_GET['nb']);
+        break;
     case 'delete':     // id
         $res = delete_bus($_GET['id']);
         break;
@@ -164,6 +185,7 @@ fetch("http://localhost/projetL2S4/src/services/buses/buses.php?function=bustype
 fetch("http://localhost/projetL2S4/src/services/buses/buses.php?function=bus&id=5").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/buses/buses.php?function=bytype&type=1").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/buses/buses.php?function=updatebus&id=5&type=2").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/buses/buses.php?function=updatebustype&id=17&name=nouveau&nb=150").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/buses/buses.php?function=delete&id=5").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/buses/buses.php?function=deletetype&id=1").then(response => response.json()).then(response => console.log(response))
 

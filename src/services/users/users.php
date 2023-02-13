@@ -1,6 +1,6 @@
 <?php
 // accès à une fonction bdd() qui renvoie une instance de PDO
-include "../connexion.php";
+include_once "../connexion.php";
 
 // ======================== Utilisateur ========================
 
