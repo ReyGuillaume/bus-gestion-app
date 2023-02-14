@@ -41,7 +41,7 @@ function user_registration($login, $password, $confirmation, $birth_date, $name,
 */
 function user_log_in($login, $password) {
     $pwd = hash("sha256", $password);
-    $sql = "SELECT u.id, u.login, u.id_user_type FROM Code c RIGHT JOIN User u ON c.login = u.login WHERE c.login = '{$login}' AND c.password = '{$pwd}'";
+    $sql = "SELECT u.lastname, u.firstname, ut.name FROM Code c JOIN User u ON c.login = u.code JOIN Usertype ut ON u.id_user_type = ut.id WHERE c.login = '$login' AND c.password = '$password'";
     $res = bdd()->query($sql);
     if($res){
         return $res->fetch();
@@ -196,6 +196,7 @@ switch ($_GET['function']) {
 }
 
 echo json_encode($res);
+
 
 /* ======================== Tests ========================
 
