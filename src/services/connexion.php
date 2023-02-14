@@ -1,14 +1,11 @@
 <?php
 
-$dsn = "mysql:host=localhost;dbname=gobus;charset=UTF8";
-$user = 'gobus';
-$password = 'xV7';
-
-$db = new PDO($dsn, $user, $password);
-
 function bdd() {
-    global $db;
-    return $db;
+    $dsn = "mysql:host=localhost;dbname=gobus;charset=UTF8";
+    $user = 'gobus';
+    $password = 'xV7';
+    
+    return new PDO($dsn, $user, $password);
 }
 
 header("Access-Control-Allow-Origin: *");
