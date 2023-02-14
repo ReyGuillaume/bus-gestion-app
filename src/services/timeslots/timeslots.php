@@ -83,7 +83,12 @@ function fetch_time_slot($id) {
     @return liste de créneaux (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int)))
 */
 function fetch_time_slots_by_type($id_time_slot_type, $beginning, $end) {
-
+    $result = bdd()->query("SELECT id FROM `timeslot` WHERE id_time_slot_type = {$id_time_slot_type} AND begining >= '{$beginning}' AND end <= '{$end}'");
+    $res = array();
+    while ($row = $result->fetch()) {
+        $res[] = fetch_time_slot($row['id']);
+    }
+    return $res;
 }
 
 /**
@@ -96,7 +101,12 @@ function fetch_time_slots_by_type($id_time_slot_type, $beginning, $end) {
     @return liste de créneaux (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int)))
 */
 function fetch_time_slots_by_user($id_user, $beginning, $end) {
-
+    $result = bdd()->query("SELECT id FROM `timeslot` ts JOIN user_timeslot uts ON ts.id = uts.id_time_slot WHERE uts.id_user = {$id_user} AND begining >= '{$beginning}' AND end <= '{$end}'");
+    $res = array();
+    while ($row = $result->fetch()) {
+        $res[] = fetch_time_slot($row['id']);
+    }
+    return $res;
 }
 
 /**
@@ -109,7 +119,12 @@ function fetch_time_slots_by_user($id_user, $beginning, $end) {
     @return liste de créneaux (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int)))
 */
 function fetch_time_slots_by_bus($id_bus, $beginning, $end) {
-
+    $result = bdd()->query("SELECT id FROM `timeslot` ts JOIN bus_timeslot bts ON ts.id = bts.id_time_slot WHERE bts.id_bus = {$id_bus} AND begining >= '{$beginning}' AND end <= '{$end}'");
+    $res = array();
+    while ($row = $result->fetch()) {
+        $res[] = fetch_time_slot($row['id']);
+    }
+    return $res;
 }
 
 /**
@@ -121,7 +136,12 @@ function fetch_time_slots_by_bus($id_bus, $beginning, $end) {
     @return liste de créneaux (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int)))
 */
 function fetch_time_slots_between($beginning, $end) {
-
+    $result = bdd()->query("SELECT id FROM `timeslot` WHERE begining >= '{$beginning}' AND end <= '{$end}'");
+    $res = array();
+    while ($row = $result->fetch()) {
+        $res[] = fetch_time_slot($row['id']);
+    }
+    return $res;
 }
 
 
@@ -173,7 +193,10 @@ function update_buses_of_time_slot($id_time_slot, $id_buses) {
     @return boolean si la délétion est un succès.
 */
 function delete_time_slot($id_time_slot) { // délétion des lignes dans User_TimeSlot et dans Bus_TimeSlot
-
+    bdd()->query("DELETE FROM User_TimeSlot WHERE id_time_slot = {$id_time_slot}");
+    bdd()->query("DELETE FROM Bus_TimeSlot WHERE id_time_slot = {$id_time_slot}");
+    $res = bdd()->query("DELETE FROM TimeSlot WHERE id = {$id_time_slot}");
+    return $res == true;
 }
 
 
@@ -188,6 +211,21 @@ switch ($_GET['function']) {
     case 'timeslot':       // id
         $res = fetch_time_slot($_GET['id']);
         break;
+    case 'timeslotbytype':       // type, beginning, end
+        $res = fetch_time_slots_by_type($_GET['type'], $_GET['beginning'], $_GET['end']);
+        break;
+    case 'timeslotbyuser':       // user, beginning, end
+        $res = fetch_time_slots_by_user($_GET['user'], $_GET['beginning'], $_GET['end']);
+        break;
+    case 'timeslotbybus':       // bus, beginning, end
+        $res = fetch_time_slots_by_bus($_GET['bus'], $_GET['beginning'], $_GET['end']);
+        break;
+    case 'timeslotbetween':       // beginning, end
+        $res = fetch_time_slots_between($_GET['beginning'], $_GET['end']);
+        break;
+    case 'delete':       // id
+        $res = delete_time_slot($_GET['id']);
+        break;
     default:
         $res = "invalid function";
         break;
@@ -200,5 +238,10 @@ echo json_encode($res);
 fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=create&beginning=2023-02-16 00:00:00&end=2023-02-16 04:45:00&type=1&users=2,3&buses=").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=types").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=timeslot&id=41").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=timeslotbytype&type=1&beginning=2023-02-16 00:00:00&end=2023-02-26 00:00:00").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=timeslotbyuser&user=2&beginning=2023-02-16 00:00:00&end=2023-02-26 00:00:00").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=timeslotbybus&bus=1&beginning=2023-02-16 00:00:00&end=2023-02-26 00:00:00").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=timeslotbetween&beginning=2023-02-16 00:00:00&end=2023-02-26 00:00:00").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=delete&id=20").then(response => response.json()).then(response => console.log(response))
 
 */
