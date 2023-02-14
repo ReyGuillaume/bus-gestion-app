@@ -2,8 +2,8 @@
 
 function bdd() {
     $dsn = "mysql:host=localhost;dbname=gobus;charset=UTF8";
-    $user = "root";
-    $password = "";
+    $user = 'gobus';
+    $password = 'xV7';
     
     return new PDO($dsn, $user, $password);
 }
