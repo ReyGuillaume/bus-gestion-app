@@ -1,10 +1,19 @@
 import { create } from "../main";
+import { toggleAgenda } from "../pages/agenda";
 
 export const toggleEspaceUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
     create("h2", main, "Bienvenue sur votre espace personnel")
-    create("p", main, "Voici les action que vous pouvez réaliser ici : ")
+    create("p", main, " Que souhaitez vous faire ? ")
+
+    const nav = create("nav", main, null, ['navBar'])
+
+    create("div", nav, 'Voir mon agenda', ['navBar__item']).addEventListener("click", toggleAgenda)
+    create("div", nav, "Signaler un creneau d'indisponibilité", ['navBar__item']).addEventListener("click", null)
+    create("div", nav, 'Se deconnecter', ['navBar__item']).addEventListener("click", null)
+    
     return main
 }
+
