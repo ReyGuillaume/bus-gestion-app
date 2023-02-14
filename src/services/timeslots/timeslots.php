@@ -158,7 +158,17 @@ function fetch_time_slots_between($beginning, $end) {
     @return boolean si la modification est un succès.
  */
 function update_time_slot($id_time_slot, $beginning, $end, $id_users, $id_buses) {  //appel à update_users_of_time_slot et à update_buses_of_time_slot
-
+    $tz = timezone_open('Europe/Paris');
+    $d1 = date_create($beginning, $tz);
+    $d2 = date_create($end, $tz);
+    if ($d1 < $d2) {
+        if (bdd()->query("UPDATE `timeslot` SET `begining`='{$beginning}', `end`='{$end}' WHERE id = {$id_time_slot}")) {
+            update_users_of_time_slot($id_time_slot, $id_users);
+            update_buses_of_time_slot($id_time_slot, $id_buses);
+            return true;
+        }
+    }
+    return false;
 }
 
 /**
@@ -170,7 +180,16 @@ function update_time_slot($id_time_slot, $beginning, $end, $id_users, $id_buses)
     @return boolean si la modification est un succès.
  */
 function update_users_of_time_slot($id_time_slot, $id_users) {
-
+    if(bdd()->query("SELECT * FROM TimeSlot WHERE id = {$id_time_slot}")->fetch()) {
+        bdd()->query("DELETE FROM User_TimeSlot WHERE id_time_slot = {$id_time_slot}");
+        $users = explode(',', $id_users);
+        foreach ($users as $id_user) {
+            bdd()->query("INSERT INTO `user_timeslot`(`id_user`, `id_time_slot`) VALUES ({$id_user}, {$id_time_slot})");
+        }
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -182,7 +201,16 @@ function update_users_of_time_slot($id_time_slot, $id_users) {
     @return boolean si la modification est un succès.
  */
 function update_buses_of_time_slot($id_time_slot, $id_buses) {
-    
+    if(bdd()->query("SELECT * FROM TimeSlot WHERE id = {$id_time_slot}")->fetch()) {
+        bdd()->query("DELETE FROM Bus_TimeSlot WHERE id_time_slot = {$id_time_slot}");
+        $buses = explode(',', $id_buses);
+        foreach ($buses as $id_bus) {
+            bdd()->query("INSERT INTO `bus_timeslot`(`id_bus`, `id_time_slot`) VALUES ({$id_bus}, {$id_time_slot})");
+        }
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -223,6 +251,15 @@ switch ($_GET['function']) {
     case 'timeslotbetween':       // beginning, end
         $res = fetch_time_slots_between($_GET['beginning'], $_GET['end']);
         break;
+    case 'update':       // id, beginning, end, users, buses
+        $res = update_time_slot($_GET['id'], $_GET['beginning'], $_GET['end'], $_GET['users'], $_GET['buses']);
+        break;
+    case 'updateusers':       // id, users
+        $res = update_users_of_time_slot($_GET['id'], $_GET['users']);
+        break;
+    case 'updatebuses':       // id, buses
+        $res = update_buses_of_time_slot($_GET['id'], $_GET['buses']);
+        break;
     case 'delete':       // id
         $res = delete_time_slot($_GET['id']);
         break;
@@ -242,6 +279,9 @@ fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function
 fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=timeslotbyuser&user=2&beginning=2023-02-16 00:00:00&end=2023-02-26 00:00:00").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=timeslotbybus&bus=1&beginning=2023-02-16 00:00:00&end=2023-02-26 00:00:00").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=timeslotbetween&beginning=2023-02-16 00:00:00&end=2023-02-26 00:00:00").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=update&id=21&beginning=2023-02-16 00:00:00&end=2023-02-26 00:00:00&users=1,2,3&buses=1,2,3").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=updateusers&id=21&users=1,2,3").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=updatebuses&id=21&buses=1,2,3").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=delete&id=20").then(response => response.json()).then(response => console.log(response))
 
 */
