@@ -8,8 +8,10 @@ import { toggleAccueil } from './js/pages/accueil'
 
 axios.defaults.baseURL = "http://localhost/projetL2S4/src/services"
 
+// Appel à la création des tables
 createTables()
 
+// Appel aux composants de la page principale
 createHeader()
 createFooter()
 
