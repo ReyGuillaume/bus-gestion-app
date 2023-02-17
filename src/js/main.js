@@ -1,11 +1,5 @@
 import axios from 'axios'
 
-// Import des icons de fontawesome
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faBars } from '@fortawesome/free-solid-svg-icons'
-
-library.add(faBars)
-
 
 
 /**

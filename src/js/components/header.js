@@ -16,6 +16,9 @@ const createNavBar = () => {
 
 const toggleNavBar = () => {
     document.querySelector("#header .navBar").classList.toggle('hide')
+    const i = document.querySelector("#header .toggleNav i")
+    i.classList.toggle('fa-bars')
+    i.classList.toggle('fa-close')
 }
 
 
@@ -25,9 +28,9 @@ export const createHeader = () => {
 
     const container = create("div", h, null, ['container'])
     create("img", container, null, ['logo'], null, "./src/assets/images/gobus-logo-color.png", "Gobus Logo")
-    const toggle = create("div", container, "Menu", ['toggleNav']).addEventListener("click", toggleNavBar)
-    toggle.appendChild(icon({ prefix: 'fas', iconName: 'bars' }))
-
+    const toggle = create("div", container, null, ['toggleNav'])
+    toggle.addEventListener("click", toggleNavBar)
+    create("i", toggle , null, ['fa-solid', 'fa-bars'])
     createNavBar()
 
     return h;

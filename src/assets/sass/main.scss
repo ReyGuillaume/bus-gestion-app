@@ -56,6 +56,7 @@ body {
             width: 1.8rem;
             height: 1.8rem;
             cursor: pointer;
+            font-size: 1.5rem;
         }
 
     }
@@ -89,4 +90,16 @@ body {
     flex-grow: 1;
     margin-top: 5.8rem;
     padding: .5rem;
+}
+
+#footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    ul {
+        list-style-type: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 }
