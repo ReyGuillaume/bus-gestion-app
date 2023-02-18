@@ -1,14 +1,12 @@
 import { create } from "../main";
-import { toggleAccueil } from "../pages/accueil";
-import { toggleAgenda } from "../pages/agenda";
 
 const createNavBar = () => {
     const h = document.querySelector("#header")
     const nav = create("nav", h, null, ['navBar', 'hide'])
 
-    create("div", nav, 'Accueil', ['navBar__item', 'focus']).addEventListener("click", toggleAccueil)
-    create("div", nav, 'Agenda', ['navBar__item']).addEventListener("click", toggleAgenda)
-    create("div", nav, 'Se connecter', ['navBar__item']).addEventListener("click", null)
+    create("a", nav, 'Accueil', ['navBar__item', 'focus']).href = "/"
+    create("a", nav, 'Agenda', ['navBar__item']).href = "/agenda"
+    create("a", nav, 'Se connecter', ['navBar__item']).href = "/signin"
 
     return nav
 }
