@@ -79,6 +79,13 @@
                     opacity: .25;
                 }
 
+                &.today {
+                    border: 2px solid #3D7C98;
+                    border-radius: 50%;
+                    background: #3D7C98;
+                    color: #f4f4f4;
+                }
+
                 &:hover {
                     border: 2px solid #3D7C98;
                 }

@@ -71,6 +71,12 @@
 .calandar__body .numbers__num.opacity {
   opacity: 0.25;
 }
+.calandar__body .numbers__num.today {
+  border: 2px solid #3D7C98;
+  border-radius: 50%;
+  background: #3D7C98;
+  color: #f4f4f4;
+}
 .calandar__body .numbers__num:hover {
   border: 2px solid #3D7C98;
 }

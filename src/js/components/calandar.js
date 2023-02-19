@@ -59,6 +59,8 @@ const createCalandar = (container, date) => {
     while (initDate.getDay() != 1) {
         initDate = new Date(new Date(initDate).setDate(initDate.getDate() - 1))
     }
+
+    const currentDate = new Date(Date.now())
     
     while (initDate.getMonth() != date.getMonth() + 1) {
 
@@ -67,15 +69,22 @@ const createCalandar = (container, date) => {
 
             const d = new Date(initDate)
             let day = create("div", row, null, ['numbers__num'])
-            create("h3", day, d.getDate())
-            d.getMonth() != date.getMonth() ? day.classList.add('opacity') : day
             day.addEventListener("click", () => toggleDay(d))
+
+            d.getMonth() != date.getMonth() ? day.classList.add('opacity') : day
+
+            currentDate.getFullYear() == initDate.getFullYear() &&
+            currentDate.getMonth() == initDate.getMonth() &&
+            currentDate.getDate() == initDate.getDate() ? 
+            day.classList.add('today') : day
+
+            create("h3", day, d.getDate())
 
             initDate = new Date(new Date(initDate).setDate(initDate.getDate() + 1))
         }
     }
 
-
+    return container
 }
 
 
@@ -85,6 +94,8 @@ const drawCalandar = (container, date) => {
 
     createMonth(container, date)
     createCalandar(container, date)
+
+    return container
 }
 
 
