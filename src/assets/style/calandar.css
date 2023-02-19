@@ -1,0 +1,78 @@
+.calandar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.calandar__header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.calandar__header .center-div {
+  flex-grow: 1;
+  text-align: center;
+}
+.calandar__header .left-button, .calandar__header .right-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  height: 5rem;
+  font-size: 2rem;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: 0.35s;
+}
+.calandar__header .left-button:hover, .calandar__header .right-button:hover {
+  font-size: 1.35rem;
+}
+.calandar__body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.calandar__body .days {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.calandar__body .days__day {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  border: 2px solid #f4f4f4;
+  border-radius: 0.25rem;
+  font-size: 1.5rem;
+}
+.calandar__body .numbers {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.calandar__body .numbers__row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.calandar__body .numbers__num {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: 700;
+  border: 2px solid #f4f4f4;
+  border-radius: 0.25rem;
+}
+.calandar__body .numbers__num.opacity {
+  opacity: 0.25;
+}
+.calandar__body .numbers__num:hover {
+  border: 2px solid #3D7C98;
+}
+
+/*# sourceMappingURL=calandar.css.map */
