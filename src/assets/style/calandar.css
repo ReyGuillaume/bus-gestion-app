@@ -35,6 +35,7 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  border-bottom: #3D7C98 0.15rem solid;
 }
 .calandar__body .days__day {
   width: 3rem;
