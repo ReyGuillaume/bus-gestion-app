@@ -28,8 +28,6 @@ export const toggleIndisponibilitiForm = () => {
     form.appendChild(bouton);
 
 
-
-
     return main
 
     
