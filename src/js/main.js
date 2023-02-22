@@ -44,14 +44,13 @@ export const create = (tagName, container, text=null, classNames=null, id=null, 
  * @param {string} placeholder : Placeholder de l'input. Null par défaut.
  * @returns l'élément html nouvellement construit.
  */
-export const createChamp = ( container, type="text", name= null, placeholder=null) => {
+export const createChamp = ( container, type="text", name= null, placeholder=null, value = null) => {
 
     let champ = container.appendChild(document.createElement("input"))
 
     type ? champ.setAttribute("type", type) : champ
     name ? champ.setAttribute("name", name) : champ
     placeholder ? champ.setAttribute("placeholder", placeholder) : champ
-    
 
     return champ
 }

@@ -1,10 +1,10 @@
 import { create, createChamp } from "../main";
 
-export const toggleIndisponibilitiForm = () => {
+export const toggleAddCreneau = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    create("h2", main, "Ajout de crénaux d'indisponibilité")
+    create("h2", main, "Ajout de crénaux")
     create("p", main, " Rentrez les informations suivantes : ")
 
     // Creation of the form
@@ -13,14 +13,13 @@ export const toggleIndisponibilitiForm = () => {
     form.setAttribute("action", "timeslots.php");
 
     // Creation of each champ
-    create("label", form, "Entrez la date de début de l'indisponibilité :");
+    create("label", form, "Entrez la date de début du créneau :");
     createChamp(form, "datetime-local", "StartDateTime");
     create("br", form);
-    create("label", form, "Entrez la date de fin de l'indisponibilité :");
+    create("label", form, "Entrez la date de fin du creneau :");
     createChamp(form, "datetime-local", "EndDateTime");
-    
     create("br", form);
-
+    createChamp(form, type ="submit", value = "Envoyer");
 
     // Creation of submit button
     var bouton = document.createElement("input");
@@ -35,4 +34,3 @@ export const toggleIndisponibilitiForm = () => {
 
     
 }
-

@@ -9,6 +9,8 @@ import Navigo from 'navigo'
 import { toggleAccueil } from './js/pages/accueil'
 import { toggleAgenda } from './js/pages/agenda'
 import { toggle404 } from './js/pages/404'
+import { toggleEspaceAdmin } from './js/pages/espaceAdmin'
+import {toggleEspaceUser} from './js/pages/espaceUser'
 
 axios.defaults.baseURL = "http://localhost/projetL2S4/src/services"
 
@@ -23,5 +25,7 @@ createFooter()
 const router = new Navigo('/')
 router.on('/', toggleAccueil)
 router.on('/agenda', toggleAgenda)
+router.on('/espaceAdmin', toggleEspaceAdmin )
+router.on('/espaceUser', toggleEspaceUser )
 router.on('*', toggle404)
 router.resolve()
