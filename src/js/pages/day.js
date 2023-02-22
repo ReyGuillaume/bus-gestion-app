@@ -1,5 +1,6 @@
 import { create } from "../main";
 import { toggleAgenda } from "./agenda";
+import { toggleTask } from "./userTask";
 import { getMonthToString , getDayToString } from "../components/calandar";
 import axios from "axios";
 
@@ -35,13 +36,33 @@ const fetchTimeSlots = async date => {
     let idUser = 2                      // Temporaire
     await axios.get(`timeslots/timeslots.php?function=timeslotbyuser&user=${idUser}&beginning=${d1}&end=${d2}`)
     .then(res => data = res.data)
-    return data
+    return [...data]
 }
 
 
-const createTimeSlots = (date, container) => {
-    const res = fetchTimeSlots(date)
-    console.log(res)
+const createTimeSlots = async (date, container) => {
+    const res = await fetchTimeSlots(date)
+    if (res.length > 0) {
+        res.forEach(timeslot => {
+            const div = create("div", container, null, ['timeslot'])
+            div.addEventListener("click", () => toggleTask(timeslot))
+
+            const color = create("div", div, null, ["timeslot__color"])
+            create("div", color, null, ["div-color"])
+
+            const houres = create("div", div, null, ["timeslot__houres"])
+            create("h2", houres, timeslot.begining, ['beginning'])
+            create("h2", houres, timeslot.end, ['end'])
+
+            const body = create("div", div, null, ["timeslot__body"])
+            create("h2", body, timeslot.type_name)
+
+            const goto = create("div", div, null, ["timeslot__goto"])
+            create("i", goto , null, ['fa-solid', 'fa-chevron-right'])
+        })
+    } else {
+        create("h2", container, "Vous n'avez pas encore de taches définies aujourd'hui", ['timeslot--unfound'])
+    }
 }
 
 
