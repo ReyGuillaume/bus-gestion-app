@@ -50,6 +50,27 @@ function user_log_in($login, $password) {
     }
 }
 
+
+/**
+    Affiche les infos de l'utilisateur ayant comme login et mot de passe $login et $password.
+
+    @param login : le login de l'utilisateur. String de taille inférieure ou égale à 50.
+    @param password : le mot de pass de l'utilisateur. String de taille fixe = 64.
+
+    @return objet utilisateur (lastname : String, firstname : String, name : String)
+*/
+function user_infos($login, $password) {
+    $pwd = hash("sha256", $password);
+    $sql = "SELECT u.id, u.name AS lastname, u.firstname, ut.name, ut.id AS idrole FROM Code c JOIN User u ON c.login = u.login JOIN Usertype ut ON u.id_user_type = ut.id WHERE c.login = '$login' AND c.password = '$pwd'";
+    $res = bdd()->query($sql);
+    if($res){
+        return $res->fetch();
+    } else {
+        return null;
+    }
+}
+
+
 /**
     Récupère tous les types d'utilisateur.
 
@@ -171,6 +192,9 @@ switch ($_GET['function']) {
         break;
     case 'signin':      // login, password
         $res = user_log_in($_GET['login'], $_GET['password']);
+        break;
+    case 'authentification':      // login, password
+        $res = user_infos($_GET['login'], $_GET['password']);
         break;
     case 'usertypes':
         $res = fetch_user_types();
