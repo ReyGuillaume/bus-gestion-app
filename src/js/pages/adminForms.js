@@ -62,10 +62,16 @@ export const toggleAddCreneau = () => {
     // Creation of submit button
     const bouton = create("button", form, "Envoyer")
     bouton.addEventListener("click", function (event){
+        event.preventDefault();
         let idUser = 1;
         let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
         let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
-        let type = document.querySelector("input[name='type']").value;
+        axios.get(`timeslots/timeslots.php?function=types`).then((response)=>{
+            for(var type of response.data){
+                let type = document.querySelector("input[name='type']").checked;
+            }
+        });
+
         console.log(StartDateTime);
         console.log(EndDateTime);
         console.log(type);
