@@ -24,9 +24,7 @@ export const toggleIndisponibilitiForm = () => {
 
 
     // Creation of submit button
-    //var bouton = document.createElement("input");
-    //bouton.setAttribute("type", "submit");
-    //bouton.setAttribute("value", "Envoyer");
+    
     const bouton = create("button", form, "Envoyer")
     bouton.addEventListener("click", function (event){
         let idUser = 1;

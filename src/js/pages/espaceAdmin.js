@@ -1,5 +1,7 @@
 import { create } from "../main";
 import { toggleAgenda } from "../pages/agenda";
+import { toggleAddCreneau } from "../pages/adminForms";
+
 
 export const toggleEspaceAdmin = () => {
     const main = document.querySelector("#app")
@@ -11,7 +13,7 @@ export const toggleEspaceAdmin = () => {
     const nav = create("nav", main, null, ['navBar'])
 
     create("div", nav, 'Voir mon agenda', ['navBar__item']).addEventListener("click", toggleAgenda)
-    create("div", nav, "Ajouter un creneau", ['navBar__item']).addEventListener("click", null)
+    create("div", nav, "Ajouter un creneau", ['navBar__item']).addEventListener("click", toggleAddCreneau)
     create("div", nav, "Ajouter des participants à un créneau", ['navBar__item']).addEventListener("click", null)
     create("div", nav, 'Se deconnecter', ['navBar__item']).addEventListener("click", null)
     
