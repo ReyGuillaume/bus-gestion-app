@@ -66,12 +66,18 @@ export const toggleAddCreneau = () => {
         let idUser = 1;
         let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
         let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
-        axios.get(`timeslots/timeslots.php?function=types`).then((response)=>{
-            for(var type of response.data){
-                let type = document.querySelector("input[name='type']").checked;
-            }
-        });
 
+        function typeTimeslots () {
+            axios.get(`timeslots/timeslots.php?function=types`).then((response)=>{
+                for(var t of response.data){
+                    if (document.querySelector("input[value=" + '"' + t.id + '"' + "]").checked) {
+                        return t.id;
+                    }
+                }
+            })
+        }
+
+        let type = typeTimeslots ();
         console.log(StartDateTime);
         console.log(EndDateTime);
         console.log(type);
