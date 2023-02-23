@@ -11,8 +11,8 @@ export const toggleAddCreneau = () => {
 
     // Creation of the form
     const form = create("form", main)
-    form.setAttribute("method", "post");
-    form.setAttribute("action", "timeslots.php");
+    //form.setAttribute("method", "post");
+    //form.setAttribute("action", "timeslots.php");
 
     // Creation of each champ
     create("label", form, "Entrez la date de début du créneau :");
@@ -37,9 +37,18 @@ export const toggleAddCreneau = () => {
 
 
     // Creation of submit button
-    var bouton = document.createElement("input");
-    bouton.setAttribute("type", "submit");
-    bouton.setAttribute("value", "Envoyer");
+    const bouton = create("button", form, "Envoyer")
+    bouton.addEventListener("click", function (event){
+        let idUser = 1;
+        let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
+        let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
+        let type = document.querySelector("input[name='type']").value;
+        console.log(StartDateTime);
+        console.log(EndDateTime);
+        console.log(type);
+
+        axios.get(`timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}&type=${type}&users=${idUser}&buses=${0}`)
+    })
     form.appendChild(bouton);
     
     
