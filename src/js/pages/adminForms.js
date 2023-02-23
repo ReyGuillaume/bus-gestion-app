@@ -38,7 +38,7 @@ export const toggleAddCreneau = () => {
 
     // Creation of the checkbox to define the bus involved in the timeslot
     var divCheckboxBus = create("div", form);
-    create("label", divCheckboxBus, "Coisissez les bus participants :");
+    create("label", divCheckboxBus, "Choisissez les bus participants :");
     axios.get(`buses/buses.php?function=buses`).then((response)=>{
         for(var bus of response.data){
             createChampCheckbox(divCheckboxBus, bus.id , "selectionBus", bus.id);
@@ -49,12 +49,12 @@ export const toggleAddCreneau = () => {
 
     // Creation of the checkbox to define the users involved in the timeslot
     var divCheckboxUsers = create("div", form);
-    create("label", divCheckboxUsers, "Coisissez les participants :");
+    create("label", divCheckboxUsers, "Choisissez les participants :");
     axios.get(`users/users.php?function=users`).then((response)=>{
         console.log(response);
         for(var user of response.data){
             createChampCheckbox(divCheckboxUsers, user.id , "selectionBus", user.id);
-            var label = create("label", divCheckboxUsers, user.id);
+            var label = create("label", divCheckboxUsers, user.name + " "+ user.firstname);
             label.setAttribute("for", user.id);
           }
     });
