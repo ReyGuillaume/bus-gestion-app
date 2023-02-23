@@ -51,12 +51,22 @@ function user_log_in($login, $password) {
 }
 
 /**
-    Récupère tous les types d'utilisateur.
+Récupère tous les types d'utilisateur.
 
-    @return liste des types d'utilisateur (id : Int, name : String)
-*/
+@return liste des types d'utilisateur (id : Int, name : String)
+ */
 function fetch_user_types() {
     $res = bdd()->query("SELECT * FROM UserType");
+    return $res->fetchAll();
+}
+
+/**
+Récupère tous les utilisateurs.
+
+@return liste des utilisateurs (id : Int, name : String, firstname : String, birth_date : String, email : String, user_type : Int, login : String)
+ */
+function fetch_users() {
+    $res = bdd()->query("SELECT * FROM User");
     return $res->fetchAll();
 }
 
@@ -174,6 +184,9 @@ switch ($_GET['function']) {
         break;
     case 'usertypes':
         $res = fetch_user_types();
+        break;
+    case 'users':
+        $res = fetch_users();
         break;
     case 'user':     // id
         $res = fetch_user($_GET['id']);
