@@ -15,7 +15,11 @@ export const toggleEspaceAdmin = () => {
     create("div", nav, 'Voir mon agenda', ['navBar__item']).addEventListener("click", toggleAgenda)
     create("div", nav, "Ajouter un creneau", ['navBar__item']).addEventListener("click", toggleAddCreneau)
     create("div", nav, "Ajouter des participants à un créneau", ['navBar__item']).addEventListener("click", null)
-    create("div", nav, 'Se deconnecter', ['navBar__item']).addEventListener("click", null)
+    create("div", nav, 'Gerer les utilisateurs', ['navBar__item']).addEventListener("click", null)
+    create("div", nav, 'Gerer les bus', ['navBar__item']).addEventListener("click", null)
     
+    create("div", nav, 'Se deconnecter', ['navBar__item']).addEventListener("click", null)
+
+
     return main
 }
