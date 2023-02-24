@@ -29,7 +29,7 @@ export const toggleAddCreneau = () => {
     create("label", divRadio, "Choisissez le type du créneau :");
     axios.get(`timeslots/timeslots.php?function=types`).then((response)=>{
         for(var type of response.data){
-            createChampRadio(divRadio, type.name , "type", type.id);
+            createChampRadio(divRadio, type.name , "selectionType", type.id);
             var label = create("label", divRadio, type.name);
             label.setAttribute("for", type.name);
           }
@@ -51,9 +51,8 @@ export const toggleAddCreneau = () => {
     var divCheckboxUsers = create("div", form);
     create("label", divCheckboxUsers, "Choisissez les participants :");
     axios.get(`users/users.php?function=users`).then((response)=>{
-        console.log(response);
         for(var user of response.data){
-            createChampCheckbox(divCheckboxUsers, user.id , "selectionBus", user.id);
+            createChampCheckbox(divCheckboxUsers, user.id , "selectionParticipant", user.id);
             var label = create("label", divCheckboxUsers, user.name + " "+ user.firstname);
             label.setAttribute("for", user.id);
           }
@@ -62,21 +61,61 @@ export const toggleAddCreneau = () => {
     // Creation of submit button
     const bouton = create("button", form, "Envoyer")
     bouton.addEventListener("click", function (event){
-        event.preventDefault();
-        let idUser = 1;
+
+        // selection of the start and end time
         let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
         let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
 
-        function typeTimeslots () {
-            for(var t of document.querySelectorAll("input[name='type']")){
-                if (t.checked) {
-                    return t.value;
+        function typeTimeslot () {
+            // select the types of timeslots and return the one who is checked in a string
+            for(var type of document.querySelectorAll("input[name='selectionType']")){
+                if (type.checked) {
+                    return type.value;
                 }
             }
         }
 
-        let type = typeTimeslots ();
-        axios.get(`timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}&type=${type}&users=${idUser}&buses=${0}`)
+        function participantsTimeslot () {
+            // select the types of participants and return those who are checked in a string : 1,2,...
+            var response = "";
+            for(var user of document.querySelectorAll("input[name='selectionParticipant']")){
+                if (user.checked) {
+                    if (response != ""){
+                        response += ",";
+                    }
+                    response += user.value;
+                }
+            } return response;
+        }
+
+        function busesTimeslot () {
+            // select the types of buses and return those who are checked in a string : 1,2,...
+            var response = "";
+            for(var bus of document.querySelectorAll("input[name='selectionBus']")){
+                if (bus.checked) {
+                    if (response != ""){
+                        response += ",";
+                    }
+                    response += bus.value;
+                }
+            } return response;
+        }
+        // selection of the type of timeslot, participants and buses
+        let type = typeTimeslot ();
+        let users = participantsTimeslot();
+        let buses = busesTimeslot();
+
+        //creation of the url
+        let url = `timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}&type=${type}`
+        if (users){
+            url += `&users=${users}`;
+        }
+        if (buses){
+            url += `&buses=${buses}`;
+        }
+
+        axios.get(url)
+
     })
     form.appendChild(bouton);
 
