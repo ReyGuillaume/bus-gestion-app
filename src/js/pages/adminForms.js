@@ -68,20 +68,14 @@ export const toggleAddCreneau = () => {
         let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
 
         function typeTimeslots () {
-            axios.get(`timeslots/timeslots.php?function=types`).then((response)=>{
-                for(var t of response.data){
-                    if (document.querySelector("input[value=" + '"' + t.id + '"' + "]").checked) {
-                        return t.id;
-                    }
+            for(var t of document.querySelectorAll("input[name='type']")){
+                if (t.checked) {
+                    return t.value;
                 }
-            })
+            }
         }
 
         let type = typeTimeslots ();
-        console.log(StartDateTime);
-        console.log(EndDateTime);
-        console.log(type);
-
         axios.get(`timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}&type=${type}&users=${idUser}&buses=${0}`)
     })
     form.appendChild(bouton);
