@@ -1,7 +1,9 @@
 import { create, createChamp, createChampCheckbox, createChampRadio } from "../main";
 
 import axios from 'axios';
-
+//------------------------------------------------------- */
+//   Gestion Créneau 
+//------------------------------------------------------- */
 export const toggleAddCreneau = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
@@ -11,8 +13,6 @@ export const toggleAddCreneau = () => {
 
     // Creation of the form
     const form = create("form", main)
-    //form.setAttribute("method", "post");
-    //form.setAttribute("action", "timeslots.php");
 
     // Creation of each champ
     create("label", form, "Entrez la date de début du créneau :");
@@ -79,14 +79,92 @@ export const toggleAddCreneau = () => {
         axios.get(`timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}&type=${type}&users=${idUser}&buses=${0}`)
     })
     form.appendChild(bouton);
-    
-    
-    
-    
 
     return main
 
-    
-
-    
 }
+
+
+export const toggleSupprimeCreneau = () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+    
+    create("h2", main, "Suppression de Créneau")
+    create("p", main, " Rentrez les informations suivantes : ")
+
+    // Creation of the form
+    const form = create("form", main)
+
+    // Creation of the radio to define the timeslot to delete
+    var divRadio = create("div", form);
+    create("label", divRadio, "Choisissez le creéneau à supprimer :");
+    /*axios.get(`timeslots/timeslots.php?function=timeslots`).then((response)=>{
+        console.log(response);
+        for(var timeslot of response.data){
+            createChampRadio(divRadio, timeslot.id , "selectionTimeslot", timeslot.id);
+            var label = create("label", divRadio, timeslot.begining + " "+ timeslot.end);
+            label.setAttribute("for", timeslot.id);
+          }
+    });*/
+
+
+
+
+    // Creation of submit button
+   /* const bouton = create("button", form, "Envoyer")
+    bouton.addEventListener("click", function (event){
+        })
+    form.appendChild(bouton);
+    
+    return main*/
+
+}
+
+
+
+
+//------------------------------------------------------- */
+//   Gestion Utilisateurs
+//------------------------------------------------------- */
+
+
+export const toggleSupprimeUser = () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+    
+    create("h2", main, "Suppression de User")
+    create("p", main, " Rentrez les informations suivantes : ")
+
+    // Creation of the form
+    const form = create("form", main)
+
+    // Creation of the radio to define the user to delete
+    var divRadio = create("div", form);
+    create("label", divRadio, "Choisissez le user à supprimer :");
+    axios.get(`users/users.php?function=users`).then((response)=>{
+        console.log(response);
+        for(var user of response.data){
+            createChampRadio(divRadio, user.id , "selectionBus", user.id);
+            var label = create("label", divRadio, user.name + " "+ user.firstname);
+            label.setAttribute("for", user.id);
+          }
+    });
+
+
+
+
+    // Creation of submit button
+    const bouton = create("button", form, "Envoyer")
+    bouton.addEventListener("click", function (event){
+        let idUser = 1; // A modifier
+        
+        console.log(idUser);
+
+        axios.get(`users/users.php?function=delete&id=${idUser}`)
+    })
+    form.appendChild(bouton);
+    
+    return main
+
+}
+
