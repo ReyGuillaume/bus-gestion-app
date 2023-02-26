@@ -50,8 +50,8 @@ const createMonth = (container, date) => {
     const rightDiv = create("div", mainDiv, null, ['right-button'])
     create("i", rightDiv , null, ['fa-solid', 'fa-chevron-right'])
 
-    leftDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setMonth(date.getMonth() - 1))))
-    rightDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setMonth(date.getMonth() + 1))))
+    leftDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setUTCMonth(date.getUTCMonth() - 1))))
+    rightDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setUTCMonth(date.getUTCMonth() + 1))))
 
     return mainDiv
 }

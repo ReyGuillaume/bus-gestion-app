@@ -9,8 +9,10 @@ export const toggleTask = ({begining, buses, end, id, id_time_slot_type}) => {
 
     const back = create("div", header)
     create("i", back , null, ['fa-solid', 'fa-chevron-left'])
-    const date = new Date (new Date(begining).setHours(0).setMinutes(1))
+    const date = new Date (new Date(begining).setHours(0))
     back.addEventListener("click", () => toggleDay(date))
+
+    console.log({begining, buses, end, id, id_time_slot_type})
 
     create("h2", header, date)
 }

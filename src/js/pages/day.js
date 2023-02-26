@@ -33,7 +33,8 @@ const fetchTimeSlots = async date => {
     let data = []
     let d1 = datePhp(date)
     let d2 = datePhp(new Date(new Date(date).setDate(date.getDate() + 1)))
-    let idUser = 2                      // Temporaire
+    const sessionData = JSON.parse(sessionStorage.getItem("userData"))
+    let idUser = sessionData['id']
     await axios.get(`timeslots/timeslots.php?function=timeslotbyuser&user=${idUser}&beginning=${d1}&end=${d2}`)
     .then(res => data = res.data)
     return [...data]

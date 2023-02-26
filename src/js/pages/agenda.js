@@ -15,7 +15,8 @@ export const toggleAgenda = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    let isUserConnected = true      // tomporaire
+    let isUserConnected = JSON.parse(sessionStorage.getItem("userData"));
+
     if(isUserConnected) {
         drawAgenda()
     } else {
