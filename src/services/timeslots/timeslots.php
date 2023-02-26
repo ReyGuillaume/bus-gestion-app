@@ -12,10 +12,12 @@ include_once "../connexion.php";
     @param id_time_slot_type : id du type de créneau.
     @param id_users : chaine de caractère avec "," comme séparateur correspondant à la liste des id des utilisateur qui interviennent lors de ce créneau. 
     @param id_buses : chaine de caractère avec "," comme séparateur correspondant à la liste des id des bus qui sont affectés au créneau.
+    @param num_lines : chaine de caractère avec "," comme séparateur correspondant à la liste des numéros de lignes qui sont affectés au créneau.
+    @param directions : chaine de caractère avec "," comme séparateur correspondant à la liste des directions des lignes de bus affectées au créneau.
 
     @return boolean si l'ajout est un succès.
 */
-function create_time_slot($beginning, $end, $id_time_slot_type, $id_users, $id_buses) { // ajout des lignes dans User_TimeSlot et dans Bus_TimeSlot
+function create_time_slot($beginning, $end, $id_time_slot_type, $id_users, $id_buses, $num_lines, $directions) { // ajout des lignes dans User_TimeSlot et dans Bus_TimeSlot
     $tz = timezone_open('Europe/Paris');
     $d1 = date_create($beginning, $tz);
     $d2 = date_create($end, $tz);
@@ -23,7 +25,6 @@ function create_time_slot($beginning, $end, $id_time_slot_type, $id_users, $id_b
         $res = bdd()->query("INSERT INTO `timeslot`(`begining`, `end`, `id_time_slot_type`) VALUES ('{$beginning}', '{$end}', {$id_time_slot_type})");
 
         if ($res == true) {
-            // $id_time_slot = bdd()->lastInsertId();                                                                               //TODO renvoie toujours 0...
             $id_time_slot = bdd()->query("SELECT id FROM `timeslot` ORDER BY id DESC LIMIT 1")->fetch();
             $id_time_slot = $id_time_slot['id'];
 
@@ -38,6 +39,16 @@ function create_time_slot($beginning, $end, $id_time_slot_type, $id_users, $id_b
                 $buses = explode(',', $id_buses);
                 foreach ($buses as $id_bus) {
                     bdd()->query("INSERT INTO `bus_timeslot`(`id_bus`, `id_time_slot`) VALUES ({$id_bus}, {$id_time_slot})");
+                }
+            }
+
+            if (strlen($num_lines) > 0 && strlen($directions) > 0) {
+                $lines = explode(',', $num_lines);
+                $dir = explode(',', $directions);
+                for($i=0 ; $i<count($lines) ; $i++){
+                    $num_line = $lines[$i];
+                    $direction = $dir[$i];
+                    bdd()->query("INSERT INTO `line_timeslot`(`num_line`, `id_time_slot`, `direction`) VALUES ({$num_line}, {$id_time_slot}, '{$direction}')");
                 }
             }
             return true;
@@ -61,7 +72,7 @@ function fetch_time_slot_type() {
 
     @param id : id du créneau que l'on souhaite récupérer.
 
-    @return objet créneau (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int)))
+    @return objet créneau (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int)) , lines (liste des lignes (number : Int, direction : String)))
 */
 function fetch_time_slot($id) {
     $res = bdd()->query("SELECT * FROM TimeSlot WHERE id = {$id}");
@@ -70,6 +81,8 @@ function fetch_time_slot($id) {
     $res['users'] = $users->fetchAll();
     $buses = bdd()->query("SELECT b.id , bt.nb_places , bt.name FROM Bus b JOIN bus_timeslot bts ON bts.id_bus = b.id JOIN bustype bt ON b.id_bus_type = bt.id  WHERE bts.id_time_slot = {$id}");
     $res['buses'] = $buses->fetchAll();
+    $lines = bdd()->query("SELECT `number`, direction FROM `Line` l JOIN line_timeslot lts ON l.number = lts.num_line WHERE lts.id_time_slot = {$id}");
+    $res['lines'] = $lines->fetchAll();
     return $res;
 }
 
@@ -80,7 +93,7 @@ function fetch_time_slot($id) {
     @param beginning : string correspondant à la date du début de la plage de recherche.
     @param end : string correspondant à la date de la fin de la plage de recherche.
 
-    @return liste de créneaux (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int)))
+    @return liste de créneaux (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int))), lines (liste des lignes (number : Int, direction : String)))
 */
 function fetch_time_slots_by_type($id_time_slot_type, $beginning, $end) {
     $result = bdd()->query("SELECT id FROM `timeslot` WHERE id_time_slot_type = {$id_time_slot_type} AND begining >= '{$beginning}' AND end <= '{$end}'");
@@ -98,7 +111,7 @@ function fetch_time_slots_by_type($id_time_slot_type, $beginning, $end) {
     @param beginning : string correspondant à la date du début de la plage de recherche.
     @param end : string correspondant à la date de la fin de la plage de recherche.
 
-    @return liste de créneaux (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int)))
+    @return liste de créneaux (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int))), lines (liste des lignes (number : Int, direction : String)))
 */
 function fetch_time_slots_by_user($id_user, $beginning, $end) {
     $result = bdd()->query("SELECT id FROM `timeslot` ts JOIN user_timeslot uts ON ts.id = uts.id_time_slot WHERE uts.id_user = {$id_user} AND begining >= '{$beginning}' AND end <= '{$end}'");
@@ -116,10 +129,28 @@ function fetch_time_slots_by_user($id_user, $beginning, $end) {
     @param beginning : string correspondant à la date du début de la plage de recherche.
     @param end : string correspondant à la date de la fin de la plage de recherche.
 
-    @return liste de créneaux (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int)))
+    @return liste de créneaux (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int))), lines (liste des lignes (number : Int, direction : String)))
 */
 function fetch_time_slots_by_bus($id_bus, $beginning, $end) {
     $result = bdd()->query("SELECT id FROM `timeslot` ts JOIN bus_timeslot bts ON ts.id = bts.id_time_slot WHERE bts.id_bus = {$id_bus} AND begining >= '{$beginning}' AND end <= '{$end}'");
+    $res = array();
+    while ($row = $result->fetch()) {
+        $res[] = fetch_time_slot($row['id']);
+    }
+    return $res;
+}
+
+/**
+    Retourne la liste des créneaux dans une plage horaire définie auxquels est affectée une ligne de bus selon son numéro.
+
+    @param number : numéro de la ligne affectée aux créneaux que l'on recherche.
+    @param beginning : string correspondant à la date du début de la plage de recherche.
+    @param end : string correspondant à la date de la fin de la plage de recherche.
+
+    @return liste de créneaux (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int))), lines (liste des lignes (number : Int, direction : String)))
+*/
+function fetch_time_slots_by_line($number, $beginning, $end) {
+    $result = bdd()->query("SELECT id FROM `timeslot` ts JOIN line_timeslot lts ON ts.id = lts.id_time_slot WHERE lts.num_line = {$number} AND begining >= '{$beginning}' AND end <= '{$end}'");
     $res = array();
     while ($row = $result->fetch()) {
         $res[] = fetch_time_slot($row['id']);
@@ -133,7 +164,7 @@ function fetch_time_slots_by_bus($id_bus, $beginning, $end) {
     @param beginning : date de début de la plage horaire de recherche.
     @param end : date de fin de la plage horaire de recherche.
 
-    @return liste de créneaux (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int)))
+    @return liste de créneaux (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int))), lines (liste des lignes (number : Int : direction : String)))
 */
 function fetch_time_slots_between($beginning, $end) {
     $result = bdd()->query("SELECT id FROM `timeslot` WHERE begining >= '{$beginning}' AND end <= '{$end}'");
@@ -154,10 +185,12 @@ function fetch_time_slots_between($beginning, $end) {
     @param end : string correspondant à la nouvelle date de fin de créneau.
     @param id_users : chaine de caractère avec "," comme séparateur correspondant à la nouvelle liste d'id des utilisateurs à affecter au créneau.
     @param id_buses : chaine de caractère avec "," comme séparateur correspondant à la nouvelle liste d'id des bus à affecter au créneau.
+    @param num_lines : chaine de caractère avec "," comme séparateur correspondant à la nouvelle liste de lignes de bus à affecter au créneau.
+    @param directions : chaine de caractère avec "," comme séparateur correspondant à la nouvelle liste de directions des lignes à affecter au créneau.
 
     @return boolean si la modification est un succès.
  */
-function update_time_slot($id_time_slot, $beginning, $end, $id_users, $id_buses) {  //appel à update_users_of_time_slot et à update_buses_of_time_slot
+function update_time_slot($id_time_slot, $beginning, $end, $id_users, $id_buses, $num_lines, $directions) {  //appel à update_users_of_time_slot, update_buses_of_time_slot et update_lines_of_time_slot
     $tz = timezone_open('Europe/Paris');
     $d1 = date_create($beginning, $tz);
     $d2 = date_create($end, $tz);
@@ -165,6 +198,7 @@ function update_time_slot($id_time_slot, $beginning, $end, $id_users, $id_buses)
         if (bdd()->query("UPDATE `timeslot` SET `begining`='{$beginning}', `end`='{$end}' WHERE id = {$id_time_slot}")) {
             update_users_of_time_slot($id_time_slot, $id_users);
             update_buses_of_time_slot($id_time_slot, $id_buses);
+            update_lines_of_time_slot($id_time_slot, $num_lines, $directions);
             return true;
         }
     }
@@ -214,15 +248,40 @@ function update_buses_of_time_slot($id_time_slot, $id_buses) {
 }
 
 /**
+    Supprime toutes les lignes de Line_TimeSlot correspondant à $id_time_slot et les remplace par une nouvelle liste de lignes.
+
+    @param id_time_slot : entier correspondant à l'id du créneau à modifier.
+    @param num_lines : chaine de caractère avec "," comme séparateur correspondant à la nouvelle liste des numéros de ligne à affecter au créneau.
+
+    @return boolean si la modification est un succès.
+ */
+function update_lines_of_time_slot($id_time_slot, $num_lines, $directions) {
+    if(bdd()->query("SELECT * FROM TimeSlot WHERE id = {$id_time_slot}")->fetch()) {
+        bdd()->query("DELETE FROM Line_TimeSlot WHERE id_time_slot = {$id_time_slot}");
+        $lines = explode(',', $num_lines);
+        $dir = explode(',', $directions);
+        for($i=0 ; $i<count($lines) ; $i++) {
+            $num_line = $lines[$i];
+            $direction = $dir[$i];
+            bdd()->query("INSERT INTO `line_timeslot`(`num_line`, `id_time_slot`, `direction`) VALUES ({$num_line}, {$id_time_slot}, '{$direction}')");
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/**
     Supprime un créneau selon son id.
 
     @param id_time_slot : id du créneau que l'on souhaite supprimer.
 
     @return boolean si la délétion est un succès.
 */
-function delete_time_slot($id_time_slot) { // délétion des lignes dans User_TimeSlot et dans Bus_TimeSlot
+function delete_time_slot($id_time_slot) { // délétion des lignes dans User_TimeSlot, Bus_TimeSlot et Line_TimeSlot
     bdd()->query("DELETE FROM User_TimeSlot WHERE id_time_slot = {$id_time_slot}");
     bdd()->query("DELETE FROM Bus_TimeSlot WHERE id_time_slot = {$id_time_slot}");
+    bdd()->query("DELETE FROM Line_TimeSlot WHERE id_time_slot = {$id_time_slot}");
     $res = bdd()->query("DELETE FROM TimeSlot WHERE id = {$id_time_slot}");
     return $res == true;
 }
@@ -230,8 +289,8 @@ function delete_time_slot($id_time_slot) { // délétion des lignes dans User_Ti
 
 
 switch ($_GET['function']) {
-    case 'create':      // beginning, end, type, users, buses
-        $res = create_time_slot($_GET['beginning'], $_GET['end'], $_GET['type'], $_GET['users'], $_GET['buses']);
+    case 'create':      // beginning, end, type, users, buses, lines
+        $res = create_time_slot($_GET['beginning'], $_GET['end'], $_GET['type'], $_GET['users'], $_GET['buses'], $_GET['lines'], $_GET['directions']);
         break;
     case 'types':
         $res = fetch_time_slot_type();
@@ -248,17 +307,23 @@ switch ($_GET['function']) {
     case 'timeslotbybus':       // bus, beginning, end
         $res = fetch_time_slots_by_bus($_GET['bus'], $_GET['beginning'], $_GET['end']);
         break;
+    case 'timeslotbyline':       // line, beginning, end
+        $res = fetch_time_slots_by_line($_GET['line'], $_GET['beginning'], $_GET['end']);
+        break;
     case 'timeslotbetween':       // beginning, end
         $res = fetch_time_slots_between($_GET['beginning'], $_GET['end']);
         break;
     case 'update':       // id, beginning, end, users, buses
-        $res = update_time_slot($_GET['id'], $_GET['beginning'], $_GET['end'], $_GET['users'], $_GET['buses']);
+        $res = update_time_slot($_GET['id'], $_GET['beginning'], $_GET['end'], $_GET['users'], $_GET['buses'], $_GET['lines'], $_GET['directions']);
         break;
     case 'updateusers':       // id, users
         $res = update_users_of_time_slot($_GET['id'], $_GET['users']);
         break;
     case 'updatebuses':       // id, buses
         $res = update_buses_of_time_slot($_GET['id'], $_GET['buses']);
+        break;
+    case 'updatelines':       // id, lines
+        $res = update_lines_of_time_slot($_GET['id'], $_GET['lines'], $_GET['directions']);
         break;
     case 'delete':       // id
         $res = delete_time_slot($_GET['id']);
@@ -272,16 +337,18 @@ echo json_encode($res);
 
 /* ======================== Tests ========================
 
-fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=create&beginning=2023-02-16 00:00:00&end=2023-02-16 04:45:00&type=1&users=2,3&buses=").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=create&beginning=2023-02-16 00:00:00&end=2023-02-16 04:45:00&type=1&users=1,2&buses=1&lines=1&directions=retour").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=types").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=timeslot&id=41").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=timeslotbytype&type=1&beginning=2023-02-16 00:00:00&end=2023-02-26 00:00:00").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=timeslotbyuser&user=2&beginning=2023-02-16 00:00:00&end=2023-02-26 00:00:00").then(response => response.json()).then(response => console.log(response))
-fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=timeslotbybus&bus=1&beginning=2023-02-16 00:00:00&end=2023-02-26 00:00:00").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=timeslotbybus&bus=1&beginning=2023-02-27 00:00:00&end=2023-02-27 04:45:00").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=timeslotbyline&line=1&beginning=2023-02-27 00:00:00&end=2023-02-27 04:45:00").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=timeslotbetween&beginning=2023-02-16 00:00:00&end=2023-02-26 00:00:00").then(response => response.json()).then(response => console.log(response))
-fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=update&id=21&beginning=2023-02-16 00:00:00&end=2023-02-26 00:00:00&users=1,2,3&buses=1,2,3").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=update&id=21&beginning=2023-02-16 00:00:00&end=2023-02-26 00:00:00&users=1,2&buses=1&lines=1,2,3&directions=aller,retour,retour").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=updateusers&id=21&users=1,2,3").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=updatebuses&id=21&buses=1,2,3").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=updatelines&id=21&lines=1,2,3&directions=retour,aller,aller").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=delete&id=20").then(response => response.json()).then(response => console.log(response))
 
 */
