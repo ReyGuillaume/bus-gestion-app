@@ -258,12 +258,14 @@ function update_buses_of_time_slot($id_time_slot, $id_buses) {
 function update_lines_of_time_slot($id_time_slot, $num_lines, $directions) {
     if(bdd()->query("SELECT * FROM TimeSlot WHERE id = {$id_time_slot}")->fetch()) {
         bdd()->query("DELETE FROM Line_TimeSlot WHERE id_time_slot = {$id_time_slot}");
-        $lines = explode(',', $num_lines);
-        $dir = explode(',', $directions);
-        for($i=0 ; $i<count($lines) ; $i++) {
-            $num_line = $lines[$i];
-            $direction = $dir[$i];
-            bdd()->query("INSERT INTO `line_timeslot`(`num_line`, `id_time_slot`, `direction`) VALUES ({$num_line}, {$id_time_slot}, '{$direction}')");
+        if(strlen($num_lines) > 0 && strlen($directions) > 0){
+            $lines = explode(',', $num_lines);
+            $dir = explode(',', $directions);
+            for($i=0 ; $i<count($lines) ; $i++) {
+                $num_line = $lines[$i];
+                $direction = $dir[$i];
+                bdd()->query("INSERT INTO `line_timeslot`(`num_line`, `id_time_slot`, `direction`) VALUES ({$num_line}, {$id_time_slot}, '{$direction}')");
+            }
         }
         return true;
     } else {

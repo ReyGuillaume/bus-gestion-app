@@ -1,18 +1,26 @@
+import { calandar } from "../components/calandar";
 import { create } from "../main";
 
-const drawMainPage = () => {
+const drawAgenda = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
     create("h2", main, "Agenda", ['mainTitle'])
-
+    calandar(main)
+    
     return main
 }
 
 export const toggleAgenda = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+    
+    let isUserConnected = JSON.parse(sessionStorage.getItem("userData"));
 
-    drawMainPage()
+    if(isUserConnected) {
+        drawAgenda()
+    } else {
+        create("h4", main, "connectez-vous")
+    }
     return main
 }

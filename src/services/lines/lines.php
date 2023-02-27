@@ -2,7 +2,7 @@
 // accès à une fonction bdd() qui renvoie une instance de PDO
 include_once "../connexion.php";
 
-// ======================== Bus ========================
+// ======================== Line ========================
 
 /**
     Insert une ligne dans la table Line.
@@ -13,7 +13,12 @@ include_once "../connexion.php";
 */
 function create_line($travel_time) {
     $res = bdd()->query("INSERT INTO `Line` (`travel_time`) VALUE ({$travel_time})");
-    return $res;
+    if($res){
+        return true;
+    }
+    else{
+        return false;
+    }
 }
 
 /**
@@ -59,8 +64,11 @@ function fetch_timeslots_of_line($number) {
     @return boolean si la modification est un succès.
  */
 function modify_traveltime_line($number, $travel_time) {
-    $res = bdd()->query("UPDATE `Line` SET `travel_time`={$travel_time} WHERE `number` = {$number}");
-    return $res;
+    if(bdd()->query("SELECT * FROM `Line`  WHERE `number` = {$number}")->fetch()) {
+        bdd()->query("UPDATE `Line` SET `travel_time`={$travel_time} WHERE `number` = {$number}");
+        return true;
+    }
+    return false;
 }
 
 /**
