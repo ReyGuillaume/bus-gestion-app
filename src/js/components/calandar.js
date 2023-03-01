@@ -36,17 +36,20 @@ export const getMonthToString = (index) => {
 }
 
 
-
+// fonction qui crée le header du calendrier d'un mois entier (mois + année)
 const createMonth = (container, date) => {
     const mainDiv = create("div", container, null, ['calandar__header'])
 
+    // flèche gauche
     const leftDiv = create("div", mainDiv, null, ['left-button'])
     create("i", leftDiv , null, ['fa-solid', 'fa-chevron-left'])
 
+    // mois + année
     const centerDiv = create('div', mainDiv, null, ['center-div'])
     create('h2', centerDiv, date.getFullYear(), ['year'])
     create('h2', centerDiv, getMonthToString(date.getMonth()), ['month'])
 
+    // flèche droite
     const rightDiv = create("div", mainDiv, null, ['right-button'])
     create("i", rightDiv , null, ['fa-solid', 'fa-chevron-right'])
 
@@ -57,7 +60,7 @@ const createMonth = (container, date) => {
 }
 
 
-
+// fonction qui crée le corps du calendrier d'un mois entier
 const createCalandar = (container, date) => {
     const body = create("div", container, null, ['calandar__body'])
 
@@ -68,15 +71,16 @@ const createCalandar = (container, date) => {
     
     const numbers = create("div", body, null, ['numbers'])
     
-    // initDate prends la valeur du premier lundi avant le 1er du mois
+    // initDate prend la valeur du premier lundi avant le 1er du mois
     let initDate = new Date(new Date(date).setDate(1))
     while (initDate.getDay() != 1) {
         initDate = new Date(new Date(initDate).setDate(initDate.getDate() - 1))
     }
 
     const currentDate = new Date(Date.now())
-    
-    while (initDate.getMonth() != date.getMonth() + 1) {
+
+    // si on passe à décembre, date.getMonth() + 1 = 12 (donc il faut faire modulo 12)
+    while (initDate.getMonth() != ((date.getMonth() + 1)%12)) {
 
         let row = create("div", numbers, null, ['numbers__row'])
         for (let col = 0; col < arr.length; col++) {
@@ -102,7 +106,7 @@ const createCalandar = (container, date) => {
 }
 
 
-
+// fonction qui affiche le header et le corps du calendrier d'un mois entier
 const drawCalandar = (container, date) => {
     container.replaceChildren("")
 
@@ -123,6 +127,7 @@ export const calandar = (
     let date = new Date(year, monthIndex, day)
 
     const cal = create("div", container, null, ['calandar'])
+
     drawCalandar(cal, date)
 
     return container

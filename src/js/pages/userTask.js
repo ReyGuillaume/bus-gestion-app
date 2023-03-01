@@ -1,6 +1,7 @@
 import { create } from "../main"
 import { toggleDay } from "./day"
 
+// fonction qui permet d'afficher un créneau horaire affecté à l'utilisateur connecté
 export const toggleTask = ({begining, buses, end, id, id_time_slot_type}) => {
     const main = document.querySelector("#app")
     main.replaceChildren("")

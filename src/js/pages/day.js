@@ -4,7 +4,7 @@ import { toggleTask } from "./userTask";
 import { getMonthToString , getDayToString } from "../components/calandar";
 import axios from "axios";
 
-
+// fonction qui crée tous les jours d'un mois
 const createDaysBar = (date, container) => {
 
     let dateInt = new Date(date)
@@ -28,7 +28,7 @@ const createDaysBar = (date, container) => {
 // renvoie une date JS sous forme 2023-02-16 00:00:00
 const datePhp = date => date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
 
-
+// fonction qui récupère tous les créneaux horaires affectés à l'utilisateur connecté, à une certaine date
 const fetchTimeSlots = async date => {
     let data = []
     let d1 = datePhp(date)
@@ -40,7 +40,7 @@ const fetchTimeSlots = async date => {
     return [...data]
 }
 
-
+// fonction qui affiche tous les créneaux horaires récupérés, affectés à l'utilisateur connecté
 const createTimeSlots = async (date, container) => {
     const res = await fetchTimeSlots(date)
     if (res.length > 0) {
