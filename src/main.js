@@ -27,12 +27,9 @@ createFooter()
 const router = new Navigo('/')
 router.on('/', toggleAccueil)
 router.on('/agenda', toggleAgenda)
-<<<<<<< HEAD
 router.on('/espaceAdmin', toggleEspaceAdmin )
 router.on('/espaceUser', toggleEspaceUser )
-=======
 router.on('/adminForm', toggleAdminForm)
 router.on('/disconnect', disconnectUser)
->>>>>>> origin/main
 router.on('*', toggle404)
 router.resolve()
