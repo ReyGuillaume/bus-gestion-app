@@ -1,0 +1,96 @@
+.calandar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    &__header {
+        display: flex;
+        align-items: center;
+        width: 100%;
+
+        & .center-div {
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        & .left-button, & .right-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 5rem;
+            height: 5rem;
+            font-size: 2rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: .35s;
+            &:hover {
+                font-size: 1.35rem;
+            }
+        }
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+
+        & .days {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            border-bottom: #3D7C98 .15rem solid;
+
+            &__day {
+                width: 3rem;
+                height: 3rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+                border: 2px solid #f4f4f4;
+                border-radius: .25rem;
+
+                font-size: 1.5rem;
+            }
+        }
+
+        & .numbers {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+
+            &__row {
+                display: flex;
+                align-items: center;
+                gap: 1.5rem;
+            }
+
+            &__num {
+                width: 3rem;
+                height: 3rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                font-weight: 700;
+                border: 2px solid #f4f4f4;
+                border-radius: .25rem;
+
+                &.opacity {
+                    opacity: .25;
+                }
+
+                &.today {
+                    border: 2px solid #3D7C98;
+                    border-radius: 50%;
+                    background: #3D7C98;
+                    color: #f4f4f4;
+                }
+
+                &:hover {
+                    border: 2px solid #3D7C98;
+                }
+            }
+        }
+    }
+}

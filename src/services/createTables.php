@@ -30,6 +30,19 @@ function create_table_bus() {
 }
 
 /**
+ * Execute la requête SQL qui crée la table Line
+ */
+function create_table_line() {
+    $sql = "CREATE TABLE IF NOT EXISTS `Line` (
+        `number` INT NOT NULL AUTO_INCREMENT,
+        `travel_time` INT NOT NULL,
+        CONSTRAINT pk_line PRIMARY KEY (`number`),
+        CONSTRAINT uq_line_traveltime UNIQUE (`number`, travel_time)
+    )";
+    $stm = bdd()->query($sql);
+}
+
+/**
  * Execute la requête SQL qui crée la table TimeSlotType
  */
 function create_table_time_slot_type() {
@@ -87,7 +100,7 @@ function create_table_code() {
  * Execute la requête SQL qui crée la table User
  */
 function create_table_user() {
-    $sql = "CREATE TABLE IF NOT EXISTS User (
+    $sql = "CREATE TABLE IF NOT EXISTS `User` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `name` VARCHAR(50) NOT NULL,
         `firstname` VARCHAR(50) NOT NULL,
@@ -132,9 +145,25 @@ function create_table_user_time_slot() {
 }
 
 
+/**
+ * Execute la requête SQL qui crée la table Line_TimeSlot
+ */
+function create_table_line_time_slot() {
+    $sql = "CREATE TABLE IF NOT EXISTS Line_TimeSlot (
+        `num_line` INT NOT NULL,
+        `id_time_slot` INT NOT NULL,
+        `direction` ENUM('aller','retour'),
+        CONSTRAINT pk_linetimeslot PRIMARY KEY (num_line, id_time_slot),
+        CONSTRAINT fk_linetimeslot_numline FOREIGN KEY (num_line) REFERENCES `Line` (`number`),
+        CONSTRAINT fk_linetimeslot_timeslot FOREIGN KEY (id_time_slot) REFERENCES TimeSlot (id)
+    )";
+    $stm = bdd()->query($sql);
+}
+
 // ==================== Création des tables de la base ====================
 create_table_bus_type();
 create_table_bus();
+create_table_line();
 create_table_time_slot_type();
 create_table_time_slot();
 create_table_user_type();
@@ -142,6 +171,7 @@ create_table_code();
 create_table_user();
 create_table_bus_time_slot();
 create_table_user_time_slot();
+create_table_line_time_slot();
 
 
 // ==================== Instanciation des types de créneaux ====================
@@ -170,5 +200,13 @@ $busTypes = array(
 
 foreach ($busTypes as $name => $nbPlaces) {
     $sql = "INSERT INTO BusType (`name`, `nb_places`) VALUE ('{$name}', {$nbPlaces})";
+    bdd()->query($sql);
+}
+
+// ==================== Instanciation des lignes de bus ====================
+$busLines = array(60, 60, 60, 60);
+
+foreach ($busLines as $time) {
+    $sql = "INSERT INTO `Line` (`travel_time`) VALUE ({$time})";
     bdd()->query($sql);
 }
