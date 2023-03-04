@@ -37,14 +37,13 @@ export const create = (tagName, container, text=null, classNames=null, id=null, 
 /**
  * Crée un élément Html INPUT avec les propriétés passées en paramètres contenu dans le container parent.
  * 
-
  * @param {Element} container : Element html parent ( le formulaire ).
  * @param {string} type : Type de l'input. text par défaut.
  * @param {string} name : Nom de l'input. Null par défaut.
  * @param {string} placeholder : Placeholder de l'input. Null par défaut.
  * @returns l'élément html nouvellement construit.
  */
-export const createChamp = ( container, type="text", name= null, placeholder=null, value = null) => {
+export const createChamp = ( container, type="text", name= null, placeholder=null) => {
 
     let champ = container.appendChild(document.createElement("input"))
 
