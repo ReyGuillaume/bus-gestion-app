@@ -223,7 +223,7 @@ switch ($_GET['function']) {
     case 'create':      // login, password, confirm, date, name, firstname, email, type
         $res = user_registration($_GET['login'], $_GET['password'], $_GET['confirm'], $_GET['date'], $_GET['name'], $_GET['firstname'], $_GET['email'], $_GET['type']);
         break;
-        case 'createEmploye':      // login, password, confirm, date, name, firstname, email, type
+        case 'createEmploye':      // login, date, name, firstname, email, type
         $res = employe_registration($_GET['login'], $_GET['date'], $_GET['name'], $_GET['firstname'], $_GET['email'], $_GET['type']);
         break;
     case 'signin':      // login, password

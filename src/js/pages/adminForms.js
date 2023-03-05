@@ -232,7 +232,7 @@ export const toggleAjoutUser = () => {
         let type = typeUser();
 
         //creation of the url
-        let url = `users/users.php?function=createEmploye&login=${login}&date=${date}&name=${name}&firstname=${firstname}&email=${email}&type=${type}`
+        let url = `users/users.php?function=create&login=${login}&password=gobus123&confirm=gobus123&date=${date}&name=${name}&firstname=${firstname}&email=${email}&type=${type}`
 
         axios.get(url)
 
