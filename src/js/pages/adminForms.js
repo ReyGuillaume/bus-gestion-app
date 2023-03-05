@@ -171,21 +171,58 @@ export const toggleSupprimeUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("h2", main, "Suppression de User")
+    create("h2", main, "Suppression d'Utilisateur")
     create("p", main, " Rentrez les informations suivantes : ")
 
     // Creation of the form
     const form = create("form", main)
 
-    // Creation of the radio to define the user to delete
-    var divRadio = create("div", form);
-    create("label", divRadio, "Choisissez le user à supprimer :");
+    // Creation of the checkbox to define the user to delete
+    var divCheckboxUsers = create("div", form);
+    create("label", divCheckboxUsers, "Choisissez le(s) utilisateur(s) à supprimer :");
     axios.get(`users/users.php?function=users`).then((response)=>{
         console.log(response);
         for(var user of response.data){
-            createChampRadio(divRadio, user.id , "selectionBus", user.id);
-            var label = create("label", divRadio, user.name + " "+ user.firstname);
+            create("br", divCheckboxUsers);
+            createChampCheckbox(divCheckboxUsers, user.id , "selectionUSer", user.id);
+            var label = create("label", divCheckboxUsers, user.name + " "+ user.firstname);
             label.setAttribute("for", user.id);
+          }
+    });
+
+    // Creation of submit button
+   
+
+}
+
+
+
+//------------------------------------------------------- */
+//   Gestion Bus 
+//------------------------------------------------------- */
+
+export const AjoutBus = () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+    
+    create("h2", main, "Ajout d'un bus ")
+    create("p", main, " Rentrez les informations suivantes : ")
+
+    // Creation of the form
+    const form = create("form", main)
+
+    // Creation of the radio to define the bus to add
+    var divRadio = create("div", form);
+    create("label", divRadio, "Choisissez le type de bus :");
+    axios.get(`buses/buses.php?function=bustypes`).then((response)=>{
+        console.log(response.data);
+        for(var bustype of response.data){
+            create("br", divRadio);
+            createChampRadio(divRadio, bustype.id , "typeBus", bustype.id);
+            var label = create("label", divRadio, bustype.name );
+            label.setAttribute("for", bustype.id);
+            
+
           }
     });
 
@@ -193,17 +230,33 @@ export const toggleSupprimeUser = () => {
 
 
     // Creation of submit button
-    const bouton = create("button", form, "Envoyer")
-    bouton.addEventListener("click", function (event){
-        let idUser = 1; // A modifier
-        
-        console.log(idUser);
-
-        axios.get(`users/users.php?function=delete&id=${idUser}`)
-    })
-    form.appendChild(bouton);
-    
-    return main
-
 }
 
+export const SupprimerBus = () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+    
+    create("h2", main, "Suppression d'un bus ")
+    create("p", main, " Rentrez les informations suivantes : ")
+
+    // Creation of the form
+    const form = create("form", main)
+
+    // Creation of the checkbox to define the bus to add
+    var divRadio = create("div", form);
+    create("label", divRadio, "Choisissez le bus à supprimer :");
+    axios.get(`buses/buses.php?function=buses`).then((response)=>{
+        console.log(response);
+        for(var bus of response.data){
+            create("br", divRadio);
+            createChampCheckbox(divRadio, bus.id , "idBus", bus.id);
+            var label = create("label", divRadio, bus.id );
+            label.setAttribute("for", bus.id);
+          }
+    });
+
+   
+
+
+    // Creation of submit button
+}
