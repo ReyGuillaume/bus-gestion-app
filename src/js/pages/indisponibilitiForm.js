@@ -27,14 +27,13 @@ export const toggleIndisponibilitiForm = () => {
     
     const bouton = create("button", form, "Envoyer")
     bouton.addEventListener("click", function (event){
-        let idUser = 1;
+
         let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
         let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
-        console.log(StartDateTime);
-        console.log(EndDateTime);
+        let user = JSON.parse(sessionStorage.getItem("userData")).id;
 
-        axios.get(`timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}&type=${3}&users=${idUser}&buses=${0}`)
-
+        let url = `timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}&type=3&users=${user}`
+        axios.get(url)
 
     });
     form.appendChild(bouton);
