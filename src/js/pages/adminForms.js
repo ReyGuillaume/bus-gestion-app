@@ -35,6 +35,8 @@ export const toggleAddCreneau = () => {
           }
     });
 
+     
+     
 
     // Creation of the checkbox to define the bus involved in the timeslot
     var divCheckboxBus = create("div", form);
@@ -58,7 +60,7 @@ export const toggleAddCreneau = () => {
           }
     });
 
-    // Creation of the radio to define the type of the timeslot
+    // Creation of the radio to define the line
     var divRadioLigne = create("div", form);
     create("label", divRadioLigne, "Choisissez une ligne :");
     axios.get(`lines/lines.php?function=lines`).then((response)=>{
@@ -68,6 +70,18 @@ export const toggleAddCreneau = () => {
             label.setAttribute("for", line.number);
           }
     });
+
+    // Creation of the radio to define the direction
+    var divRadioDirection = create("div", form);
+    create("label", divRadioDirection, "Choisissez la direction  :");
+    create("br", divRadioDirection);
+    createChampRadio(divRadioDirection, "aller" , "selectionDirection", "aller");
+    var label = create("label", divRadioDirection, "aller");
+    label.setAttribute("for", "aller");
+    create("br", divRadioDirection);
+    createChampRadio(divRadioDirection, "retour" , "selectionDirection", "retour");
+    var label = create("label", divRadioDirection, "retour");
+    label.setAttribute("for", "retour");    
 
     // Creation of submit button
     const bouton = create("button", form, "Envoyer")
@@ -223,34 +237,6 @@ export const toggleAjoutUser = () => {
 
 
     // Creation of submit button
-    const bouton = create("button", form, "Envoyer")
-    bouton.addEventListener("click", function (event){
-        // return the type of the user checked
-        function typeUser () {
-            let res = null;
-            for(var type of document.querySelectorAll("input[name='typeUser']")){
-                if (type.checked) {
-                    res = type.value;
-                }
-            }return res;
-        }
-        // selection the infos
-        let login = document.querySelector("input[name='loginUser']").value;
-        let date = document.querySelector("input[name='birthDate']").value;
-        let name = document.querySelector("input[name='lastNameUser']").value;
-        let firstname = document.querySelector("input[name='nameUser']").value;
-        let email = document.querySelector("input[name='mailUser']").value;
-        let type = typeUser();
-
-        //creation of the url
-        let url = `users/users.php?function=create&login=${login}&password=gobus123&confirm=gobus123&date=${date}&name=${name}&firstname=${firstname}&email=${email}&type=${type}`
-
-        axios.get(url)
-
-    })
-    form.appendChild(bouton);
-
-    return main
    
 
 }
@@ -279,21 +265,7 @@ export const toggleSupprimeUser = () => {
     });
 
     // Creation of submit button
-    const bouton = create("button", form, "Envoyer")
-    bouton.addEventListener("click", function (event){
-
-            // delete the user who are checked
-            for(var user of document.querySelectorAll("input[name='selectionUSer']")){
-                let url = `users/users.php?function=delete&id=`;
-                if (user.checked) {
-                    url += user.value;
-                    axios.get(url)
-                }
-            }
-    })
-    form.appendChild(bouton);
-
-    return main
+   
 
 }
 
@@ -328,18 +300,10 @@ export const AjoutBus = () => {
           }
     });
 
-    // Creation of submit button
-    const bouton = create("button", form, "Envoyer")
-    bouton.addEventListener("click", function (event){
-        for(var type of document.querySelectorAll("input[name='typeBus']")){
-            if (type.checked) {
-                axios.get(`buses/buses.php?function=create&type=`+type.value);
-            }
-        }
-    })
-    form.appendChild(bouton);
 
-    return main
+
+
+    // Creation of submit button
 }
 
 export const ModifBus = () => {
@@ -378,35 +342,11 @@ export const ModifBus = () => {
             label.setAttribute("for", bustype.id);
           }
     });
+
+   
+
+
     // Creation of submit button
-    const bouton = create("button", form, "Envoyer")
-    bouton.addEventListener("click", function (event){
-
-        function idBus () {
-            let res = null;
-            for(var idBus of document.querySelectorAll("input[name='idBus']")){
-                if (idBus.checked) {
-                    res = idBus.value;
-                }
-            }return res;
-        }
-        function typeBus () {
-            let res = null;
-            for(var typeBus of document.querySelectorAll("input[name='typeBus']")){
-                if (typeBus.checked) {
-                    res = typeBus.value;
-                }
-            }return res;
-        }
-
-        let id = idBus();
-        let type = typeBus();
-
-        axios.get(`buses/buses.php?function=updatebus&id=${id}&type=${type}`);
-    })
-    form.appendChild(bouton);
-
-    return main
 }
 
 
@@ -433,18 +373,8 @@ export const SupprimerBus = () => {
           }
     });
 
-    // Creation of submit button
-    const bouton = create("button", form, "Envoyer")
-    bouton.addEventListener("click", function (event){
-        for(var bus of document.querySelectorAll("input[name='idBus']")){
-            let url = `buses/buses.php?function=delete&id=`;
-            if (bus.checked) {
-                url += bus.value;
-                axios.get(url)
-            }
-        }
-    })
-    form.appendChild(bouton);
+   
 
-    return main
+
+    // Creation of submit button
 }
