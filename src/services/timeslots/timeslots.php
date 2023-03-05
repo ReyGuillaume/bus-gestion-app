@@ -58,12 +58,22 @@ function create_time_slot($beginning, $end, $id_time_slot_type, $id_users, $id_b
 }
 
 /**
-    Retourne tous les types de créneau existants.
+Retourne tous les types de créneau existants.
 
-    @return liste des types de créneaux (id : Int, name : String)
-*/
+@return liste des types de créneaux (id : Int, name : String)
+ */
 function fetch_time_slot_type() {
     $res = bdd()->query("SELECT * FROM TimeSlotType");
+    return $res->fetchAll();
+}
+
+/**
+Retourne tous les créneaux existants.
+
+@return liste des créneaux (id : Int, name : String)
+ */
+function fetch_timeslots() {
+    $res = bdd()->query("SELECT * FROM TimeSlot");
     return $res->fetchAll();
 }
 
@@ -299,6 +309,9 @@ switch ($_GET['function']) {
         break;
     case 'timeslot':       // id
         $res = fetch_time_slot($_GET['id']);
+        break;
+    case 'timeslots':
+        $res = fetch_timeslots();
         break;
     case 'timeslotbytype':       // type, beginning, end
         $res = fetch_time_slots_by_type($_GET['type'], $_GET['beginning'], $_GET['end']);
