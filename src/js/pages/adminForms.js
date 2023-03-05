@@ -58,6 +58,17 @@ export const toggleAddCreneau = () => {
           }
     });
 
+    // Creation of the radio to define the type of the timeslot
+    var divRadioLigne = create("div", form);
+    create("label", divRadioLigne, "Choisissez une ligne :");
+    axios.get(`lines/lines.php?function=lines`).then((response)=>{
+        for(var line of response.data){
+            createChampRadio(divRadioLigne, line.number , "selectionLigne", line.number);
+            var label = create("label", divRadioLigne, "Ligne " + line.number);
+            label.setAttribute("for", line.number);
+          }
+    });
+
     // Creation of submit button
     const bouton = create("button", form, "Envoyer")
     bouton.addEventListener("click", function (event){
@@ -136,7 +147,7 @@ export const toggleSupprimeCreneau = () => {
 
     // Creation of the radio to define the timeslot to delete
     var divCheckboxCreneau = create("div", form);
-    create("label", divRadio, "Choisissez le creéneau à supprimer :");
+    create("label", divCheckboxCreneau, "Choisissez le creéneau à supprimer :");
     axios.get(`timeslots/timeslots.php?function=timeslots`).then((response)=>{
         console.log(response);
         for(var timeslot of response.data){
