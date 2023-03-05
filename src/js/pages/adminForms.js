@@ -367,11 +367,35 @@ export const ModifBus = () => {
             label.setAttribute("for", bustype.id);
           }
     });
-
-   
-
-
     // Creation of submit button
+    const bouton = create("button", form, "Envoyer")
+    bouton.addEventListener("click", function (event){
+
+        function idBus () {
+            let res = null;
+            for(var idBus of document.querySelectorAll("input[name='idBus']")){
+                if (idBus.checked) {
+                    res = idBus.value;
+                }
+            }return res;
+        }
+        function typeBus () {
+            let res = null;
+            for(var typeBus of document.querySelectorAll("input[name='typeBus']")){
+                if (typeBus.checked) {
+                    res = typeBus.value;
+                }
+            }return res;
+        }
+
+        let id = idBus();
+        let type = typeBus();
+
+        axios.get(`buses/buses.php?function=updatebus&id=${id}&type=${type}`);
+    })
+    form.appendChild(bouton);
+
+    return main
 }
 
 
