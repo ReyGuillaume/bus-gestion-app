@@ -191,7 +191,21 @@ export const toggleSupprimeUser = () => {
     });
 
     // Creation of submit button
-   
+    const bouton = create("button", form, "Envoyer")
+    bouton.addEventListener("click", function (event){
+
+            // delete the user who are checked
+            for(var user of document.querySelectorAll("input[name='selectionUSer']")){
+                let url = `users/users.php?function=delete&id=`;
+                if (user.checked) {
+                    url += user.value;
+                    axios.get(url)
+                }
+            }
+    })
+    form.appendChild(bouton);
+
+    return main
 
 }
 
@@ -226,10 +240,18 @@ export const AjoutBus = () => {
           }
     });
 
-
-
-
     // Creation of submit button
+    const bouton = create("button", form, "Envoyer")
+    bouton.addEventListener("click", function (event){
+        for(var type of document.querySelectorAll("input[name='typeBus']")){
+            if (type.checked) {
+                axios.get(`buses/buses.php?function=create&type=`+type.value);
+            }
+        }
+    })
+    form.appendChild(bouton);
+
+    return main
 }
 
 export const SupprimerBus = () => {
@@ -255,8 +277,18 @@ export const SupprimerBus = () => {
           }
     });
 
-   
-
-
     // Creation of submit button
+    const bouton = create("button", form, "Envoyer")
+    bouton.addEventListener("click", function (event){
+        for(var bus of document.querySelectorAll("input[name='idBus']")){
+            let url = `buses/buses.php?function=delete&id=`;
+            if (bus.checked) {
+                url += bus.value;
+                axios.get(url)
+            }
+        }
+    })
+    form.appendChild(bouton);
+
+    return main
 }
