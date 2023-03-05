@@ -1,7 +1,7 @@
 import { create } from "../main";
 import { toggleAgenda } from "../pages/agenda";
 import { toggleAddCreneau,toggleSupprimeCreneau, toggleAjoutUser, toggleSupprimeUser, AjoutBus, SupprimerBus, ModifBus } from "../pages/adminForms";
-import { toggleAddLine } from "../pages/gestionLigne";
+import { toggleAddLine, toggleSupprLine, toggleModifLine } from "../pages/gestionLigne";
 
 export const toggleEspaceAdmin = () => {
     const main = document.querySelector("#app")
@@ -97,8 +97,8 @@ export const toggleGestionLigne = () => {
     const nav = create("nav", main, null, ['navBar'])
 
     create("div", nav, "Ajouter une Ligne", ['navBar__item']).addEventListener("click", toggleAddLine)
-    create("div", nav, "Modifier une Ligne", ['navBar__item']).addEventListener("click", null)
-    create("div", nav, "Supprimer une Ligne", ['navBar__item']).addEventListener("click", null)
+    create("div", nav, "Modifier une Ligne", ['navBar__item']).addEventListener("click", toggleModifLine)
+    create("div", nav, "Supprimer une Ligne", ['navBar__item']).addEventListener("click", toggleSupprLine)
     create("div", nav, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
     
     create("div", nav, 'Se deconnecter', ['navBar__item']).addEventListener("click", null)
