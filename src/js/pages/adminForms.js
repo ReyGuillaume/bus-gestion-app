@@ -102,16 +102,16 @@ export const toggleSupprimeCreneau = () => {
     const form = create("form", main)
 
     // Creation of the radio to define the timeslot to delete
-    var divRadio = create("div", form);
+    var divCheckboxCreneau = create("div", form);
     create("label", divRadio, "Choisissez le creéneau à supprimer :");
-    /*axios.get(`timeslots/timeslots.php?function=timeslots`).then((response)=>{
+    axios.get(`timeslots/timeslots.php?function=timeslots`).then((response)=>{
         console.log(response);
         for(var timeslot of response.data){
-            createChampRadio(divRadio, timeslot.id , "selectionTimeslot", timeslot.id);
-            var label = create("label", divRadio, timeslot.begining + " "+ timeslot.end);
+            createChampCheckbox(divCheckboxCreneau, timeslot.id , "selectionTimeslot", timeslot.id);
+            var label = create("label", divCheckboxCreneau, timeslot.begining + " "+ timeslot.end+ " ");
             label.setAttribute("for", timeslot.id);
           }
-    });*/
+    });
 
 
 
@@ -199,9 +199,9 @@ export const toggleSupprimeUser = () => {
     axios.get(`users/users.php?function=users`).then((response)=>{
         console.log(response);
         for(var user of response.data){
-            create("br", form);
+            create("br", divCheckboxUsers);
             createChampCheckbox(divCheckboxUsers, user.id , "selectionUSer", user.id);
-            var label = create("label", divRadio, user.name + " "+ user.firstname);
+            var label = create("label", divCheckboxUsers, user.name + " "+ user.firstname);
             label.setAttribute("for", user.id);
           }
     });
