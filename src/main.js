@@ -31,6 +31,5 @@ router.on('/espaceAdmin', toggleEspaceAdmin )
 router.on('/espaceUser', toggleEspaceUser )
 router.on('/adminForm', toggleAdminForm)
 router.on('/disconnect', disconnectUser)
-
 router.on('*', toggle404)
 router.resolve()

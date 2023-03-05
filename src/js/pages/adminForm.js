@@ -47,8 +47,19 @@ export const toggleAdminForm = () => {
                 // Refresh display of header (to show the user's session)
                 createHeader();
 
-                // Redirection to the home page
+                // Redirection to the user page according to his role
                 toggleAccueil();
+                if (idrole == 1 || idrole ==2  ){
+                    window.location= "/espaceAdmin"
+                }else{
+                    if (idrole == 3){
+                        window.location= "/espaceUser"
+                    }else {
+                        toggleAccueil();
+                    }
+                }
+                
+                
 
             }
             else{
