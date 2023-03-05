@@ -125,10 +125,31 @@ export const toggleAddCreneau = () => {
                 }
             } return response;
         }
+
+        function lineDirectionTimeslot () {
+            // select the direction of the line and return the one who is checked in a string
+            for(var direction of document.querySelectorAll("input[name='selectionDirection']")){
+                if (direction.checked) {
+                    return direction.value;
+                }
+            }
+        }
+
+        function lineTimeslot () {
+            // select the line of the timeslot and return the one who is checked in a string
+            for(var line of document.querySelectorAll("input[name='selectionLigne']")){
+                if (line.checked) {
+                    return line.value;
+                }
+            }
+        }
+
         // selection of the type of timeslot, participants and buses
         let type = typeTimeslot ();
         let users = participantsTimeslot();
         let buses = busesTimeslot();
+        let line = lineTimeslot();
+        let direction = lineDirectionTimeslot();
 
         //creation of the url
         let url = `timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}&type=${type}`
@@ -137,6 +158,12 @@ export const toggleAddCreneau = () => {
         }
         if (buses){
             url += `&buses=${buses}`;
+        }
+        if (line){
+            url += `&lines=${line}`;
+        }
+        if (direction){
+            url += `&directions=${direction}`;
         }
 
         axios.get(url)
@@ -299,11 +326,19 @@ export const AjoutBus = () => {
 
           }
     });
-
-
-
-
     // Creation of submit button
+    const bouton = create("button", form, "Envoyer")
+    bouton.addEventListener("click", function (event){
+        for(var type of document.querySelectorAll("input[name='typeBus']")){
+            if (type.checked) {
+                axios.get(`buses/buses.php?function=create&type=`+type.value);
+            }
+        }
+    })
+    form.appendChild(bouton);
+
+    return main
+
 }
 
 export const ModifBus = () => {
@@ -372,9 +407,18 @@ export const SupprimerBus = () => {
             label.setAttribute("for", bus.id);
           }
     });
-
-   
-
-
     // Creation of submit button
+    const bouton = create("button", form, "Envoyer")
+    bouton.addEventListener("click", function (event){
+        for(var bus of document.querySelectorAll("input[name='idBus']")){
+            let url = `buses/buses.php?function=delete&id=`;
+            if (bus.checked) {
+                url += bus.value;
+                axios.get(url)
+            }
+        }
+    })
+    form.appendChild(bouton);
+
+    return main
 }

@@ -14,7 +14,7 @@ export const toggleEspaceAdmin = () => {
 
     create("div", nav, 'Voir mon agenda', ['navBar__item']).addEventListener("click", toggleAgenda)
     create("div", nav, "Ajouter un creneau", ['navBar__item']).addEventListener("click", toggleAddCreneau)
-    create("div", nav, "Gerer les créneau", ['navBar__item']).addEventListener("click", toggleGestionTimeslots)
+    create("div", nav, "Gerer les créneaux", ['navBar__item']).addEventListener("click", toggleGestionTimeslots)
     create("div", nav, 'Gerer les utilisateurs', ['navBar__item']).addEventListener("click", toggleGestionUsers)
     create("div", nav, 'Gerer les bus', ['navBar__item']).addEventListener("click", toggleGestionBus)
     create("div", nav, 'Gerer les lignes', ['navBar__item']).addEventListener("click", toggleGestionLigne)
@@ -69,7 +69,7 @@ export const toggleGestionTimeslots = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    create("h2", main, "Gestion des Creneau")
+    create("h2", main, "Gestion des Créneaux")
     create("p", main, " Que souhaitez vous faire ? ")
 
     const nav = create("nav", main, null, ['navBar'])
