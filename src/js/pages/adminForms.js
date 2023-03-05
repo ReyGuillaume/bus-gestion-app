@@ -197,17 +197,18 @@ export const toggleSupprimeCreneau = () => {
             label.setAttribute("for", timeslot.id);
           }
     });
-
-
-
-
     // Creation of submit button
-   /* const bouton = create("button", form, "Envoyer")
+    const bouton = create("button", form, "Envoyer")
     bouton.addEventListener("click", function (event){
+        for(var date of document.querySelectorAll("input[name='selectionTimeslot']")){
+            if (date.checked) {
+                axios.get (`timeslots/timeslots.php?function=delete&id=${date.value}`);
+            }
+        }
         })
     form.appendChild(bouton);
     
-    return main*/
+    return main
 
 }
 
