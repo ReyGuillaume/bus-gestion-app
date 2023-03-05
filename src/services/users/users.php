@@ -5,19 +5,19 @@ include_once "../connexion.php";
 // ======================== Utilisateur ========================
 
 /**
-    Enregistre un utilisateur si $password == $confirmation, si $login n'est pas déjà utilisé, si $birth_date est valide et si $email n'est pas déjà utilisé.
-    
-    @param login : le login de l'utilisateur. String de taille inférieure ou égale à 50.
-    @param password : le mot de pass de l'utilisateur. String de taille variable avec caractères spéciaux. A hacher en sha256 (return String de taille 64).
-    @param confirmation : la confirmation du mot de passe de l'utilisateur. String égale à $password.
-    @param birth_date : date de naissance de l'utilisateur. Devrait être comprise entre la date courante et la date courante - 150 ans.
-    @param name : nom de l'utilisateur. String de taille inférieure ou égale à 50.
-    @param firstname : prénom de l'utilisateur. String de taille inférieure ou égale à 50.
-    @param email : email de l'utilisateur. String de taille inférieure ou égale à 255 contenant des caractères spéciaux.
-    @param id_user_type : id du type d'utilisateur. Entier non null.
+Enregistre un utilisateur si $password == $confirmation, si $login n'est pas déjà utilisé, si $birth_date est valide et si $email n'est pas déjà utilisé.
 
-    @return boolean si l'ajout a réussi ou non.
-*/
+@param login : le login de l'utilisateur. String de taille inférieure ou égale à 50.
+@param password : le mot de pass de l'utilisateur. String de taille variable avec caractères spéciaux. A hacher en sha256 (return String de taille 64).
+@param confirmation : la confirmation du mot de passe de l'utilisateur. String égale à $password.
+@param birth_date : date de naissance de l'utilisateur. Devrait être comprise entre la date courante et la date courante - 150 ans.
+@param name : nom de l'utilisateur. String de taille inférieure ou égale à 50.
+@param firstname : prénom de l'utilisateur. String de taille inférieure ou égale à 50.
+@param email : email de l'utilisateur. String de taille inférieure ou égale à 255 contenant des caractères spéciaux.
+@param id_user_type : id du type d'utilisateur. Entier non null.
+
+@return boolean si l'ajout a réussi ou non.
+ */
 function user_registration($login, $password, $confirmation, $birth_date, $name, $firstname, $email, $id_user_type) {
     if ($password == $confirmation) {
         if(bdd()->query("SELECT * FROM UserType WHERE id = {$id_user_type}")->fetch()) {
@@ -27,6 +27,29 @@ function user_registration($login, $password, $confirmation, $birth_date, $name,
             bdd()->query($sql);
             return true;
         }
+    }
+    return false;
+}
+
+/**
+Enregistre un utilisateur si $password == $confirmation, si $login n'est pas déjà utilisé, si $birth_date est valide et si $email n'est pas déjà utilisé.
+
+@param login : le login de l'utilisateur. String de taille inférieure ou égale à 50.
+@param password : le mot de pass de l'utilisateur. String de taille variable avec caractères spéciaux. A hacher en sha256 (return String de taille 64).
+@param confirmation : la confirmation du mot de passe de l'utilisateur. String égale à $password.
+@param birth_date : date de naissance de l'utilisateur. Devrait être comprise entre la date courante et la date courante - 150 ans.
+@param name : nom de l'utilisateur. String de taille inférieure ou égale à 50.
+@param firstname : prénom de l'utilisateur. String de taille inférieure ou égale à 50.
+@param email : email de l'utilisateur. String de taille inférieure ou égale à 255 contenant des caractères spéciaux.
+@param id_user_type : id du type d'utilisateur. Entier non null.
+
+@return boolean si l'ajout a réussi ou non.
+ */
+function employe_registration($login, $birth_date, $name, $firstname, $email, $id_user_type) {
+    if(bdd()->query("SELECT * FROM UserType WHERE id = {$id_user_type}")->fetch()) {
+        $sql = "INSERT INTO User (`name`, `firstname`, `birth_date`, `email`, `id_user_type`, `login`) VALUE ('{$name}', '{$firstname}', '{$birth_date}', '{$email}', {$id_user_type},'{$login}')";
+        bdd()->query($sql);
+        return true;
     }
     return false;
 }
@@ -199,6 +222,9 @@ function delete_user($id) { //supprime également les lignes de Code et de User_
 switch ($_GET['function']) {
     case 'create':      // login, password, confirm, date, name, firstname, email, type
         $res = user_registration($_GET['login'], $_GET['password'], $_GET['confirm'], $_GET['date'], $_GET['name'], $_GET['firstname'], $_GET['email'], $_GET['type']);
+        break;
+        case 'createEmploye':      // login, password, confirm, date, name, firstname, email, type
+        $res = employe_registration($_GET['login'], $_GET['date'], $_GET['name'], $_GET['firstname'], $_GET['email'], $_GET['type']);
         break;
     case 'signin':      // login, password
         $res = user_log_in($_GET['login'], $_GET['password']);

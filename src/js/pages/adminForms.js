@@ -212,6 +212,34 @@ export const toggleAjoutUser = () => {
 
 
     // Creation of submit button
+    const bouton = create("button", form, "Envoyer")
+    bouton.addEventListener("click", function (event){
+        // return the type of the user checked
+        function typeUser () {
+            let res = null;
+            for(var type of document.querySelectorAll("input[name='typeUser']")){
+                if (type.checked) {
+                    res = type.value;
+                }
+            }return res;
+        }
+        // selection the infos
+        let login = document.querySelector("input[name='loginUser']").value;
+        let date = document.querySelector("input[name='birthDate']").value;
+        let name = document.querySelector("input[name='lastNameUser']").value;
+        let firstname = document.querySelector("input[name='nameUser']").value;
+        let email = document.querySelector("input[name='mailUser']").value;
+        let type = typeUser();
+
+        //creation of the url
+        let url = `users/users.php?function=createEmploye&login=${login}&date=${date}&name=${name}&firstname=${firstname}&email=${email}&type=${type}`
+
+        axios.get(url)
+
+    })
+    form.appendChild(bouton);
+
+    return main
    
 
 }
@@ -232,9 +260,9 @@ export const toggleSupprimeUser = () => {
     axios.get(`users/users.php?function=users`).then((response)=>{
         console.log(response);
         for(var user of response.data){
-            create("br", form);
+            create("br", divCheckboxUsers);
             createChampCheckbox(divCheckboxUsers, user.id , "selectionUSer", user.id);
-            var label = create("label", divRadio, user.name + " "+ user.firstname);
+            var label = create("label", divCheckboxUsers, user.name + " "+ user.firstname);
             label.setAttribute("for", user.id);
           }
     });
