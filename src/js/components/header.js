@@ -10,6 +10,9 @@ const createNavBar = () => {
     // Get session of user
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
     if (sessionData) {
+        if(sessionData["role"] == "Responsable Logistique" || sessionData["role"] == "Directeur"){
+            create("a", nav, 'Agenda des chauffeurs', ['navBar__item']).href = "/agendaDrivers"
+        }
         create("a", nav, 'Se déconnecter', ['navBar__item']).href = "/disconnect"
     }
     else{

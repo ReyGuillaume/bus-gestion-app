@@ -37,7 +37,7 @@ export const getMonthToString = (index) => {
 
 
 // fonction qui crée le header du calendrier d'un mois entier (mois + année)
-const createMonth = (container, date) => {
+const createMonth = (container, date, user=null) => {
     const mainDiv = create("div", container, null, ['calandar__header'])
 
     // flèche gauche
@@ -53,15 +53,15 @@ const createMonth = (container, date) => {
     const rightDiv = create("div", mainDiv, null, ['right-button'])
     create("i", rightDiv , null, ['fa-solid', 'fa-chevron-right'])
 
-    leftDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setUTCMonth(date.getUTCMonth() - 1))))
-    rightDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setUTCMonth(date.getUTCMonth() + 1))))
+    leftDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setUTCMonth(date.getUTCMonth() - 1)), user))
+    rightDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setUTCMonth(date.getUTCMonth() + 1)), user))
 
     return mainDiv
 }
 
 
 // fonction qui crée le corps du calendrier d'un mois entier
-const createCalandar = (container, date) => {
+const createCalandar = (container, date, user=null) => {
     const body = create("div", container, null, ['calandar__body'])
 
     
@@ -87,7 +87,7 @@ const createCalandar = (container, date) => {
 
             const d = new Date(initDate)
             let day = create("div", row, null, ['numbers__num'])
-            day.addEventListener("click", () => toggleDay(d))
+            day.addEventListener("click", () => toggleDay(d, user))
 
             d.getMonth() != date.getMonth() ? day.classList.add('opacity') : day
 
@@ -107,11 +107,11 @@ const createCalandar = (container, date) => {
 
 
 // fonction qui affiche le header et le corps du calendrier d'un mois entier
-const drawCalandar = (container, date) => {
+const drawCalandar = (container, date, user=null) => {
     container.replaceChildren("")
 
-    createMonth(container, date)
-    createCalandar(container, date)
+    createMonth(container, date, user)
+    createCalandar(container, date, user)
 
     return container
 }
@@ -120,6 +120,7 @@ const drawCalandar = (container, date) => {
 
 export const calandar = (
     container,
+    user=null,
     year = new Date().getFullYear(), 
     monthIndex = new Date().getMonth(), 
     day = new Date().getDate()
@@ -128,7 +129,7 @@ export const calandar = (
 
     const cal = create("div", container, null, ['calandar'])
 
-    drawCalandar(cal, date)
+    drawCalandar(cal, date, user)
 
     return container
 }
