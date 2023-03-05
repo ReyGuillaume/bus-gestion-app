@@ -377,11 +377,37 @@ export const ModifBus = () => {
             label.setAttribute("for", bustype.id);
           }
     });
-
-   
-
-
     // Creation of submit button
+    const bouton = create("button", form, "Envoyer")
+    bouton.addEventListener("click", function (event){
+
+        function idBusModify () {
+            for (var bus of document.querySelectorAll("input[name='idBus']")) {
+                if (bus.checked) {
+                    return bus.value;
+                }
+            }
+        }
+
+        function typeBusModify () {
+            for (var user of document.querySelectorAll("input[name='typeBus']")) {
+                if (user.checked) {
+                    return user.value;
+                }
+            }
+        }
+
+        let id = idBusModify();
+        let type = typeBusModify();
+
+        let url = `buses/buses.php?function=updatebus&id=${id}&type=${type}`
+        axios.get(url);
+
+
+    })
+    form.appendChild(bouton);
+
+    return main
 }
 
 
