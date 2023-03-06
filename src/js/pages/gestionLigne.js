@@ -26,9 +26,18 @@ export const toggleAddLine = () => {
     create("br", form);
 
 
-
-
     // Creation of submit button
+    const bouton = create("button", form, "Envoyer")
+    bouton.addEventListener("click", function (event){
+
+        let travel_time = document.querySelector("input[name='travel_time']").value;
+
+        axios.get (`lines/lines.php?function=create&travel_time=${travel_time}`);
+
+    })
+    form.appendChild(bouton);
+
+    return main
 }
 
 export const toggleSupprLine = () => {
@@ -54,6 +63,16 @@ export const toggleSupprLine = () => {
    });
 
     // Creation of submit button
+    const bouton = create("button", form, "Envoyer")
+    bouton.addEventListener("click", function (event){
+
+        for(var line of document.querySelectorAll("input[name='selectionLigne']")){
+            if (line.checked) {
+                axios.get (`lines/lines.php?function=delete&number=${line.value}`);
+            }
+        }
+    })
+    form.appendChild(bouton);
 }
 
 export const toggleModifLine = () => {
@@ -103,6 +122,18 @@ export const toggleModifLine = () => {
                     createChamp(form, "integer", "travel_time").value = responseLine.data.travel_time;
                     create("br", form);
 
+                    // Creation of submit button
+                    const bouton = create("button", form, "Envoyer")
+                    bouton.addEventListener("click", function (event){
+
+                        let travel_time = document.querySelector("input[name='travel_time']").value;
+                        let number = document.querySelector("input[name='number']").value;
+
+                        axios.get (`lines/lines.php?function=updateline&number=${number}&travel_time=${travel_time}`);
+
+                    })
+                    form.appendChild(bouton);
+
                 });
             });
 
@@ -114,5 +145,6 @@ export const toggleModifLine = () => {
    }
    );
 
-    // Creation of submit button
+    return main
+
 }

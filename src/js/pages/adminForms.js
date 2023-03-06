@@ -384,14 +384,11 @@ export const toggleSupprimeCreneau = () => {
             label.setAttribute("for", timeslot.id);
           }
     });
+
     // Creation of submit button
     const bouton = create("button", form, "Envoyer")
     bouton.addEventListener("click", function (event){
-        for(var date of document.querySelectorAll("input[name='selectionTimeslot']")){
-            if (date.checked) {
-                axios.get (`timeslots/timeslots.php?function=delete&id=${date.value}`);
-            }
-        }
+
         })
     form.appendChild(bouton);
     
@@ -451,7 +448,34 @@ export const toggleAjoutUser = () => {
     });
 
 
-    // Creation of submit button
+    const bouton = create("button", form, "Envoyer")
+    bouton.addEventListener("click", function (event){
+        // return the type of the user checked
+        function typeUser () {
+            let res = null;
+            for(var type of document.querySelectorAll("input[name='typeUser']")){
+                if (type.checked) {
+                    res = type.value;
+                }
+            }return res;
+        }
+        // selection the infos
+        let login = document.querySelector("input[name='loginUser']").value;
+        let date = document.querySelector("input[name='birthDate']").value;
+        let name = document.querySelector("input[name='lastNameUser']").value;
+        let firstname = document.querySelector("input[name='nameUser']").value;
+        let email = document.querySelector("input[name='mailUser']").value;
+        let type = typeUser();
+
+        //creation of the url
+        let url = `users/users.php?function=create&login=${login}&password=gobus123&confirm=gobus123&date=${date}&name=${name}&firstname=${firstname}&email=${email}&type=${type}`
+
+        axios.get(url)
+
+    })
+    form.appendChild(bouton);
+
+    return main
    
 
 }
@@ -553,7 +577,21 @@ export const toggleSupprimeUser = () => {
     });
 
     // Creation of submit button
-   
+    const bouton = create("button", form, "Envoyer")
+    bouton.addEventListener("click", function (event){
+
+        // delete the user who are checked
+        for(var user of document.querySelectorAll("input[name='selectionUSer']")){
+            let url = `users/users.php?function=delete&id=`;
+            if (user.checked) {
+                url += user.value;
+                axios.get(url)
+            }
+        }
+    })
+    form.appendChild(bouton);
+
+    return main
 
 }
 
