@@ -1,6 +1,6 @@
 import { create } from "../main";
 import { toggleAgenda } from "../pages/agenda";
-import { toggleAddCreneau,toggleSupprimeCreneau, toggleAjoutUser, toggleSupprimeUser, AjoutBus, SupprimerBus, ModifBus } from "../pages/adminForms";
+import { toggleAddCreneau,toggleSupprimeCreneau,toggleModifCreneau, toggleAjoutUser, toggleSupprimeUser, AjoutBus, SupprimerBus, ModifBus, toggleModifyUser } from "../pages/adminForms";
 import { toggleAddLine, toggleSupprLine, toggleModifLine } from "../pages/gestionLigne";
 
 export const toggleEspaceAdmin = () => {
@@ -35,7 +35,7 @@ export const toggleGestionUsers = () => {
     const nav = create("nav", main, null, ['navBar'])
 
     create("div", nav, 'Ajouter un utilisateur', ['navBar__item']).addEventListener("click", toggleAjoutUser)
-    create("div", nav, "Modifier un utilisateur", ['navBar__item']).addEventListener("click", null)
+    create("div", nav, "Modifier un utilisateur", ['navBar__item']).addEventListener("click", toggleModifyUser)
     create("div", nav, "Supprimer un utilisateur", ['navBar__item']).addEventListener("click", toggleSupprimeUser)
     create("div", nav, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
     
@@ -75,7 +75,7 @@ export const toggleGestionTimeslots = () => {
     const nav = create("nav", main, null, ['navBar'])
 
     create("div", nav, "Ajouter un Creneau", ['navBar__item']).addEventListener("click", toggleAddCreneau)
-    create("div", nav, "Modifier un Creneau", ['navBar__item']).addEventListener("click", null)
+    create("div", nav, "Modifier un Creneau", ['navBar__item']).addEventListener("click", toggleModifCreneau)
     create("div", nav, "Supprimer un Creneau", ['navBar__item']).addEventListener("click", toggleSupprimeCreneau)
     create("div", nav, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
     

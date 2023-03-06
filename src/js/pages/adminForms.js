@@ -175,6 +175,193 @@ export const toggleAddCreneau = () => {
 
 }
 
+export const toggleModifCreneau = () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+    
+    create("h2", main, "Modification de Créneau")
+    create("p", main, " Choisir le créneau à modifier : ")
+
+    // Creation of the form
+    const form = create("form", main)
+
+   // Creation of the radio to select the timeslot to modify
+    var divRadioCreneau = create("div", form);
+     // Recuperation de toutes les lignes
+    
+    axios.get(`timeslots/timeslots.php?function=timeslots`).then((response)=>{
+        
+        for(var timeslot of response.data){
+            create("br", divRadioCreneau);
+
+           //Ajout d'un evenement au clic d'un radio
+            createChampRadio(divRadioCreneau, timeslot.id , "selectionTimeslot", timeslot.id).addEventListener('click', function(){
+
+            // Fonction de recuperation du creneau selectionnée
+            function creneauSelected () {
+                for(var creneau of document.querySelectorAll("input[name='selectionTimeslot']")){
+                    if (creneau.checked) {
+                        return creneau.value;
+                    }
+                }
+            }
+
+
+            // Recuperation de la ligne a modifier
+            var idCreneauToModify = creneauSelected ();
+
+
+
+
+            axios.get(`timeslots/timeslots.php?function=timeslot&id=${idCreneauToModify}`).then((responseCreneau) =>{
+    
+                // Creation du formulaire pré remplie de modif de ligne 
+                console.log(responseCreneau.data);
+                form.replaceChildren("")
+
+                 // Creation of each champ
+                create("label", form, "La date de début du créneau :");
+                createChamp(form, "datetime-local", "StartDateTime").value = responseCreneau.data.begining;
+                create("br", form);
+                create("label", form, "Entrez la date de fin du creneau :");
+                createChamp(form, "datetime-local", "EndDateTime").value = responseCreneau.data.end;
+                create("br", form);
+                
+
+                // Creation of the radio to define the type of the timeslot
+                var divRadio = create("div", form);
+                create("label", divRadio, "Le type du créneau :");
+                axios.get(`timeslots/timeslots.php?function=types`).then((response)=>{
+                    for(var type of response.data){
+                        var champType = createChampRadio(divRadio, type.name , "selectionType", type.id);
+                        if (type.id = responseCreneau.data.id_time_slot_type ){
+                            champType.checked = true;
+                        }
+                        var label = create("label", divRadio, type.name);
+                        label.setAttribute("for", type.name);
+                    }
+                });
+
+                
+                //recup tous les bus 
+                var tabBus= [];
+                for (var bus of responseCreneau.data.buses){
+                    tabBus.push(bus.id);
+                }
+               
+
+
+
+                // Creation of the checkbox to define the bus involved in the timeslot
+                var divCheckboxBus = create("div", form);
+                create("label", divCheckboxBus, "Les bus participants :");
+                axios.get(`buses/buses.php?function=buses`).then((response)=>{
+                    for(var bus of response.data){
+                        var champBus = createChampCheckbox(divCheckboxBus, bus.id , "selectionBus", bus.id);
+                        
+                        if (tabBus.includes(bus.id)){
+                            champBus.checked = true;
+                        }
+
+                        var label = create("label", divCheckboxBus, bus.id);
+                        label.setAttribute("for", bus.id);
+                    }
+                });
+
+
+                //recup tous les user 
+                var tabUser= [];
+                for (var user of responseCreneau.data.users){
+                    tabUser.push(user.id);
+                }
+                // Creation of the checkbox to define the users involved in the timeslot
+                var divCheckboxUsers = create("div", form);
+                create("label", divCheckboxUsers, "Les participants :");
+                axios.get(`users/users.php?function=users`).then((response)=>{
+                    for(var user of response.data){
+                        var champUser = createChampCheckbox(divCheckboxUsers, user.id , "selectionParticipant", user.id);
+
+                        if (tabUser.includes(user.id)){
+                            champUser.checked = true;
+                        }
+
+                        var label = create("label", divCheckboxUsers, user.name + " "+ user.firstname);
+                        label.setAttribute("for", user.id);
+                    }
+                });
+
+                //recup ligne 
+                var tabLine= [];
+                for (var line of responseCreneau.data.lines){
+                    tabLine.push(line.number);
+                }
+
+
+                // Creation of the radio to define the line
+                var divRadioLigne = create("div", form);
+                create("label", divRadioLigne, "La ligne :");
+                axios.get(`lines/lines.php?function=lines`).then((response)=>{
+                    for(var line of response.data){
+                        var champLine = createChampRadio(divRadioLigne, line.number , "selectionLigne", line.number);
+
+                        if (tabLine.includes(line.number)){
+                            champLine.checked = true;
+                        }
+
+                        var label = create("label", divRadioLigne, "Ligne " + line.number);
+                        label.setAttribute("for", line.number);
+                    }
+                });
+
+                 //recup direction 
+                 var tabDirAller= true;
+                 for (var line of responseCreneau.data.lines){
+                    if (line.direction = 'retour'){
+                        tabDirAller = false;
+                    }
+                     
+                 }
+                // Creation of the radio to define the direction
+                var divRadioDirection = create("div", form);
+                create("label", divRadioDirection, "Laa direction  :");
+                create("br", divRadioDirection);
+                var champAller = createChampRadio(divRadioDirection, "aller" , "selectionDirection", "aller");
+
+                var label = create("label", divRadioDirection, "aller");
+                label.setAttribute("for", "aller");
+                create("br", divRadioDirection);
+                var champRetour =createChampRadio(divRadioDirection, "retour" , "selectionDirection", "retour");
+                var label = create("label", divRadioDirection, "retour");
+                label.setAttribute("for", "retour");    
+                
+                if(tabDirAller){
+                    champAller.checked = true;
+                }else{
+                    champRetour.checked = true;
+                }
+            });
+        });
+
+
+
+
+
+            var label = create("label", divRadioCreneau, timeslot.begining + " "+ timeslot.end+ " ");
+            label.setAttribute("for", timeslot.id);
+          }
+    });
+    // Creation of submit button
+    
+
+}
+
+
+
+
+
+
+
+
 
 export const toggleSupprimeCreneau = () => {
     const main = document.querySelector("#app")
@@ -267,6 +454,79 @@ export const toggleAjoutUser = () => {
     // Creation of submit button
    
 
+}
+
+export const toggleModifyUser = () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+    
+    create("h2", main, "Modification d'Utilisateur")
+    create("p", main, " Choisissez l'utilisateur à modifier : ")
+
+    // Creation of the form
+    const form = create("form", main)
+
+    // Creation of the radio to select the user to modify
+    var divRadioUser = create("div", form);
+
+    // Recuperation de tous les utilisateurs
+    axios.get(`users/users.php?function=users`).then((response)=>{
+
+        for(var user of response.data){
+            create("br", divRadioUser);
+
+            //Ajout d'un evenement au clic d'un radio
+           createChampRadio(divRadioUser, user.id , "selectionUser", user.id).addEventListener('click', function(){
+                
+                // Fonction de recuperation de l'user selectionnée
+                function userSelected () {
+                    for(var user of document.querySelectorAll("input[name='selectionUser']")){
+                        if (user.checked) {
+                            return user.value;
+                        }
+                    }
+                }
+
+
+            // Recuperation de l'utilisateur a modifier
+            var idUserToModify = userSelected ();
+            axios.get(`users/users.php?function=user&id=${idUserToModify}`).then((responseUser) =>{
+                   
+                // Creation du formulaire pré remplie de modif de user
+                main.replaceChildren("")
+                const form = create("form", main)
+                create("br", form);
+
+                create("label", form, "Le prénom de l'utilisateur :");
+                createChamp(form, "text", "nameUser").value = responseUser.data.firstname;
+                create("br", form);
+
+                create("label", form, "Le nom de l'utilisateur :");
+                createChamp(form, "text", "lastNameUser").value = responseUser.data.name;
+                create("br", form);
+
+                create("label", form, "Le login de l'utilisateur :");
+                createChamp(form, "text", "loginUser").value = responseUser.data.login;
+                create("br", form);
+
+                create("label", form, "L'email de l'utilisateur :");
+                createChamp(form, "email", "mailUser").value = responseUser.data.email;
+                create("br", form);
+
+                create("label", form, "La date de naissance de l'utilisateur :");
+                createChamp(form, "date", "birthDate").value = responseUser.data.birth_date;
+                create("br", form);
+
+            });
+        });
+
+            var label = create("label", divRadioUser, user.name + " "+ user.firstname);
+            label.setAttribute("for", user.id);
+          }
+    });
+
+    // Creation of submit button
+   
 }
 
 export const toggleSupprimeUser = () => {
