@@ -1,4 +1,4 @@
-import { create, createChamp } from "../main";
+import { create, createChamp, createChampCheckbox } from "../main";
 import axios from 'axios';
 
 export const toggleIndisponibilitiForm = () => {
@@ -70,5 +70,16 @@ export const toggleSupprIndispo= () => {
    });
 
     // Creation of submit button
+    const bouton = create("button", form, "Envoyer")
+    bouton.addEventListener("click", function (event){
+        for(var date of document.querySelectorAll("input[name='selectionTimeslot']")){
+            if (date.checked) {
+                axios.get (`timeslots/timeslots.php?function=delete&id=${date.value}`);
+            }
+        }
+    })
+    form.appendChild(bouton);
+
+    return main
     
 }
