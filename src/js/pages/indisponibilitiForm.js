@@ -10,8 +10,7 @@ export const toggleIndisponibilitiForm = () => {
 
     // Creation of the form
     const form = create("form", main)
-    //form.setAttribute("method", "post");
-    //form.setAttribute("action", "");
+    
 
     // Creation of each champ
     create("label", form, "Entrez la date de début de l'indisponibilité :");
@@ -46,3 +45,30 @@ export const toggleIndisponibilitiForm = () => {
     
 }
 
+export const toggleSupprIndispo= () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+    
+    create("h2", main, "Supprimer un creneau d'indisponibilité")
+    create("p", main, "Choisir la(les) creneau(x) à supprimer:")
+
+    // Creation of the form
+    const form = create("form", main)
+
+   // Creation of the checkbox to define the user to delete
+   var divCheckboxCreneau = create("div", form);
+   let user = JSON.parse(sessionStorage.getItem("userData")).id;
+
+   axios.get(`timeslots/timeslots.php?function=indispoDriver&id=${user}`).then((response)=>{
+       console.log(response);
+       for(var timeslot of response.data){
+        create("br", divCheckboxCreneau);
+        createChampCheckbox(divCheckboxCreneau, timeslot.id , "selectionTimeslot", timeslot.id);
+        var label = create("label", divCheckboxCreneau, timeslot.begining + " "+ timeslot.end+ " ");
+        label.setAttribute("for", timeslot.id);
+      }
+   });
+
+    // Creation of submit button
+    
+}
