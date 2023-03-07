@@ -616,6 +616,32 @@ export const toggleModifyUser = () => {
                 createChamp(form, "date", "birthDate").value = responseUser.data.birth_date;
                 create("br", form);
 
+                const bouton = create("button", form, "Envoyer")
+                bouton.addEventListener("click", function (event){
+                    // return the type of the user checked
+                    function typeUser () {
+                        let res = null;
+                        for(var type of document.querySelectorAll("input[name='typeUser']")){
+                            if (type.checked) {
+                                res = type.value;
+                            }
+                        }return res;
+                    }
+                    // selection the infos
+                    let login = document.querySelector("input[name='loginUser']").value;
+                    let date = document.querySelector("input[name='birthDate']").value;
+                    let name = document.querySelector("input[name='lastNameUser']").value;
+                    let firstname = document.querySelector("input[name='nameUser']").value;
+                    let email = document.querySelector("input[name='mailUser']").value;
+                    let type = typeUser();
+
+                    //creation of the url
+                    let url = `users/users.php?function=update&id=${idUserToModify}&email=${email}&login=${login}`;
+                    axios.get(url)
+
+                })
+                form.appendChild(bouton);
+
             });
         });
 
@@ -625,7 +651,7 @@ export const toggleModifyUser = () => {
     });
 
     // Creation of submit button
-   
+    return main
 }
 
 export const toggleSupprimeUser = () => {
