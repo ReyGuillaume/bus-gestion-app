@@ -48,7 +48,7 @@ export const toggleAdminForm = () => {
                 createHeader();
 
                 // Redirection to the user page according to his role
-                toggleAccueil();
+                //toggleAccueil();
                 if (idrole == 1 || idrole ==2  ){
                     window.location= "/espaceAdmin"
                 }else{
