@@ -323,7 +323,7 @@ export const toggleModifCreneau = () => {
                  }
                 // Creation of the radio to define the direction
                 var divRadioDirection = create("div", form);
-                create("label", divRadioDirection, "Laa direction  :");
+                create("label", divRadioDirection, "La direction  :");
                 create("br", divRadioDirection);
                 var champAller = createChampRadio(divRadioDirection, "aller" , "selectionDirection", "aller");
 
@@ -339,18 +339,89 @@ export const toggleModifCreneau = () => {
                 }else{
                     champRetour.checked = true;
                 }
+                // Creation of submit button
+                const bouton = create("button", form, "Envoyer")
+                bouton.addEventListener("click", function (event){
+                    // selection of the start and end time
+                    let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
+                    let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
+
+                    function participantsTimeslot () {
+                        // select the types of participants and return those who are checked in a string : 1,2,...
+                        var response = "";
+                        for(var user of document.querySelectorAll("input[name='selectionParticipant']")){
+                            if (user.checked) {
+                                if (response != ""){
+                                    response += ",";
+                                }
+                                response += user.value;
+                            }
+                        } return response;
+                    }
+
+                    function busesTimeslot () {
+                        // select the types of buses and return those who are checked in a string : 1,2,...
+                        var response = "";
+                        for(var bus of document.querySelectorAll("input[name='selectionBus']")){
+                            if (bus.checked) {
+                                if (response != ""){
+                                    response += ",";
+                                }
+                                response += bus.value;
+                            }
+                        } return response;
+                    }
+
+                    function lineDirectionTimeslot () {
+                        // select the direction of the line and return the one who is checked in a string
+                        for(var direction of document.querySelectorAll("input[name='selectionDirection']")){
+                            if (direction.checked) {
+                                return direction.value;
+                            }
+                        }
+                    }
+
+                    function lineTimeslot () {
+                        // select the line of the timeslot and return the one who is checked in a string
+                        for(var line of document.querySelectorAll("input[name='selectionLigne']")){
+                            if (line.checked) {
+                                return line.value;
+                            }
+                        }
+                    }
+
+                    // selection of the type of timeslot, participants and buses
+                    let users = participantsTimeslot();
+                    let buses = busesTimeslot();
+                    let line = lineTimeslot();
+                    let direction = lineDirectionTimeslot();
+
+                    let url = `timeslots/timeslots.php?function=update&id=${idCreneauToModify}&beginning=${StartDateTime}&end=${EndDateTime}`;
+
+                    if (users){
+                        url += `&users=${users}`;
+                    }
+                    if (buses){
+                        url += `&buses=${buses}`;
+                    }
+                    if (line){
+                        url += `&lines=${line}`;
+                    }
+                    if (direction){
+                        url += `&directions=${direction}`;
+                    }
+
+                    axios.get(url)
+                })
+                form.appendChild(bouton);
             });
         });
-
-
-
-
-
             var label = create("label", divRadioCreneau, timeslot.begining + " "+ timeslot.end+ " ");
             label.setAttribute("for", timeslot.id);
           }
     });
-    // Creation of submit button
+
+    return main
     
 
 }
@@ -388,7 +459,11 @@ export const toggleSupprimeCreneau = () => {
     // Creation of submit button
     const bouton = create("button", form, "Envoyer")
     bouton.addEventListener("click", function (event){
-
+        for(var date of document.querySelectorAll("input[name='selectionTimeslot']")){
+            if (date.checked) {
+                axios.get (`timeslots/timeslots.php?function=delete&id=${date.value}`);
+            }
+        }
         })
     form.appendChild(bouton);
     
