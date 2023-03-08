@@ -7,12 +7,19 @@ const createNavBar = () => {
     create("a", nav, 'Accueil', ['navBar__item', 'focus']).href = "/"
     create("a", nav, 'Agenda', ['navBar__item']).href = "/agenda"
 
-    // Get session of user
+    // Récupérer la session utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
     if (sessionData) {
-        if(sessionData["role"] == "Responsable Logistique" || sessionData["role"] == "Directeur"){
+        // si l'utilisateur est un responsable logistique
+        if(sessionData["role"] == "Responsable Logistique"){
             create("a", nav, 'Agenda des chauffeurs', ['navBar__item']).href = "/agendaDrivers"
         }
+        // si l'utilisateur est le directeur
+        else if(sessionData["role"] == "Directeur"){
+            create("a", nav, 'Agenda des chauffeurs', ['navBar__item']).href = "/agendaDrivers"
+            create("a", nav, 'Agenda des responsables logistiques', ['navBar__item']).href = "/agendaResp"
+        }
+
         create("a", nav, 'Se déconnecter', ['navBar__item']).href = "/disconnect"
     }
     else{

@@ -204,9 +204,14 @@ foreach ($busTypes as $name => $nbPlaces) {
 }
 
 // ==================== Instanciation des lignes de bus ====================
-$busLines = array(60, 60, 60, 60);
+$busLines = array(
+    1 => 60,
+    2 => 60,
+    3 => 60,
+    4 => 60
+);
 
-foreach ($busLines as $time) {
-    $sql = "INSERT INTO `Line` (`travel_time`) VALUE ({$time})";
+foreach ($busLines as $num => $time) {
+    $sql = "INSERT INTO `Line` (`number`, `travel_time`) VALUE ({$num}, {$time})";
     bdd()->query($sql);
 }
