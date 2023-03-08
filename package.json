@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "sass": "sass ./src/assets/sass/main.scss ./src/assets/style/main.css"
+    "sass": "sass ./src/assets/sass/:./src/assets/style/"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",

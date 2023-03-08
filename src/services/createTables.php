@@ -34,7 +34,7 @@ function create_table_bus() {
  */
 function create_table_line() {
     $sql = "CREATE TABLE IF NOT EXISTS `Line` (
-        `number` INT NOT NULL AUTO_INCREMENT,
+        `number` INT NOT NULL,
         `travel_time` INT NOT NULL,
         CONSTRAINT pk_line PRIMARY KEY (`number`),
         CONSTRAINT uq_line_traveltime UNIQUE (`number`, travel_time)
@@ -100,7 +100,7 @@ function create_table_code() {
  * Execute la requête SQL qui crée la table User
  */
 function create_table_user() {
-    $sql = "CREATE TABLE IF NOT EXISTS User (
+    $sql = "CREATE TABLE IF NOT EXISTS `User` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `name` VARCHAR(50) NOT NULL,
         `firstname` VARCHAR(50) NOT NULL,

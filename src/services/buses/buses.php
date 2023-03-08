@@ -36,10 +36,20 @@ function create_bus_type($name, $nb_places) {
 }
 
 /**
-    Renvoie tous les types de bus existants.
-    
-    @return liste des types de bus (id : Int, name : String, nb_places : Int).
-*/
+Renvoie tous les bus existants.
+
+@return liste des bus (id : Int, id_bus_type : Int).
+ */
+function fetch_buses() {
+    $res = bdd()->query("SELECT * FROM Bus");
+    return $res->fetchAll();
+}
+
+/**
+Renvoie tous les types de bus existants.
+
+@return liste des types de bus (id : Int, name : String, nb_places : Int).
+ */
 function fetch_bus_type() {
     $res = bdd()->query("SELECT * FROM BusType");
     return $res->fetchAll();
@@ -151,6 +161,9 @@ switch ($_GET['function']) {
         break;
     case 'bustypes':
         $res = fetch_bus_type();
+        break;
+    case 'buses':
+        $res = fetch_buses();
         break;
     case 'bus':     // id
         $res = fetch_bus($_GET['id']);

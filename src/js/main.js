@@ -36,7 +36,8 @@ export const create = (tagName, container, text=null, classNames=null, id=null, 
 
 /**
  * Crée un élément Html INPUT avec les propriétés passées en paramètres contenu dans le container parent.
- * 
+ *
+
  * @param {Element} container : Element html parent ( le formulaire ).
  * @param {string} type : Type de l'input. text par défaut.
  * @param {string} name : Nom de l'input. Null par défaut.
@@ -50,7 +51,48 @@ export const createChamp = ( container, type="text", name= null, placeholder=nul
     type ? champ.setAttribute("type", type) : champ
     name ? champ.setAttribute("name", name) : champ
     placeholder ? champ.setAttribute("placeholder", placeholder) : champ
-    
 
+    return champ
+}
+
+/**
+ * Crée un élément Html INPUT  radio avec les propriétés passées en paramètres contenu dans le container parent.
+ * 
+
+ * @param {Element} container : Element html parent ( le formulaire ).
+ * @param {string} id : id de l'input radio. Null par défaut.
+ * @param {string} name : Nom de l'input radio. Null par défaut.
+ * @param {string} value : Valeur de l'input. Null par défaut.
+ * @returns l'élément html nouvellement construit.
+ */
+export const createChampRadio = ( container, id=null, name= null, value=null) => {
+
+    let champ = container.appendChild(document.createElement("input"))
+    champ.setAttribute("type", "radio") 
+
+    id ? champ.setAttribute("id", id) : champ
+    name ? champ.setAttribute("name", name) : champ
+    value ? champ.setAttribute("value", value) : champ
+
+    return champ
+}
+
+/**
+ * Crée un élément Html INPUT  checkbox avec les propriétés passées en paramètres contenu dans le container parent.
+ * 
+
+ * @param {Element} container : Element html parent ( le formulaire ).
+ * @param {string} id : id de l'input checkbox. Null par défaut.
+ * @param {string} name : Nom de l'input checkbox. Null par défaut.
+ * @returns l'élément html nouvellement construit.
+ */
+export const createChampCheckbox = ( container, id=null, name= null, value=null) => {
+
+    let champ = container.appendChild(document.createElement("input"))
+    champ.setAttribute("type", "checkbox") 
+
+    id ? champ.setAttribute("id", id) : champ
+    name ? champ.setAttribute("name", name) : champ
+    value ? champ.setAttribute("value", value) : champ
     return champ
 }

@@ -58,12 +58,22 @@ function create_time_slot($beginning, $end, $id_time_slot_type, $id_users, $id_b
 }
 
 /**
-    Retourne tous les types de créneau existants.
+Retourne tous les types de créneau existants.
 
-    @return liste des types de créneaux (id : Int, name : String)
-*/
+@return liste des types de créneaux (id : Int, name : String)
+ */
 function fetch_time_slot_type() {
     $res = bdd()->query("SELECT * FROM TimeSlotType");
+    return $res->fetchAll();
+}
+
+/**
+Retourne tous les créneaux existants.
+
+@return liste des créneaux (id : Int, name : String)
+ */
+function fetch_timeslots() {
+    $res = bdd()->query("SELECT * FROM TimeSlot");
     return $res->fetchAll();
 }
 
@@ -105,16 +115,32 @@ function fetch_time_slots_by_type($id_time_slot_type, $beginning, $end) {
 }
 
 /**
-    Retourne la liste des créneaux dans une plage horaire définie auxquels participe un utilisateur selon son id.
+Retourne la liste des créneaux dans une plage horaire définie auxquels participe un utilisateur selon son id.
 
-    @param id_user : id de l'utilisateur participant aux créneaux que l'on recherche.
-    @param beginning : string correspondant à la date du début de la plage de recherche.
-    @param end : string correspondant à la date de la fin de la plage de recherche.
+@param id_user : id de l'utilisateur participant aux créneaux que l'on recherche.
+@param beginning : string correspondant à la date du début de la plage de recherche.
+@param end : string correspondant à la date de la fin de la plage de recherche.
 
-    @return liste de créneaux (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int))), lines (liste des lignes (number : Int, direction : String)))
-*/
+@return liste de créneaux (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int))), lines (liste des lignes (number : Int, direction : String)))
+ */
 function fetch_time_slots_by_user($id_user, $beginning, $end) {
     $result = bdd()->query("SELECT id FROM `timeslot` ts JOIN user_timeslot uts ON ts.id = uts.id_time_slot WHERE uts.id_user = {$id_user} AND begining >= '{$beginning}' AND end <= '{$end}'");
+    $res = array();
+    while ($row = $result->fetch()) {
+        $res[] = fetch_time_slot($row['id']);
+    }
+    return $res;
+}
+
+/**
+Retourne la liste des créneaux d'indisponibilité auxquels participe un utilisateur selon son id.
+
+@param id_user : id de l'utilisateur participant aux créneaux que l'on recherche.
+
+@return liste de créneaux (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int))), lines (liste des lignes (number : Int, direction : String)))
+ */
+function fetch_indispo_time_slots_driver($id_user) {
+    $result = bdd()->query("SELECT id FROM `timeslot` ts JOIN user_timeslot uts ON ts.id = uts.id_time_slot WHERE uts.id_user = {$id_user} AND ts.id_time_slot_type = 3");
     $res = array();
     while ($row = $result->fetch()) {
         $res[] = fetch_time_slot($row['id']);
@@ -299,6 +325,12 @@ switch ($_GET['function']) {
         break;
     case 'timeslot':       // id
         $res = fetch_time_slot($_GET['id']);
+        break;
+    case 'timeslots':
+        $res = fetch_timeslots();
+        break;
+    case 'indispoDriver':
+        $res = fetch_indispo_time_slots_driver($_GET['id']);
         break;
     case 'timeslotbytype':       // type, beginning, end
         $res = fetch_time_slots_by_type($_GET['type'], $_GET['beginning'], $_GET['end']);

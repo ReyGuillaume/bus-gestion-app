@@ -51,6 +51,19 @@ export const toggleAdminForm = () => {
 
                 // Redirection to the home page
                 window.location.href = "/agenda";
+                // Redirection to the user page according to his role
+                //toggleAccueil();
+                if (idrole == 1 || idrole ==2  ){
+                    window.location= "/espaceAdmin"
+                }else{
+                    if (idrole == 3){
+                        window.location= "/espaceUser"
+                    }else {
+                        toggleAccueil();
+                    }
+                }
+                
+                
 
             }
             else{
