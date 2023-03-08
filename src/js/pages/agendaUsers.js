@@ -27,11 +27,13 @@ const drawUsers = (idtype) => {
         
         for(let user of users){
             let li = create("li", ul)
-            let a = create("a", li, user.firstname + " " + user.name.toUpperCase())
+            let a = create("div", li, user.firstname + " " + user.name.toUpperCase())
             a.addEventListener("click", function(){
                 toggleAgenda(user)
             })
         }
+
+        create("a", main, 'Retour', ['navBar__item']).href = "/espaceAdmin"
     })
     
     return main
@@ -42,19 +44,8 @@ export const toggleDrivers = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    const sessionData = JSON.parse(sessionStorage.getItem("userData"))
-
-    // si l'utilisateur n'est pas connecté
-    if(!sessionData){
-        window.location.href = "/"
-    }
-    // si l'utilisateur est un chauffeur
-    else if(sessionData['role'] != "Responsable Logistique" && sessionData["role"] != "Directeur"){
-        window.location.href = "/"
-    }
-    else{
-        drawUsers(3)
-    }
+    drawUsers(3)
+    
     return main
 }
 
@@ -63,18 +54,7 @@ export const toggleResp = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    const sessionData = JSON.parse(sessionStorage.getItem("userData"))
-
-    // si l'utilisateur n'est pas connecté
-    if(!sessionData){
-        window.location.href = "/"
-    }
-    // si l'utilisateur n'est pas le gérant
-    else if(sessionData["role"] != "Directeur"){
-        window.location.href = "/"
-    }
-    else{
-        drawUsers(2)
-    }
+    drawUsers(2)
+    
     return main
 }

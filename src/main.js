@@ -1,5 +1,5 @@
 import './assets/style/main.css'
-import {createTables, create} from './js/main'
+import { createTables } from './js/main'
 import { createHeader } from './js/components/header'
 import { createFooter } from './js/components/footer'
 
@@ -10,8 +10,6 @@ import { toggleAccueil } from './js/pages/accueil'
 import { toggleAgenda } from './js/pages/agenda'
 import { toggleAdminForm } from './js/pages/adminForm'
 import { disconnectUser } from './js/pages/disconnect'
-import { toggleDrivers } from './js/pages/agendaUsers'
-import { toggleResp } from './js/pages/agendaUsers'
 import { toggle404 } from './js/pages/404'
 import { toggleEspaceAdmin } from './js/pages/espaceAdmin'
 import {toggleEspaceUser} from './js/pages/espaceUser'
@@ -29,11 +27,9 @@ createFooter()
 const router = new Navigo('/')
 router.on('/', toggleAccueil)
 router.on('/agenda', toggleAgenda)
-router.on('/espaceAdmin', toggleEspaceAdmin )
-router.on('/espaceUser', toggleEspaceUser )
+router.on('/espaceAdmin', toggleEspaceAdmin)
+router.on('/espaceUser', toggleEspaceUser)
 router.on('/adminForm', toggleAdminForm)
 router.on('/disconnect', disconnectUser)
-router.on('/agendaDrivers', toggleDrivers)
-router.on('/agendaResp', toggleResp)
 router.on('*', toggle404)
 router.resolve()

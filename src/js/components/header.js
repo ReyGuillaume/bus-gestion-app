@@ -5,19 +5,17 @@ const createNavBar = () => {
     const nav = create("nav", h, null, ['navBar', 'hide'])
 
     create("a", nav, 'Accueil', ['navBar__item', 'focus']).href = "/"
-    create("a", nav, 'Agenda', ['navBar__item']).href = "/agenda"
 
     // Récupérer la session utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
     if (sessionData) {
-        // si l'utilisateur est un responsable logistique
-        if(sessionData["role"] == "Responsable Logistique"){
-            create("a", nav, 'Agenda des chauffeurs', ['navBar__item']).href = "/agendaDrivers"
+        // si l'utilisateur est un responsable logistique ou le gérant
+        if(sessionData["role"] == "Responsable Logistique" || sessionData["role"] == "Directeur"){
+            create("a", nav, 'Espace administrateur', ['navBar__item']).href = "/espaceAdmin"
         }
-        // si l'utilisateur est le directeur
-        else if(sessionData["role"] == "Directeur"){
-            create("a", nav, 'Agenda des chauffeurs', ['navBar__item']).href = "/agendaDrivers"
-            create("a", nav, 'Agenda des responsables logistiques', ['navBar__item']).href = "/agendaResp"
+        // si l'utilisateur est un chauffeur
+        else{
+            create("a", nav, 'Espace utilisateur', ['navBar__item']).href = "/espaceUser"
         }
 
         create("a", nav, 'Se déconnecter', ['navBar__item']).href = "/disconnect"

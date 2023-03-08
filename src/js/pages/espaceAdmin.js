@@ -1,26 +1,41 @@
 import { create } from "../main";
-import { toggleAgenda } from "../pages/agenda";
+import { toggleAgenda } from "./agenda";
 import { toggleAddCreneau,toggleSupprimeCreneau,toggleModifCreneau, toggleAjoutUser, toggleSupprimeUser, AjoutBus, SupprimerBus, ModifBus, toggleModifyUser } from "../pages/adminForms";
-import { toggleAddLine, toggleSupprLine, toggleModifLine } from "../pages/gestionLigne";
+import { toggleAddLine, toggleSupprLine, toggleModifLine } from "./gestionLigne";
+import { toggleDrivers } from "./agendaUsers";
+import { toggleResp } from "./agendaUsers";
+
 
 export const toggleEspaceAdmin = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
+    const sessionData = JSON.parse(sessionStorage.getItem("userData"));
+
+    // si l'utilisateur n'est pas connecté
+    if(!sessionData){
+        window.location = "/"
+    }
+    // si l'utilisateur est un chauffeur
+    else if(sessionData["role"] == "Conducteur"){
+        window.location = "/"
+    }
+
     create("h2", main, "Bienvenue sur votre espace Admin")
-    create("p", main, " Que souhaitez vous faire ? ")
+    create("p", main, "Que souhaitez-vous faire ?")
 
     const nav = create("nav", main, null, ['navBar'])
 
     create("div", nav, 'Voir mon agenda', ['navBar__item']).addEventListener("click", toggleAgenda)
+    create("div", nav, "Voir l'agenda des chauffeurs", ['navBar__item']).addEventListener("click", toggleDrivers)
+    if(sessionData["role"] == "Directeur"){
+        create("div", nav, "Voir l'agenda des responsables logistiques", ['navBar__item']).addEventListener("click", toggleResp)
+    }
     create("div", nav, "Ajouter un creneau", ['navBar__item']).addEventListener("click", toggleAddCreneau)
-    create("div", nav, "Gerer les créneaux", ['navBar__item']).addEventListener("click", toggleGestionTimeslots)
-    create("div", nav, 'Gerer les utilisateurs', ['navBar__item']).addEventListener("click", toggleGestionUsers)
-    create("div", nav, 'Gerer les bus', ['navBar__item']).addEventListener("click", toggleGestionBus)
-    create("div", nav, 'Gerer les lignes', ['navBar__item']).addEventListener("click", toggleGestionLigne)
-
-    create("div", nav, 'Se deconnecter', ['navBar__item']).addEventListener("click", null)
-
+    create("div", nav, "Gérer les créneaux", ['navBar__item']).addEventListener("click", toggleGestionTimeslots)
+    create("div", nav, 'Gérer les utilisateurs', ['navBar__item']).addEventListener("click", toggleGestionUsers)
+    create("div", nav, 'Gérer les bus', ['navBar__item']).addEventListener("click", toggleGestionBus)
+    create("div", nav, 'Gérer les lignes', ['navBar__item']).addEventListener("click", toggleGestionLigne)
 
     return main
 }
@@ -30,7 +45,7 @@ export const toggleGestionUsers = () => {
     main.replaceChildren("")
 
     create("h2", main, "Gestion des utilisateurs")
-    create("p", main, " Que souhaitez vous faire ? ")
+    create("p", main, "Que souhaitez-vous faire ?")
 
     const nav = create("nav", main, null, ['navBar'])
 
@@ -38,9 +53,6 @@ export const toggleGestionUsers = () => {
     create("div", nav, "Modifier un utilisateur", ['navBar__item']).addEventListener("click", toggleModifyUser)
     create("div", nav, "Supprimer un utilisateur", ['navBar__item']).addEventListener("click", toggleSupprimeUser)
     create("div", nav, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
-    
-    create("div", nav, 'Se deconnecter', ['navBar__item']).addEventListener("click", null)
-
 
     return main
 }
@@ -50,7 +62,7 @@ export const toggleGestionBus = () => {
     main.replaceChildren("")
 
     create("h2", main, "Gestion des Bus")
-    create("p", main, " Que souhaitez vous faire ? ")
+    create("p", main, "Que souhaitez-vous faire ?")
 
     const nav = create("nav", main, null, ['navBar'])
 
@@ -58,9 +70,6 @@ export const toggleGestionBus = () => {
     create("div", nav, "Modifier un bus", ['navBar__item']).addEventListener("click", ModifBus)
     create("div", nav, "Supprimer un bus", ['navBar__item']).addEventListener("click", SupprimerBus)
     create("div", nav, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
-    
-    create("div", nav, 'Se deconnecter', ['navBar__item']).addEventListener("click", null)
-
 
     return main
 }
@@ -70,7 +79,7 @@ export const toggleGestionTimeslots = () => {
     main.replaceChildren("")
 
     create("h2", main, "Gestion des Créneaux")
-    create("p", main, " Que souhaitez vous faire ? ")
+    create("p", main, "Que souhaitez-vous faire ?")
 
     const nav = create("nav", main, null, ['navBar'])
 
@@ -78,9 +87,6 @@ export const toggleGestionTimeslots = () => {
     create("div", nav, "Modifier un Creneau", ['navBar__item']).addEventListener("click", toggleModifCreneau)
     create("div", nav, "Supprimer un Creneau", ['navBar__item']).addEventListener("click", toggleSupprimeCreneau)
     create("div", nav, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
-    
-    create("div", nav, 'Se deconnecter', ['navBar__item']).addEventListener("click", null)
-
 
     return main
 }
@@ -92,7 +98,7 @@ export const toggleGestionLigne = () => {
     main.replaceChildren("")
 
     create("h2", main, "Gestion des Lignes")
-    create("p", main, " Que souhaitez vous faire ? ")
+    create("p", main, "Que souhaitez-vous faire ?")
 
     const nav = create("nav", main, null, ['navBar'])
 
@@ -100,9 +106,6 @@ export const toggleGestionLigne = () => {
     create("div", nav, "Modifier une Ligne", ['navBar__item']).addEventListener("click", toggleModifLine)
     create("div", nav, "Supprimer une Ligne", ['navBar__item']).addEventListener("click", toggleSupprLine)
     create("div", nav, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
-    
-    create("div", nav, 'Se deconnecter', ['navBar__item']).addEventListener("click", null)
-
 
     return main
 }
