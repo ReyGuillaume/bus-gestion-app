@@ -100,7 +100,7 @@ function create_table_code() {
  * Execute la requête SQL qui crée la table User
  */
 function create_table_user() {
-    $sql = "CREATE TABLE IF NOT EXISTS User (
+    $sql = "CREATE TABLE IF NOT EXISTS `User` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `name` VARCHAR(50) NOT NULL,
         `firstname` VARCHAR(50) NOT NULL,
