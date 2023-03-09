@@ -55,7 +55,7 @@ const createTimeSlots = async (date, container, user=null) => {
             const div = create("div", container, null, ['timeslot'])
             div.addEventListener("click", () => toggleTask(timeslot, user))
 
-            const color = create("div", div, null, ["timeslot__color"])
+            const color = create("div", div, null, ["timeslot__color", timeslot.name])
             create("div", color, null, ["div-color"])
 
             const houres = create("div", div, null, ["timeslot__houres"])
@@ -63,7 +63,7 @@ const createTimeSlots = async (date, container, user=null) => {
             create("h2", houres, timeslot.end, ['end'])
 
             const body = create("div", div, null, ["timeslot__body"])
-            create("h2", body, timeslot.type_name)
+            create("h2", body, timeslot.name)
 
             const goto = create("div", div, null, ["timeslot__goto"])
             create("i", goto , null, ['fa-solid', 'fa-chevron-right'])

@@ -85,7 +85,7 @@ function fetch_timeslots() {
     @return objet créneau (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int)) , lines (liste des lignes (number : Int, direction : String)))
 */
 function fetch_time_slot($id) {
-    $res = bdd()->query("SELECT * FROM TimeSlot WHERE id = {$id}");
+    $res = bdd()->query("SELECT * FROM TimeSlot ts JOIN TimeSlotType tst ON tst.id = ts.id_time_slot_type WHERE ts.id = {$id}");
     $res = $res->fetch();
     $users = bdd()->query("SELECT u.id , u.login , u.name , u.firstname , u.birth_date , u.email , ut.name AS user_type FROM User u JOIN user_timeslot uts ON uts.id_user = u.id JOIN usertype ut ON u.id_user_type = ut.id  WHERE uts.id_time_slot = {$id}");
     $res['users'] = $users->fetchAll();

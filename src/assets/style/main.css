@@ -137,4 +137,49 @@ body {
   transition: 0.5s ease;
 }
 
+#titreAccueil{
+  color: rgb(51, 51, 173);
+}
+
+.GoBus_titre{
+  font-weight: bold;
+  color: rgb(58, 122, 58);
+}
+
+.GoBus_role{
+  color: rgb(143, 47, 47);
+}
+
+.paragraphe{
+  margin-top: 3em;
+}
+
+.sous_paragraphe{
+  padding-left: 15px;
+}
+
+#imgPres{
+  display: block;
+  width: 33%;
+  margin: 0 auto;
+}
+
+.phrasePres{
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.paragraphe a{
+  background-color: rgb(121, 199, 116);
+  text-decoration: none;
+  color: white;
+  border-radius: 10px;
+  padding: 5px 5px 5px 5px;
+  text-align: center;
+}
+
+.paragraphe a:hover{
+  background-color: rgb(82, 101, 194);
+  transition: 0.5s;
+}
+
 /*# sourceMappingURL=main.css.map */
