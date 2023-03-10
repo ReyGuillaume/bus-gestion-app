@@ -114,7 +114,7 @@ body {
   text-align: center;
 }
 
-#adminButton{
+#adminButton, #boutonAlerte{
   transition: 0.5s ease;
   font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   font-weight: bold;
@@ -131,7 +131,7 @@ body {
   margin: 0 auto;
 }
 
-#adminButton:hover{
+#adminButton:hover, #boutonAlerte:hover{
   cursor: pointer;
   background-color: #222630;
   transition: 0.5s ease;
@@ -139,19 +139,29 @@ body {
 
 #titreAccueil{
   color: rgb(51, 51, 173);
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .GoBus_titre{
+  color: rgb(74, 160, 74);
   font-weight: bold;
-  color: rgb(58, 122, 58);
 }
 
 .GoBus_role{
-  color: rgb(143, 47, 47);
+  color: rgb(176, 66, 66);
+  font-weight: bold;
 }
 
 .paragraphe{
   margin-top: 3em;
+}
+
+.paragraphe_info{
+  background-color: rgb(51, 48, 48);
+  color: white;
+  border-radius: 10px;
+  padding: 10px;
+  width: max-content;
 }
 
 .sous_paragraphe{
@@ -160,12 +170,13 @@ body {
 
 #imgPres{
   display: block;
-  width: 33%;
+  width: 50%;
   margin: 0 auto;
 }
 
 .phrasePres{
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: rgb(49, 88, 188);
 }
 
 .paragraphe a{
@@ -180,6 +191,27 @@ body {
 .paragraphe a:hover{
   background-color: rgb(82, 101, 194);
   transition: 0.5s;
+}
+
+#fenetreAlerte{
+  position: fixed;
+  top: 200px;
+  left: 550px;
+  width: 400px;
+  height: 200px;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0px 0px 5px gray;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  text-align: center;
+}
+
+#fenetreAlerte h1{
+  color: rgb(165, 51, 51);
+  font-weight: bold;
 }
 
 /*# sourceMappingURL=main.css.map */

@@ -96,3 +96,31 @@ export const createChampCheckbox = ( container, id=null, name= null, value=null)
     value ? champ.setAttribute("value", value) : champ
     return champ
 }
+
+
+/**
+ * Crée une petite fenêtre d'alerte, qui notifie l'utilisateur d'une action qu'il a effectuée
+ * 
+
+ * @param {Element} container : Element html parent.
+ * @param {string} titre : titre du message d'erreur à afficher (Bravo, Attention...).
+ * @param {string} message : message d'erreur à afficher.
+ * @returns l'élément html nouvellement construit.
+ */
+export const toggleError = (container, titre, message) => {
+
+    const ancienne_div = document.querySelector("#fenetreAlerte")
+    if(ancienne_div){
+        ancienne_div.remove()
+    }
+    const div = create("div", container, null, null, "fenetreAlerte")
+    create("h1", div, titre)
+    create("p", div, message)
+
+    const btn = create("div", div, "Fermer", null, "boutonAlerte")
+    btn.addEventListener("click", function(){
+        div.remove()
+    })
+
+    return div
+}

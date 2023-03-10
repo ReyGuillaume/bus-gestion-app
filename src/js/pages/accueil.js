@@ -56,11 +56,11 @@ export const toggleAccueil = () => {
     create("a", paragraphe4, "Voir votre espace administrateur").href = "/espaceAdmin"
 
     // Présentation des fonctionnalités
-    const paragraphe5 = create("div", main, null, ["paragraphe"])
+    const paragraphe5 = create("div", main, null, ["paragraphe", "paragraphe_info"])
     create("p", paragraphe5, "Notre plateforme intuitive offre une interface facile à utiliser pour chacun des rôles, ainsi qu'une vue d'ensemble en temps réel de l'emploi du temps de l'ensemble de l'entreprise. ")
     const p5 = create("p", paragraphe5)
     create("span", p5, "GoBus", ["GoBus_titre"])
-    p5.innerHTML += " est conçu pour être une solution simple et efficace pour la planification collaborative, aidant votre entreprise à économiser du temps et à augmenter sa productivité."
+    p5.innerHTML += " est conçu pour être une solution simple et efficace pour la planification collaborative, aidant ses employés à économiser du temps et à augmenter leur productivité."
 
     // Connexion
     const paragraphe6 = create("div", main, null, ["paragraphe"])
