@@ -37,7 +37,6 @@ export const create = (tagName, container, text=null, classNames=null, id=null, 
 /**
  * Crée un élément Html INPUT avec les propriétés passées en paramètres contenu dans le container parent.
  *
-
  * @param {Element} container : Element html parent ( le formulaire ).
  * @param {string} type : Type de l'input. text par défaut.
  * @param {string} name : Nom de l'input. Null par défaut.
@@ -58,7 +57,6 @@ export const createChamp = ( container, type="text", name= null, placeholder=nul
 /**
  * Crée un élément Html INPUT  radio avec les propriétés passées en paramètres contenu dans le container parent.
  * 
-
  * @param {Element} container : Element html parent ( le formulaire ).
  * @param {string} id : id de l'input radio. Null par défaut.
  * @param {string} name : Nom de l'input radio. Null par défaut.
@@ -80,7 +78,6 @@ export const createChampRadio = ( container, id=null, name= null, value=null) =>
 /**
  * Crée un élément Html INPUT  checkbox avec les propriétés passées en paramètres contenu dans le container parent.
  * 
-
  * @param {Element} container : Element html parent ( le formulaire ).
  * @param {string} id : id de l'input checkbox. Null par défaut.
  * @param {string} name : Nom de l'input checkbox. Null par défaut.
@@ -101,13 +98,13 @@ export const createChampCheckbox = ( container, id=null, name= null, value=null)
 /**
  * Crée une petite fenêtre d'alerte, qui notifie l'utilisateur d'une action qu'il a effectuée
  * 
-
  * @param {Element} container : Element html parent.
  * @param {string} titre : titre du message d'erreur à afficher (Bravo, Attention...).
  * @param {string} message : message d'erreur à afficher.
+ * @param {string} redirection : lien de la page vers laquelle rediriger quand on ferme la fenêtre (il peut ne pas y avoir de redirection)
  * @returns l'élément html nouvellement construit.
  */
-export const toggleError = (container, titre, message) => {
+export const toggleAlert = (container, titre, message, redirection=null) => {
 
     const ancienne_div = document.querySelector("#fenetreAlerte")
     if(ancienne_div){
@@ -120,6 +117,9 @@ export const toggleError = (container, titre, message) => {
     const btn = create("div", div, "Fermer", null, "boutonAlerte")
     btn.addEventListener("click", function(){
         div.remove()
+        if(redirection){
+            window.location = redirection
+        }
     })
 
     return div
