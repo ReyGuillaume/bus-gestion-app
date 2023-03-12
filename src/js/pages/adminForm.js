@@ -1,4 +1,4 @@
-import { create, createChamp, toggleAlert } from "../main";
+import { create, createChamp, toggleError } from "../main";
 import { createHeader } from "../components/header";
 import axios from 'axios';
 
@@ -58,7 +58,7 @@ export const toggleAdminForm = () => {
                 }        
             }
             else{
-                toggleAlert(main, "ATTENTION", "Formulaire invalide !")
+                toggleError("ATTENTION", "Formulaire invalide !")
             }
         })
     });
