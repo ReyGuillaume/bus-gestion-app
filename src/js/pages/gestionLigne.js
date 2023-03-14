@@ -1,5 +1,5 @@
-import { create, createChamp, createChampCheckbox, createChampRadio } from "../main";
-
+import { create, createChamp, createChampCheckbox, createChampRadio, toggleAlert } from "../main";
+import { toggleEspaceAdmin } from "./espaceAdmin";
 import axios from 'axios';
 
 
@@ -20,22 +20,24 @@ export const toggleAddLine = () => {
     // Creation of the champ
     create("label", form, "Entrez le numero de la ligne à rentrer :");
     createChamp(form, "integer", "number");
-    create("br", form);
-    create("label", form, "Entrez la durée d'un trajet sur cette ligne en minute:");
+
+    create("label", form, "Entrez la durée d'un trajet sur cette ligne en minutes :");
     createChamp(form, "integer", "travel_time");
-    create("br", form);
 
 
     // Creation of submit button
-    const bouton = create("button", form, "Envoyer")
-    bouton.addEventListener("click", function (event){
+    const bouton = create("div", form, "Envoyer")
+    bouton.addEventListener("click", function(){
 
+        let number = document.querySelector("input[name='number']").value;
         let travel_time = document.querySelector("input[name='travel_time']").value;
 
-        axios.get (`lines/lines.php?function=create&travel_time=${travel_time}`);
+        axios.get (`lines/lines.php?function=create&number=${number}&travel_time=${travel_time}`).then(function(){
+            toggleEspaceAdmin();
+            toggleAlert("BRAVO", "La ligne a bien été ajoutée");
+        })
 
     })
-    form.appendChild(bouton);
 
     return main
 }
@@ -44,8 +46,8 @@ export const toggleSupprLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("h2", main, "Supprimer d'une Ligne ")
-    create("p", main, "Choisir la(les) ligne(s) à supprimer:")
+    create("h2", main, "Suppression d'une Ligne ")
+    create("p", main, "Choisir la(les) ligne(s) à supprimer :")
 
     // Creation of the form
     const form = create("form", main)
@@ -53,7 +55,6 @@ export const toggleSupprLine = () => {
    // Creation of the checkbox to define the user to delete
    var divCheckboxLines = create("div", form);
    axios.get(`lines/lines.php?function=lines`).then((response)=>{
-       console.log(response);
        for(var line of response.data){
            create("br", divCheckboxLines);
            createChampCheckbox(divCheckboxLines, line.number , "selectionLigne", line.number);
@@ -63,16 +64,20 @@ export const toggleSupprLine = () => {
    });
 
     // Creation of submit button
-    const bouton = create("button", form, "Envoyer")
-    bouton.addEventListener("click", function (event){
+    const bouton = create("div", form, "Envoyer")
+    bouton.addEventListener("click", function(){
 
         for(var line of document.querySelectorAll("input[name='selectionLigne']")){
             if (line.checked) {
-                axios.get (`lines/lines.php?function=delete&number=${line.value}`);
+                axios.get (`lines/lines.php?function=delete&number=${line.value}`).then(function(){
+                    toggleEspaceAdmin();
+                    toggleAlert("BRAVO", "La ligne a bien été supprimée");
+                })
             }
         }
     })
-    form.appendChild(bouton);
+
+    return main
 }
 
 export const toggleModifLine = () => {
@@ -112,27 +117,27 @@ export const toggleModifLine = () => {
                 axios.get(`lines/lines.php?function=line&number=${numberligneToModify}`).then((responseLine) =>{
                    
                     // Creation du formulaire pré remplie de modif de ligne 
-                    console.log(responseLine.data);
                     form.replaceChildren("")
                     create("h2", form, "Modifier les champs que vous voulez modifier");
                     create("label", form, "Numero de la ligne :");
                     createChamp(form, "integer", "number").value = responseLine.data.number;
-                    create("br", form);
+
                     create("label", form, "Durée d'un trajet sur cette ligne en minute:");
                     createChamp(form, "integer", "travel_time").value = responseLine.data.travel_time;
-                    create("br", form);
 
                     // Creation of submit button
-                    const bouton = create("button", form, "Envoyer")
-                    bouton.addEventListener("click", function (event){
+                    const bouton = create("div", form, "Envoyer")
+                    bouton.addEventListener("click", function(){
 
                         let travel_time = document.querySelector("input[name='travel_time']").value;
                         let number = document.querySelector("input[name='number']").value;
 
-                        axios.get (`lines/lines.php?function=updateline&number=${number}&travel_time=${travel_time}`);
+                        axios.get (`lines/lines.php?function=updateline&number=${number}&travel_time=${travel_time}`).then(function(){
+                            toggleEspaceAdmin();
+                            toggleAlert("BRAVO", "La ligne a bien été modifiée");
+                        })
 
                     })
-                    form.appendChild(bouton);
 
                 });
             });

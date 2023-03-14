@@ -1,5 +1,6 @@
 import { create } from "../main";
 import { toggleAgenda } from "./agenda";
+import { toggleEspaceAdmin } from "./espaceAdmin";
 import axios from 'axios';
 
 // afficher la liste des users de type idtype
@@ -33,7 +34,7 @@ const drawUsers = (idtype) => {
             })
         }
 
-        create("a", main, 'Retour', ['navBar__item']).href = "/espaceAdmin"
+        create("div", main, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
     })
     
     return main
