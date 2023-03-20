@@ -1,4 +1,4 @@
-import { create, createChamp, createChampCheckbox, createChampRadio, toggleAlert } from "../main";
+import { create, createChamp, createChampCheckbox, createChampRadio, toggleAlert, toggleError } from "../main";
 import { toggleEspaceAdmin } from "./espaceAdmin";
 import axios from 'axios';
 //------------------------------------------------------- */
@@ -27,10 +27,11 @@ export const toggleAddCreneau = () => {
     create("label", divRadio, "Choisissez le type du créneau :");
     axios.get(`timeslots/timeslots.php?function=types`).then((response)=>{
         for(var type of response.data){
-            createChampRadio(divRadio, type.name , "selectionType", type.id);
+            var radio = createChampRadio(divRadio, type.name , "selectionType", type.id);
             var label = create("label", divRadio, type.name);
             label.setAttribute("for", type.name);
-          }
+        }
+        radio.checked = true;
     });
 
      
@@ -150,23 +151,50 @@ export const toggleAddCreneau = () => {
         let direction = lineDirectionTimeslot();
 
         //creation of the url
-        let url = `timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}&type=${type}`
+        let url = `timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}`
+        if (type){
+            url += `&type=${type}`;
+        }
+        else{
+            url += `&type=`;
+        }
+
         if (users){
             url += `&users=${users}`;
         }
+        else{
+            url += `&users=`;
+        }
+
         if (buses){
             url += `&buses=${buses}`;
         }
+        else{
+            url += `&buses=`;
+        }
+
         if (line){
             url += `&lines=${line}`;
         }
+        else{
+            url += `&lines=`;
+        }
+
         if (direction){
             url += `&directions=${direction}`;
         }
+        else{
+            url += `&directions=`;
+        }
 
-        axios.get(url).then(function(){
+        axios.get(url).then(function(response){
             toggleEspaceAdmin();
-            toggleAlert("BRAVO", "Le créneau a bien été ajouté");
+            if(response.data){
+                toggleAlert("BRAVO", "Le créneau a bien été ajouté");
+            }
+            else{
+                toggleError("ERREUR", "Le créneau n'a pas pu être ajouté");
+            }
         })
 
     })
@@ -216,7 +244,6 @@ export const toggleModifCreneau = () => {
             axios.get(`timeslots/timeslots.php?function=timeslot&id=${idCreneauToModify}`).then((responseCreneau) =>{
     
                 // Creation du formulaire pré remplie de modif de ligne 
-                console.log(responseCreneau.data);
                 form.replaceChildren("")
 
                  // Creation of each champ
@@ -511,10 +538,11 @@ export const toggleAjoutUser = () => {
     axios.get(`users/users.php?function=usertypes`).then((response)=>{
         for(var type of response.data){
             create("br", divRadio);
-            createChampRadio(divRadio, type.id , "typeUser", type.id);
+            var radio = createChampRadio(divRadio, type.id , "typeUser", type.id);
             var label = create("label", divRadio, type.name );
             label.setAttribute("for", type.id);
-          }
+        }
+        radio.checked = true;
     });
 
 

@@ -22,6 +22,13 @@ function create_time_slot($beginning, $end, $id_time_slot_type, $id_users, $id_b
     $d1 = date_create($beginning, $tz);
     $d2 = date_create($end, $tz);
     if ($d1 < $d2) {
+        if (strlen($num_lines) > 0 || strlen($directions) > 0) {
+            $lines = explode(',', $num_lines);
+            $dir = explode(',', $directions);
+            if(count($lines) != count($dir)){
+                return false;
+            }
+        }
         $res = bdd()->query("INSERT INTO `timeslot`(`begining`, `end`, `id_time_slot_type`) VALUES ('{$beginning}', '{$end}', {$id_time_slot_type})");
 
         if ($res == true) {
@@ -43,8 +50,6 @@ function create_time_slot($beginning, $end, $id_time_slot_type, $id_users, $id_b
             }
 
             if (strlen($num_lines) > 0 && strlen($directions) > 0) {
-                $lines = explode(',', $num_lines);
-                $dir = explode(',', $directions);
                 for($i=0 ; $i<count($lines) ; $i++){
                     $num_line = $lines[$i];
                     $direction = $dir[$i];
@@ -53,6 +58,7 @@ function create_time_slot($beginning, $end, $id_time_slot_type, $id_users, $id_b
             }
             return true;
         }
+        return false;
     }
     return false;
 }

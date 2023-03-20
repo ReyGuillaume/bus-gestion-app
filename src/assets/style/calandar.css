@@ -37,7 +37,27 @@
   gap: 1.5rem;
   border-bottom: #3D7C98 0.15rem solid;
 }
-.calandar__body .days__day {
+.calandar__body .timeslots {
+  display: flex;
+  gap: 1.5rem;
+}
+.calandar__body{
+  width: max-content;
+  height: max-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  border: 2px solid #f4f4f4;
+  border-radius: 0.25rem;
+  font-size: 1.2rem;
+}
+.days__day{
+  display: flex;
+  justify-content: center;
+  width: 130px;
+}
+.calandar__body .days__letter {
   width: 3rem;
   height: 3rem;
   display: flex;
@@ -47,6 +67,28 @@
   border: 2px solid #f4f4f4;
   border-radius: 0.25rem;
   font-size: 1.5rem;
+}
+.timeslots{
+  display: flex;
+  justify-content: space-around;
+}
+.timeslots__day{
+  display: flex;
+  flex-direction: column;
+  width: 130px;
+  align-items: center;
+}
+.timeslot{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.timeslot:hover{
+  cursor: pointer;
+}
+.timeslot div{
+  font-size: 0.75em;
 }
 .calandar__body .numbers {
   display: flex;
@@ -78,8 +120,19 @@
   background: #3D7C98;
   color: #f4f4f4;
 }
+.today{
+  color: #f4f4f4;
+  background-color: #3D7C98;
+}
 .calandar__body .numbers__num:hover {
   border: 2px solid #3D7C98;
+}
+#task{
+  position: fixed;
+  top: center;
+  left: center;
+  background-color: white;
+  width: 200px;
 }
 
 /*# sourceMappingURL=calandar.css.map */

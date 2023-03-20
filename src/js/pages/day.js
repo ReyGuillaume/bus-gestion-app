@@ -53,7 +53,7 @@ const createTimeSlots = async (date, container, user=null) => {
     if (res.length > 0) {
         res.forEach(timeslot => {
             const div = create("div", container, null, ['timeslot'])
-            div.addEventListener("click", () => toggleTask(timeslot, user))
+            div.addEventListener("click", () => toggleTask(container, timeslot, user))
 
             const color = create("div", div, null, ["timeslot__color", timeslot.name])
             create("div", color, null, ["div-color"])
@@ -68,11 +68,8 @@ const createTimeSlots = async (date, container, user=null) => {
             const goto = create("div", div, null, ["timeslot__goto"])
             create("i", goto , null, ['fa-solid', 'fa-chevron-right'])
         })
-    } else {
-        create("h2", container, "Vous n'avez pas encore de taches définies aujourd'hui", ['timeslot--unfound'])
     }
 }
-
 
 export const toggleDay = (date, user=null) => {
     const main = document.querySelector("#app")
@@ -92,4 +89,10 @@ export const toggleDay = (date, user=null) => {
     createDaysBar(date, body, user)
 
     createTimeSlots(date, body, user)
+}
+
+
+export const toggleDayOfWeek = (container, date, user=null) => {
+
+    createTimeSlots(date, container, user)
 }

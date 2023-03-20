@@ -1,4 +1,4 @@
-import { create, createChamp, createChampCheckbox, createChampRadio, toggleAlert } from "../main";
+import { create, createChamp, createChampCheckbox, createChampRadio, toggleAlert, toggleError } from "../main";
 import { toggleEspaceAdmin } from "./espaceAdmin";
 import axios from 'axios';
 
@@ -32,9 +32,14 @@ export const toggleAddLine = () => {
         let number = document.querySelector("input[name='number']").value;
         let travel_time = document.querySelector("input[name='travel_time']").value;
 
-        axios.get (`lines/lines.php?function=create&number=${number}&travel_time=${travel_time}`).then(function(){
+        axios.get (`lines/lines.php?function=create&number=${number}&travel_time=${travel_time}`).then(function(response){
             toggleEspaceAdmin();
-            toggleAlert("BRAVO", "La ligne a bien été ajoutée");
+            if(response.data){
+                toggleAlert("BRAVO", "La ligne a bien été ajoutée");
+            }
+            else{
+                toggleError("ERREUR", "La ligne n'a pas pu être ajoutée");
+            }
         })
 
     })
@@ -69,9 +74,14 @@ export const toggleSupprLine = () => {
 
         for(var line of document.querySelectorAll("input[name='selectionLigne']")){
             if (line.checked) {
-                axios.get (`lines/lines.php?function=delete&number=${line.value}`).then(function(){
+                axios.get (`lines/lines.php?function=delete&number=${line.value}`).then(function(response){
                     toggleEspaceAdmin();
-                    toggleAlert("BRAVO", "La ligne a bien été supprimée");
+                    if(response.data){
+                        toggleAlert("BRAVO", "La ligne a bien été supprimée");
+                    }
+                    else{
+                        toggleError("ERREUR", "La ligne n'a pas pu être supprimée");
+                    }
                 })
             }
         }
@@ -132,9 +142,14 @@ export const toggleModifLine = () => {
                         let travel_time = document.querySelector("input[name='travel_time']").value;
                         let number = document.querySelector("input[name='number']").value;
 
-                        axios.get (`lines/lines.php?function=updateline&number=${number}&travel_time=${travel_time}`).then(function(){
+                        axios.get (`lines/lines.php?function=updateline&number=${number}&travel_time=${travel_time}`).then(function(response){
                             toggleEspaceAdmin();
-                            toggleAlert("BRAVO", "La ligne a bien été modifiée");
+                            if(response.data){
+                                toggleAlert("BRAVO", "La ligne a bien été modifiée");
+                            }
+                            else{
+                                toggleError("ERREUR", "La ligne n'a pas pu être modifiée");
+                            }
                         })
 
                     })

@@ -7,13 +7,14 @@ include_once "../connexion.php";
 /**
     Insert une ligne dans la table Line.
 
+    @param number : le numéro de la ligne à créer.
     @param travel_time : le temps de trajet de la ligne.
 
     @return boolean si l'ajout est un succès.
 */
 function create_line($number, $travel_time) {
-    $res = bdd()->query("INSERT INTO `Line` (`number`, `travel_time`) VALUE ({$number}, {$travel_time})");
-    if($res){
+    if(!bdd()->query("SELECT * FROM `Line`  WHERE `number` = {$number}")->fetch()){
+        bdd()->query("INSERT INTO `Line` (`number`, `travel_time`) VALUE ({$number}, {$travel_time})");
         return true;
     }
     else{
