@@ -80,7 +80,6 @@ const createTimeSlots = async (date, container, user=null) => {
             create("h2", houres, heure_fin + ":" + min_fin, ['end'])
 
             const body = create("div", div, null, ["timeslot__body"])
-            create("h2", body, timeslot.name)
             create("h3", body, timeslot.name)
 
             const goto = create("div", div, null, ["timeslot__goto"])
