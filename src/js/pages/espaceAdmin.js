@@ -1,9 +1,8 @@
 import { create } from "../main";
 import { toggleAgenda } from "./agenda";
-import { toggleAddCreneau,toggleSupprimeCreneau,toggleModifCreneau, toggleAjoutUser, toggleSupprimeUser, AjoutBus, SupprimerBus, ModifBus, toggleModifyUser } from "../pages/adminForms";
+import { toggleAddCreneau,toggleSupprimeCreneau,toggleModifCreneau, toggleAjoutUser, toggleSupprimeUser, AjoutBus, SupprimerBus, ModifBus, toggleModifyUser } from "./adminForms";
 import { toggleAddLine, toggleSupprLine, toggleModifLine } from "./gestionLigne";
-import { toggleDrivers } from "./agendaUsers";
-import { toggleResp } from "./agendaUsers";
+import { toggleDrivers, toggleResp } from "./agendaUsers";
 
 
 export const toggleEspaceAdmin = () => {
@@ -31,7 +30,6 @@ export const toggleEspaceAdmin = () => {
     if(sessionData["role"] == "Directeur"){
         create("div", nav, "Voir l'agenda des responsables logistiques", ['navBar__item']).addEventListener("click", toggleResp)
     }
-    create("div", nav, "Ajouter un creneau", ['navBar__item']).addEventListener("click", toggleAddCreneau)
     create("div", nav, "Gérer les créneaux", ['navBar__item']).addEventListener("click", toggleGestionTimeslots)
     create("div", nav, 'Gérer les utilisateurs', ['navBar__item']).addEventListener("click", toggleGestionUsers)
     create("div", nav, 'Gérer les bus', ['navBar__item']).addEventListener("click", toggleGestionBus)

@@ -1,9 +1,24 @@
-import { calandar } from "../components/calandar";
+import { calandar } from "../components/week";
+import { toggleEspaceUser } from "./espaceUser";
+import { toggleEspaceAdmin } from "./espaceAdmin";
 import { create } from "../main";
 
 const drawAgenda = (user=null) => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    const back = create("div", main)
+    create("i", back , null, ['fa-solid', 'fa-chevron-left'])
+
+    back.addEventListener("click", function(){
+        const sessionData = JSON.parse(sessionStorage.getItem("userData"))
+        if(sessionData["role"] == "Conducteur"){
+            toggleEspaceUser()
+        }
+        else if(sessionData["role"] == "Responsable Logistique" || sessionData["role"] == "Directeur"){
+            toggleEspaceAdmin()
+        }
+    })
 
     if(user.firstname){
         create("h2", main, "Agenda de " + user.firstname + " " + user.name.toUpperCase(), ['mainTitle'])

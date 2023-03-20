@@ -1,4 +1,4 @@
-import { create, createChamp } from "../main";
+import { create, createChamp, toggleError } from "../main";
 import { createHeader } from "../components/header";
 import axios from 'axios';
 
@@ -49,25 +49,16 @@ export const toggleAdminForm = () => {
                 // Refresh display of header (to show the user's session)
                 createHeader();
 
-                // Redirection to the home page
-                window.location.href = "/agenda";
                 // Redirection to the user page according to his role
-                //toggleAccueil();
-                if (idrole == 1 || idrole ==2  ){
-                    window.location= "/espaceAdmin"
-                }else{
-                    if (idrole == 3){
-                        window.location= "/espaceUser"
-                    }else {
-                        toggleAccueil();
-                    }
+                if (idrole == 1 || idrole == 2){
+                    window.location = "/espaceAdmin"
                 }
-                
-                
-
+                else{
+                    window.location = "/espaceUser"
+                }        
             }
             else{
-                alert("Formulaire invalide !");
+                toggleError("ATTENTION", "Formulaire invalide !")
             }
         })
     });

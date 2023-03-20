@@ -21,7 +21,7 @@ const createNavBar = () => {
         create("a", nav, 'Se déconnecter', ['navBar__item']).href = "/disconnect"
     }
     else{
-        create("a", nav, 'Se connecter', ['navBar__item']).href = "/adminForm"
+        create("a", nav, 'Se connecter', ['navBar__item']).href = "/connexion"
     }
 
     return nav
