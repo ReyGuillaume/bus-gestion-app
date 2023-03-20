@@ -68,22 +68,6 @@ export const toggleTask = (container, props, user=null) => {
     const back = create("div", task)
     create("i", back , null, ['fa-solid', 'fa-chevron-left'])
     const date = new Date (new Date(props.begining).setHours(0))
-    back.addEventListener("click", () => toggleDay(date))
-    create("h2", main, "Retour")
-
-    console.log(props)
-
-    switch (props.name) {
-        case "Conduite": conduite(main, props)
-            break;
-        case "Réunion": reunion(main, props)
-            break;
-        case "Indisponibilité": indispo(main, props)
-            break;
-        default: create("h2", main, "Une erreur est survenue")
-            break;
-    }
-
     back.addEventListener("click", () => task.remove())
 
     switch (props.name) {

@@ -61,7 +61,6 @@ const fetchTimeSlots = async (date, user=null) => {
 const createTimeSlots = async (date, container, user=null) => {
     const res = await fetchTimeSlots(date, user)
     if (res.length > 0) {
-        console.log(res)
         res.forEach(timeslot => {
             const div = create("div", container, null, ['timeslot'])
             div.addEventListener("click", () => toggleTask(container, timeslot, user))
