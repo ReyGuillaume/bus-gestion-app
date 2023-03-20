@@ -28,6 +28,16 @@ const createDaysBar = (date, container, user=null) => {
 // renvoie une date JS sous forme 2023-02-16 00:00:00
 const datePhp = date => date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
 
+// rajoute un "0" si l'horaire est inférieur à 10 (8 => 08)
+const formatedHour = (horaire) => {
+    if(horaire < 10){
+        return "0" + horaire
+    }
+    else{
+        return horaire
+    }
+}
+
 // fonction qui récupère tous les créneaux horaires affectés à l'utilisateur connecté, à une certaine date
 const fetchTimeSlots = async (date, user=null) => {
     let data = []
@@ -59,11 +69,17 @@ const createTimeSlots = async (date, container, user=null) => {
             create("div", color, null, ["div-color"])
 
             const houres = create("div", div, null, ["timeslot__houres"])
-            create("h2", houres, timeslot.begining, ['beginning'])
-            create("h2", houres, timeslot.end, ['end'])
+
+            let heure_debut = formatedHour(new Date(timeslot.begining).getHours())
+            let min_debut = formatedHour(new Date(timeslot.begining).getMinutes())
+            let heure_fin = formatedHour(new Date(timeslot.end).getHours())
+            let min_fin = formatedHour(new Date(timeslot.end).getMinutes())
+
+            create("h2", houres, heure_debut + ":" + min_debut, ['beginning'])
+            create("h2", houres, heure_fin + ":" + min_fin, ['end'])
 
             const body = create("div", div, null, ["timeslot__body"])
-            create("h2", body, timeslot.name)
+            create("h3", body, timeslot.name)
 
             const goto = create("div", div, null, ["timeslot__goto"])
             create("i", goto , null, ['fa-solid', 'fa-chevron-right'])

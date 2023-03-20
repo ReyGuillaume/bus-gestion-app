@@ -55,7 +55,7 @@
 .days__day{
   display: flex;
   justify-content: center;
-  width: 130px;
+  width: 150px;
 }
 .calandar__body .days__letter {
   width: 3rem;
@@ -75,20 +75,40 @@
 .timeslots__day{
   display: flex;
   flex-direction: column;
-  width: 130px;
+  width: 150px;
   align-items: center;
 }
 .timeslot{
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-color: rgb(234, 233, 233);
+  margin-bottom: 10px;
+  border-radius: 15px;
 }
 .timeslot:hover{
   cursor: pointer;
 }
 .timeslot div{
-  font-size: 0.75em;
+  font-size: 0.6em;
+  margin: 5px;
+}
+.timeslot__houres{
+  display: flex;
+  flex-direction: column;
+}
+.timeslot__color, .div-color{
+  width: 5px;
+  height: 40px;
+}
+.Conduite .div-color{
+  background-color: rgb(190, 243, 255);
+}
+.Réunion .div-color{
+  background-color: rgb(255, 190, 239);
+}
+.Indisponibilité .div-color{
+  background-color: rgb(251, 225, 159);
 }
 .calandar__body .numbers {
   display: flex;
