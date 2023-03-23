@@ -474,7 +474,7 @@ export const toggleSupprimeCreneau = () => {
 
     // Creation of the radio to define the timeslot to delete
     var divCheckboxCreneau = create("div", form);
-    create("label", divCheckboxCreneau, "Choisissez le creéneau à supprimer :");
+    create("label", divCheckboxCreneau, "Choisissez le créneau à supprimer :");
     axios.get(`timeslots/timeslots.php?function=timeslots`).then((response)=>{
         for(var timeslot of response.data){
             createChampCheckbox(divCheckboxCreneau, timeslot.id , "selectionTimeslot", timeslot.id);

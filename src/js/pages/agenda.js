@@ -8,7 +8,7 @@ const drawAgenda = (user=null) => {
     main.replaceChildren("")
 
     const back = create("div", main)
-    create("i", back , null, ['fa-solid', 'fa-chevron-left'])
+    create("i", back , null, ['fa-solid', 'fa-chevron-left', 'back-button'])
 
     back.addEventListener("click", function(){
         const sessionData = JSON.parse(sessionStorage.getItem("userData"))

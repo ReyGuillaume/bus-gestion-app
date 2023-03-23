@@ -101,6 +101,13 @@
   width: 5px;
   height: 40px;
 }
+.back-button{
+  cursor: pointer;
+}
+.task-name{
+  color: rgb(99, 99, 220);
+  font-weight: bold;
+}
 .Conduite .div-color{
   background-color: rgb(190, 243, 255);
 }
@@ -109,6 +116,30 @@
 }
 .Indisponibilité .div-color{
   background-color: rgb(251, 225, 159);
+}
+.btn-task{
+  display: flex;
+}
+.modifButton{
+  color: white;
+  background-color: rgb(99, 120, 225);
+  width: max-content;
+  padding: 3px;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+.delButton{
+  color: white;
+  background-color: rgb(225, 99, 99);
+  width: max-content;
+  padding: 3px;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+.modifButton:hover, .delButton:hover{
+  background-color: black;
+  cursor: pointer;
+  transition: 0.5s;
 }
 .calandar__body .numbers {
   display: flex;
@@ -153,6 +184,9 @@
   left: center;
   background-color: white;
   width: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 /*# sourceMappingURL=calandar.css.map */

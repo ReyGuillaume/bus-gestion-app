@@ -1,7 +1,7 @@
 import { create } from "../main";
 import { toggleAgenda } from "./agenda";
 import { toggleTask } from "./userTask";
-import { getMonthToString , getDayToString } from "../components/calandar";
+import { getMonthToString , getDayToString, formatedHour } from "../components/week";
 import axios from "axios";
 
 // fonction qui crée tous les jours d'un mois
@@ -28,15 +28,6 @@ const createDaysBar = (date, container, user=null) => {
 // renvoie une date JS sous forme 2023-02-16 00:00:00
 const datePhp = date => date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
 
-// rajoute un "0" si l'horaire est inférieur à 10 (8 => 08)
-const formatedHour = (horaire) => {
-    if(horaire < 10){
-        return "0" + horaire
-    }
-    else{
-        return horaire
-    }
-}
 
 // fonction qui récupère tous les créneaux horaires affectés à l'utilisateur connecté, à une certaine date
 const fetchTimeSlots = async (date, user=null) => {
@@ -63,7 +54,7 @@ const createTimeSlots = async (date, container, user=null) => {
     if (res.length > 0) {
         res.forEach(timeslot => {
             const div = create("div", container, null, ['timeslot'])
-            div.addEventListener("click", () => toggleTask(container, timeslot, user))
+            div.addEventListener("click", () => toggleTask(container, timeslot, div))
 
             const color = create("div", div, null, ["timeslot__color", timeslot.name])
             create("div", color, null, ["div-color"])

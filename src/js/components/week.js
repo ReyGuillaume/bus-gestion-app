@@ -35,6 +35,16 @@ export const getMonthToString = (index) => {
     }
 }
 
+// rajoute un "0" si l'horaire est inférieur à 10 (8 => 08)
+export const formatedHour = (horaire) => {
+    if(horaire < 10){
+        return "0" + horaire
+    }
+    else{
+        return horaire
+    }
+}
+
 // fonction qui crée le header du calendrier d'un mois entier (mois + année)
 const createWeek = (container, date, user=null) => {
     const mainDiv = create("div", container, null, ['calandar__header'])
@@ -83,16 +93,13 @@ const createCalandar = (container, date, user=null) => {
     
     const days = create("div", body, null, ['days'])
     const timeslots = create("div", body, null, ['timeslots'])
-    const arr = []
 
     // pour chaque jour de la semaine :
     for(let i=0 ; i<7 ; i++){
         let day = getDayToString(date_courante.getDay())
         let nb = date_courante.getDate()
-        let month = getMonthToString(date_courante.getMonth())
-        arr.push(day + " " + nb)
 
-        let div = create("div", days, arr[i], ['days__day'])
+        let div = create("div", days, day + " " + nb, ['days__day'])
         let timeslots_courant = create("div", timeslots, "", ['timeslots__day'], day)
         toggleDayOfWeek(timeslots_courant, date_courante, user)
 
