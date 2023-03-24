@@ -30,7 +30,129 @@ export const toggleAddCreneau = () => {
     create("label", divRadio, "Choisissez le type du créneau :");
     axios.get(`timeslots/timeslots.php?function=types`).then((response)=>{
         for(var type of response.data){
-            createChampRadio(divRadio, type.name , "selectionType", type.id);
+            createChampRadio(divRadio, type.name , "selectionType", type.id).addEventListener('click', function(){
+                // Fonction de recuperation du creneau selectionnée
+                function typeSelected () {
+                    for(var type of document.querySelectorAll("input[name='selectionType']")){
+                        if (type.checked) {
+                            return type.value;
+                        }
+                    }
+                }
+                // Recuperation du type du créneau en création
+                var typeToHandle = typeSelected ();
+
+                //Debogage
+                console.log(typeToHandle);
+
+                
+
+                // Creation of the checkbox to define the bus involved in the timeslot
+                function toogleBusChoices(){
+                    var divCheckboxBus = create("div", choicesDiv);
+                    create("label", divCheckboxBus, "Choisissez les bus participants :");
+                    axios.get(`buses/buses.php?function=buses`).then((response)=>{
+                        for(var bus of response.data){
+                            createChampCheckbox(divCheckboxBus, bus.id , "selectionBus", bus.id);
+                            var label = create("label", divCheckboxBus, bus.id);
+                            label.setAttribute("for", bus.id);
+                        }
+                });
+                }
+
+
+
+                // Creation of the checkbox to define the users involved in the timeslot
+                function toogleUserChoices(){
+                    var divCheckboxUsers = create("div", choicesDiv);
+                    create("label", divCheckboxUsers, "Choisissez les participants :");
+                    axios.get(`users/users.php?function=users`).then((response)=>{
+                        for(var user of response.data){
+                            createChampCheckbox(divCheckboxUsers, user.id , "selectionParticipant", user.id);
+                            var label = create("label", divCheckboxUsers, user.name + " "+ user.firstname);
+                            label.setAttribute("for", user.id);
+                        }
+                    });
+                }
+
+                //Creation of the checkbox to define drivers involved in the time slot
+                function toogleDriversChoices(){
+                    var divCheckboxDrivers = create("div", choicesDiv);
+                    create("label", divCheckboxDrivers, "Choisissez le(s) conducteur(s) :");
+                    axios.get(`users/users.php?function=users`).then((response)=>{
+                        for(var user of response.data){
+                            if (user.id_user_type == 3) {
+                            createChampCheckbox(divCheckboxDrivers, user.id , "selectionConducteurs", user.id);
+                            var label = create("label", divCheckboxDrivers, user.name + " "+ user.firstname);
+                            label.setAttribute("for", user.id);
+                            }
+                        }
+                    });
+                }
+
+                 // Creation of the radio to define the line
+                 function toogleLineChoices(){
+                    var divRadioLigne = create("div", choicesDiv);
+                    create("label", divRadioLigne, "Choisissez une ligne :");
+                    axios.get(`lines/lines.php?function=lines`).then((response)=>{
+                    for(var line of response.data){
+                        createChampRadio(divRadioLigne, line.number , "selectionLigne", line.number);
+                        var label = create("label", divRadioLigne, "Ligne " + line.number);
+                        label.setAttribute("for", line.number);
+                        }
+                    });
+                 }
+
+                 // Creation of the radio to define the direction
+                 function toogleDirectionChoices(){
+                    var divRadioDirection = create("div", choicesDiv);
+                    create("label", divRadioDirection, "Choisissez la direction  :");
+                    create("br", divRadioDirection);
+                    createChampRadio(divRadioDirection, "aller" , "selectionDirection", "aller");
+                    var label = create("label", divRadioDirection, "aller");
+                    label.setAttribute("for", "aller");
+                    create("br", divRadioDirection);
+                    createChampRadio(divRadioDirection, "retour" , "selectionDirection", "retour");
+                    var label = create("label", divRadioDirection, "retour");
+                    label.setAttribute("for", "retour");    
+                 }
+                
+                console.log(typeToHandle);
+                switch (typeToHandle){
+                    //Conduite
+                    case '1' :
+                        choicesDiv.replaceChildren("");
+                        toogleBusChoices();
+                        toogleDriversChoices();
+                        toogleLineChoices();
+                        toogleDirectionChoices(); 
+                        break;
+
+                    //Reunion 
+                    case '2' :
+                        choicesDiv.replaceChildren("");
+                        toogleUserChoices();
+                        break;
+                    //Indisponibilite
+                    case '3' :
+                        choicesDiv.replaceChildren("");
+                        toogleDriversChoices();
+                        break;
+                    default :
+                        choicesDiv.replaceChildren("");
+                        toogleBusChoices()
+                        toogleUserChoices()
+                        toogleLineChoices();
+                        toogleDirectionChoices(); 
+                        break;
+
+
+
+                };
+
+            });
+
+
             var label = create("label", divRadio, type.name);
             label.setAttribute("for", type.name);
           }
@@ -39,50 +161,13 @@ export const toggleAddCreneau = () => {
      
      
 
-    // Creation of the checkbox to define the bus involved in the timeslot
-    var divCheckboxBus = create("div", form);
-    create("label", divCheckboxBus, "Choisissez les bus participants :");
-    axios.get(`buses/buses.php?function=buses`).then((response)=>{
-        for(var bus of response.data){
-            createChampCheckbox(divCheckboxBus, bus.id , "selectionBus", bus.id);
-            var label = create("label", divCheckboxBus, bus.id);
-            label.setAttribute("for", bus.id);
-          }
-    });
+    
 
-    // Creation of the checkbox to define the users involved in the timeslot
-    var divCheckboxUsers = create("div", form);
-    create("label", divCheckboxUsers, "Choisissez les participants :");
-    axios.get(`users/users.php?function=users`).then((response)=>{
-        for(var user of response.data){
-            createChampCheckbox(divCheckboxUsers, user.id , "selectionParticipant", user.id);
-            var label = create("label", divCheckboxUsers, user.name + " "+ user.firstname);
-            label.setAttribute("for", user.id);
-          }
-    });
+    
 
-    // Creation of the radio to define the line
-    var divRadioLigne = create("div", form);
-    create("label", divRadioLigne, "Choisissez une ligne :");
-    axios.get(`lines/lines.php?function=lines`).then((response)=>{
-        for(var line of response.data){
-            createChampRadio(divRadioLigne, line.number , "selectionLigne", line.number);
-            var label = create("label", divRadioLigne, "Ligne " + line.number);
-            label.setAttribute("for", line.number);
-          }
-    });
+    const choicesDiv = create("div", form);
 
-    // Creation of the radio to define the direction
-    var divRadioDirection = create("div", form);
-    create("label", divRadioDirection, "Choisissez la direction  :");
-    create("br", divRadioDirection);
-    createChampRadio(divRadioDirection, "aller" , "selectionDirection", "aller");
-    var label = create("label", divRadioDirection, "aller");
-    label.setAttribute("for", "aller");
-    create("br", divRadioDirection);
-    createChampRadio(divRadioDirection, "retour" , "selectionDirection", "retour");
-    var label = create("label", divRadioDirection, "retour");
-    label.setAttribute("for", "retour");    
+    
 
     // Creation of submit button
     const bouton = create("button", form, "Envoyer")
@@ -472,3 +557,6 @@ export const toggleSupprimeCreneau = () => {
 
 }
 
+
+
+// Il me faut une fonction est disponible qui verifie les dispo d'une entité
