@@ -1,5 +1,6 @@
 import { create, createChamp, createChampCheckbox, createChampRadio, toggleAlert, toggleError } from "../main";
 import { toggleEspaceAdmin } from "./espaceAdmin";
+import { timeSlotCanBeSubmit } from "./testTimeSlot"
 import axios from 'axios';
 //------------------------------------------------------- */
 //   Gestion Créneau 
@@ -84,7 +85,7 @@ export const toggleAddCreneau = () => {
 
     // Creation of submit button
     const bouton = create("div", form, "Envoyer")
-    bouton.addEventListener("click", function(){
+    bouton.addEventListener("click", async function(){
 
         // selection of the start and end time
         let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
@@ -150,53 +151,56 @@ export const toggleAddCreneau = () => {
         let line = lineTimeslot();
         let direction = lineDirectionTimeslot();
 
-        //creation of the url
-        let url = `timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}`
-        if (type){
-            url += `&type=${type}`;
-        }
-        else{
-            url += `&type=`;
-        }
-
-        if (users){
-            url += `&users=${users}`;
-        }
-        else{
-            url += `&users=`;
-        }
-
-        if (buses){
-            url += `&buses=${buses}`;
-        }
-        else{
-            url += `&buses=`;
-        }
-
-        if (line){
-            url += `&lines=${line}`;
-        }
-        else{
-            url += `&lines=`;
-        }
-
-        if (direction){
-            url += `&directions=${direction}`;
-        }
-        else{
-            url += `&directions=`;
-        }
-
-        axios.get(url).then(function(response){
-            toggleEspaceAdmin();
-            if(response.data){
-                toggleAlert("BRAVO", "Le créneau a bien été ajouté");
+        if (await timeSlotCanBeSubmit(StartDateTime, EndDateTime, type, users, buses)) {
+            //creation of the url
+            let url = `timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}`
+            if (type){
+                url += `&type=${type}`;
             }
             else{
-                toggleError("ERREUR", "Le créneau n'a pas pu être ajouté");
+                url += `&type=`;
             }
-        })
 
+            if (users){
+                url += `&users=${users}`;
+            }
+            else{
+                url += `&users=`;
+            }
+
+            if (buses){
+                url += `&buses=${buses}`;
+            }
+            else{
+                url += `&buses=`;
+            }
+
+            if (line){
+                url += `&lines=${line}`;
+            }
+            else{
+                url += `&lines=`;
+            }
+
+            if (direction){
+                url += `&directions=${direction}`;
+            }
+            else{
+                url += `&directions=`;
+            }
+
+            axios.get(url).then(function(response){
+                toggleEspaceAdmin();
+                if(response.data){
+                    toggleAlert("BRAVO", "Le créneau a bien été ajouté");
+                }
+                else{
+                    toggleError("ERREUR", "Le créneau n'a pas pu être ajouté");
+                }
+            })
+        } else {
+            toggleError("ERREUR", "L'une des entités ajoutées n'est pas disponible...");
+        }
     })
 
     return main
