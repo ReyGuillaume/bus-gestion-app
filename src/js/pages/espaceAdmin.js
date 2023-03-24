@@ -1,6 +1,8 @@
 import { create } from "../main";
 import { toggleAgenda } from "./agenda";
-import { toggleAddCreneau,toggleSupprimeCreneau,toggleModifCreneau, toggleAjoutUser, toggleSupprimeUser, AjoutBus, SupprimerBus, ModifBus, toggleModifyUser } from "../pages/adminForms";
+import { toggleAddCreneau,toggleSupprimeCreneau,toggleModifCreneau } from "../pages/gestionTimeslots";
+import{toggleAjoutUser, toggleSupprimeUser, toggleModifyUser} from "../pages/gestionUsers";
+import {AjoutBus, SupprimerBus, ModifBus}from "../pages/gestionBuses";
 import { toggleAddLine, toggleSupprLine, toggleModifLine } from "./gestionLigne";
 import { toggleDrivers } from "./agendaUsers";
 import { toggleResp } from "./agendaUsers";
