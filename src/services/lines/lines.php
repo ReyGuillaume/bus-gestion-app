@@ -7,13 +7,14 @@ include_once "../connexion.php";
 /**
     Insert une ligne dans la table Line.
 
+    @param number : le numéro de la ligne à créer.
     @param travel_time : le temps de trajet de la ligne.
 
     @return boolean si l'ajout est un succès.
 */
-function create_line($travel_time) {
-    $res = bdd()->query("INSERT INTO `Line` (`travel_time`) VALUE ({$travel_time})");
-    if($res){
+function create_line($number, $travel_time) {
+    if(!bdd()->query("SELECT * FROM `Line`  WHERE `number` = {$number}")->fetch()){
+        bdd()->query("INSERT INTO `Line` (`number`, `travel_time`) VALUE ({$number}, {$travel_time})");
         return true;
     }
     else{
@@ -115,8 +116,8 @@ function delete_line($number) {  //supprimer également tous les créneaux qui s
 
 
 switch ($_GET['function']) {
-    case 'create':      // temps de trajet
-        $res = create_line($_GET['travel_time']);
+    case 'create':      // number, temps de trajet
+        $res = create_line($_GET['number'], $_GET['travel_time']);
         break;
     case 'lines':
         $res = fetch_lines();
@@ -145,7 +146,7 @@ echo json_encode($res);
 
 /* ======================== Tests ========================
 
-fetch("http://localhost/projetL2S4/src/services/lines/lines.php?function=create&travel_time=60").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/lines/lines.php?function=create&number=5&travel_time=60").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/lines/lines.php?function=lines").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/lines/lines.php?function=line&number=1").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/lines/lines.php?function=linecalendar&number=1").then(response => response.json()).then(response => console.log(response))

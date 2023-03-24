@@ -37,7 +37,6 @@ export const create = (tagName, container, text=null, classNames=null, id=null, 
 /**
  * Crée un élément Html INPUT avec les propriétés passées en paramètres contenu dans le container parent.
  *
-
  * @param {Element} container : Element html parent ( le formulaire ).
  * @param {string} type : Type de l'input. text par défaut.
  * @param {string} name : Nom de l'input. Null par défaut.
@@ -58,7 +57,6 @@ export const createChamp = ( container, type="text", name= null, placeholder=nul
 /**
  * Crée un élément Html INPUT  radio avec les propriétés passées en paramètres contenu dans le container parent.
  * 
-
  * @param {Element} container : Element html parent ( le formulaire ).
  * @param {string} id : id de l'input radio. Null par défaut.
  * @param {string} name : Nom de l'input radio. Null par défaut.
@@ -80,7 +78,6 @@ export const createChampRadio = ( container, id=null, name= null, value=null) =>
 /**
  * Crée un élément Html INPUT  checkbox avec les propriétés passées en paramètres contenu dans le container parent.
  * 
-
  * @param {Element} container : Element html parent ( le formulaire ).
  * @param {string} id : id de l'input checkbox. Null par défaut.
  * @param {string} name : Nom de l'input checkbox. Null par défaut.
@@ -95,4 +92,67 @@ export const createChampCheckbox = ( container, id=null, name= null, value=null)
     name ? champ.setAttribute("name", name) : champ
     value ? champ.setAttribute("value", value) : champ
     return champ
+}
+
+
+/**
+ * Crée une petite fenêtre d'alerte, qui notifie l'utilisateur d'une action qu'il a effectuée
+ * 
+ * @param {string} titre : titre du message d'alerte à afficher (Bravo, ...).
+ * @param {string} message : message d'alerte à afficher.
+ * @returns l'élément html nouvellement construit.
+ */
+export const toggleAlert = (titre, message) => {
+
+    const ancienne_div = document.querySelector("#fenetreAlerte")
+    if(ancienne_div){
+        ancienne_div.remove()
+    }
+
+    const container = document.querySelector("#header")
+    const div = create("div", container, null, null, "fenetreAlerte")
+
+    create("img", div, null, ["imageFenetre"]).src = "src/assets/images/ok.png"
+    div.style.backgroundColor = "rgb(75, 208, 75)"
+
+    const div2 = create("div", div, null, null, "contenuFenetre")
+    create("p", div2, titre, null, "titreAlerte")
+    create("p", div2, message)
+
+    setTimeout(() => {
+        div.remove()
+    }, 3000);
+
+    return div
+}
+
+/**
+ * Crée une petite fenêtre d'alerte, qui notifie l'utilisateur d'une erreur qu'il a effectuée
+ * 
+ * @param {string} titre : titre du message d'erreur à afficher (Attention, ...).
+ * @param {string} message : message d'erreur à afficher.
+ * @returns l'élément html nouvellement construit.
+ */
+export const toggleError = (titre, message) => {
+
+    const ancienne_div = document.querySelector("#fenetreAlerte")
+    if(ancienne_div){
+        ancienne_div.remove()
+    }
+
+    const container = document.querySelector("#header")
+    const div = create("div", container, null, null, "fenetreAlerte")
+
+    create("img", div, null, ["imageFenetre"]).src = "src/assets/images/croix.png"
+    div.style.backgroundColor = "rgb(176, 66, 66)"
+
+    const div2 = create("div", div, null, null, "contenuFenetre")
+    create("p", div2, titre, null, "titreAlerte")
+    create("p", div2, message)
+
+    setTimeout(() => {
+        div.remove()
+    }, 3000);
+
+    return div
 }
