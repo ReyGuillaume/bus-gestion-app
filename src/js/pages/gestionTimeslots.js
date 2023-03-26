@@ -1,4 +1,11 @@
-import { create, createChamp, createChampCheckbox, createChampRadio } from "../main";
+import {
+    create,
+    createChamp,
+    createChampCheckbox,
+    createChampRadio,
+    toggleError,
+    toggleAlert
+} from "../main";
 
 import axios from 'axios';
 
@@ -85,6 +92,11 @@ function toogleBusChoices(choicesDiv){
 
 }
 
+
+
+
+
+
  // Creation of the checkbox to define the users involved in the timeslot
  // @param choiceDiv la div dans lequel mettre ça 
  function toogleUserChoices(choicesDiv){
@@ -157,6 +169,11 @@ function toogleFreeUserChoices(choicesDiv){
     });
 
 }
+
+
+
+
+
 
 
 //Creation of the checkbox to define drivers involved in the time slot
@@ -237,12 +254,6 @@ function toogleDriversChoices(choicesDiv){
 
 
 
-
-
-
-
-
-
 // Creation of the radio to define the direction
  // @param choiceDiv la div dans lequel mettre ça 
 
@@ -259,6 +270,11 @@ function toogleDirectionChoices(choicesDiv){
     label.setAttribute("for", "retour");    
  }
 
+
+
+
+
+
  // Creation of the radio to define the line
   // @param choiceDiv la div dans lequel mettre ça 
 
@@ -273,8 +289,167 @@ function toogleDirectionChoices(choicesDiv){
         }
     });
  }
+
+
+
+
+
+
+
+
+
+
 //------------------------------------------------------- */
-//   Gestion Créneau 
+//   Gestion URL
+//------------------------------------------------------- */
+
+// fonction qui renvoie les conducteurs selectionnés dans le formulaire.
+function selectedDrivers () {
+    // select the types of participants and return those who are checked in a string : 1,2,...
+    var response = "";
+    for(var user of document.querySelectorAll("input[name='selectionConducteurs']")){
+        if (user.checked) {
+            if (response != ""){
+                response += ",";
+            }
+            response += user.value;
+        }
+    } return response;
+}
+
+// fonction qui renvoie les participants selectionnés dans le formulaire.
+function selectedUsers () {
+    // select the types of participants and return those who are checked in a string : 1,2,...
+    var response = "";
+    for(var user of document.querySelectorAll("input[name='selectionParticipant']")){
+        if (user.checked) {
+            if (response != ""){
+                response += ",";
+            }
+            response += user.value;
+        }
+    } return response;
+}
+
+// fonction qui renvoie les bus selectionnés dans le formulaire.
+function selectedBuses () {
+    // select the types of buses and return those who are checked in a string : 1,2,...
+    var response = "";
+    for(var bus of document.querySelectorAll("input[name='selectionBus']")){
+        if (bus.checked) {
+            if (response != ""){
+                response += ",";
+            }
+            response += bus.value;
+        }
+    } return response;
+}
+
+// fonction qui renvoie la direction selectionnée dans le formulaire.
+function selectedDirection () {
+    // select the direction of the line and return the one who is checked in a string
+    for(var direction of document.querySelectorAll("input[name='selectionDirection']")){
+        if (direction.checked) {
+            return direction.value;
+        }
+    }
+}
+
+// fonction qui renvoie la ligne selectionnée dans le formulaire.
+function selectedLine () {
+    // select the line of the timeslot and return the one who is checked in a string
+    for(var line of document.querySelectorAll("input[name='selectionLigne']")){
+        if (line.checked) {
+            return line.value;
+        }
+    }
+}
+
+// fonction qui renvoie l'url axios en fonction du type de creneau selectionné
+function axiosUrlSendWhenADD(type){
+
+    // selection of the start and end time
+    let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
+    let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
+
+    // creation of the variables
+    let users;
+    let drivers;
+    let buses;
+    let line;
+    let direction;
+
+    // creation of the default url
+    let url = `timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}&type=${type}`;
+
+    // depends on the type of the timeslot
+    switch (type) {
+
+        // CONDUITE
+        case "1" :
+            drivers = selectedDrivers();
+            buses = selectedBuses();
+            line = selectedLine();
+            direction = selectedDirection();
+            if (drivers != "" && buses != "" && line != "" && direction != ""){
+                url += `&users=${drivers}&buses=${buses}&lines=${line}&directions=${direction}`;
+                toggleAlert("REUSSITE", "Le créneau à bien été ajouté !");
+                break;
+            }
+            else
+            {
+                toggleError("ATTENTION", "Formulaire invalide !"); break;
+            }
+
+
+        // REUNION
+        case "2" :
+            users = selectedUsers();
+            if (users != ""){
+                url += `&users=${users}`; break;
+                toggleAlert("REUSSITE", "Le créneau à bien été ajouté !");
+            }
+            else
+            {
+                toggleError("ATTENTION", "Formulaire invalide !"); break;
+            }
+
+
+        // INDISPONIBILITE
+        case "3" :
+            drivers = selectedDrivers();
+            if (drivers != "") {
+                url += `&users=${drivers}`;
+                toggleAlert("REUSSITE", "Le créneau à bien été ajouté !");
+                break;
+            }
+            else
+            {
+                toggleError("ATTENTION", "Formulaire invalide !"); break;
+            }
+
+        // ERREUR
+        default :
+            url = ``;
+            toggleError("ATTENTION", "Formulaire invalide !"); break;
+
+    }
+
+    return url;
+}
+
+
+
+
+
+
+
+
+
+
+
+// ------------------------------------------------------- */
+//   Gestion Créneau
 //------------------------------------------------------- */
 export const toggleAddCreneau = () => {
     const main = document.querySelector("#app");
@@ -352,107 +527,29 @@ export const toggleAddCreneau = () => {
           }
     });
 
-     
-     
-
-    
-
-    
-
     const choicesDiv = create("div", form);
 
-    
+
+
+
+
+
+
+
+
 
     // Creation of submit button
     const bouton = create("button", form, "Envoyer")
     bouton.addEventListener("click", function (event){
 
-        // selection of the start and end time
-        let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
-        let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
-
-        function typeTimeslot () {
-            // select the types of timeslots and return the one who is checked in a string
-            for(var type of document.querySelectorAll("input[name='selectionType']")){
-                if (type.checked) {
-                    return type.value;
-                }
-            }
-        }
-
-        function participantsTimeslot () {
-            // select the types of participants and return those who are checked in a string : 1,2,...
-            var response = "";
-            for(var user of document.querySelectorAll("input[name='selectionParticipant']")){
-                if (user.checked) {
-                    if (response != ""){
-                        response += ",";
-                    }
-                    response += user.value;
-                }
-            } return response;
-        }
-
-        function busesTimeslot () {
-            // select the types of buses and return those who are checked in a string : 1,2,...
-            var response = "";
-            for(var bus of document.querySelectorAll("input[name='selectionBus']")){
-                if (bus.checked) {
-                    if (response != ""){
-                        response += ",";
-                    }
-                    response += bus.value;
-                }
-            } return response;
-        }
-
-        function lineDirectionTimeslot () {
-            // select the direction of the line and return the one who is checked in a string
-            for(var direction of document.querySelectorAll("input[name='selectionDirection']")){
-                if (direction.checked) {
-                    return direction.value;
-                }
-            }
-        }
-
-        function lineTimeslot () {
-            // select the line of the timeslot and return the one who is checked in a string
-            for(var line of document.querySelectorAll("input[name='selectionLigne']")){
-                if (line.checked) {
-                    return line.value;
-                }
-            }
-        }
-
-        // selection of the type of timeslot, participants and buses
-        let type = typeTimeslot ();
-        let users = participantsTimeslot();
-        let buses = busesTimeslot();
-        let line = lineTimeslot();
-        let direction = lineDirectionTimeslot();
-
-        //creation of the url
-        let url = `timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}&type=${type}`
-        if (users){
-            url += `&users=${users}`;
-        }
-        if (buses){
-            url += `&buses=${buses}`;
-        }
-        if (line){
-            url += `&lines=${line}`;
-        }
-        if (direction){
-            url += `&directions=${direction}`;
-        }
-
-        axios.get(url)
-
+        let url = axiosUrlSendWhenADD(typeSelected());
+        axios.get(url);
     })
+
     form.appendChild(bouton);
 
-    return main
 
+    return main
 }
 
 export const toggleModifCreneau = () => {
@@ -705,13 +802,6 @@ export const toggleModifCreneau = () => {
     
 
 }
-
-
-
-
-
-
-
 
 
 export const toggleSupprimeCreneau = () => {
