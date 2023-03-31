@@ -179,14 +179,17 @@
   border: 2px solid #3D7C98;
 }
 #task{
-  position: fixed;
-  top: center;
-  left: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
   background-color: white;
-  width: 200px;
+  width: 250px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  transform: translate(-50%, -50%);
+  /* align-items: center; */
 }
+
 
 /*# sourceMappingURL=calandar.css.map */

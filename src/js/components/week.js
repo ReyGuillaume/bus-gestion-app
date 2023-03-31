@@ -55,8 +55,7 @@ const createWeek = (container, date, user=null) => {
 
     // année
     const centerDiv = create('div', mainDiv, null, ['center-div'])
-    create('h2', centerDiv, getMonthToString(date.getMonth()), ['year'])
-    create('h2', centerDiv, date.getFullYear(), ['year'])
+    create('h2', centerDiv, getMonthToString(date.getMonth()) + " " + date.getFullYear(), ['year'])
 
     // flèche droite
     const rightDiv = create("div", mainDiv, null, ['right-button'])
