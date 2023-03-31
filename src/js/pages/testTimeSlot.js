@@ -28,7 +28,7 @@ const isFreeUser = async (id, beginning, end) => {
 const isFreeBus = async (id, beginning, end) => {
     let res
     await axios
-    .get(`timeslots/timeslots.php?function=timeslotbybus&user=${id}&beginning=${beginning}&end=${end}`)
+    .get(`timeslots/timeslots.php?function=timeslotbybus&bus=${id}&beginning=${beginning}&end=${end}`)
     .then(response=>{
         res = response.data.length == 0
     })
@@ -52,6 +52,8 @@ const conduite = async(beginning, end, users, buses) => {
 
     while (res === true && i < size ) {
         res = await isFreeUser(users[i], beginning, end)
+        if (res === false)
+            console.log(`user ${i}`)
         i++
     }
 
@@ -60,6 +62,8 @@ const conduite = async(beginning, end, users, buses) => {
 
     while (res === true && i < size ) {
         res = await isFreeBus(buses[i], beginning, end)
+        if (res === false)
+            console.log(`bus ${i}`)
         i++
     }
 
@@ -115,13 +119,13 @@ const indispo = async(beginning, end, users) => {
  * @param {String} beginning : la date de début du créneau
  * @param {String} end : la date de fin du créneau
  * @param {int} type : le type du créneau
- * @param {Array} users : la liste des utilisateur affectés au créneau
- * @param {Array} buses : la liste des bus affectés au créneau
+ * @param {Array} users : la liste des id des utilisateur affectés au créneau
+ * @param {Array} buses : la liste des id des bus affectés au créneau
  * @returns boolean si le créneau peut être ou non posé
  */
 export const timeSlotCanBeSubmit = async(beginning, end, type, users=null, buses=null) => {
     let t
-    typeof(type) != "number" ? t = parseInt(type) : t = type
+    t = typeof(type) != "number" ? parseInt(type) : type
 
     switch (t) {
         case 1: return await conduite(beginning, end, users, buses)

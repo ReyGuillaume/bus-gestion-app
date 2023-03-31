@@ -199,7 +199,7 @@ export const toggleAddCreneau = () => {
                 }
             })
         } else {
-            toggleError("ERREUR", "L'une des entités ajoutées n'est pas disponible...");
+            toggleError("ERREUR", "L'un des participant ajoutés n'est pas disponible...");
         }
     })
 
