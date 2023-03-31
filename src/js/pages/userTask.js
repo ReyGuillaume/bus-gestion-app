@@ -3,8 +3,10 @@ import { getDayToString, getMonthToString, formatedHour } from "../components/we
 import { participantsTimeslot, busesTimeslot, lineTimeslot, lineDirectionTimeslot, typeTimeslot } from "./adminForms";
 import axios from "axios";
 
+<<<<<<< HEAD
 
 const reunion = (container, props) => {
+=======
 // affiche le bouton pour supprimer un créneau dans une tâche
 const supprimeCreneau = (container, btns, props, bubble) => {
     create("div", btns, "Supprimer", ["delButton"]).addEventListener("click", function(){
@@ -20,6 +22,7 @@ const supprimeCreneau = (container, btns, props, bubble) => {
         })
     })
 }
+>>>>>>> alexis
 
 const executeModifCreneau = (container, id_creneau, bubble) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${id_creneau}`).then((responseCreneau) =>{
@@ -211,11 +214,14 @@ const reunion = (container, props, bubble, user_role) => {
     props.users.forEach(element => {
         create("em", container, element.firstname + " " + element.name + ", ")
     });
+<<<<<<< HEAD
     
     create("label", container, "Début : ")
     create("em", container, props.begining)
+=======
 
     create("label", container, "Début : " + heure_debut + ":" + min_debut)
+>>>>>>> alexis
 
     create("label", container, "Fin prévue à : " + heure_fin + ":" + min_fin)
 
@@ -248,13 +254,16 @@ const conduite = (container, props, bubble, user_role) => {
     });
 
     create("label", container, "Sur la ligne : ")
+<<<<<<< HEAD
     create("em", container, props.lines[0].number + "(" + props.lines[0].direction + ")")
     
     create("label", container, "Début : ")
     create("em", container, props.begining)
+=======
     create("em", container, props.lines[0].number + " (" + props.lines[0].direction + ")")
 
     create("label", container, "Début : " + heure_debut + ":" + min_debut)
+>>>>>>> alexis
 
     create("label", container, "Fin prévue à : " + heure_fin + ":" + min_fin)
 
@@ -308,10 +317,13 @@ export const toggleTask = (container, props, bubble) => {
     const task = create("div", container, null, null, "task")
 
     const back = create("div", task)
+<<<<<<< HEAD
     create("i", back , null, ['fa-solid', 'fa-chevron-left'])
     const date = new Date (new Date(props.begining).setHours(0))
+=======
     create("i", back , null, ['fa-solid', 'fa-chevron-left', 'back-button'])
 
+>>>>>>> alexis
     back.addEventListener("click", () => task.remove())
 
     switch (props.name) {
