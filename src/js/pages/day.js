@@ -50,11 +50,12 @@ const fetchTimeSlots = async (date, user=null) => {
 
 // fonction qui affiche tous les créneaux horaires récupérés, affectés à l'utilisateur connecté
 const createTimeSlots = async (date, container, user=null) => {
+    const footer = document.querySelector("#footer")
     const res = await fetchTimeSlots(date, user)
     if (res.length > 0) {
         res.forEach(timeslot => {
             const div = create("div", container, null, ['timeslot'])
-            div.addEventListener("click", () => toggleTask(container, timeslot, div))
+            div.addEventListener("click", () => toggleTask(footer, timeslot, div))
 
             const color = create("div", div, null, ["timeslot__color", timeslot.name])
             create("div", color, null, ["div-color"])

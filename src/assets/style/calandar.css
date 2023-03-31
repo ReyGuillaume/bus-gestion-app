@@ -178,16 +178,24 @@
 .calandar__body .numbers__num:hover {
   border: 2px solid #3D7C98;
 }
-#task{
+
+.cache{
+  opacity: 0.4;
+  z-index: -1;
+}
+#task {
   position: absolute;
   top: 50%;
   left: 50%;
   background-color: white;
-  width: 250px;
+  width: 270px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   transform: translate(-50%, -50%);
+}
+#task div{
+  margin-top: 10px;
 }
 
 

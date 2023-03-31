@@ -11,6 +11,7 @@ const supprimeCreneau = (container, btns, props, bubble) => {
                 toggleAlert("BRAVO", "Le créneau a bien été supprimé")
                 container.remove()
                 bubble.remove()
+                document.querySelector("#app").classList.remove("cache")
             }
             else{
                 toggleError("ERREUR", "Le créneau n'a pas pu être supprimé")
@@ -30,7 +31,10 @@ const modifConduite = (container, btns, props, bubble) => {
     
             const back = create("div", container)
             create("i", back , null, ['fa-solid', 'fa-chevron-left', 'back-button'])
-            back.addEventListener("click", () => container.remove())
+            back.addEventListener("click", function(){
+                container.remove()
+                document.querySelector("#app").classList.remove("cache")
+            })
     
              // Creation of each champ
             create("label", container, "Début :");
@@ -47,7 +51,7 @@ const modifConduite = (container, btns, props, bubble) => {
            
             // Creation of the checkbox to define the bus involved in the timeslot
             var divCheckboxBus = create("div", container);
-            create("label", divCheckboxBus, "Bus :");
+            create("div", divCheckboxBus, "Bus :");
             axios.get(`buses/buses.php?function=buses`).then((response)=>{
                 for(var bus of response.data){
                     var champBus = createChampCheckbox(divCheckboxBus, bus.id , "selectionBus", bus.id);
@@ -69,7 +73,7 @@ const modifConduite = (container, btns, props, bubble) => {
             }
             // Creation of the checkbox to define the users involved in the timeslot
             var divCheckboxUsers = create("div", container);
-            create("label", divCheckboxUsers, "Participants :");
+            create("div", divCheckboxUsers, "Participants :");
             axios.get(`users/users.php?function=users`).then((response)=>{
                 for(var user of response.data){
                     var champUser = createChampCheckbox(divCheckboxUsers, user.id , "selectionParticipant", user.id);
@@ -92,7 +96,7 @@ const modifConduite = (container, btns, props, bubble) => {
     
             // Creation of the radio to define the line
             var divRadioLigne = create("div", container);
-            create("label", divRadioLigne, "Ligne :");
+            create("div", divRadioLigne, "Ligne :");
             axios.get(`lines/lines.php?function=lines`).then((response)=>{
                 for(var line of response.data){
                     var champLine = createChampRadio(divRadioLigne, line.number , "selectionLigne", line.number);
@@ -116,8 +120,8 @@ const modifConduite = (container, btns, props, bubble) => {
              }
             // Creation of the radio to define the direction
             var divRadioDirection = create("div", container);
-            create("label", divRadioDirection, "Direction :");
-            create("br", divRadioDirection);
+            create("div", divRadioDirection, "Direction :");
+            // create("br", divRadioDirection);
             var champAller = createChampRadio(divRadioDirection, "aller" , "selectionDirection", "aller");
     
             var label = create("label", divRadioDirection, "aller");
@@ -162,6 +166,7 @@ const modifConduite = (container, btns, props, bubble) => {
     
                 axios.get(url).then(function(response){
                     container.remove();
+                    document.querySelector("#app").classList.remove("cache");
     
                     if(response.data){
     
@@ -203,7 +208,10 @@ const modifReunion = (container, btns, props, bubble) => {
 
             const back = create("div", container)
             create("i", back , null, ['fa-solid', 'fa-chevron-left', 'back-button'])
-            back.addEventListener("click", () => container.remove())
+            back.addEventListener("click", function(){
+                container.remove()
+                document.querySelector("#app").classList.remove("cache")
+            })
 
             // Creation of each champ
             create("label", container, "Début :");
@@ -219,7 +227,7 @@ const modifReunion = (container, btns, props, bubble) => {
             }
             // Creation of the checkbox to define the users involved in the timeslot
             var divCheckboxUsers = create("div", container);
-            create("label", divCheckboxUsers, "Les participants :");
+            create("div", divCheckboxUsers, "Participants :");
             axios.get(`users/users.php?function=users`).then((response)=>{
                 for(var user of response.data){
                     var champUser = createChampCheckbox(divCheckboxUsers, user.id , "selectionParticipant", user.id);
@@ -257,6 +265,7 @@ const modifReunion = (container, btns, props, bubble) => {
 
                 axios.get(url).then(function(response){
                     container.remove();
+                    document.querySelector("#app").classList.remove("cache");
     
                     if(response.data){
     
@@ -297,7 +306,10 @@ const modifIndispo = (container, btns, props, bubble) => {
 
             const back = create("div", container)
             create("i", back , null, ['fa-solid', 'fa-chevron-left', 'back-button'])
-            back.addEventListener("click", () => container.remove())
+            back.addEventListener("click", function(){
+                container.remove()
+                document.querySelector("#app").classList.remove("cache")
+            })
 
             // Creation of each champ
             create("label", container, "Début :");
@@ -324,6 +336,7 @@ const modifIndispo = (container, btns, props, bubble) => {
 
                 axios.get(url).then(function(response){
                     container.remove();
+                    document.querySelector("#app").classList.remove("cache");
 
                     if(response.data){
 
@@ -443,6 +456,9 @@ const indispo = (container, props, bubble, user_role) => {
 // fonction qui permet d'afficher un créneau horaire affecté à l'utilisateur connecté
 export const toggleTask = (container, props, bubble) => {
 
+    const main = document.querySelector("#app")
+    main.classList.add("cache")
+
     const sessionData = JSON.parse(sessionStorage.getItem("userData"))
     const role = sessionData["role"]
     
@@ -456,7 +472,10 @@ export const toggleTask = (container, props, bubble) => {
 
     const back = create("div", task)
     create("i", back , null, ['fa-solid', 'fa-chevron-left', 'back-button'])
-    back.addEventListener("click", () => task.remove())
+    back.addEventListener("click", function(){
+        task.remove()
+        main.classList.remove("cache")
+    })
 
     switch (props.name) {
         case "Conduite": conduite(task, props, bubble, role)
