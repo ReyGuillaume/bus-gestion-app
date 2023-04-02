@@ -36,16 +36,34 @@ const fetchTimeSlots = async (date, user=null) => {
     let d2 = datePhp(new Date(new Date(date).setDate(date.getDate() + 1)))
     const sessionData = JSON.parse(sessionStorage.getItem("userData"))
 
-    let idUser;
+    // utilisateur
     if(user != null && user.firstname){
-        idUser = user.id
+        let idUser = user.id
+        await axios.get(`timeslots/timeslots.php?function=timeslotbyuser&user=${idUser}&beginning=${d1}&end=${d2}`)
+        .then(res => data = res.data)
+        return [...data]
     }
+    // bus
+    else if(user != null && user.id_bus_type){
+        let idBus = user.id
+        await axios.get(`timeslots/timeslots.php?function=timeslotbybus&bus=${idBus}&beginning=${d1}&end=${d2}`)
+        .then(res => data = res.data)
+        return [...data]
+    }
+    // ligne
+    else if(user != null && user.number){
+        let idLine = user.number
+        await axios.get(`timeslots/timeslots.php?function=timeslotbyline&line=${idLine}&beginning=${d1}&end=${d2}`)
+        .then(res => data = res.data)
+        return [...data]
+    }
+    // personnel
     else{
-        idUser = sessionData['id']
+        let idUser = sessionData['id']
+        await axios.get(`timeslots/timeslots.php?function=timeslotbyuser&user=${idUser}&beginning=${d1}&end=${d2}`)
+        .then(res => data = res.data)
+        return [...data]
     }
-    await axios.get(`timeslots/timeslots.php?function=timeslotbyuser&user=${idUser}&beginning=${d1}&end=${d2}`)
-    .then(res => data = res.data)
-    return [...data]
 }
 
 // fonction qui affiche tous les créneaux horaires récupérés, affectés à l'utilisateur connecté

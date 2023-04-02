@@ -59,3 +59,74 @@ export const toggleResp = () => {
     
     return main
 }
+
+// afficher l'agenda des bus
+export const toggleBuses = () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+
+    create("h2", main, "Agenda des bus", ['mainTitle'])
+    const ul = create("ul", main, "Liste des bus :", ['lstUsers'])
+
+    // on récupère tous les users de la base de données, du type renseigné
+    axios.get("buses/buses.php?function=buses").then(function(response){
+
+        let buses = response.data;
+        
+        for(let bus of buses){
+            axios.get("buses/buses.php?function=bus&id="+bus.id).then(function(responseBus){
+                let li = create("li", ul)
+                let a = create("div", li, "Bus n°" + responseBus.data.id + " (" + responseBus.data.nb_places + " places)")
+                a.addEventListener("click", function(){
+                    toggleAgenda(bus)
+                })
+            })
+        }
+
+        create("div", main, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
+    })
+    
+    return main
+}
+
+// fonction qui prend en paramètres un nombre de minutes (int) et renvoie le temps en heures (string)
+const convertMinutesToTime = (minutes) => {
+    let hours = Math.floor(minutes / 60);
+    let remainingMinutes = minutes % 60;
+  
+    if (hours < 10) {
+      hours = "0" + hours;
+    }
+    if (remainingMinutes < 10) {
+      remainingMinutes = "0" + remainingMinutes;
+    }
+  
+    return hours + "h" + remainingMinutes;
+  }
+
+// afficher l'agenda des lignes de bus
+export const toggleLines = () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+
+    create("h2", main, "Agenda des lignes de bus", ['mainTitle'])
+    const ul = create("ul", main, "Liste des lignes de bus :", ['lstUsers'])
+
+    // on récupère tous les users de la base de données, du type renseigné
+    axios.get("lines/lines.php?function=lines").then(function(response){
+
+        let lines = response.data;
+        
+        for(let line of lines){
+            let li = create("li", ul)
+            let a = create("div", li, "Ligne " + line.number + " (" + convertMinutesToTime(line.travel_time) + " de trajet)")
+            a.addEventListener("click", function(){
+                toggleAgenda(line)
+            })
+        }
+
+        create("div", main, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
+    })
+    
+    return main
+}

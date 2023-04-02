@@ -63,7 +63,7 @@ function fetch_bus_type() {
     @return objet bus (id : Int, name_bus_type : String, nb_places : Int).
 */
 function fetch_bus($id) {
-    $res = bdd()->query("SELECT * FROM Bus WHERE id = {$id}");
+    $res = bdd()->query("SELECT b.id, bt.name, bt.nb_places FROM `Bus` b JOIN `BusType` bt ON b.id_bus_type = bt.id WHERE b.id={$id}");
     return $res->fetch();
 }
 

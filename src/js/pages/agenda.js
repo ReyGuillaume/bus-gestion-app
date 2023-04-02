@@ -19,10 +19,19 @@ const drawAgenda = (user=null) => {
             toggleEspaceAdmin()
         }
     })
-
+    // agenda d'un utilisateur
     if(user.firstname){
         create("h2", main, "Agenda de " + user.firstname + " " + user.name.toUpperCase(), ['mainTitle'])
     }
+    // agenda d'un bus
+    else if(user.id_bus_type){
+        create("h2", main, "Agenda du bus n°" + user.id, ['mainTitle'])
+    }
+    // agenda d'une ligne de bus
+    else if(user.number){
+        create("h2", main, "Agenda de la ligne " + user.number, ['mainTitle'])
+    }
+    // agenda personnel
     else{
         create("h2", main, "Votre Agenda", ['mainTitle'])
     }
