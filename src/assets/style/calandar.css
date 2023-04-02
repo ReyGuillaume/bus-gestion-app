@@ -120,6 +120,9 @@
 .btn-task{
   display: flex;
 }
+.btn-task div{
+  margin: 3px;
+}
 .modifButton{
   color: white;
   background-color: rgb(99, 120, 225);
@@ -191,11 +194,14 @@
   width: 270px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
   transform: translate(-50%, -50%);
 }
 #task div{
   margin-top: 10px;
+}
+.form-info{
+  font-weight: bold;
 }
 
 

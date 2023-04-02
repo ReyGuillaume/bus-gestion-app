@@ -1,6 +1,6 @@
 import { create, createChamp, createChampRadio, createChampCheckbox, toggleAlert, toggleError } from "../main"
 import { getDayToString, getMonthToString, formatedHour } from "../components/week";
-import { participantsTimeslot, busesTimeslot, lineTimeslot, lineDirectionTimeslot, typeTimeslot } from "./adminForms";
+import { participantsTimeslot, busesTimeslot, lineTimeslot, lineDirectionTimeslot } from "./adminForms";
 import axios from "axios";
 
 // affiche le bouton pour supprimer un créneau dans une tâche
@@ -37,10 +37,10 @@ const modifConduite = (container, btns, props, bubble) => {
             })
     
              // Creation of each champ
-            create("label", container, "Début :");
+            create("label", container, "Début :", ["form-info"]);
             createChamp(container, "datetime-local", "StartDateTime").value = responseCreneau.data.begining;
     
-            create("label", container, "Fin :");
+            create("label", container, "Fin :", ["form-info"]);
             createChamp(container, "datetime-local", "EndDateTime").value = responseCreneau.data.end;
             
             //recup tous les bus 
@@ -51,7 +51,7 @@ const modifConduite = (container, btns, props, bubble) => {
            
             // Creation of the checkbox to define the bus involved in the timeslot
             var divCheckboxBus = create("div", container);
-            create("div", divCheckboxBus, "Bus :");
+            create("div", divCheckboxBus, "Bus :", ["form-info"]);
             axios.get(`buses/buses.php?function=buses`).then((response)=>{
                 for(var bus of response.data){
                     var champBus = createChampCheckbox(divCheckboxBus, bus.id , "selectionBus", bus.id);
@@ -73,7 +73,7 @@ const modifConduite = (container, btns, props, bubble) => {
             }
             // Creation of the checkbox to define the users involved in the timeslot
             var divCheckboxUsers = create("div", container);
-            create("div", divCheckboxUsers, "Participants :");
+            create("div", divCheckboxUsers, "Participants :", ["form-info"]);
             axios.get(`users/users.php?function=users`).then((response)=>{
                 for(var user of response.data){
                     var champUser = createChampCheckbox(divCheckboxUsers, user.id , "selectionParticipant", user.id);
@@ -96,7 +96,7 @@ const modifConduite = (container, btns, props, bubble) => {
     
             // Creation of the radio to define the line
             var divRadioLigne = create("div", container);
-            create("div", divRadioLigne, "Ligne :");
+            create("div", divRadioLigne, "Ligne :", ["form-info"]);
             axios.get(`lines/lines.php?function=lines`).then((response)=>{
                 for(var line of response.data){
                     var champLine = createChampRadio(divRadioLigne, line.number , "selectionLigne", line.number);
@@ -120,7 +120,7 @@ const modifConduite = (container, btns, props, bubble) => {
              }
             // Creation of the radio to define the direction
             var divRadioDirection = create("div", container);
-            create("div", divRadioDirection, "Direction :");
+            create("div", divRadioDirection, "Direction :", ["form-info"]);
             // create("br", divRadioDirection);
             var champAller = createChampRadio(divRadioDirection, "aller" , "selectionDirection", "aller");
     
@@ -154,14 +154,26 @@ const modifConduite = (container, btns, props, bubble) => {
                 if (users){
                     url += `&users=${users}`;
                 }
+                else{
+                    url += `&users=`;
+                }
                 if (buses){
                     url += `&buses=${buses}`;
+                }
+                else{
+                    url += `&buses=`;
                 }
                 if (line){
                     url += `&lines=${line}`;
                 }
+                else{
+                    url += `&lines=`;
+                }
                 if (direction){
                     url += `&directions=${direction}`;
+                }
+                else{
+                    url += `&directions=`;
                 }
     
                 axios.get(url).then(function(response){
@@ -376,13 +388,17 @@ const reunion = (container, props, bubble, user_role) => {
     let min_fin = formatedHour(new Date(props.end).getMinutes())
 
     create('p', container, props.name, ["task-name"])
-    create("label", container, "Participants : ")
+    create("div", container, "Participants : ", ["form-info"])
     props.users.forEach(element => {
         create("em", container, element.firstname + " " + element.name + ", ")
     });
+    const debut = create("div", container)
+    create("span", debut, "Début : ", ["form-info"])
+    debut.innerHTML += heure_debut + ":" + min_debut
 
-    create("label", container, "Début : " + heure_debut + ":" + min_debut)
-    create("label", container, "Fin prévue à : " + heure_fin + ":" + min_fin)
+    const fin = create("div", container)
+    create("span", fin, "Fin : ", ["form-info"])
+    fin.innerHTML += heure_fin + ":" + min_fin
 
     if(user_role == "Directeur"){
         const btns = create("div", container, null, ["btn-task"])
@@ -402,21 +418,26 @@ const conduite = (container, props, bubble, user_role) => {
     let min_fin = formatedHour(new Date(props.end).getMinutes())
 
     create('p', container, props.name, ["task-name"])
-    create("label", container, "Conducteur : ")
+    create("div", container, "Conducteur : ", ["form-info"])
     props.users.forEach(element => {
         create("em", container, element.firstname + " " + element.name + ", ")
     });
 
-    create("label", container, "Bus affectés : ")
+    create("div", container, "Bus affectés : ", ["form-info"])
     props.buses.forEach(element => {
         create("em", container, element.id + " (" + element.nb_places + " places), ")
     });
 
-    create("label", container, "Sur la ligne : ")
+    create("div", container, "Sur la ligne : ", ["form-info"])
     create("em", container, props.lines[0].number + " (" + props.lines[0].direction + ")")
 
-    create("label", container, "Début : " + heure_debut + ":" + min_debut)
-    create("label", container, "Fin prévue à : " + heure_fin + ":" + min_fin)
+    const debut = create("div", container)
+    create("span", debut, "Début : ", ["form-info"])
+    debut.innerHTML += heure_debut + ":" + min_debut
+
+    const fin = create("div", container)
+    create("span", fin, "Fin : ", ["form-info"])
+    fin.innerHTML += heure_fin + ":" + min_fin
 
     if(user_role == "Directeur" || user_role == "Responsable Logistique"){
         const btns = create("div", container, null, ["btn-task"])
