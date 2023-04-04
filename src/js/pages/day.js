@@ -89,7 +89,17 @@ const createTimeSlots = async (date, container, user=null) => {
             create("h2", houres, heure_fin + ":" + min_fin, ['end'])
 
             const body = create("div", div, null, ["timeslot__body"])
-            create("h3", body, timeslot.name)
+            
+            switch(timeslot.name){
+                case "Conduite": create("h3", body, "Conduite")
+                    break;
+                case "Réunion": create("h3", body, "Réunion")
+                    break;
+                case "Indisponibilité": create("h3", body, "Indisponible")
+                    break;
+                default: create("h3", body, "ERREUR")
+                    break;
+            }
 
             const goto = create("div", div, null, ["timeslot__goto"])
             create("i", goto , null, ['fa-solid', 'fa-chevron-right'])
