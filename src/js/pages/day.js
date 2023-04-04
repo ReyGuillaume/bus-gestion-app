@@ -57,15 +57,25 @@ const createTimeSlots = async (date, container, user=null) => {
             const div = create("div", container, null, ['timeslot'])
             div.addEventListener("click", () => toggleTask(footer, timeslot, div))
 
+            // Positionnement en fonction du début et de la fin
+            let heure_debut = formatedHour(new Date(timeslot.begining).getHours())
+            let min_debut = formatedHour(new Date(timeslot.begining).getMinutes())
+            let heure_fin = formatedHour(new Date(timeslot.end).getHours())
+            let min_fin = formatedHour(new Date(timeslot.end).getMinutes())
+            
+            let duree = (heure_fin - heure_debut) * 60 - min_fin - min_debut
+
+            let top = container.clientHeight * ((heure_debut * 60 + min_debut) - 6*60) / ((23 - 6) * 60)
+            let height = duree * container.clientHeight / ((23 - 6) * 60)
+
+            div.style.top = `${top}px`
+            div.style.height = `${height}px`
+
             const color = create("div", div, null, ["timeslot__color", timeslot.name])
             create("div", color, null, ["div-color"])
 
             const houres = create("div", div, null, ["timeslot__houres"])
 
-            let heure_debut = formatedHour(new Date(timeslot.begining).getHours())
-            let min_debut = formatedHour(new Date(timeslot.begining).getMinutes())
-            let heure_fin = formatedHour(new Date(timeslot.end).getHours())
-            let min_fin = formatedHour(new Date(timeslot.end).getMinutes())
 
             create("h2", houres, heure_debut + ":" + min_debut, ['beginning'])
             create("h2", houres, heure_fin + ":" + min_fin, ['end'])

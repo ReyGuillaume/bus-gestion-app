@@ -81,6 +81,33 @@ const getFirstMonday = (date) => {
     return initDate
 }
 
+
+// affiches les heures entre 6h et 22h (avec un interval de 2h entre chaque)
+const drawHouresColumn = (container) => {
+
+    let item = 0
+
+    for (let h = 6; h <= 22; h ++) {
+
+        let elt = create("p", container, `${h}:00`,['heure'])
+        elt.style.setProperty('--item', item);
+
+        let div = create("div", container, null, ['deux-heures', `${h}:00`])
+        let min = 0
+
+        let nb = 3
+        for (let i = 0; i < nb; i++) {
+            create("div",div,null,['trente-min', `${min >= 60 ? h+1 : h}:${min % 60}`, `${ i === Math.floor((nb -1) / 2) ? "mid" : null}`])
+            min += 30
+        }
+
+        item++
+    }
+
+    return container
+}
+
+
 // fonction qui crée le corps du calendrier d'une semaine
 const createCalandar = (container, date, user=null) => {
     const body = create("div", container, null, ['calandar__body'])
@@ -93,6 +120,11 @@ const createCalandar = (container, date, user=null) => {
     const days = create("div", body, null, ['days'])
     const timeslots = create("div", body, null, ['timeslots'])
 
+    create("div", days, null, ['days__day'])
+    const colonneHeures = create("div", timeslots, null, ['timeslots__day', 'col-heures'])
+
+    drawHouresColumn(colonneHeures)
+
     // pour chaque jour de la semaine :
     for(let i=0 ; i<7 ; i++){
         let day = getDayToString(date_courante.getDay())
@@ -102,6 +134,7 @@ const createCalandar = (container, date, user=null) => {
         let timeslots_courant = create("div", timeslots, "", ['timeslots__day'], day)
         toggleDayOfWeek(timeslots_courant, date_courante, user)
 
+        // On ajoute la classe 'today' si c'est la date d'aujourd'hui
         currentDate.getFullYear() == date_courante.getFullYear() &&
         currentDate.getMonth() == date_courante.getMonth() &&
         currentDate.getDate() == date_courante.getDate() ? 
