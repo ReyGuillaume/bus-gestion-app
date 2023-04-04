@@ -37,9 +37,13 @@
   gap: 1.5rem;
 }
 .calandar__body .days {
+  position: sticky;
+  top: 5.8rem;
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  background-color: #f4f4f4;
+  z-index: 1;
   border-bottom: #3D7C98 0.15rem solid;
 }
 .calandar__body .timeslots {
@@ -88,12 +92,8 @@
   position: absolute;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background-color: rgb(234, 233, 233);
-  margin-bottom: 10px;
-  border-radius: 15px;
-}
-.timeslot:hover{
+  background-color: #eae9e9;
+  border-radius: 8px;
   cursor: pointer;
 }
 .timeslot div{

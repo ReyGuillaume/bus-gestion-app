@@ -63,7 +63,7 @@ const createTimeSlots = async (date, container, user=null) => {
             let heure_fin = formatedHour(new Date(timeslot.end).getHours())
             let min_fin = formatedHour(new Date(timeslot.end).getMinutes())
             
-            let duree = (heure_fin - heure_debut) * 60 - min_fin - min_debut
+            let duree = ((heure_fin - heure_debut) * 60) + (min_fin - min_debut)
 
             let top = container.clientHeight * ((heure_debut * 60 + min_debut) - 6*60) / ((23 - 6) * 60)
             let height = duree * container.clientHeight / ((23 - 6) * 60)
