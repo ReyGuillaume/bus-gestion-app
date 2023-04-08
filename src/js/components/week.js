@@ -119,11 +119,45 @@ const handleDargLeave = e => {
     e.target.classList.toggle("dragover")
 }
 
+
+const toggleModifValidation = e => {
+    // let timeslot = document.querySelector(".timeslots").querySelector(`#${e.dataTransfer.getData('text/plain')}`)
+    
+    // //on repalce le créneau dans la nouvelle colonne
+    // e.target.appendChild(timeslot)
+
+    let app = document.querySelector("#app")
+
+    let overlay = create("div", app, null, ["overlay"])
+    overlay.onclick = e => {
+        e.preventDefault()
+        e.stopPropagation()
+        e.target.remove()
+    }
+
+    let modale = create("div", overlay, null, ['validation'])
+    modale.onclick = e => {
+        e.preventDefault()
+        e.stopPropagation()
+    }
+
+    const back = create("div", modale)
+    create("i", back , null, ['fa-solid', 'fa-chevron-left', 'back-button'])
+    back.onclick = () => {
+        modale.remove()
+        overlay.remove()
+    }
+    create("h1", modale, "Voulez vous effectuer cette action ?")
+    
+}
+
+
 const handleDrop = e => {
-    //on repalce le créneau dans la nouvelle colonne
     e.target.classList.toggle("dragover")
-    let timeslot = document.querySelector(".timeslots").querySelector(`#${e.dataTransfer.getData('text/plain')}`)
-    e.target.appendChild(timeslot)
+
+    //création d'une modale de validation
+    toggleModifValidation(e)
+
 }
 
 // création des zones de drop

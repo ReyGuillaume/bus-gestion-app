@@ -249,5 +249,24 @@
 .drop {
   border-radius: 8px;
 }
+.overlay {
+  z-index: 999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #0000003c;
+}
+.validation {
+  height: 50vh;
+  width: 50vw;
+  background-color: #f4f4f4;
+  border-radius: 1rem;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
 /*# sourceMappingURL=calandar.css.map */
