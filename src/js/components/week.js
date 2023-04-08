@@ -1,6 +1,7 @@
 import { create } from "../main";
 import '../../assets/style/calandar.css';
 import { toggleDayOfWeek } from "../pages/day";
+import axios from "axios"
 
 
 export const getDayToString = (index) => {
@@ -120,7 +121,7 @@ const handleDargLeave = e => {
 }
 
 
-const toggleModifValidation = e => {
+const toggleModifValidation = async e => {
     // let timeslot = document.querySelector(".timeslots").querySelector(`#${e.dataTransfer.getData('text/plain')}`)
     
     // //on repalce le créneau dans la nouvelle colonne
@@ -147,7 +148,36 @@ const toggleModifValidation = e => {
         modale.remove()
         overlay.remove()
     }
+
+    let id = e.dataTransfer.getData('text/plain')
+    id = id.substring(2, id.length)
+
     create("h1", modale, "Voulez vous effectuer cette action ?")
+
+    let data;
+    await axios.get(`timeslots/timeslots.php?function=timeslot&id=${id}`)
+    .then(res => data = res.data)
+
+    console.log(data)
+
+    let types, type
+    await axios.get(`timeslots/timeslots.php?function=types`)
+    .then(res => types = res.data)
+
+    types.forEach(t => {
+        if(t.id == data.id_time_slot_type)
+            type = t
+    })
+
+    let date = new Date(data.begining)
+    let jour = getDayToString(date.getDay())
+    let num = date.getDate()
+    let mois = getMonthToString(date.getMonth())
+    let annee = date.getFullYear()
+    let h = date.getHours()
+    let min = date.getMinutes()
+
+    create("p", modale, `Déplacer le créneau de ${type.name} du ${jour} ${num} ${mois} ${annee} à ${h}h${min}`)
     
 }
 
