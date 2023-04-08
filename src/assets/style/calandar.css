@@ -240,5 +240,14 @@
   width: 35%;
 }
 
+/* ======== Darg & Drop ========= */
+
+.dragover {
+  background-color: #00000017;
+  opacity: .5;
+}
+.drop {
+  border-radius: 8px;
+}
 
 /*# sourceMappingURL=calandar.css.map */

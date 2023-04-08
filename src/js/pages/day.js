@@ -48,14 +48,19 @@ const fetchTimeSlots = async (date, user=null) => {
     return [...data]
 }
 
+const handlerDragStart = e => {
+    e.dataTransfer.setData('text/plain', e.target.id)
+}
+
 // fonction qui affiche tous les créneaux horaires récupérés, affectés à l'utilisateur connecté
 const createTimeSlots = async (date, container, user=null) => {
     const footer = document.querySelector("#footer")
     const res = await fetchTimeSlots(date, user)
     if (res.length > 0) {
         res.forEach(timeslot => {
-            const div = create("div", container, null, ['timeslot'])
+            const div = create("div", container, null, ['timeslot'], [`ts${timeslot.id}`])
             div.addEventListener("click", () => toggleTask(footer, timeslot, div))
+            div.setAttribute('draggable', true);
 
             // Positionnement en fonction du début et de la fin
             let heure_debut = formatedHour(new Date(timeslot.begining).getHours())
@@ -76,6 +81,8 @@ const createTimeSlots = async (date, container, user=null) => {
 
             const houres = create("div", div, null, ["timeslot__houres"])
 
+            //ajout du drag & drop
+            div.ondragstart = handlerDragStart
 
             create("h2", houres, heure_debut + ":" + min_debut, ['beginning'])
             create("h2", houres, heure_fin + ":" + min_fin, ['end'])

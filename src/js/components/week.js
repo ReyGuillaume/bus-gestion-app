@@ -108,6 +108,33 @@ const drawHouresColumn = (container) => {
 }
 
 
+const handleDargEnter = e => {
+    e.preventDefault()
+    e.target.classList.toggle("dragover")
+}
+
+const handleDargOver = e => e.preventDefault()
+
+const handleDargLeave = e => {
+    e.target.classList.toggle("dragover")
+}
+
+const handleDrop = e => {
+    //on repalce le créneau dans la nouvelle colonne
+    e.target.classList.toggle("dragover")
+    let timeslot = document.querySelector(".timeslots").querySelector(`#${e.dataTransfer.getData('text/plain')}`)
+    e.target.appendChild(timeslot)
+}
+
+// création des zones de drop
+const addDragAndDrop = div => {
+    div.ondragenter = handleDargEnter
+    div.ondragover = handleDargOver
+    div.ondragleave = handleDargLeave
+    div.ondrop = handleDrop
+}
+
+
 // fonction qui crée le corps du calendrier d'une semaine
 const createCalandar = (container, date, user=null) => {
     const body = create("div", container, null, ['calandar__body'])
@@ -131,8 +158,10 @@ const createCalandar = (container, date, user=null) => {
         let nb = date_courante.getDate()
 
         let div = create("div", days, day + " " + nb, ['days__day'])
-        let timeslots_courant = create("div", timeslots, "", ['timeslots__day'], day)
+        let timeslots_courant = create("div", timeslots, "", ['timeslots__day', 'drop'], day)
         toggleDayOfWeek(timeslots_courant, date_courante, user)
+
+        addDragAndDrop(timeslots_courant)
 
         // On ajoute la classe 'today' si c'est la date d'aujourd'hui
         currentDate.getFullYear() == date_courante.getFullYear() &&
