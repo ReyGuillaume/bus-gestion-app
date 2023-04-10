@@ -80,6 +80,29 @@ function fetch_bus_by_type($id_bus_type) {
 }
 
 /**
+    Indique si un bus est disponible de $begining à $end
+
+    @param id : id du bus sélectionné.
+    @param beginning : date de début de la plage horaire de recherche.
+    @param end : date de fin de la plage horaire de recherche.
+
+    @return boolean
+*/
+function is_available($id, $beginning, $end) {
+    $res = bdd()->query("SELECT b.id FROM `bus` b JOIN `bus_timeslot` bt ON b.id=bt.id_bus WHERE bt.id_bus = {$id}");
+    if(!$res->fetchAll()){
+        return true;
+    }
+    else{
+        $res2 = bdd()->query("SELECT bt.id_bus FROM `bus_timeslot` bt JOIN `timeslot` t ON bt.id_time_slot=t.id WHERE (bt.id_bus = {$id}) AND ((t.begining >= '{$beginning}' AND t.begining < '{$end}') OR (t.end > '{$beginning}' AND t.end < '{$end}'))");
+        if($res2->fetchAll()){
+            return false;
+        }
+        return true;
+    }
+}
+
+/**
     Modifie les informations d'un bus donné.
 
     @param id : id du bus dont les modifications seront modifiées.
@@ -170,6 +193,9 @@ switch ($_GET['function']) {
         break;
     case 'bytype':     // type
         $res = fetch_bus_by_type($_GET['type']);
+        break;
+    case 'available':
+        $res = is_available($_GET['id'], $_GET['beginning'], $_GET['end']);
         break;
     case 'updatebus':     // id, type
         $res = modify_bus($_GET['id'], $_GET['type']);

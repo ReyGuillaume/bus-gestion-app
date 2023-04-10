@@ -1,6 +1,6 @@
 import { create } from "../main";
 import { toggleAgenda } from "./agenda";
-import { toggleAddCreneau,toggleSupprimeCreneau,toggleModifCreneau, toggleAjoutUser, toggleSupprimeUser, AjoutBus, SupprimerBus, ModifBus, toggleModifyUser } from "./adminForms";
+import { toggleAddCreneau,toggleSupprimeCreneau,toggleModifCreneau, toggleAjoutUser, toggleSupprimeUser, DisponibilityBus, AjoutBus, SupprimerBus, ModifBus, toggleModifyUser } from "./adminForms";
 import { toggleAddLine, toggleSupprLine, toggleModifLine } from "./gestionLigne";
 import { toggleDrivers, toggleResp, toggleBuses, toggleLines } from "./agendaUsers";
 
@@ -98,7 +98,7 @@ export const toggleGestionUsers = () => {
     main.replaceChildren("")
 
     create("h2", main, "Gestion des utilisateurs")
-    create("p", main, "Que souhaitez-vous faire ?")
+    create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
     const nav = create("nav", main, null, ['navBar'])
 
@@ -115,10 +115,11 @@ export const toggleGestionBus = () => {
     main.replaceChildren("")
 
     create("h2", main, "Gestion des Bus")
-    create("p", main, "Que souhaitez-vous faire ?")
+    create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
     const nav = create("nav", main, null, ['navBar'])
 
+    create("div", nav, 'Voir la disponibilité des bus', ['navBar__item']).addEventListener("click", DisponibilityBus)
     create("div", nav, 'Ajouter un bus', ['navBar__item']).addEventListener("click", AjoutBus)
     create("div", nav, "Modifier un bus", ['navBar__item']).addEventListener("click", ModifBus)
     create("div", nav, "Supprimer un bus", ['navBar__item']).addEventListener("click", SupprimerBus)
@@ -132,7 +133,7 @@ export const toggleGestionTimeslots = () => {
     main.replaceChildren("")
 
     create("h2", main, "Gestion des Créneaux")
-    create("p", main, "Que souhaitez-vous faire ?")
+    create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
     const nav = create("nav", main, null, ['navBar'])
 
@@ -151,7 +152,7 @@ export const toggleGestionLigne = () => {
     main.replaceChildren("")
 
     create("h2", main, "Gestion des Lignes")
-    create("p", main, "Que souhaitez-vous faire ?")
+    create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
     const nav = create("nav", main, null, ['navBar'])
 

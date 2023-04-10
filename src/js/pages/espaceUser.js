@@ -19,7 +19,7 @@ export const toggleEspaceUser = () => {
     }
 
     create("h2", main, "Bienvenue sur votre espace personnel")
-    create("p", main, "Que souhaitez-vous faire ?")
+    create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
     const nav = create("nav", main, null, ['navBar_User'])
 

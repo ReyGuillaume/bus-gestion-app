@@ -677,6 +677,53 @@ export const toggleSupprimeUser = () => {
 //   Gestion Bus 
 //------------------------------------------------------- */
 
+export const DisponibilityBus = () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+    
+    create("h2", main, "Disponibilité des bus")
+    create("p", main, "Afficher les bus disponibles selon la plage horaire :")
+
+    // Creation of the form
+    const form = create("form", main)
+
+     // Begining
+     create("label", form, "Début :")
+     createChamp(form, "datetime-local", "StartDateTime")
+
+     // End
+     create("label", form, "Fin :")
+     createChamp(form, "datetime-local", "EndDateTime")
+
+     create("div", main, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
+
+     const btn = create("div", form, "Envoyer")
+     btn.addEventListener("click", function(){
+
+        let start = document.querySelector("input[name='StartDateTime']").value;
+        let end = document.querySelector("input[name='EndDateTime']").value;
+
+        axios.get("buses/buses.php?function=buses").then(function(response){
+
+            let buses = response.data;
+            let ul = document.querySelector("#lstBuses");
+            if(ul){
+                ul.remove()
+            }
+            ul = create("ul", main, "Liste des bus disponibles :", null, "lstBuses")
+            
+            for(let bus of buses){
+                axios.get("buses/buses.php?function=available&id="+bus.id+"&beginning="+start+"&end="+end).then(function(response){
+                    if(response.data){
+                        create("li", ul, "Bus n°"+bus.id + " est disponible")
+                    }
+                })
+            }
+        })
+
+     })
+}
+
 export const AjoutBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")

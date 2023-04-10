@@ -128,12 +128,12 @@ body {
   transition: 0.5s;
   padding: 8px;
 }
-
-#app .navBar_User .navBar_container .navBar_image img:hover, #app .navBar_Admin .navBar_container .navBar_image img:hover{
-  padding: 10px;
-}
 .rose, .jaune, .rouge, .orange, .bleu, .bleu_clair, .gris, .violet, .vert{
-  border-radius: 30px;
+  transition: 0.5s;
+  border-radius: 35px;
+}
+.rose:hover, .jaune:hover, .rouge:hover, .orange:hover, .bleu:hover, .bleu_clair:hover, .gris:hover, .violet:hover, .vert:hover{
+  border-radius: 20px;
 }
 .rose{
   background-color: #E2A9FD;
