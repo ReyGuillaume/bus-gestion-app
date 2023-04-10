@@ -21,21 +21,74 @@ export const toggleEspaceAdmin = () => {
     }
 
     create("h2", main, "Bienvenue sur votre espace Admin")
-    create("p", main, "Que souhaitez-vous faire ?")
+    create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
-    const nav = create("nav", main, null, ['navBar'])
+    const nav = create("nav", main, null, ['navBar_Admin'])
 
-    create("div", nav, 'Voir mon agenda', ['navBar__item']).addEventListener("click", toggleAgenda)
-    create("div", nav, "Voir l'agenda des chauffeurs", ['navBar__item']).addEventListener("click", toggleDrivers)
+    // agenda
+    const div = create("div", nav, null, ["navBar_container"])
+    div.addEventListener("click", toggleAgenda)
+    const img = create("div", div, null, ["navBar_image", "rose"])
+    create("img", img).src = "src/assets/images/nav_agenda.png"
+    create("div", div, 'Voir mon agenda', ['navBar__item'])
+
+    // agenda chauffeurs
+    const div2 = create("div", nav, null, ["navBar_container"])
+    div2.addEventListener("click", toggleDrivers)
+    const img2 = create("div", div2, null, ["navBar_image", "jaune"])
+    create("img", img2).src = "src/assets/images/nav_gens.png"
+    create("div", div2, "Voir l'agenda des chauffeurs", ['navBar__item'])
+
+    // agenda responsables
     if(sessionData["role"] == "Directeur"){
-        create("div", nav, "Voir l'agenda des responsables logistiques", ['navBar__item']).addEventListener("click", toggleResp)
+        const div3 = create("div", nav, null, ["navBar_container"])
+        div3.addEventListener("click", toggleResp)
+        const img3 = create("div", div3, null, ["navBar_image", "orange"])
+        create("img", img3).src = "src/assets/images/nav_gens.png"
+        create("div", div3, "Voir l'agenda des responsables logistiques", ['navBar__item'])
     }
-    create("div", nav, "Voir l'agenda des bus", ['navBar__item']).addEventListener("click", toggleBuses)
-    create("div", nav, "Voir l'agenda des lignes de bus", ['navBar__item']).addEventListener("click", toggleLines)
-    create("div", nav, "Gérer les créneaux", ['navBar__item']).addEventListener("click", toggleGestionTimeslots)
-    create("div", nav, 'Gérer les utilisateurs', ['navBar__item']).addEventListener("click", toggleGestionUsers)
-    create("div", nav, 'Gérer les bus', ['navBar__item']).addEventListener("click", toggleGestionBus)
-    create("div", nav, 'Gérer les lignes', ['navBar__item']).addEventListener("click", toggleGestionLigne)
+
+    // agenda bus
+    const div4 = create("div", nav, null, ["navBar_container"])
+    div4.addEventListener("click", toggleBuses)
+    const img4 = create("div", div4, null, ["navBar_image", "rouge"])
+    create("img", img4).src = "src/assets/images/nav_bus.png"
+    create("div", div4, "Voir l'agenda des bus", ['navBar__item'])
+
+    // agenda lignes de bus
+    const div5 = create("div", nav, null, ["navBar_container"])
+    div5.addEventListener("click", toggleLines)
+    const img5 = create("div", div5, null, ["navBar_image", "bleu"])
+    create("img", img5).src = "src/assets/images/nav_ligne.png"
+    create("div", div5, "Voir l'agenda des lignes de bus", ['navBar__item'])
+
+    // créneaux
+    const div6 = create("div", nav, null, ["navBar_container"])
+    div6.addEventListener("click", toggleGestionTimeslots)
+    const img6 = create("div", div6, null, ["navBar_image", "gris"])
+    create("img", img6).src = "src/assets/images/nav_creneau.png"
+    create("div", div6, "Gérer les créneaux", ['navBar__item'])
+
+    // utilisateurs
+    const div7 = create("div", nav, null, ["navBar_container"])
+    div7.addEventListener("click", toggleGestionUsers)
+    const img7 = create("div", div7, null, ["navBar_image", "violet"])
+    create("img", img7).src = "src/assets/images/nav_user.png"
+    create("div", div7, 'Gérer les utilisateurs', ['navBar__item'])
+
+    // bus
+    const div8 = create("div", nav, null, ["navBar_container"])
+    div8.addEventListener("click", toggleGestionBus)
+    const img8 = create("div", div8, null, ["navBar_image", "vert"])
+    create("img", img8).src = "src/assets/images/nav_bus.png"
+    create("div", div8, 'Gérer les bus', ['navBar__item'])
+
+    // lignes
+    const div9 = create("div", nav, null, ["navBar_container"])
+    div9.addEventListener("click", toggleGestionLigne)
+    const img9 = create("div", div9, null, ["navBar_image", "bleu_clair"])
+    create("img", img9).src = "src/assets/images/nav_gestion.png"
+    create("div", div9, 'Gérer les lignes', ['navBar__item'])
 
     return main
 }
