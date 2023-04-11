@@ -101,6 +101,13 @@
   width: 5px;
   height: 40px;
 }
+.back-button{
+  cursor: pointer;
+}
+.task-name{
+  color: rgb(99, 99, 220);
+  font-weight: bold;
+}
 .Conduite .div-color{
   background-color: rgb(190, 243, 255);
 }
@@ -109,6 +116,33 @@
 }
 .Indisponibilité .div-color{
   background-color: rgb(251, 225, 159);
+}
+.btn-task{
+  display: flex;
+}
+.btn-task div{
+  margin: 3px;
+}
+.modifButton{
+  color: white;
+  background-color: rgb(99, 120, 225);
+  width: max-content;
+  padding: 3px;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+.delButton{
+  color: white;
+  background-color: rgb(225, 99, 99);
+  width: max-content;
+  padding: 3px;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+.modifButton:hover, .delButton:hover{
+  background-color: black;
+  cursor: pointer;
+  transition: 0.5s;
 }
 .calandar__body .numbers {
   display: flex;
@@ -147,12 +181,28 @@
 .calandar__body .numbers__num:hover {
   border: 2px solid #3D7C98;
 }
-#task{
-  position: fixed;
-  top: center;
-  left: center;
-  background-color: white;
-  width: 200px;
+
+.cache{
+  opacity: 0.4;
+  z-index: -1;
 }
+#task {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background-color: white;
+  width: 270px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -50%);
+}
+#task div{
+  margin-top: 10px;
+}
+.form-info{
+  font-weight: bold;
+}
+
 
 /*# sourceMappingURL=calandar.css.map */

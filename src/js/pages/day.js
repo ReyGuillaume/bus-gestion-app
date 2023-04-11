@@ -1,7 +1,7 @@
 import { create } from "../main";
 import { toggleAgenda } from "./agenda";
 import { toggleTask } from "./userTask";
-import { getMonthToString , getDayToString } from "../components/calandar";
+import { getMonthToString , getDayToString, formatedHour } from "../components/week";
 import axios from "axios";
 
 // fonction qui crée tous les jours d'un mois
@@ -28,15 +28,6 @@ const createDaysBar = (date, container, user=null) => {
 // renvoie une date JS sous forme 2023-02-16 00:00:00
 const datePhp = date => date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
 
-// rajoute un "0" si l'horaire est inférieur à 10 (8 => 08)
-const formatedHour = (horaire) => {
-    if(horaire < 10){
-        return "0" + horaire
-    }
-    else{
-        return horaire
-    }
-}
 
 // fonction qui récupère tous les créneaux horaires affectés à l'utilisateur connecté, à une certaine date
 const fetchTimeSlots = async (date, user=null) => {
@@ -45,25 +36,44 @@ const fetchTimeSlots = async (date, user=null) => {
     let d2 = datePhp(new Date(new Date(date).setDate(date.getDate() + 1)))
     const sessionData = JSON.parse(sessionStorage.getItem("userData"))
 
-    let idUser;
+    // utilisateur
     if(user != null && user.firstname){
-        idUser = user.id
+        let idUser = user.id
+        await axios.get(`timeslots/timeslots.php?function=timeslotbyuser&user=${idUser}&beginning=${d1}&end=${d2}`)
+        .then(res => data = res.data)
+        return [...data]
     }
+    // bus
+    else if(user != null && user.id_bus_type){
+        let idBus = user.id
+        await axios.get(`timeslots/timeslots.php?function=timeslotbybus&bus=${idBus}&beginning=${d1}&end=${d2}`)
+        .then(res => data = res.data)
+        return [...data]
+    }
+    // ligne
+    else if(user != null && user.number){
+        let idLine = user.number
+        await axios.get(`timeslots/timeslots.php?function=timeslotbyline&line=${idLine}&beginning=${d1}&end=${d2}`)
+        .then(res => data = res.data)
+        return [...data]
+    }
+    // personnel
     else{
-        idUser = sessionData['id']
+        let idUser = sessionData['id']
+        await axios.get(`timeslots/timeslots.php?function=timeslotbyuser&user=${idUser}&beginning=${d1}&end=${d2}`)
+        .then(res => data = res.data)
+        return [...data]
     }
-    await axios.get(`timeslots/timeslots.php?function=timeslotbyuser&user=${idUser}&beginning=${d1}&end=${d2}`)
-    .then(res => data = res.data)
-    return [...data]
 }
 
 // fonction qui affiche tous les créneaux horaires récupérés, affectés à l'utilisateur connecté
 const createTimeSlots = async (date, container, user=null) => {
+    const footer = document.querySelector("#footer")
     const res = await fetchTimeSlots(date, user)
     if (res.length > 0) {
         res.forEach(timeslot => {
             const div = create("div", container, null, ['timeslot'])
-            div.addEventListener("click", () => toggleTask(container, timeslot, user))
+            div.addEventListener("click", () => toggleTask(footer, timeslot, div))
 
             const color = create("div", div, null, ["timeslot__color", timeslot.name])
             create("div", color, null, ["div-color"])
@@ -79,7 +89,17 @@ const createTimeSlots = async (date, container, user=null) => {
             create("h2", houres, heure_fin + ":" + min_fin, ['end'])
 
             const body = create("div", div, null, ["timeslot__body"])
-            create("h3", body, timeslot.name)
+            
+            switch(timeslot.name){
+                case "Conduite": create("h3", body, "Conduite")
+                    break;
+                case "Réunion": create("h3", body, "Réunion")
+                    break;
+                case "Indisponibilité": create("h3", body, "Indisponible")
+                    break;
+                default: create("h3", body, "ERREUR")
+                    break;
+            }
 
             const goto = create("div", div, null, ["timeslot__goto"])
             create("i", goto , null, ['fa-solid', 'fa-chevron-right'])

@@ -36,10 +36,6 @@ export const toggleIndisponibilitiForm = () => {
     });
 
     return main
-
-    
-
-    
 }
 
 export const toggleSupprIndispo= () => {

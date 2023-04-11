@@ -79,7 +79,89 @@ body {
   margin-top: 5.8rem;
   padding: 0.5rem;
 }
-
+.presentation{
+  text-align: center;
+  font-weight: bold;
+  color: rgb(49, 88, 188);
+}
+#app .navBar__item:hover{
+  transition: 0.5s;
+  color: rgb(197, 196, 196);
+}
+#app .navBar_User{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+#app .navBar_Admin{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+#app .navBar_User .navBar_container, #app .navBar_Admin .navBar_container{
+  width: max-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  padding: 15px;
+  cursor: pointer;
+}
+#app .navBar_User .navBar_container .navBar_image, #app .navBar_Admin .navBar_container .navBar_image{
+  padding: 5px;
+  height: max-content;
+  width: max-content;
+  justify-content: center;
+}
+#app .navBar_User .navBar_container .navBar__item, #app .navBar_Admin .navBar_container .navBar__item{
+  display: inline-block;
+  text-align: center;
+}
+#app .navBar_User .navBar_container .navBar_image img, #app .navBar_Admin .navBar_container .navBar_image img{
+  display: block;
+  transition: 0.5s;
+  padding: 8px;
+}
+.rose, .jaune, .rouge, .orange, .bleu, .bleu_clair, .gris, .violet, .vert{
+  transition: 0.5s;
+  border-radius: 35px;
+}
+.rose:hover, .jaune:hover, .rouge:hover, .orange:hover, .bleu:hover, .bleu_clair:hover, .gris:hover, .violet:hover, .vert:hover{
+  border-radius: 20px;
+}
+.rose{
+  background-color: #E2A9FD;
+}
+.jaune{
+  background-color: #F1E1A8;
+}
+.rouge{
+  background-color: #F2A1A1;
+}
+.orange{
+  background-color: #eec07b;
+}
+.bleu{
+  background-color: #a1abed;
+}
+.bleu_clair{
+  background-color: #A1DFF2;
+}
+.gris{
+  background-color: #a8acb7;
+}
+.violet{
+  background-color: #a68bff;
+}
+.vert{
+  background-color: #A1F2A9;
+}
 #footer {
   display: flex;
   align-items: center;
