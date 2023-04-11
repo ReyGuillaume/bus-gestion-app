@@ -3,7 +3,7 @@ import { toggleAgenda } from "./agenda";
 import { toggleAddCreneau,toggleSupprimeCreneau,toggleModifCreneau } from "../pages/gestionTimeslots";
 import{toggleAjoutUser, toggleSupprimeUser, toggleModifyUser} from "../pages/gestionUsers";
 import {AjoutBus, SupprimerBus, ModifBus}from "../pages/gestionBuses";
-import { toggleAddLine, toggleSupprLine, toggleModifLine } from "./gestionLigne";
+import { toggleAddLine, toggleSupprLine, toggleModifLine, toggleVerifCouverture } from "./gestionLigne";
 import { toggleDrivers, toggleResp, toggleBuses, toggleLines } from "./agendaUsers";
 
 
@@ -149,8 +149,6 @@ export const toggleGestionTimeslots = () => {
     return main
 }
 
-
-
 export const toggleGestionLigne = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
@@ -163,6 +161,7 @@ export const toggleGestionLigne = () => {
     create("div", nav, "Ajouter une Ligne", ['navBar__item']).addEventListener("click", toggleAddLine)
     create("div", nav, "Modifier une Ligne", ['navBar__item']).addEventListener("click", toggleModifLine)
     create("div", nav, "Supprimer une Ligne", ['navBar__item']).addEventListener("click", toggleSupprLine)
+    create("div", nav, "Verifier la couverture des lignes", ['navBar__item']).addEventListener("click", toggleVerifCouverture)
     create("div", nav, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
 
     return main

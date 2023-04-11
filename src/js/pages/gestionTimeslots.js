@@ -451,6 +451,15 @@ function axiosUrlSendWhenADD(type){
 // ------------------------------------------------------- */
 //   Gestion Créneau
 //------------------------------------------------------- */
+ // Fonction de recuperation du creneau selectionnée
+ function creneauSelected () { 
+    for(var creneau of document.querySelectorAll("input[name='selectionTimeslot']")){
+        if (creneau.checked) {
+            return creneau.value;
+        }
+    }
+ }
+
 export const toggleAddCreneau = () => {
     const main = document.querySelector("#app");
     main.replaceChildren("");
@@ -564,8 +573,8 @@ export const toggleModifCreneau = () => {
 
    // Creation of the radio to select the timeslot to modify
     var divRadioCreneau = create("div", form);
+
      // Recuperation de toutes les lignes
-    
     axios.get(`timeslots/timeslots.php?function=timeslots`).then((response)=>{
         
         for(var timeslot of response.data){
@@ -573,15 +582,6 @@ export const toggleModifCreneau = () => {
 
            //Ajout d'un evenement au clic d'un radio
             createChampRadio(divRadioCreneau, timeslot.id , "selectionTimeslot", timeslot.id).addEventListener('click', function(){
-
-            // Fonction de recuperation du creneau selectionnée
-            function creneauSelected () {
-                for(var creneau of document.querySelectorAll("input[name='selectionTimeslot']")){
-                    if (creneau.checked) {
-                        return creneau.value;
-                    }
-                }
-            }
 
 
             // Recuperation du creneau a modifier
@@ -611,6 +611,7 @@ export const toggleModifCreneau = () => {
                 axios.get(`timeslots/timeslots.php?function=types`).then((response)=>{
                     for(var type of response.data){
                         var champType = createChampRadio(divRadio, type.name , "selectionType", type.id);
+                        champType.setAttribute("disabled", true);
                         if (type.id = responseCreneau.data.id_time_slot_type ){
                             champType.checked = true;
                         }
@@ -625,8 +626,7 @@ export const toggleModifCreneau = () => {
                 for (var bus of responseCreneau.data.buses){
                     tabBus.push(bus.id);
                 }
-               
-
+            
 
 
                 // Creation of the checkbox to define the bus involved in the timeslot

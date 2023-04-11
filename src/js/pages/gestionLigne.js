@@ -168,3 +168,40 @@ export const toggleModifLine = () => {
     return main
 
 }
+
+export const toggleVerifCouverture = () => {
+
+    // Recuperation de la div à modifier 
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+    
+    // Mise en place des titres
+    create("h2", main, "Verification de couvertures des lignes")
+    create("p", main, "Indiquer la semaine à verifier")
+
+    // Creation of the form
+    const form = create("form", main)
+
+    // Remplissage du formulaire 
+    createChamp(form, "week", "semaine");
+
+    // Creation of submit button
+    const bouton = create("div", form, "Envoyer")
+    bouton.addEventListener("click", function(){
+
+        let semaine = document.querySelector("input[name='semaine']").value;
+        
+
+        /*axios.get (`lines/lines.php?function=updateline&number=${number}&travel_time=${travel_time}`).then(function(response){
+            toggleEspaceAdmin();
+            if(response.data){
+                toggleAlert("BRAVO", "La ligne a bien été modifiée");
+            }
+            else{
+                toggleError("ERREUR", "La ligne n'a pas pu être modifiée");
+            }
+        }) */
+
+    })
+
+}

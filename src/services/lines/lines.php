@@ -113,7 +113,12 @@ function delete_line($number) {  //supprimer également tous les créneaux qui s
     return false;
 }
 
-
+/**
+   
+*/
+function ($number) {  //supprimer également tous les créneaux qui sont dépendants de ce bus
+   
+}
 
 switch ($_GET['function']) {
     case 'create':      // number, temps de trajet
