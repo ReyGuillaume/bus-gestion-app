@@ -7,8 +7,7 @@ const drawAgenda = (user=null) => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    const back = create("div", main)
-    create("i", back , null, ['fa-solid', 'fa-chevron-left', 'back-button'])
+    const back = create("div", main, "<< Retour", ["return"])
 
     back.addEventListener("click", function(){
         const sessionData = JSON.parse(sessionStorage.getItem("userData"))

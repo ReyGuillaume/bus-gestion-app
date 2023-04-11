@@ -63,23 +63,24 @@ export const toggleAddCreneau = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("h2", main, "Ajout de crénaux")
-    create("p", main, " Rentrez les informations suivantes : ")
+    create("h2", main, "Ajout de créneaux")
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
 
     // Creation of each champ
-    create("label", form, "Entrez la date de début du créneau :");
+    create("label", form, "Début :");
     createChamp(form, "datetime-local", "StartDateTime");
 
-    create("label", form, "Entrez la date de fin du creneau :");
+    create("label", form, "Fin :");
     createChamp(form, "datetime-local", "EndDateTime");
     
 
     // Creation of the radio to define the type of the timeslot
     var divRadio = create("div", form);
-    create("label", divRadio, "Choisissez le type du créneau :");
+    create("label", divRadio, "Choisissez le type du créneau : ", ["form-info"]);
     axios.get(`timeslots/timeslots.php?function=types`).then((response)=>{
         for(var type of response.data){
             var radio = createChampRadio(divRadio, type.name , "selectionType", type.id);
@@ -94,7 +95,7 @@ export const toggleAddCreneau = () => {
 
     // Creation of the checkbox to define the bus involved in the timeslot
     var divCheckboxBus = create("div", form);
-    create("label", divCheckboxBus, "Choisissez les bus participants :");
+    create("label", divCheckboxBus, "Choisissez les bus participants : ", ["form-info"]);
     axios.get(`buses/buses.php?function=buses`).then((response)=>{
         for(var bus of response.data){
             createChampCheckbox(divCheckboxBus, bus.id , "selectionBus", bus.id);
@@ -105,7 +106,7 @@ export const toggleAddCreneau = () => {
 
     // Creation of the checkbox to define the users involved in the timeslot
     var divCheckboxUsers = create("div", form);
-    create("label", divCheckboxUsers, "Choisissez les participants :");
+    create("label", divCheckboxUsers, "Choisissez les participants : ", ["form-info"]);
     axios.get(`users/users.php?function=users`).then((response)=>{
         for(var user of response.data){
             createChampCheckbox(divCheckboxUsers, user.id , "selectionParticipant", user.id);
@@ -116,7 +117,7 @@ export const toggleAddCreneau = () => {
 
     // Creation of the radio to define the line
     var divRadioLigne = create("div", form);
-    create("label", divRadioLigne, "Choisissez une ligne :");
+    create("label", divRadioLigne, "Choisissez une ligne : ", ["form-info"]);
     axios.get(`lines/lines.php?function=lines`).then((response)=>{
         for(var line of response.data){
             createChampRadio(divRadioLigne, line.number , "selectionLigne", line.number);
@@ -127,7 +128,7 @@ export const toggleAddCreneau = () => {
 
     // Creation of the radio to define the direction
     var divRadioDirection = create("div", form);
-    create("label", divRadioDirection, "Choisissez la direction  :");
+    create("label", divRadioDirection, "Choisissez la direction  :", ["form-info"]);
     create("br", divRadioDirection);
     createChampRadio(divRadioDirection, "aller" , "selectionDirection", "aller");
     var label = create("label", divRadioDirection, "aller");
@@ -138,7 +139,7 @@ export const toggleAddCreneau = () => {
     label.setAttribute("for", "retour");    
 
     // Creation of submit button
-    const bouton = create("div", form, "Envoyer")
+    const bouton = create("div", form, "Envoyer", ["submitButton"])
     bouton.addEventListener("click", async function(){
 
         // selection of the start and end time
@@ -215,16 +216,16 @@ const executeModifCreneau = (container, id_creneau) => {
         container.replaceChildren("")
 
          // Creation of each champ
-        create("label", container, "La date de début du créneau :");
+        create("label", container, "Début :");
         createChamp(container, "datetime-local", "StartDateTime").value = responseCreneau.data.begining;
 
-        create("label", container, "Entrez la date de fin du creneau :");
+        create("label", container, "Fin :");
         createChamp(container, "datetime-local", "EndDateTime").value = responseCreneau.data.end;
         
 
         // Creation of the radio to define the type of the timeslot
         var divRadio = create("div", container);
-        create("label", divRadio, "Le type du créneau :");
+        create("label", divRadio, "Le type du créneau : ", ["form-info"]);
         axios.get(`timeslots/timeslots.php?function=types`).then((response)=>{
             for(var type of response.data){
                 var champType = createChampRadio(divRadio, type.name , "selectionType", type.id);
@@ -244,7 +245,7 @@ const executeModifCreneau = (container, id_creneau) => {
        
         // Creation of the checkbox to define the bus involved in the timeslot
         var divCheckboxBus = create("div", container);
-        create("label", divCheckboxBus, "Les bus participants :");
+        create("label", divCheckboxBus, "Les bus participants : ", ["form-info"]);
         axios.get(`buses/buses.php?function=buses`).then((response)=>{
             for(var bus of response.data){
                 var champBus = createChampCheckbox(divCheckboxBus, bus.id , "selectionBus", bus.id);
@@ -266,7 +267,7 @@ const executeModifCreneau = (container, id_creneau) => {
         }
         // Creation of the checkbox to define the users involved in the timeslot
         var divCheckboxUsers = create("div", container);
-        create("label", divCheckboxUsers, "Les participants :");
+        create("label", divCheckboxUsers, "Les participants : ", ["form-info"]);
         axios.get(`users/users.php?function=users`).then((response)=>{
             for(var user of response.data){
                 var champUser = createChampCheckbox(divCheckboxUsers, user.id , "selectionParticipant", user.id);
@@ -289,7 +290,7 @@ const executeModifCreneau = (container, id_creneau) => {
 
         // Creation of the radio to define the line
         var divRadioLigne = create("div", container);
-        create("label", divRadioLigne, "La ligne :");
+        create("label", divRadioLigne, "La ligne : ", ["form-info"]);
         axios.get(`lines/lines.php?function=lines`).then((response)=>{
             for(var line of response.data){
                 var champLine = createChampRadio(divRadioLigne, line.number , "selectionLigne", line.number);
@@ -313,7 +314,7 @@ const executeModifCreneau = (container, id_creneau) => {
          }
         // Creation of the radio to define the direction
         var divRadioDirection = create("div", container);
-        create("label", divRadioDirection, "La direction  :");
+        create("label", divRadioDirection, "La direction : ", ["form-info"]);
         create("br", divRadioDirection);
         var champAller = createChampRadio(divRadioDirection, "aller" , "selectionDirection", "aller");
 
@@ -330,8 +331,8 @@ const executeModifCreneau = (container, id_creneau) => {
             champRetour.checked = true;
         }
         // Creation of submit button
-        const bouton = create("div", container, "Envoyer")
-        bouton.addEventListener("click", function (event){
+        const bouton = create("div", container, "Modifier", ["submitButton"])
+        bouton.addEventListener("click", function (){
             // selection of the start and end time
             let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
             let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
@@ -374,8 +375,9 @@ export const toggleModifCreneau = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("h2", main, "Modification de Créneau")
-    create("p", main, " Choisir le créneau à modifier : ")
+    create("h2", main, "Modification de créneaux")
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, " Choisir le créneau à modifier :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
@@ -420,35 +422,34 @@ export const toggleSupprimeCreneau = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("h2", main, "Suppression de Créneau")
-    create("p", main, " Rentrez les informations suivantes : ")
+    create("h2", main, "Suppression de créneaux")
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, "Choisissez le(s) créneau(x) à supprimer :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
 
     // Creation of the radio to define the timeslot to delete
-    var divCheckboxCreneau = create("div", form);
-    create("label", divCheckboxCreneau, "Choisissez le créneau à supprimer :");
     axios.get(`timeslots/timeslots.php?function=timeslots`).then((response)=>{
         for(var timeslot of response.data){
-            createChampCheckbox(divCheckboxCreneau, timeslot.id , "selectionTimeslot", timeslot.id);
-            var label = create("label", divCheckboxCreneau, timeslot.begining + " "+ timeslot.end+ " ");
+            let div = create("div", form)
+            createChampCheckbox(div, timeslot.id , "selectionTimeslot", timeslot.id);
+            var label = create("label", div, timeslot.begining + " "+ timeslot.end+ " ");
             label.setAttribute("for", timeslot.id);
-          }
-    });
-
-    // Creation of submit button
-    const bouton = create("div", form, "Envoyer")
-    bouton.addEventListener("click", function(){
-        for(var date of document.querySelectorAll("input[name='selectionTimeslot']")){
-            if (date.checked) {
-                axios.get (`timeslots/timeslots.php?function=delete&id=${date.value}`).then(function(){
-                    toggleEspaceAdmin();
-                    toggleAlert("BRAVO", "Le créneau a bien été supprimé");
-                })
-            }
         }
+        // Creation of submit button
+        const bouton = create("div", form, "Supprimer", ["submitButton"])
+        bouton.addEventListener("click", function(){
+            for(var date of document.querySelectorAll("input[name='selectionTimeslot']")){
+                if (date.checked) {
+                    axios.get (`timeslots/timeslots.php?function=delete&id=${date.value}`).then(function(){
+                        toggleEspaceAdmin();
+                        toggleAlert("BRAVO", "Le créneau a bien été supprimé");
+                    })
+                }
+            }
         })
+    });
     
     return main
 
@@ -466,29 +467,30 @@ export const toggleAjoutUser = () => {
     main.replaceChildren("")
     
     create("h2", main, "Ajout d'Utilisateur")
-    create("p", main, " Rentrez les informations suivantes : ")
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, " Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
 
-    create("label", form, "Entrez le prénom de l'utilisateur :");
+    create("label", form, "Entrez le prénom de l'utilisateur :", ["form-info"]);
     createChamp(form, "text", "nameUser");
 
-    create("label", form, "Entrez le nom de l'utilisateur :");
+    create("label", form, "Entrez le nom de l'utilisateur :", ["form-info"]);
     createChamp(form, "text", "lastNameUser");
 
-    create("label", form, "Entrez le login de l'utilisateur :");
+    create("label", form, "Entrez le login de l'utilisateur :", ["form-info"]);
     createChamp(form, "text", "loginUser");
 
-    create("label", form, "Entrez son email :");
+    create("label", form, "Entrez son email :", ["form-info"]);
     createChamp(form, "email", "mailUser");
 
-    create("label", form, "Entrez la date de naissance de l'utilisateur :");
+    create("label", form, "Entrez la date de naissance de l'utilisateur :", ["form-info"]);
     createChamp(form, "date", "birthDate");
 
     // creation of a radio to choose the role of the user created
     var divRadio = create("div", form);
-    create("label", divRadio, "Choisissez le type de l'utilisateur :");
+    create("label", divRadio, "Choisissez le type de l'utilisateur :", ["form-info"]);
     axios.get(`users/users.php?function=usertypes`).then((response)=>{
         for(var type of response.data){
             create("br", divRadio);
@@ -500,7 +502,7 @@ export const toggleAjoutUser = () => {
     });
 
 
-    const bouton = create("div", form, "Envoyer")
+    const bouton = create("div", form, "Envoyer", ["submitButton"])
     bouton.addEventListener("click", function(){
         // return the type of the user checked
         function typeUser () {
@@ -539,7 +541,8 @@ export const toggleModifyUser = () => {
     main.replaceChildren("")
     
     create("h2", main, "Modification d'Utilisateur")
-    create("p", main, " Choisissez l'utilisateur à modifier : ")
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, " Choisissez l'utilisateur à modifier :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
@@ -572,25 +575,26 @@ export const toggleModifyUser = () => {
                    
                 // Creation du formulaire pré remplie de modif de user
                 main.replaceChildren("")
+                create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
                 const form = create("form", main)
 
-                create("label", form, "Le prénom de l'utilisateur :");
+                create("label", form, "Le prénom de l'utilisateur :", ["form-info"]);
                 createChamp(form, "text", "nameUser").value = responseUser.data.firstname;
 
-                create("label", form, "Le nom de l'utilisateur :");
+                create("label", form, "Le nom de l'utilisateur :", ["form-info"]);
                 createChamp(form, "text", "lastNameUser").value = responseUser.data.name;
 
-                create("label", form, "Le login de l'utilisateur :");
+                create("label", form, "Le login de l'utilisateur :", ["form-info"]);
                 createChamp(form, "text", "loginUser").value = responseUser.data.login;
 
-                create("label", form, "L'email de l'utilisateur :");
+                create("label", form, "L'email de l'utilisateur :", ["form-info"]);
                 createChamp(form, "email", "mailUser").value = responseUser.data.email;
 
-                create("label", form, "La date de naissance de l'utilisateur :");
+                create("label", form, "La date de naissance de l'utilisateur :", ["form-info"]);
                 createChamp(form, "date", "birthDate").value = responseUser.data.birth_date;
 
-                const bouton = create("div", form, "Envoyer")
-                bouton.addEventListener("click", function (event){
+                const bouton = create("div", form, "Modifier", ["submitButton"])
+                bouton.addEventListener("click", function (){
                     // return the type of the user checked
                     function typeUser () {
                         let res = null;
@@ -633,39 +637,37 @@ export const toggleSupprimeUser = () => {
     main.replaceChildren("")
     
     create("h2", main, "Suppression d'Utilisateur")
-    create("p", main, " Rentrez les informations suivantes : ")
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, "Choisissez le(s) utilisateur(s) à supprimer :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
 
     // Creation of the checkbox to define the user to delete
-    var divCheckboxUsers = create("div", form);
-    create("label", divCheckboxUsers, "Choisissez le(s) utilisateur(s) à supprimer :");
     axios.get(`users/users.php?function=users`).then((response)=>{
         for(var user of response.data){
-            create("br", divCheckboxUsers);
-            createChampCheckbox(divCheckboxUsers, user.id , "selectionUSer", user.id);
-            var label = create("label", divCheckboxUsers, user.name + " "+ user.firstname);
+            let div = create("div", form)
+            createChampCheckbox(div, user.id , "selectionUSer", user.id);
+            var label = create("label", div, user.name + " "+ user.firstname);
             label.setAttribute("for", user.id);
-          }
-    });
-
-    // Creation of submit button
-    const bouton = create("div", form, "Envoyer")
-    bouton.addEventListener("click", function(){
-
-        // delete the user who are checked
-        for(var user of document.querySelectorAll("input[name='selectionUSer']")){
-            let url = `users/users.php?function=delete&id=`;
-            if (user.checked) {
-                url += user.value;
-                axios.get(url).then(function(){
-                    toggleEspaceAdmin();
-                    toggleAlert("BRAVO", "L'utilisateur a bien été supprimé");
-                })
-            }
         }
-    })
+        // Creation of submit button
+        const bouton = create("div", form, "Supprimer", ["submitButton"])
+        bouton.addEventListener("click", function(){
+
+            // delete the user who are checked
+            for(var user of document.querySelectorAll("input[name='selectionUSer']")){
+                let url = `users/users.php?function=delete&id=`;
+                if (user.checked) {
+                    url += user.value;
+                    axios.get(url).then(function(){
+                        toggleEspaceAdmin();
+                        toggleAlert("BRAVO", "L'utilisateur a bien été supprimé");
+                    })
+                }
+            }
+        })
+    });
 
     return main
 
@@ -682,7 +684,8 @@ export const DisponibilityBus = () => {
     main.replaceChildren("")
     
     create("h2", main, "Disponibilité des bus")
-    create("p", main, "Afficher les bus disponibles selon la plage horaire :")
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, "Afficher les bus disponibles selon la plage horaire :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
@@ -695,9 +698,7 @@ export const DisponibilityBus = () => {
      create("label", form, "Fin :")
      createChamp(form, "datetime-local", "EndDateTime")
 
-     create("div", main, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
-
-     const btn = create("div", form, "Envoyer")
+     const btn = create("div", form, "Envoyer", ["submitButton"])
      btn.addEventListener("click", function(){
 
         let start = document.querySelector("input[name='StartDateTime']").value;
@@ -729,34 +730,33 @@ export const AjoutBus = () => {
     main.replaceChildren("")
     
     create("h2", main, "Ajout d'un bus ")
-    create("p", main, " Rentrez les informations suivantes : ")
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, "Choisissez le type de bus :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
 
     // Creation of the radio to define the bus to add
-    var divRadio = create("div", form);
-    create("label", divRadio, "Choisissez le type de bus :");
     axios.get(`buses/buses.php?function=bustypes`).then((response)=>{
         for(var bustype of response.data){
-            create("br", divRadio);
-            createChampRadio(divRadio, bustype.id , "typeBus", bustype.id);
-            var label = create("label", divRadio, bustype.name );
+            let div = create("div", form)
+            createChampRadio(div, bustype.id , "typeBus", bustype.id);
+            var label = create("label", div, bustype.name );
             label.setAttribute("for", bustype.id);
-          }
-    });
-    // Creation of submit button
-    const bouton = create("div", form, "Envoyer")
-    bouton.addEventListener("click", function(){
-        for(var type of document.querySelectorAll("input[name='typeBus']")){
-            if (type.checked) {
-                axios.get(`buses/buses.php?function=create&type=`+type.value).then(function(){
-                    toggleEspaceAdmin();
-                    toggleAlert("BRAVO", "Le bus a bien été ajouté");
-                })
-            }
         }
-    })
+        // Creation of submit button
+        const bouton = create("div", form, "Envoyer", ["submitButton"])
+        bouton.addEventListener("click", function(){
+            for(var type of document.querySelectorAll("input[name='typeBus']")){
+                if (type.checked) {
+                    axios.get(`buses/buses.php?function=create&type=`+type.value).then(function(){
+                        toggleEspaceAdmin();
+                        toggleAlert("BRAVO", "Le bus a bien été ajouté");
+                    })
+                }
+            }
+        })
+    });
 
     return main
 
@@ -767,66 +767,63 @@ export const ModifBus = () => {
     main.replaceChildren("")
     
     create("h2", main, "Modification d'un bus ")
-    create("p", main, " Rentrez les informations suivantes : ")
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, "Choisissez le bus à modifier :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
 
     // Creation of the radio to define the bus to modify
-    var divRadio = create("div", form);
-    create("label", divRadio, "Choisissez le bus à modifier :");
     axios.get(`buses/buses.php?function=buses`).then((response)=>{
         for(var bus of response.data){
-            create("br", divRadio);
-            createChampRadio(divRadio, bus.id , "idBus", bus.id);
-            var label = create("label", divRadio, bus.id );
+            let div = create("div", form)
+            createChampRadio(div, bus.id , "idBus", bus.id);
+            var label = create("label", div, bus.id );
             label.setAttribute("for", bus.id);
-          }
-    });
-
-    //Creation of the radio to choose the new type of the bus
-
-    var divRadioType = create("div", form);
-    create("label", divRadioType, "Choisissez le type de bus :");
-    axios.get(`buses/buses.php?function=bustypes`).then((response)=>{
-        for(var bustype of response.data){
-            create("br", divRadioType);
-            createChampRadio(divRadioType, bustype.id , "typeBus", bustype.id);
-            var label = create("label", divRadioType, bustype.name );
-            label.setAttribute("for", bustype.id);
-          }
-    });
-    // Creation of submit button
-    const bouton = create("div", form, "Envoyer")
-    bouton.addEventListener("click", function(){
-
-        function idBusModify () {
-            for (var bus of document.querySelectorAll("input[name='idBus']")) {
-                if (bus.checked) {
-                    return bus.value;
-                }
-            }
         }
 
-        function typeBusModify () {
-            for (var user of document.querySelectorAll("input[name='typeBus']")) {
-                if (user.checked) {
-                    return user.value;
-                }
+        //Creation of the radio to choose the new type of the bus
+        create("p", main, "Choisissez le type de bus :", ["presentation"])
+        const form2 = create("form", main)
+
+        axios.get(`buses/buses.php?function=bustypes`).then((response)=>{
+            for(var bustype of response.data){
+                let div = create("div", form2)
+                createChampRadio(div, bustype.id , "typeBus", bustype.id);
+                var label = create("label", div, bustype.name );
+                label.setAttribute("for", bustype.id);
             }
-        }
+            // Creation of submit button
+            const bouton = create("div", form, "Modifier", ["submitButton"])
+            bouton.addEventListener("click", function(){
 
-        let id = idBusModify();
-        let type = typeBusModify();
+                function idBusModify () {
+                    for (var bus of document.querySelectorAll("input[name='idBus']")) {
+                        if (bus.checked) {
+                            return bus.value;
+                        }
+                    }
+                }
 
-        let url = `buses/buses.php?function=updatebus&id=${id}&type=${type}`
-        axios.get(url).then(function(){
-            toggleEspaceAdmin();
-            toggleAlert("BRAVO", "Le bus a bien été modifié");
-        })
+                function typeBusModify () {
+                    for (var user of document.querySelectorAll("input[name='typeBus']")) {
+                        if (user.checked) {
+                            return user.value;
+                        }
+                    }
+                }
 
+                let id = idBusModify();
+                let type = typeBusModify();
 
-    })
+                let url = `buses/buses.php?function=updatebus&id=${id}&type=${type}`
+                axios.get(url).then(function(){
+                    toggleEspaceAdmin();
+                    toggleAlert("BRAVO", "Le bus a bien été modifié");
+                })
+            })
+        });
+    });
 
     return main
 }
@@ -837,36 +834,35 @@ export const SupprimerBus = () => {
     main.replaceChildren("")
     
     create("h2", main, "Suppression d'un bus ")
-    create("p", main, " Rentrez les informations suivantes : ")
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, "Choisissez le(s) bus à supprimer :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
 
     // Creation of the checkbox to define the bus to add
-    var divCheckboxBus = create("div", form);
-    create("label", divCheckboxBus, "Choisissez le(s) bus à supprimer :");
     axios.get(`buses/buses.php?function=buses`).then((response)=>{
         for(var bus of response.data){
-            create("br", divCheckboxBus);
-            createChampCheckbox(divCheckboxBus, bus.id , "idBus", bus.id);
-            var label = create("label", divCheckboxBus, bus.id );
+            let div = create("div", form)
+            createChampCheckbox(div, bus.id , "idBus", bus.id);
+            var label = create("label", div, bus.id );
             label.setAttribute("for", bus.id);
-          }
-    });
-    // Creation of submit button
-    const bouton = create("div", form, "Envoyer")
-    bouton.addEventListener("click", function (event){
-        for(var bus of document.querySelectorAll("input[name='idBus']")){
-            let url = `buses/buses.php?function=delete&id=`;
-            if (bus.checked) {
-                url += bus.value;
-                axios.get(url).then(function(){
-                    toggleEspaceAdmin();
-                    toggleAlert("BRAVO", "Le bus a bien été supprimé");
-                })
-            }
         }
-    })
+        // Creation of submit button
+        const bouton = create("div", form, "Supprimer", ["submitButton"])
+        bouton.addEventListener("click", function (){
+            for(var bus of document.querySelectorAll("input[name='idBus']")){
+                let url = `buses/buses.php?function=delete&id=`;
+                if (bus.checked) {
+                    url += bus.value;
+                    axios.get(url).then(function(){
+                        toggleEspaceAdmin();
+                        toggleAlert("BRAVO", "Le bus a bien été supprimé");
+                    })
+                }
+            }
+        })
+    });
 
     return main
 }

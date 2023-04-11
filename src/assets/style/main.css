@@ -84,9 +84,44 @@ body {
   font-weight: bold;
   color: rgb(49, 88, 188);
 }
-#app .navBar__item:hover{
+.form-info{
+  color: rgb(177, 96, 96);
+  font-weight: bold;
+}
+.return{
+  color: rgb(133, 130, 130);
+  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
   transition: 0.5s;
-  color: rgb(197, 196, 196);
+  width: max-content;
+}
+.return:hover{
+  letter-spacing: 3px;
+  color: rgb(184, 182, 182);
+}
+#app .navBar__item:hover{
+  color: #3D7C98;
+  cursor: pointer;
+  width: max-content;
+}
+#app .navBar{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+#app .navBar .navBar__item{
+  padding: 10px;
+  list-style-type: none;
+}
+#app form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#app form > :not(.submitButton){
+  padding: 10px;
 }
 #app .navBar_User{
   display: grid;
@@ -173,7 +208,22 @@ body {
   flex-direction: column;
   align-items: center;
 }
-
+.submitButton{
+  cursor: pointer;
+  transition: 0.5s;
+  border: solid 2px #3D7C98;
+  background-color: #3D7C98;
+  width: auto;
+  margin-top: 20px;
+  padding: 8px 20px;
+  color: white;
+  border-radius: 15px;
+}
+.submitButton:hover{
+  border: solid 2px #3D7C98;
+  background-color: white;
+  color: #3D7C98;
+}
 #adminFormulaire{
   width: min-content;
   margin: 0 auto;
