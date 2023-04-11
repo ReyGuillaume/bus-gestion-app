@@ -1,7 +1,21 @@
 import { create } from "../main";
 import '../../assets/style/calandar.css';
-import { toggleDayOfWeek } from "../pages/day";
+import { toggleDayOfWeek, datePhp } from "../pages/day";
 import axios from "axios"
+
+
+export const getIdOfDay = day => {
+    switch (day) {
+        case "Dimanche": return 0
+        case "Lundi": return 1
+        case "Mardi": return 2
+        case "Mercredi": return 3
+        case "Jeudi": return 4
+        case "Vendredi": return 5
+        case "Samedi": return 6
+        default: return null
+    }
+}
 
 
 export const getDayToString = (index) => {
@@ -121,7 +135,7 @@ const handleDargLeave = e => {
 }
 
 
-const toggleModifValidation = async e => {
+const toggleModifValidation = async (e, dateOfMonday) => {
     // let timeslot = document.querySelector(".timeslots").querySelector(`#${e.dataTransfer.getData('text/plain')}`)
     
     // //on repalce le créneau dans la nouvelle colonne
@@ -158,8 +172,6 @@ const toggleModifValidation = async e => {
     await axios.get(`timeslots/timeslots.php?function=timeslot&id=${id}`)
     .then(res => data = res.data)
 
-    console.log(data)
-
     let types, type
     await axios.get(`timeslots/timeslots.php?function=types`)
     .then(res => types = res.data)
@@ -177,25 +189,48 @@ const toggleModifValidation = async e => {
     let h = date.getHours()
     let min = date.getMinutes()
 
-    create("p", modale, `Déplacer le créneau de ${type.name} du ${jour} ${num} ${mois} ${annee} à ${h}h${min}`)
+    create("p", modale, `Déplacer le créneau de type ${type.name} du ${jour} ${formatedHour(num)} ${mois} ${annee} à ${formatedHour(h)}h${formatedHour(min)}`)
+
+    //obtention de l'heure en fonction du drop
+    let nbminutes =  Math.floor(((23 - 6) * 60) * e.offsetY / e.target.clientHeight)
+    let nouvh = Math.floor(nbminutes / 60) + 6
+    let nouvmin = Math.floor(nbminutes % 60)
     
+    //on crée un date positionnée au jour recevant le créneau
+    let newDate = new Date(dateOfMonday)
+    while (newDate.getDay() != getIdOfDay(e.target.id)) {
+        newDate = new Date(new Date(newDate).setDate(newDate.getDate() + 1))
+    }
+    
+    newDate.setHours(nouvh)
+    newDate.setMinutes(nouvmin)
+
+    let nouvjour = getDayToString(newDate.getDay())
+    let nouvnum = newDate.getDate()
+    let nouvmois = getMonthToString(newDate.getMonth())
+    let nouvannee = newDate.getFullYear()
+
+    create("p", modale, `Vers le ${nouvjour} ${formatedHour(nouvnum)} ${nouvmois} ${nouvannee} à ${formatedHour(nouvh)}h${formatedHour(nouvmin)}`)
+
+    console.log(datePhp(newDate))
+    //validation
 }
 
 
-const handleDrop = e => {
+const handleDrop = (e, date) => {
     e.target.classList.toggle("dragover")
 
     //création d'une modale de validation
-    toggleModifValidation(e)
+    toggleModifValidation(e, date)
 
 }
 
 // création des zones de drop
-const addDragAndDrop = div => {
+const addDragAndDrop = (div, date) => {
     div.ondragenter = handleDargEnter
     div.ondragover = handleDargOver
     div.ondragleave = handleDargLeave
-    div.ondrop = handleDrop
+    div.ondrop = e => handleDrop(e, date)
 }
 
 
@@ -225,7 +260,7 @@ const createCalandar = (container, date, user=null) => {
         let timeslots_courant = create("div", timeslots, "", ['timeslots__day', 'drop'], day)
         toggleDayOfWeek(timeslots_courant, date_courante, user)
 
-        addDragAndDrop(timeslots_courant)
+        addDragAndDrop(timeslots_courant, firstDay)
 
         // On ajoute la classe 'today' si c'est la date d'aujourd'hui
         currentDate.getFullYear() == date_courante.getFullYear() &&
