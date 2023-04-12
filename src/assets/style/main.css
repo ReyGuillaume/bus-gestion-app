@@ -84,9 +84,19 @@ body {
   font-weight: bold;
   color: rgb(49, 88, 188);
 }
-.form-info{
+.form-info, .ul-info{
   color: rgb(177, 96, 96);
   font-weight: bold;
+}
+.ul-info li{
+  list-style-type: none;
+  color: black;
+  font-weight: normal;
+  text-align: center;
+}
+.ul-info li:hover{
+  color: #3D7C98;
+  cursor: pointer;
 }
 .return{
   color: rgb(133, 130, 130);

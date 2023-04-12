@@ -1,4 +1,5 @@
 import { create, createChamp, createChampCheckbox, createChampRadio, toggleAlert, toggleError } from "../main";
+import { toggleAgenda } from "./agenda";
 import { toggleEspaceAdmin } from "./espaceAdmin";
 import { timeSlotCanBeSubmit } from "./testTimeSlot"
 import axios from 'axios';
@@ -690,16 +691,16 @@ export const DisponibilityBus = () => {
     // Creation of the form
     const form = create("form", main)
 
-     // Begining
-     create("label", form, "Début :")
-     createChamp(form, "datetime-local", "StartDateTime")
+    // Begining
+    create("label", form, "Début :")
+    createChamp(form, "datetime-local", "StartDateTime")
 
-     // End
-     create("label", form, "Fin :")
-     createChamp(form, "datetime-local", "EndDateTime")
+    // End
+    create("label", form, "Fin :")
+    createChamp(form, "datetime-local", "EndDateTime")
 
-     const btn = create("div", form, "Envoyer", ["submitButton"])
-     btn.addEventListener("click", function(){
+    const btn = create("div", form, "Envoyer", ["submitButton"])
+    btn.addEventListener("click", function(){
 
         let start = document.querySelector("input[name='StartDateTime']").value;
         let end = document.querySelector("input[name='EndDateTime']").value;
@@ -711,18 +712,19 @@ export const DisponibilityBus = () => {
             if(ul){
                 ul.remove()
             }
-            ul = create("ul", main, "Liste des bus disponibles :", null, "lstBuses")
+            ul = create("ul", form, "Liste des bus disponibles :", ["ul-info"], "lstBuses")
             
             for(let bus of buses){
                 axios.get("buses/buses.php?function=available&id="+bus.id+"&beginning="+start+"&end="+end).then(function(response){
                     if(response.data){
-                        create("li", ul, "Bus n°"+bus.id + " est disponible")
+                        create("li", ul, "Bus n°"+bus.id + " est disponible").addEventListener("click", function(){
+                            toggleAgenda(bus)
+                        })
                     }
                 })
             }
         })
-
-     })
+    })
 }
 
 export const AjoutBus = () => {
