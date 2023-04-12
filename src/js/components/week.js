@@ -1,6 +1,22 @@
-import { create } from "../main";
+import { create, toggleAlert, toggleError } from "../main";
 import '../../assets/style/calandar.css';
-import { toggleDayOfWeek } from "../pages/day";
+import { toggleDayOfWeek, datePhp } from "../pages/day";
+import axios from "axios"
+import { toggleAgenda } from "../pages/agenda";
+
+
+export const getIdOfDay = day => {
+    switch (day) {
+        case "Dimanche": return 0
+        case "Lundi": return 1
+        case "Mardi": return 2
+        case "Mercredi": return 3
+        case "Jeudi": return 4
+        case "Vendredi": return 5
+        case "Samedi": return 6
+        default: return null
+    }
+}
 
 
 export const getDayToString = (index) => {
@@ -81,6 +97,156 @@ const getFirstMonday = (date) => {
     return initDate
 }
 
+
+// affiches les heures entre 6h et 22h (avec un interval de 2h entre chaque)
+const drawHouresColumn = (container) => {
+
+    let item = 0
+
+    for (let h = 6; h <= 22; h ++) {
+
+        let elt = create("p", container, `${h}:00`,['heure'])
+        elt.style.setProperty('--item', item);
+
+        let div = create("div", container, null, ['deux-heures', `${h}:00`])
+        let min = 0
+
+        let nb = 3
+        for (let i = 0; i < nb; i++) {
+            create("div",div,null,['trente-min', `${min >= 60 ? h+1 : h}:${min % 60}`, `${ i === Math.floor((nb -1) / 2) ? "mid" : null}`])
+            min += 30
+        }
+
+        item++
+    }
+
+    return container
+}
+
+
+const handleDargEnter = e => {
+    e.preventDefault()
+    e.target.classList.toggle("dragover")
+}
+
+const handleDargOver = e => e.preventDefault()
+
+const handleDargLeave = e => {
+    e.target.classList.toggle("dragover")
+}
+
+const handleDrop = (e, date, user) => {
+    e.target.classList.toggle("dragover")
+    toggleModifValidation(e, date, user)    //création d'une modale de validation
+}
+
+
+const toggleModifValidation = async (e, dateOfMonday, user) => {
+
+    let app = document.querySelector("#app")
+    let id = e.dataTransfer.getData('text/plain')
+    id = id.substring(2, id.length)
+
+    let data, types, type
+    await axios.get(`timeslots/timeslots.php?function=timeslot&id=${id}`)
+    .then(res => data = res.data)
+    await axios.get(`timeslots/timeslots.php?function=types`)
+    .then(res => types = res.data)
+    types.forEach(t => {
+        if(t.id == data.id_time_slot_type)
+            type = t
+    })
+
+    let date = new Date(data.begining)
+    let jour = getDayToString(date.getDay())
+    let num = date.getDate()
+    let mois = getMonthToString(date.getMonth())
+    let annee = date.getFullYear()
+    let h = date.getHours()
+    let min = date.getMinutes()
+
+    //obtention de l'heure en fonction du drop
+    let nbminutes =  Math.floor(((23 - 6) * 60) * e.offsetY / e.target.clientHeight)
+    let nouvh = Math.floor(nbminutes / 60) + 6
+    let nouvmin = Math.floor(nbminutes % 60)
+
+    //on crée une date positionnée au jour recevant le créneau
+    let newDate = new Date(dateOfMonday)
+    while (newDate.getDay() != getIdOfDay(e.target.id)) {
+        newDate = new Date(new Date(newDate).setDate(newDate.getDate() + 1))
+    }
+    newDate.setHours(nouvh)
+    newDate.setMinutes(nouvmin)
+
+    let nouvjour = getDayToString(newDate.getDay())
+    let nouvnum = newDate.getDate()
+    let nouvmois = getMonthToString(newDate.getMonth())
+    let nouvannee = newDate.getFullYear()
+    let dateFin = new Date(data.end)
+    let offsetH = dateFin.getHours() - h
+    let offsetMin = dateFin.getMinutes() - min
+    let newDateFin = new Date(newDate)
+    newDateFin.setHours(nouvh + offsetH)
+    newDateFin.setMinutes(nouvmin + offsetMin)
+    
+    // création des composants
+    const overlay = create("div", app, null, ["overlay"])
+    const modale = create("div", overlay, null, ['validation'])
+    const back = create("div", modale)
+    create("i", back , null, ['fa-solid', 'fa-chevron-left', 'back-button'])
+    create("h1", modale, "Voulez vous effectuer cette action ?")
+    create("p", modale, `Déplacer le créneau de type ${type.name} du ${jour} ${formatedHour(num)} ${mois} ${annee} à ${formatedHour(h)}h${formatedHour(min)}`)
+    create("p", modale, `Vers le ${nouvjour} ${formatedHour(nouvnum)} ${nouvmois} ${nouvannee} à ${formatedHour(nouvh)}h${formatedHour(nouvmin)}`)
+    const buttonDiv = create("div", modale)
+    const annuler = create("button", buttonDiv, "Annuler", ['second-button'])
+    const valider = create("button", buttonDiv, "Valider", ['primary-button'])
+    
+    // ajout des actions au clic
+    overlay.onclick = e => {
+        e.preventDefault()
+        e.stopPropagation()
+        e.target.remove()
+    }
+    modale.onclick = e => {
+        e.preventDefault()
+        e.stopPropagation()
+    }
+    back.onclick = () => {
+        modale.remove()
+        overlay.remove()
+    }
+    annuler.onclick = () => {
+        modale.remove()
+        overlay.remove()
+    }
+    valider.onclick = async() => {
+        let success
+        let id = data.id
+        let beginning = datePhp(newDate)
+        let end = datePhp(newDateFin)
+        let users = "", buses = "", lines = "", directions = ""
+        data.users.forEach(user => users += `${user.id},`)
+        data.buses.forEach(bus => buses += `${bus.id},`)
+        data.lines.forEach(line => {
+            lines += `${line.number},`
+            directions += `${line.direction},`
+        })
+        await axios.get(`timeslots/timeslots.php?function=update&id=${id}&beginning=${beginning}&end=${end}&users=${users}&buses=${buses}&lines=${lines}&directions=${directions}`)
+        .then(res => success = res.data)
+        toggleAgenda(user, newDate)
+        success ? toggleAlert("Bravo !", "Le crébeau a bien été modifié") : toggleError("Erreur", "Le créneau n'a pas pu être modifié")
+    }
+}
+
+// création des zones de drop
+const addDragAndDrop = (div, date, user) => {
+    div.ondragenter = handleDargEnter
+    div.ondragover = handleDargOver
+    div.ondragleave = handleDargLeave
+    div.ondrop = e => handleDrop(e, date, user)
+}
+
+
 // fonction qui crée le corps du calendrier d'une semaine
 const createCalandar = (container, date, user=null) => {
     const body = create("div", container, null, ['calandar__body'])
@@ -93,15 +259,23 @@ const createCalandar = (container, date, user=null) => {
     const days = create("div", body, null, ['days'])
     const timeslots = create("div", body, null, ['timeslots'])
 
+    create("div", days, null, ['days__day'])
+    const colonneHeures = create("div", timeslots, null, ['timeslots__day', 'col-heures'])
+
+    drawHouresColumn(colonneHeures)
+
     // pour chaque jour de la semaine :
     for(let i=0 ; i<7 ; i++){
         let day = getDayToString(date_courante.getDay())
         let nb = date_courante.getDate()
 
         let div = create("div", days, day + " " + nb, ['days__day'])
-        let timeslots_courant = create("div", timeslots, "", ['timeslots__day'], day)
+        let timeslots_courant = create("div", timeslots, "", ['timeslots__day', 'drop'], day)
         toggleDayOfWeek(timeslots_courant, date_courante, user)
 
+        addDragAndDrop(timeslots_courant, firstDay, user)
+
+        // On ajoute la classe 'today' si c'est la date d'aujourd'hui
         currentDate.getFullYear() == date_courante.getFullYear() &&
         currentDate.getMonth() == date_courante.getMonth() &&
         currentDate.getDate() == date_courante.getDate() ? 

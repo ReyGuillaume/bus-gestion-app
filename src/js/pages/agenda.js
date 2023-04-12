@@ -3,7 +3,7 @@ import { toggleEspaceUser } from "./espaceUser";
 import { toggleEspaceAdmin } from "./espaceAdmin";
 import { create } from "../main";
 
-const drawAgenda = (user=null) => {
+const drawAgenda = (user=null, date=null) => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -34,19 +34,23 @@ const drawAgenda = (user=null) => {
     else{
         create("h2", main, "Votre Agenda", ['mainTitle'])
     }
-    calandar(main, user)
-    
+    if(date){
+        calandar(main, user, date.getFullYear(), date.getMonth(), date.getDate())
+    } else {
+        calandar(main, user)
+    }
+
     return main
 }
 
-export const toggleAgenda = (user=null) => {
+export const toggleAgenda = (user=null, date=null) => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
     let isUserConnected = JSON.parse(sessionStorage.getItem("userData"));
 
     if(isUserConnected) {
-        drawAgenda(user)
+        drawAgenda(user, date)
     } else {
         create("h4", main, "connectez-vous")
     }
