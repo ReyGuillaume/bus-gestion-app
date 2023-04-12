@@ -105,7 +105,7 @@ const drawHouresColumn = (container) => {
 
     for (let h = 6; h <= 22; h ++) {
 
-        let elt = create("p", container, `${h}:00`,['heure'])
+        let elt = create("p", container, `${formatedHour(h)}:00`,['heure'])
         elt.style.setProperty('--item', item);
 
         let div = create("div", container, null, ['deux-heures', `${h}:00`])
