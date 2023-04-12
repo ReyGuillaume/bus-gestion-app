@@ -135,48 +135,23 @@ const handleDargLeave = e => {
     e.target.classList.toggle("dragover")
 }
 
+const handleDrop = (e, date, user) => {
+    e.target.classList.toggle("dragover")
+    toggleModifValidation(e, date, user)    //création d'une modale de validation
+}
+
 
 const toggleModifValidation = async (e, dateOfMonday, user) => {
-    // let timeslot = document.querySelector(".timeslots").querySelector(`#${e.dataTransfer.getData('text/plain')}`)
-    
-    // //on repalce le créneau dans la nouvelle colonne
-    // e.target.appendChild(timeslot)
 
     let app = document.querySelector("#app")
-
-    let overlay = create("div", app, null, ["overlay"])
-    overlay.onclick = e => {
-        e.preventDefault()
-        e.stopPropagation()
-        e.target.remove()
-    }
-
-    let modale = create("div", overlay, null, ['validation'])
-    modale.onclick = e => {
-        e.preventDefault()
-        e.stopPropagation()
-    }
-
-    const back = create("div", modale)
-    create("i", back , null, ['fa-solid', 'fa-chevron-left', 'back-button'])
-    back.onclick = () => {
-        modale.remove()
-        overlay.remove()
-    }
-
     let id = e.dataTransfer.getData('text/plain')
     id = id.substring(2, id.length)
 
-    create("h1", modale, "Voulez vous effectuer cette action ?")
-
-    let data;
+    let data, types, type
     await axios.get(`timeslots/timeslots.php?function=timeslot&id=${id}`)
     .then(res => data = res.data)
-
-    let types, type
     await axios.get(`timeslots/timeslots.php?function=types`)
     .then(res => types = res.data)
-
     types.forEach(t => {
         if(t.id == data.id_time_slot_type)
             type = t
@@ -190,19 +165,16 @@ const toggleModifValidation = async (e, dateOfMonday, user) => {
     let h = date.getHours()
     let min = date.getMinutes()
 
-    create("p", modale, `Déplacer le créneau de type ${type.name} du ${jour} ${formatedHour(num)} ${mois} ${annee} à ${formatedHour(h)}h${formatedHour(min)}`)
-
     //obtention de l'heure en fonction du drop
     let nbminutes =  Math.floor(((23 - 6) * 60) * e.offsetY / e.target.clientHeight)
     let nouvh = Math.floor(nbminutes / 60) + 6
     let nouvmin = Math.floor(nbminutes % 60)
-    
-    //on crée un date positionnée au jour recevant le créneau
+
+    //on crée une date positionnée au jour recevant le créneau
     let newDate = new Date(dateOfMonday)
     while (newDate.getDay() != getIdOfDay(e.target.id)) {
         newDate = new Date(new Date(newDate).setDate(newDate.getDate() + 1))
     }
-    
     newDate.setHours(nouvh)
     newDate.setMinutes(nouvmin)
 
@@ -210,26 +182,45 @@ const toggleModifValidation = async (e, dateOfMonday, user) => {
     let nouvnum = newDate.getDate()
     let nouvmois = getMonthToString(newDate.getMonth())
     let nouvannee = newDate.getFullYear()
-
-    
     let dateFin = new Date(data.end)
     let offsetH = dateFin.getHours() - h
     let offsetMin = dateFin.getMinutes() - min
-    
     let newDateFin = new Date(newDate)
     newDateFin.setHours(nouvh + offsetH)
     newDateFin.setMinutes(nouvmin + offsetMin)
-
+    
+    // création des composants
+    const overlay = create("div", app, null, ["overlay"])
+    const modale = create("div", overlay, null, ['validation'])
+    const back = create("div", modale)
+    create("i", back , null, ['fa-solid', 'fa-chevron-left', 'back-button'])
+    create("h1", modale, "Voulez vous effectuer cette action ?")
+    create("p", modale, `Déplacer le créneau de type ${type.name} du ${jour} ${formatedHour(num)} ${mois} ${annee} à ${formatedHour(h)}h${formatedHour(min)}`)
     create("p", modale, `Vers le ${nouvjour} ${formatedHour(nouvnum)} ${nouvmois} ${nouvannee} à ${formatedHour(nouvh)}h${formatedHour(nouvmin)}`)
-
     const buttonDiv = create("div", modale)
-    let annuler = create("button", buttonDiv, "Annuler", ['second-button'])
+    const annuler = create("button", buttonDiv, "Annuler", ['second-button'])
+    const valider = create("button", buttonDiv, "Valider", ['primary-button'])
+    
+    // ajout des actions au clic
+    overlay.onclick = e => {
+        e.preventDefault()
+        e.stopPropagation()
+        e.target.remove()
+    }
+    modale.onclick = e => {
+        e.preventDefault()
+        e.stopPropagation()
+    }
+    back.onclick = () => {
+        modale.remove()
+        overlay.remove()
+    }
     annuler.onclick = () => {
         modale.remove()
         overlay.remove()
     }
-    let valider = create("button", buttonDiv, "Valider", ['primary-button'])
     valider.onclick = async() => {
+        let success
         let id = data.id
         let beginning = datePhp(newDate)
         let end = datePhp(newDateFin)
@@ -240,23 +231,11 @@ const toggleModifValidation = async (e, dateOfMonday, user) => {
             lines += `${line.number},`
             directions += `${line.direction},`
         })
-
-        let success
         await axios.get(`timeslots/timeslots.php?function=update&id=${id}&beginning=${beginning}&end=${end}&users=${users}&buses=${buses}&lines=${lines}&directions=${directions}`)
         .then(res => success = res.data)
-        
         toggleAgenda(user, newDate)
         success ? toggleAlert("Bravo !", "Le crébeau a bien été modifié") : toggleError("Erreur", "Le créneau n'a pas pu être modifié")
     }
-}
-
-
-const handleDrop = (e, date, user) => {
-    e.target.classList.toggle("dragover")
-
-    //création d'une modale de validation
-    toggleModifValidation(e, date, user)
-
 }
 
 // création des zones de drop
