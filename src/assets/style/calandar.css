@@ -1,3 +1,8 @@
+:root {
+  --demi-heure: 1.2rem;
+}
+
+
 .calandar {
   display: flex;
   flex-direction: column;
@@ -32,9 +37,13 @@
   gap: 1.5rem;
 }
 .calandar__body .days {
+  position: sticky;
+  top: 5.8rem;
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  background-color: #f4f4f4;
+  z-index: 1;
   border-bottom: #3D7C98 0.15rem solid;
 }
 .calandar__body .timeslots {
@@ -73,20 +82,18 @@
   justify-content: space-around;
 }
 .timeslots__day{
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 150px;
   align-items: center;
 }
 .timeslot{
+  position: absolute;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background-color: rgb(234, 233, 233);
-  margin-bottom: 10px;
-  border-radius: 15px;
-}
-.timeslot:hover{
+  background-color: #eae9e9;
+  border-radius: 8px;
   cursor: pointer;
 }
 .timeslot div{
@@ -204,5 +211,62 @@
   font-weight: bold;
 }
 
+/* ======== Affichage des horaires ========= */
+
+.col-heures {
+  position: relative;
+}
+
+.heure {
+  position: absolute;
+  /* right: 0; */
+  top: calc(var(--item) * 4 * var(--demi-heure));
+}
+
+.deux-heures {
+  width: 100%;
+  height: calc(4 * var(--demi-heure));
+  position: relative;
+  border: 1px solid #00000052;
+}
+
+.trente-min {
+  height: var(--demi-heure);
+  width: 20%;
+  border-bottom: 1px solid #00000052;
+}
+
+.trente-min.mid {
+  width: 35%;
+}
+
+/* ======== Darg & Drop ========= */
+
+.dragover {
+  background-color: #00000017;
+  opacity: .5;
+}
+.drop {
+  border-radius: 8px;
+}
+.overlay {
+  z-index: 999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #0000003c;
+}
+.validation {
+  height: 50vh;
+  width: 50vw;
+  background-color: #f4f4f4;
+  border-radius: 1rem;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
 /*# sourceMappingURL=calandar.css.map */
