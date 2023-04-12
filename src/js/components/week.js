@@ -1,7 +1,8 @@
-import { create } from "../main";
+import { create, toggleAlert, toggleError } from "../main";
 import '../../assets/style/calandar.css';
 import { toggleDayOfWeek, datePhp } from "../pages/day";
 import axios from "axios"
+import { toggleAgenda } from "../pages/agenda";
 
 
 export const getIdOfDay = day => {
@@ -135,7 +136,7 @@ const handleDargLeave = e => {
 }
 
 
-const toggleModifValidation = async (e, dateOfMonday) => {
+const toggleModifValidation = async (e, dateOfMonday, user) => {
     // let timeslot = document.querySelector(".timeslots").querySelector(`#${e.dataTransfer.getData('text/plain')}`)
     
     // //on repalce le créneau dans la nouvelle colonne
@@ -210,27 +211,60 @@ const toggleModifValidation = async (e, dateOfMonday) => {
     let nouvmois = getMonthToString(newDate.getMonth())
     let nouvannee = newDate.getFullYear()
 
+    
+    let dateFin = new Date(data.end)
+    let offsetH = dateFin.getHours() - h
+    let offsetMin = dateFin.getMinutes() - min
+    
+    let newDateFin = new Date(newDate)
+    newDateFin.setHours(nouvh + offsetH)
+    newDateFin.setMinutes(nouvmin + offsetMin)
+
     create("p", modale, `Vers le ${nouvjour} ${formatedHour(nouvnum)} ${nouvmois} ${nouvannee} à ${formatedHour(nouvh)}h${formatedHour(nouvmin)}`)
 
-    console.log(datePhp(newDate))
-    //validation
+    const buttonDiv = create("div", modale)
+    let annuler = create("button", buttonDiv, "Annuler", ['second-button'])
+    annuler.onclick = () => {
+        modale.remove()
+        overlay.remove()
+    }
+    let valider = create("button", buttonDiv, "Valider", ['primary-button'])
+    valider.onclick = async() => {
+        let id = data.id
+        let beginning = datePhp(newDate)
+        let end = datePhp(newDateFin)
+        let users = "", buses = "", lines = "", directions = ""
+        data.users.forEach(user => users += `${user.id},`)
+        data.buses.forEach(bus => buses += `${bus.id},`)
+        data.lines.forEach(line => {
+            lines += `${line.number},`
+            directions += `${line.direction},`
+        })
+
+        let success
+        await axios.get(`timeslots/timeslots.php?function=update&id=${id}&beginning=${beginning}&end=${end}&users=${users}&buses=${buses}&lines=${lines}&directions=${directions}`)
+        .then(res => success = res.data)
+        
+        toggleAgenda(user, newDate)
+        success ? toggleAlert("Bravo !", "Le crébeau a bien été modifié") : toggleError("Erreur", "Le créneau n'a pas pu être modifié")
+    }
 }
 
 
-const handleDrop = (e, date) => {
+const handleDrop = (e, date, user) => {
     e.target.classList.toggle("dragover")
 
     //création d'une modale de validation
-    toggleModifValidation(e, date)
+    toggleModifValidation(e, date, user)
 
 }
 
 // création des zones de drop
-const addDragAndDrop = (div, date) => {
+const addDragAndDrop = (div, date, user) => {
     div.ondragenter = handleDargEnter
     div.ondragover = handleDargOver
     div.ondragleave = handleDargLeave
-    div.ondrop = e => handleDrop(e, date)
+    div.ondrop = e => handleDrop(e, date, user)
 }
 
 
@@ -260,7 +294,7 @@ const createCalandar = (container, date, user=null) => {
         let timeslots_courant = create("div", timeslots, "", ['timeslots__day', 'drop'], day)
         toggleDayOfWeek(timeslots_courant, date_courante, user)
 
-        addDragAndDrop(timeslots_courant, firstDay)
+        addDragAndDrop(timeslots_courant, firstDay, user)
 
         // On ajoute la classe 'today' si c'est la date d'aujourd'hui
         currentDate.getFullYear() == date_courante.getFullYear() &&
