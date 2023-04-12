@@ -277,7 +277,7 @@ $line_lineType = array(
 );
 
 foreach ($line_lineType as $id_line => $id_type) {
-    $sql = "INSERT INTO `LineType` (`id_type`, `num_line`) VALUE ({$id_type}, {$id_line})";
+    $sql = "INSERT INTO `LineType_line` (`id_type`, `num_line`) VALUE ({$id_type}, {$id_line})";
     bdd()->query($sql);
 }
 // ==================== Remplissage des creneau de couverture des types de ligne de base ====================
