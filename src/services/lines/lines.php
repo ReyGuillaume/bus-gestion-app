@@ -161,7 +161,7 @@ function semaine_ligne_couverte ($week, $id_line) {
     $date = $startDate->format('Y-m-d');
     if (!jour_ligne_couverte ($date, $id_line)){
         $res=false;
-        echo("Attention : la ligne {$id_line} n'est pas bien couverte à la date du {$date}");
+        //echo("Attention : la ligne {$id_line} n'est pas bien couverte à la date du {$date}");
     }
     //On passe au jour suivant 
     $startDate->add(new DateInterval('P1D'));
@@ -427,7 +427,7 @@ switch ($_GET['function']) {
     case 'WeekCovered': //week
         $res =semaine_lignes_couvertes ($_GET['week']);
         break;
-    case 'coverWeek':
+    case 'coverWeek': // week
         $res = cover_a_week ($_GET['week']);
         break;
     default:

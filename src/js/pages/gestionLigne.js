@@ -169,7 +169,7 @@ export const toggleModifLine = () => {
 
 }
 
-export const toggleVerifCouverture = () => {
+export const toggleVerifCouvertureSemaine = () => {
 
     // Recuperation de la div à modifier 
     const main = document.querySelector("#app")
@@ -192,16 +192,18 @@ export const toggleVerifCouverture = () => {
         let semaine = document.querySelector("input[name='semaine']").value;
         
 
-        /*axios.get (`lines/lines.php?function=updateline&number=${number}&travel_time=${travel_time}`).then(function(response){
+        axios.get (`lines/lines.php?function=WeekCovered&week=${semaine}`).then(function(response){
             toggleEspaceAdmin();
+            console.log(response);
             if(response.data){
-                toggleAlert("BRAVO", "La ligne a bien été modifiée");
+                toggleAlert("BRAVO", "Le semaine est bien couverte");
             }
             else{
-                toggleError("ERREUR", "La ligne n'a pas pu être modifiée");
+                toggleError("OUPS", "Il semblerait que tout ne soit pas bien rempli...");
             }
-        }) */
+        }) 
 
     })
 
 }
+
