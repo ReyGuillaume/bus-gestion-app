@@ -207,3 +207,40 @@ export const toggleVerifCouvertureSemaine = () => {
 
 }
 
+export const toggleRemplissageAutoConduiteSemaine = () => {
+
+    // Recuperation de la div à modifier 
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+    
+    // Mise en place des titres
+    create("h2", main, "Remplissage automatique de la semaine")
+    create("p", main, "Indiquer la semaine à remplir, attention cela supprime les créneaux de conduite déjà ajoutés")
+
+    // Creation of the form
+    const form = create("form", main)
+
+    // Remplissage du formulaire 
+    createChamp(form, "week", "semaine");
+
+    // Creation of submit button
+    const bouton = create("div", form, "Envoyer")
+    bouton.addEventListener("click", function(){
+
+        let semaine = document.querySelector("input[name='semaine']").value;
+        
+
+        axios.get (`lines/lines.php?function=coverWeek&week=${semaine}`).then(function(response){
+            toggleEspaceAdmin();
+            console.log(response);
+            if(response.data){
+                toggleAlert("BRAVO", "Toutes les conduites de la semaine ont étées ajoutées");
+            }
+            else{
+                toggleError("OUPS", "Il semblerait que tout ne se soit pas passé comme prévu...");
+            }
+        }) 
+
+    })
+
+}

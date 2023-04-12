@@ -3,7 +3,7 @@ import { toggleAgenda } from "./agenda";
 import { toggleAddCreneau,toggleSupprimeCreneau,toggleModifCreneau } from "../pages/gestionTimeslots";
 import{toggleAjoutUser, toggleSupprimeUser, toggleModifyUser} from "../pages/gestionUsers";
 import {AjoutBus, SupprimerBus, ModifBus}from "../pages/gestionBuses";
-import { toggleAddLine, toggleSupprLine, toggleModifLine, toggleVerifCouvertureSemaine } from "./gestionLigne";
+import { toggleAddLine, toggleSupprLine, toggleModifLine, toggleVerifCouvertureSemaine, toggleRemplissageAutoConduiteSemaine } from "./gestionLigne";
 import { toggleDrivers, toggleResp, toggleBuses, toggleLines } from "./agendaUsers";
 
 
@@ -162,6 +162,7 @@ export const toggleGestionLigne = () => {
     create("div", nav, "Modifier une Ligne", ['navBar__item']).addEventListener("click", toggleModifLine)
     create("div", nav, "Supprimer une Ligne", ['navBar__item']).addEventListener("click", toggleSupprLine)
     create("div", nav, "Verifier la couverture d'une semaine", ['navBar__item']).addEventListener("click", toggleVerifCouvertureSemaine)
+    create("div", nav, "Remplisaage automatique des conduite de la semaine", ['navBar__item']).addEventListener("click", toggleRemplissageAutoConduiteSemaine)
 
     create("div", nav, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
 
