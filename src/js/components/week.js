@@ -137,9 +137,33 @@ const handleDargLeave = e => {
 
 const handleDrop = (e, date, user) => {
     e.target.classList.toggle("dragover")
-    toggleModifValidation(e, date, user)    //création d'une modale de validation
+    if(e.target != null && e.target.id && e.target.classList.contains("drop")){
+        toggleModifValidation(e, date, user)    //création d'une modale de validation
+    }
 }
 
+// Fonction pour obtenir l'heure la plus proche à la demi-heure près
+const getNearestHour = (hour, minute) => {
+    if(minute <= 15){
+        return hour;
+    }
+    else if(minute <= 45){
+        return hour;
+    }
+    else{
+        return (hour + 1) % 24;
+    }
+  }
+  
+// Fonction pour obtenir la minute la plus proche à la demi-heure près
+const getNearestMinute = (minute) => {
+if(minute >= 45 || minute < 15){
+    return 0;
+} 
+else{
+    return 30;
+}
+}
 
 const toggleModifValidation = async (e, dateOfMonday, user) => {
 
@@ -170,13 +194,16 @@ const toggleModifValidation = async (e, dateOfMonday, user) => {
     let nouvh = Math.floor(nbminutes / 60) + 6
     let nouvmin = Math.floor(nbminutes % 60)
 
+    let heure_arrondie = getNearestHour(nouvh, nouvmin)
+    let minute_arrondie = getNearestMinute(nouvmin)
+
     //on crée une date positionnée au jour recevant le créneau
     let newDate = new Date(dateOfMonday)
     while (newDate.getDay() != getIdOfDay(e.target.id)) {
         newDate = new Date(new Date(newDate).setDate(newDate.getDate() + 1))
     }
-    newDate.setHours(nouvh)
-    newDate.setMinutes(nouvmin)
+    newDate.setHours(heure_arrondie)
+    newDate.setMinutes(minute_arrondie)
 
     let nouvjour = getDayToString(newDate.getDay())
     let nouvnum = newDate.getDate()
@@ -186,8 +213,8 @@ const toggleModifValidation = async (e, dateOfMonday, user) => {
     let offsetH = dateFin.getHours() - h
     let offsetMin = dateFin.getMinutes() - min
     let newDateFin = new Date(newDate)
-    newDateFin.setHours(nouvh + offsetH)
-    newDateFin.setMinutes(nouvmin + offsetMin)
+    newDateFin.setHours(heure_arrondie + offsetH)
+    newDateFin.setMinutes(minute_arrondie + offsetMin)
     
     // création des composants
     const overlay = create("div", app, null, ["overlay"])
@@ -196,7 +223,7 @@ const toggleModifValidation = async (e, dateOfMonday, user) => {
     create("i", back , null, ['fa-solid', 'fa-chevron-left', 'back-button'])
     create("h1", modale, "Voulez vous effectuer cette action ?")
     create("p", modale, `Déplacer le créneau de type ${type.name} du ${jour} ${formatedHour(num)} ${mois} ${annee} à ${formatedHour(h)}h${formatedHour(min)}`)
-    create("p", modale, `Vers le ${nouvjour} ${formatedHour(nouvnum)} ${nouvmois} ${nouvannee} à ${formatedHour(nouvh)}h${formatedHour(nouvmin)}`)
+    create("p", modale, `Vers le ${nouvjour} ${formatedHour(nouvnum)} ${nouvmois} ${nouvannee} à ${formatedHour(heure_arrondie)}h${formatedHour(minute_arrondie)}`)
     const buttonDiv = create("div", modale)
     const annuler = create("button", buttonDiv, "Annuler", ['second-button'])
     const valider = create("button", buttonDiv, "Valider", ['primary-button'])
@@ -234,7 +261,7 @@ const toggleModifValidation = async (e, dateOfMonday, user) => {
         await axios.get(`timeslots/timeslots.php?function=update&id=${id}&beginning=${beginning}&end=${end}&users=${users}&buses=${buses}&lines=${lines}&directions=${directions}`)
         .then(res => success = res.data)
         toggleAgenda(user, newDate)
-        success ? toggleAlert("Bravo !", "Le crébeau a bien été modifié") : toggleError("Erreur", "Le créneau n'a pas pu être modifié")
+        success ? toggleAlert("Bravo !", "Le créneau a bien été modifié") : toggleError("Erreur", "Le créneau n'a pas pu être modifié")
     }
 }
 
