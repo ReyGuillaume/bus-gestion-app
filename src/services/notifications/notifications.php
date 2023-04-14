@@ -41,11 +41,59 @@ function archive_notification($id) {
 }
 
 /**
+ * Change le status de la notification à non lue si elle existe.
+ * @param $id   l'id de la notification.
+ * @return false|PDOStatement   boolean si le changement est un succès.
+ */
+function unread_notification($id) {
+    if(bdd()->query("SELECT * FROM notification WHERE id_notif = '{$id}'")->fetch()) {
+        return bdd()->query("UPDATE `notification` SET `status` = 'unread' WHERE `notification`.`id_notif` = '{$id}'");
+    }
+    return false;
+}
+
+/**
  * Renvoie le tableau de tous les status possibles de la notification.
  * @return array|false  Le tableau de tous les status possibles de la notification, ou false si erreur.
  */
 function fetch_notification_status() {
-    $res = bdd()->query("SELECT * FROM status_notification");
+    $res = bdd()->query("SELECT * FROM status_notification ORDER BY name DESC");
+    return $res->fetchAll();
+}
+
+/**
+ * @param $id   L'id de l'utilisateur dont on veut voir les notifs lues.
+ * @return array|false  Le tableau de toutes les notifications lues de l'utilisateur, ou false si erreur.
+ */
+function fetch_read_notification_by_user($id) {
+    $res = bdd()->query("SELECT * FROM `notification` WHERE recipient ='{$id}'AND status = 'read'");
+    return $res->fetchAll();
+}
+
+/**
+ * @param $id   L'id de l'utilisateur dont on veut voir les notifs non lues.
+ * @return array|false  Le tableau de toutes les notifications non lues de l'utilisateur, ou false si erreur.
+ */
+function fetch_unread_notification_by_user($id) {
+    $res = bdd()->query("SELECT * FROM `notification` WHERE recipient ='{$id}'AND status = 'unread'");
+    return $res->fetchAll();
+}
+
+/**
+ * @param $id   L'id de l'utilisateur dont on veut voir les notifs archivées.
+ * @return array|false  Le tableau de toutes les notifications archivées de l'utilisateur, ou false si erreur.
+ */
+function fetch_archive_notification_by_user($id) {
+    $res = bdd()->query("SELECT * FROM `notification` WHERE recipient ='{$id}'AND status = 'archive'");
+    return $res->fetchAll();
+}
+
+/**
+ * @param $id   L'id de l'utilisateur dont on veut voir les notifs.
+ * @return array|false  Le tableau de toutes les notifications de l'utilisateur, ou false si erreur.
+ */
+function fetch_all_notification_by_user($id) {
+    $res = bdd()->query("SELECT * FROM `notification` WHERE recipient ='{$id}'");
     return $res->fetchAll();
 }
 
@@ -61,6 +109,26 @@ switch ($_GET['function']) {
 
     case 'archive':       // id
         $res = archive_notification($_GET['id']);
+        break;
+
+    case 'unread':       // id
+        $res = unread_notification($_GET['id']);
+        break;
+
+    case 'fetch_read':       // id
+        $res = fetch_read_notification_by_user($_GET['id']);
+        break;
+
+    case 'fetch_unread':       // id
+        $res = fetch_unread_notification_by_user($_GET['id']);
+        break;
+
+    case 'fetch_archive':       // id
+        $res = fetch_archive_notification_by_user($_GET['id']);
+        break;
+
+    case 'fetch_all':       // id
+        $res = fetch_all_notification_by_user($_GET['id']);
         break;
 
     case 'fetch_status':

@@ -328,7 +328,7 @@ $sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle
 bdd()->query($sql);
 
 // ==================== Instanciation des status possibles pour une notification ====================
-$status = array("read", "unread", "archive");
+$status = array("read", "unread", "archive", "all");
 
 foreach ($status as $name) {
     $sql = "INSERT INTO status_notification (`name`) VALUE ('{$name}')";

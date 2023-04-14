@@ -329,4 +329,48 @@ body {
   height: 20px;
 }
 
+#app .navNotif {
+  display: table;
+  list-style: none;
+  overflow: hidden;
+  background: #e7e7e7;
+  border: 2px solid #4aa04a;
+  border-radius: 5px;
+  padding: 0;
+  margin: 0;
+}
+
+#app .navNotif_item {
+  display: table-cell;
+  width: 1%;
+
+}
+
+#app .navNotif_item:not(:first-child) {
+  border-left: 2px solid #4aa04a;
+}
+
+#app .navNotif_name{
+  display: block;
+  color: #4aa04a;
+  text-align: center;
+  line-height: 36px;
+  padding: 0 10px;
+}
+
+#app .navNotif_name:hover {
+  color: #ecf0f1;
+  background: #4AA04AFF;
+}
+
+
+#app .divNotif, .notif_image{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#app .item_notif_archive{
+  padding: 10px;
+}
 /*# sourceMappingURL=main.css.map */
