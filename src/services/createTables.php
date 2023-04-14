@@ -210,15 +210,26 @@ function create_table_notification() {
         `message` VARCHAR(50) NOT NULL,
         `date` DATETIME DEFAULT CURRENT_TIMESTAMP,
         `recipient` INT NOT NULL,
-        `status` ENUM('read','unread', 'archive'),
+        `status` VARCHAR(50) NOT NULL,
         CONSTRAINT pk_notification PRIMARY KEY (id_notif),
-        CONSTRAINT fk_notification_user FOREIGN KEY (recipient) REFERENCES `User` (`id`)
+        CONSTRAINT fk_notification_user FOREIGN KEY (recipient) REFERENCES `User` (`id`),
+        CONSTRAINT fk_notification_status_notification FOREIGN KEY (status) REFERENCES `Status_Notification` (`name`)
+    )";
+    $stm = bdd()->query($sql);
+}
+
+/**
+ * Execute la requête SQL qui crée la table de status de notification
+ */
+function create_table_status_notification() {
+    $sql = "CREATE TABLE IF NOT EXISTS Status_Notification (
+        `name` VARCHAR(50) NOT NULL UNIQUE,
+        CONSTRAINT pk_type_notification PRIMARY KEY (name)
     )";
     $stm = bdd()->query($sql);
 }
 
 // ==================== Création des tables de la base ====================
-create_table_notification();
 create_table_bus_type();
 create_table_bus();
 create_table_line();
@@ -233,6 +244,8 @@ create_table_line_time_slot();
 create_table_line_type();
 create_table_lineType_line();
 create_table_creneau_couverture();
+create_table_status_notification();
+create_table_notification();
 // ==================== Instanciation des types de créneaux ====================
 $timeSlotTypes = array('Conduite', 'Réunion', 'Indisponibilité');
 
@@ -313,3 +326,11 @@ bdd()->query($sql);
 
 $sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '17:00:00', '18:45:00', 10)";
 bdd()->query($sql);
+
+// ==================== Instanciation des status possibles pour une notification ====================
+$status = array("read", "unread", "archive");
+
+foreach ($status as $name) {
+    $sql = "INSERT INTO status_notification (`name`) VALUE ('{$name}')";
+    bdd()->query($sql);
+}

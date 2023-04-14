@@ -40,6 +40,15 @@ function archive_notification($id) {
     return false;
 }
 
+/**
+ * Renvoie le tableau de tous les status possibles de la notification.
+ * @return array|false  Le tableau de tous les status possibles de la notification, ou false si erreur.
+ */
+function fetch_notification_status() {
+    $res = bdd()->query("SELECT * FROM status_notification");
+    return $res->fetchAll();
+}
+
 
 switch ($_GET['function']) {
     case 'create':       // title, message, recipient
@@ -54,6 +63,10 @@ switch ($_GET['function']) {
         $res = archive_notification($_GET['id']);
         break;
 
+    case 'fetch_status':
+        $res = fetch_notification_status();
+        break;
+
     default:
         $res = "invalid function";
         break;
@@ -66,5 +79,6 @@ echo json_encode($res);
 fetch("http://localhost/projetL2S4/src/services/notifications/notifications.php?function=create&title=Creation&message=Wow&recipient=1").then(response => response.json()).then(response => console.log(response));
 fetch("http://localhost/projetL2S4/src/services/notifications/notifications.php?function=read&id=2").then(response => response.json()).then(response => console.log(response));
 fetch("http://localhost/projetL2S4/src/services/notifications/notifications.php?function=archive&id=1").then(response => response.json()).then(response => console.log(response));
+fetch("http://localhost/projetL2S4/src/services/notifications/notifications.php?function=fetch_status").then(response => response.json()).then(response => console.log(response));
 
  */
