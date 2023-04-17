@@ -69,6 +69,11 @@ export const toggleSupprIndispo= () => {
                 axios.get(`timeslots/timeslots.php?function=delete&id=${date.value}`).then(function(){
                     toggleEspaceUser();
                     toggleAlert("BRAVO", "Votre indisponibilité a bien été supprimée");
+                });
+                console.log(date);
+                console.log(date.end);
+                axios.get(`timeslots/timeslots.php?function=timeslot&id=${date.value}`).then((response)=>{
+                    axios.get(`notifications/notifications.php?function=create&title=Attention&message=Votre créneau d indisponibilité du `+ response.data.begining +` au `+ response.data.end +` à bien été supprimé.&recipient=`+JSON.parse(sessionStorage.getItem("userData")).id);
                 })
             }
         }

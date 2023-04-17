@@ -364,7 +364,7 @@ body {
 }
 
 
-#app .divNotif, .notif_image{
+#app .divNotif, .divTitresNotif, .notif_image{
   display: flex;
   flex-direction: row;
   justify-content: space-between;

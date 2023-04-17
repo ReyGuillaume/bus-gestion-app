@@ -206,8 +206,8 @@ function create_table_creneau_couverture() {
 function create_table_notification() {
     $sql = "CREATE TABLE IF NOT EXISTS Notification (
         `id_notif` INT NOT NULL AUTO_INCREMENT,
-        `title` VARCHAR(50) NOT NULL,
-        `message` VARCHAR(50) NOT NULL,
+        `title` VARCHAR(200) NOT NULL,
+        `message` VARCHAR(500) NOT NULL,
         `date` DATETIME DEFAULT CURRENT_TIMESTAMP,
         `recipient` INT NOT NULL,
         `status` VARCHAR(50) NOT NULL,
