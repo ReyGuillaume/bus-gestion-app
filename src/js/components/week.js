@@ -1,6 +1,6 @@
 import { create, toggleAlert, toggleError } from "../main";
 import '../../assets/style/calandar.css';
-import { toggleDayOfWeek, datePhp } from "../pages/day";
+import { toggleDayOfWeek, datePhp, toggleMultiDay } from "../pages/day";
 import axios from "axios"
 import { toggleAgenda } from "../pages/agenda";
 
@@ -62,7 +62,7 @@ export const formatedHour = (horaire) => {
 }
 
 // fonction qui crée le header du calendrier d'un mois entier (mois + année)
-const createWeek = (container, date, user=null) => {
+const createWeek = (container, date, user=null, multi=false) => {
     const mainDiv = create("div", container, null, ['calandar__header'])
 
     // flèche gauche
@@ -77,8 +77,8 @@ const createWeek = (container, date, user=null) => {
     const rightDiv = create("div", mainDiv, null, ['right-button'])
     create("i", rightDiv , null, ['fa-solid', 'fa-chevron-right'])
 
-    leftDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setDate(date.getDate() - 7)), user))
-    rightDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setDate(date.getDate() + 7)), user))
+    leftDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setDate(date.getDate() - 7)), user, multi))
+    rightDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setDate(date.getDate() + 7)), user, multi))
 
     return mainDiv
 }
@@ -135,10 +135,10 @@ const handleDargLeave = e => {
     e.target.classList.toggle("dragover")
 }
 
-const handleDrop = (e, date, user) => {
+const handleDrop = (e, date, user, multi=false) => {
     e.target.classList.toggle("dragover")
     if(e.target != null && e.target.id && e.target.classList.contains("drop")){
-        toggleModifValidation(e, date, user)    //création d'une modale de validation
+        toggleModifValidation(e, date, user, multi)    //création d'une modale de validation
     }
 }
 
@@ -165,7 +165,7 @@ else{
 }
 }
 
-const toggleModifValidation = async (e, dateOfMonday, user) => {
+const toggleModifValidation = async (e, dateOfMonday, user, multi=false) => {
 
     let app = document.querySelector("#app")
     let id = e.dataTransfer.getData('text/plain')
@@ -260,22 +260,22 @@ const toggleModifValidation = async (e, dateOfMonday, user) => {
         })
         await axios.get(`timeslots/timeslots.php?function=update&id=${id}&beginning=${beginning}&end=${end}&users=${users}&buses=${buses}&lines=${lines}&directions=${directions}`)
         .then(res => success = res.data)
-        toggleAgenda(user, newDate)
+        toggleAgenda(user, newDate, multi)
         success ? toggleAlert("Bravo !", "Le créneau a bien été modifié") : toggleError("Erreur", "Le créneau n'a pas pu être modifié")
     }
 }
 
 // création des zones de drop
-const addDragAndDrop = (div, date, user) => {
+const addDragAndDrop = (div, date, user, multi=false) => {
     div.ondragenter = handleDargEnter
     div.ondragover = handleDargOver
     div.ondragleave = handleDargLeave
-    div.ondrop = e => handleDrop(e, date, user)
+    div.ondrop = e => handleDrop(e, date, user, multi)
 }
 
 
 // fonction qui crée le corps du calendrier d'une semaine
-const createCalandar = (container, date, user=null) => {
+const createCalandar = (container, date, user=null, multi=false) => {
     const body = create("div", container, null, ['calandar__body'])
     const currentDate = new Date(Date.now())
 
@@ -297,10 +297,23 @@ const createCalandar = (container, date, user=null) => {
         let nb = date_courante.getDate()
 
         let div = create("div", days, day + " " + nb, ['days__day'])
-        let timeslots_courant = create("div", timeslots, "", ['timeslots__day', 'drop'], day)
-        toggleDayOfWeek(timeslots_courant, date_courante, user)
+        let timeslots_courant
+        if(multi){
+            timeslots_courant = create("div", timeslots, "", ['timeslots__day_multi', 'drop'], day)
+        }
+        else{
+            timeslots_courant = create("div", timeslots, "", ['timeslots__day', 'drop'], day)
+        }
+        
 
-        addDragAndDrop(timeslots_courant, firstDay, user)
+        if(multi){
+            toggleMultiDay(timeslots_courant, date_courante)
+        }
+        else{
+            toggleDayOfWeek(timeslots_courant, date_courante, user, multi)
+        }
+
+        addDragAndDrop(timeslots_courant, firstDay, user, multi)
 
         // On ajoute la classe 'today' si c'est la date d'aujourd'hui
         currentDate.getFullYear() == date_courante.getFullYear() &&
@@ -316,11 +329,11 @@ const createCalandar = (container, date, user=null) => {
 
 
 // fonction qui affiche le header et le corps du calendrier d'un mois entier
-const drawCalandar = (container, date, user=null) => {
+const drawCalandar = (container, date, user=null, multi=false) => {
     container.replaceChildren("")
 
-    createWeek(container, date, user)
-    createCalandar(container, date, user)
+    createWeek(container, date, user, multi)
+    createCalandar(container, date, user, multi)
 
     return container
 }
@@ -330,6 +343,7 @@ const drawCalandar = (container, date, user=null) => {
 export const calandar = (
     container,
     user=null,
+    multi=false,
     year = new Date().getFullYear(), 
     monthIndex = new Date().getMonth(), 
     day = new Date().getDate()
@@ -338,7 +352,7 @@ export const calandar = (
 
     const cal = create("div", container, null, ['calandar'])
 
-    drawCalandar(cal, date, user)
+    drawCalandar(cal, date, user, multi)
 
     return container
 }

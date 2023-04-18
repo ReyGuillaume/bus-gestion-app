@@ -224,7 +224,7 @@ body {
   transition: 0.5s;
   border: solid 2px #3D7C98;
   background-color: #3D7C98;
-  width: auto;
+  width: max-content;
   margin-top: 20px;
   padding: 8px 20px;
   color: white;
