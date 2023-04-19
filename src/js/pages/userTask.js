@@ -1,6 +1,7 @@
 import { create, createChamp, createChampRadio, createChampCheckbox, toggleAlert, toggleError } from "../main"
 import { getDayToString, getMonthToString, formatedHour } from "../components/week";
 import { participantsTimeslot, busesTimeslot, lineTimeslot, lineDirectionTimeslot }  from "./gestionTimeslots"
+import { toggleAgenda } from "./agenda";
 import axios from "axios";
 
 // affiche le bouton pour supprimer un créneau dans une tâche
