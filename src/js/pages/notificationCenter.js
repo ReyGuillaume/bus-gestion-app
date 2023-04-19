@@ -22,7 +22,7 @@ function archiveNotif (id){
     fetch("http://localhost/projetL2S4/src/services/notifications/notifications.php?function=archive&id="+id);
 }
 
-function fetch_data (divAllNotif, id_user, mode){
+async function fetch_data (divAllNotif, id_user, mode){
     axios.get(`notifications/notifications.php?function=fetch_`+mode+`&id=`+id_user).then((response)=>{
         divAllNotif.replaceChildren("");
         var divTitres = create("div", divAllNotif, null, ['divTitresNotif']);
@@ -54,39 +54,67 @@ function fetch_data (divAllNotif, id_user, mode){
 
             switch (mode) {
                 case "unread" :
-                    create("div", img, 'A').addEventListener("click", function() {archiveNotif(id_notif)} );
-                    create("div", img, 'R').addEventListener("click", function() {readNotif(id_notif)} );
+                    create("div", img, 'A').addEventListener("click", function(e) {
+                        e.stopPropagation()
+                        archiveNotif(id_notif)
+                        toggleNotificationCenter()
+                    } );
+                    create("div", img, 'R').addEventListener("click", function(e) {
+                        e.stopPropagation()
+                        readNotif(id_notif)
+                        toggleNotificationCenter()
+                    } );
                     break;
 
                 case "read" :
-                    create("div", img, 'A').addEventListener("click", function() {archiveNotif(id_notif)} );
-                    create("div", img, 'U').addEventListener("click", function() {unreadNotif(id_notif)} );
+                    create("div", img, 'A').addEventListener("click", function(e) {
+                        e.stopPropagation()
+                        archiveNotif(id_notif)
+                        toggleNotificationCenter()
+                    } );
+                    create("div", img, 'U').addEventListener("click", function(e) {
+                        e.stopPropagation()
+                        unreadNotif(id_notif)
+                        toggleNotificationCenter()
+                    } );
                     break;
 
                 case "archive" :
-                    create("div", img, 'R').addEventListener("click", function() {readNotif(id_notif)} );
-                    create("div", img, 'U').addEventListener("click", function() {unreadNotif(id_notif)} );
-                    break;
-
-                case "all" :
-                    create("div", img, 'A').addEventListener("click", function() {archiveNotif(id_notif)} );
-                    create("div", img, 'R').addEventListener("click", function() {readNotif(id_notif)} );
-                    create("div", img, 'U').addEventListener("click", function() {unreadNotif(id_notif)} );
+                    create("div", img, 'R').addEventListener("click", function(e) {
+                        e.stopPropagation()
+                        readNotif(id_notif)
+                        toggleNotificationCenter()
+                    } );
+                    create("div", img, 'U').addEventListener("click", function(e) {
+                        e.stopPropagation()
+                        unreadNotif(id_notif)
+                        toggleNotificationCenter()
+                    } );
                     break;
 
                 default :
-                    create("div", img, 'A').addEventListener("click", function() {archiveNotif(id_notif)} );
-                    create("div", img, 'R').addEventListener("click", function() {readNotif(id_notif)} );
-                    create("div", img, 'U').addEventListener("click", function() {unreadNotif(id_notif)} );
+                    create("div", img, 'A').addEventListener("click", function(e) {
+                        e.stopPropagation()
+                        archiveNotif(id_notif)
+                        toggleNotificationCenter()
+                    } );
+                    create("div", img, 'R').addEventListener("click", function(e) {
+                        e.stopPropagation()
+                        readNotif(id_notif)
+                        toggleNotificationCenter()
+                    } );
+                    create("div", img, 'U').addEventListener("click", function(e) {
+                        e.stopPropagation()
+                        unreadNotif(id_notif)
+                        toggleNotificationCenter()
+                    } );
                     break;
             }
-
             //Listener pour afficher la notification sur l'entièreté de la page
-            divNotif.addEventListener("click", (function(notif, divAllNotif,id) {return function (){
+            divNotif.addEventListener("click", function() {
                 showNotification(notif, divAllNotif)
-                readNotif(id);
-
-            };})(notif, divAllNotif,id_notif),true);
+                readNotif(id_notif);
+            })
 
         }
     });
@@ -109,7 +137,7 @@ function showNotification (notif, divAllNotif){
     create("div", img, 'Archiver').addEventListener("click", function() {archiveNotif(id_notif);location.reload();} );
 
 }
-export const toggleNotificationCenter = async () => {
+export const toggleNotificationCenter = () => {
     const main = document.querySelector("#app");
     const id_user = JSON.parse(sessionStorage.getItem("userData")).id;
     main.replaceChildren("");
@@ -118,21 +146,23 @@ export const toggleNotificationCenter = async () => {
     const nav = create("ul", main, null, ['navNotif']);
     let listeStatus = ["unread", "read", "archive", "all"];
 
+    const divAllNotif = create("div", main);
 
         for(var status of listeStatus){
-
+            
             /*--------------
-             Au clic du choix de type de créneau on affiche les autres infos à choisir
-             ---------------*/
+            Au clic du choix de type de créneau on affiche les autres infos à choisir
+            ---------------*/
             let li = create("li", nav, null, ['navNotif_item']);
             var radio = createChampRadio(li, status , "selectionStatus", status);
             radio.style.position = "fixed";
             radio.style.opacity = 0;
-
+            
             radio.addEventListener('click', async function () {
                 // Recuperation du type du créneau en création
                 var statusToHandle = statusSelected();
-                console.log(statusToHandle);
+                
+                
 
                 switch (statusToHandle) {
                     case 'unread' :
@@ -164,9 +194,7 @@ export const toggleNotificationCenter = async () => {
             label.setAttribute("for", status);
         }
 
-
-    const divAllNotif = create("div", main);
-    divAllNotif.replaceChildren(await fetch_data(divAllNotif, id_user, "all"));
+        fetch_data(divAllNotif, id_user, "all")
 
 
 }

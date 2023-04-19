@@ -787,19 +787,6 @@ export const toggleModifCreneau = () => {
                     let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
                     let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
 
-                    function participantsTimeslot () {
-                        // select the types of participants and return those who are checked in a string : 1,2,...
-                        var response = "";
-                        for(var user of document.querySelectorAll("input[name='selectionParticipant']")){
-                            if (user.checked) {
-                                if (response != ""){
-                                    response += ",";
-                                }
-                                response += user.value;
-                            }
-                        } return response;
-                    }
-
                     // selection of the type of timeslot, participants and buses
                     let users = participantsTimeslot();
                     let buses = busesTimeslot();
