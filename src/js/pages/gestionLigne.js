@@ -7,6 +7,25 @@ import axios from 'axios';
 //   Gestion Lignes
 //------------------------------------------------------- */
 
+// Fonction de recuperation du type selectionnée
+function typeSelected () {
+    for(var typeLine of document.querySelectorAll("input[name='selectionTypeLine']")){
+        console.log(typeLine);
+        if (typeLine.checked) {
+            return typeLine.value;
+        }
+    }
+}
+
+// Fonction de recuperation de la ligne selectionnée
+function lineSelected () {
+    for(var ligne of document.querySelectorAll("input[name='selectionLigne']")){
+        if (ligne.checked) {
+            return ligne.value;
+        }
+    }
+}
+
 export const toggleAddLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
@@ -24,15 +43,29 @@ export const toggleAddLine = () => {
     create("label", form, "Entrez la durée d'un trajet sur cette ligne en minutes :");
     createChamp(form, "integer", "travel_time");
 
+    //Creation of the radio to choose the type of the Line 
+    var divRadioTypelines = create("div", form);
+    axios.get(`lines/lines.php?function=typesline`).then((response)=>{
+        for(var type of response.data){
+            create("br", divRadioTypelines);
+            createChampRadio(divRadioTypelines, type.id_type , "selectionTypeLine", type.id_type);
+            var label = create("label", divRadioTypelines, "Type - " + type.name);
+            label.setAttribute("for", type.id_type);
+        }
+    });
 
+    
+
+    
+    
     // Creation of submit button
-    const bouton = create("div", form, "Envoyer")
+    const bouton = create("div", form, "Envoyer");
     bouton.addEventListener("click", function(){
-
+        var id_type = typeSelected();
         let number = document.querySelector("input[name='number']").value;
         let travel_time = document.querySelector("input[name='travel_time']").value;
-
-        axios.get (`lines/lines.php?function=create&number=${number}&travel_time=${travel_time}`).then(function(response){
+        console.log("Number "+number + " travel_time "+ travel_time + " id_type "+id_type);
+        axios.get (`lines/lines.php?function=create&number=${number}&travel_time=${travel_time}&id_type=${id_type}`).then(function(response){
             toggleEspaceAdmin();
             if(response.data){
                 toggleAlert("BRAVO", "La ligne a bien été ajoutée");

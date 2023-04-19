@@ -186,7 +186,7 @@ function create_table_lineType_line() {
     $stm = bdd()->query($sql);
 }
 
-function create_table_creneau_couverture{
+function create_table_creneau_couverture(){
     $sql = "CREATE TABLE IF NOT EXISTS LineTypeConditions (
         `id_type` INT NOT NULL,
         `begin` TIME NOT NULL,
@@ -263,7 +263,7 @@ $lineType = array(
 );
 
 foreach ($lineType as $id => $name) {
-    $sql = "INSERT INTO `LineType` (`id_type`, `name`) VALUE ({$id}, {$name})";
+    $sql = "INSERT INTO `LineType` (`id_type`, `name`) VALUE ({$id}, '{$name}')";
     bdd()->query($sql);
 }
 
@@ -282,14 +282,14 @@ foreach ($line_lineType as $id_line => $id_type) {
 }
 // ==================== Remplissage des creneau de couverture des types de ligne de base ====================
 
-$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (1, "06:30:00", "20:30:00", 10)";
+$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (1, '06:30:00', '20:30:00', 10)";
 bdd()->query($sql);
 
-$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, "07:00:00", "09:00:00", 10)";
+$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '07:00:00', '09:00:00', 10)";
 bdd()->query($sql);
 
-$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, "11:00:00", "13:30:00", 10)";
+$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '11:00:00', '13:30:00', 10)";
 bdd()->query($sql);
 
-$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, "17:00:00", "18:45:00", 10)";
+$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '17:00:00', '18:45:00', 10)";
 bdd()->query($sql);
