@@ -31,6 +31,7 @@ body {
   width: 100vw;
   background-color: #f9f9f9;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2509803922);
+  z-index: 999;
 }
 #header .container {
   height: 5.8rem;
