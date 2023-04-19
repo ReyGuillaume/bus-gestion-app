@@ -66,7 +66,7 @@ function fetch_notification_status() {
  * @return array|false  Le tableau de toutes les notifications lues de l'utilisateur, ou false si erreur.
  */
 function fetch_read_notification_by_user($id) {
-    $res = bdd()->query("SELECT * FROM `notification` WHERE recipient ='{$id}'AND status = 'read'");
+    $res = bdd()->query("SELECT * FROM `notification` WHERE recipient ='{$id}'AND status = 'read' ORDER BY date DESC");
     return $res->fetchAll();
 }
 
@@ -75,7 +75,7 @@ function fetch_read_notification_by_user($id) {
  * @return array|false  Le tableau de toutes les notifications non lues de l'utilisateur, ou false si erreur.
  */
 function fetch_unread_notification_by_user($id) {
-    $res = bdd()->query("SELECT * FROM `notification` WHERE recipient ='{$id}'AND status = 'unread'");
+    $res = bdd()->query("SELECT * FROM `notification` WHERE recipient ='{$id}'AND status = 'unread' ORDER BY date DESC");
     return $res->fetchAll();
 }
 
@@ -84,7 +84,7 @@ function fetch_unread_notification_by_user($id) {
  * @return array|false  Le tableau de toutes les notifications archivées de l'utilisateur, ou false si erreur.
  */
 function fetch_archive_notification_by_user($id) {
-    $res = bdd()->query("SELECT * FROM `notification` WHERE recipient ='{$id}'AND status = 'archive'");
+    $res = bdd()->query("SELECT * FROM `notification` WHERE recipient ='{$id}'AND status = 'archive' ORDER BY date DESC");
     return $res->fetchAll();
 }
 
@@ -93,7 +93,7 @@ function fetch_archive_notification_by_user($id) {
  * @return array|false  Le tableau de toutes les notifications de l'utilisateur, ou false si erreur.
  */
 function fetch_all_notification_by_user($id) {
-    $res = bdd()->query("SELECT * FROM `notification` WHERE recipient ='{$id}'");
+    $res = bdd()->query("SELECT * FROM `notification` WHERE recipient ='{$id}' ORDER BY date DESC");
     return $res->fetchAll();
 }
 

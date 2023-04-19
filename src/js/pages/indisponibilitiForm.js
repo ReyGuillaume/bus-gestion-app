@@ -1,4 +1,4 @@
-import { create, createChamp, createChampCheckbox, toggleAlert } from "../main";
+import { create, createChamp, createChampCheckbox, toggleAlert, addslashes} from "../main";
 import { toggleEspaceUser } from "./espaceUser";
 import axios from 'axios';
 
@@ -31,7 +31,12 @@ export const toggleIndisponibilitiForm = () => {
         axios.get(url).then(function(){
             toggleEspaceUser();
             toggleAlert("BRAVO", "Votre indisponibilité a bien été ajoutée");
-        })
+        });
+
+        let messageDebut = addslashes ("Votre créneau d'indisponibilité du ");
+        let messageFin = addslashes(" a bien été ajouté.");
+        axios.get(`notifications/notifications.php?function=create&title=Attention&message=`+messageDebut+ StartDateTime +` au `+ EndDateTime +messageFin+`&recipient=`+JSON.parse(sessionStorage.getItem("userData")).id);
+
 
     });
 
@@ -70,10 +75,11 @@ export const toggleSupprIndispo= () => {
                     toggleEspaceUser();
                     toggleAlert("BRAVO", "Votre indisponibilité a bien été supprimée");
                 });
-                console.log(date);
-                console.log(date.end);
+
                 axios.get(`timeslots/timeslots.php?function=timeslot&id=${date.value}`).then((response)=>{
-                    axios.get(`notifications/notifications.php?function=create&title=Attention&message=Votre créneau d indisponibilité du `+ response.data.begining +` au `+ response.data.end +` à bien été supprimé.&recipient=`+JSON.parse(sessionStorage.getItem("userData")).id);
+                    let messageDebut = addslashes ("Votre créneau d'indisponibilité du ");
+                    let messageFin = addslashes(" a bien été supprimé.");
+                    axios.get(`notifications/notifications.php?function=create&title=Attention&message=`+messageDebut+ response.data.begining +` au `+ response.data.end +messageFin+`&recipient=`+JSON.parse(sessionStorage.getItem("userData")).id);
                 })
             }
         }
