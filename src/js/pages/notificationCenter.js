@@ -1,6 +1,5 @@
-import {create, createChampCheckbox, createChampRadio} from "../main";
+import {create, createChampRadio} from "../main";
 import axios from "axios";
-import {toggleAgenda} from "./agenda.js";
 
 
 // Fonction de recuperation du statut sélectionné
@@ -22,7 +21,7 @@ function archiveNotif (id){
     fetch("http://localhost/projetL2S4/src/services/notifications/notifications.php?function=archive&id="+id);
 }
 
-function fetch_data (divAllNotif, id_user, mode){
+async function fetch_data (divAllNotif, id_user, mode){
     axios.get(`notifications/notifications.php?function=fetch_`+mode+`&id=`+id_user).then((response)=>{
         divAllNotif.replaceChildren("");
         var divTitres = create("div", divAllNotif, null, ['divTitresNotif']);
@@ -137,7 +136,7 @@ function showNotification (notif, divAllNotif){
     create("div", img, 'Archiver').addEventListener("click", function() {archiveNotif(id_notif);location.reload();} );
 
 }
-export const toggleNotificationCenter = async () => {
+export const toggleNotificationCenter = () => {
     const main = document.querySelector("#app");
     const id_user = JSON.parse(sessionStorage.getItem("userData")).id;
     main.replaceChildren("");
@@ -194,8 +193,7 @@ export const toggleNotificationCenter = async () => {
             label.setAttribute("for", status);
         }
 
-
-    divAllNotif.replaceChildren(await fetch_data(divAllNotif, id_user, "all"));
+        fetch_data(divAllNotif, id_user, "all")
 
 
 }
