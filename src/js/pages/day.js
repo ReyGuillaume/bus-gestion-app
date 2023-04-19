@@ -107,7 +107,7 @@ const createTimeSlots = async (date, container, user=null, multi=false, index=0)
             else{
                 div = create("div", container, null, ['timeslot'], [`ts${timeslot.id}`])
             }
-            div.addEventListener("click", () => toggleTask(footer, timeslot, div, user))
+            div.addEventListener("click", () => toggleTask(footer, timeslot, div, user, multi))
             
             if(possibleDrag(user_role, timeslot.name)){
                 div.setAttribute('draggable', true);

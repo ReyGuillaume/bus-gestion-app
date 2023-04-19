@@ -137,7 +137,7 @@ const handleDargLeave = e => {
 
 const handleDrop = (e, date, user, multi=false) => {
     e.target.classList.toggle("dragover")
-    if(e.dataTransfer.getData('text/plain').substring(0, 2) === "ts"){
+    if(e.dataTransfer.getData('text/plain').substring(0, 2) === "ts" && e.target.classList.contains("drop")){
         toggleModifValidation(e, date, user, multi)    //création d'une modale de validation
     }
 }

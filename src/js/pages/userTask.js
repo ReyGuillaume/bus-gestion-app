@@ -20,7 +20,7 @@ const supprimeCreneau = (container, props, bubble) => {
 }
 
 // affiche le bouton pour modifier un créneau, puis son formulaire
-const modifConduite = (container, props, user=null) => {
+const modifConduite = (container, props, user=null, multi=false) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`).then((responseCreneau) =>{
 
         // Creation du formulaire pré remplie de modif de ligne 
@@ -179,7 +179,7 @@ const modifConduite = (container, props, user=null) => {
 
                 if(response.data){
                     let newDate = new Date(StartDateTime)
-                    toggleAgenda(user, newDate)
+                    toggleAgenda(user, newDate, multi)
                     toggleAlert("BRAVO", "La conduite a bien été modifiée");
                 }
                 else{
@@ -191,7 +191,7 @@ const modifConduite = (container, props, user=null) => {
 }
 
 
-const modifReunion = (container, props, user=null) => {
+const modifReunion = (container, props, user=null, multi=false) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`).then((responseCreneau) =>{
     
         // Creation du formulaire pré remplie de modif de ligne 
@@ -261,7 +261,7 @@ const modifReunion = (container, props, user=null) => {
                 if(response.data){
 
                     let newDate = new Date(StartDateTime)
-                    toggleAgenda(user, newDate)
+                    toggleAgenda(user, newDate, multi)
                     toggleAlert("BRAVO", "La réunion a bien été modifiée");
                 }
                 else{
@@ -272,7 +272,7 @@ const modifReunion = (container, props, user=null) => {
     });
 }
 
-const modifIndispo = (container, props, user=null) => {
+const modifIndispo = (container, props, user=null, multi=false) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`).then((responseCreneau) =>{
     
         // Creation du formulaire pré remplie de modif de ligne 
@@ -315,7 +315,7 @@ const modifIndispo = (container, props, user=null) => {
                 if(response.data){
 
                     let newDate = new Date(StartDateTime)
-                    toggleAgenda(user, newDate)
+                    toggleAgenda(user, newDate, multi)
                     toggleAlert("BRAVO", "L'indisponiblité a bien été modifiée");
                 }
                 else{
@@ -326,7 +326,7 @@ const modifIndispo = (container, props, user=null) => {
     });
 }
 
-const reunion = (container, props, bubble, user_role, user=null) => {
+const reunion = (container, props, bubble, user_role, user=null, multi=false) => {
 
     let heure_debut = formatedHour(new Date(props.begining).getHours())
     let min_debut = formatedHour(new Date(props.begining).getMinutes())
@@ -350,7 +350,7 @@ const reunion = (container, props, bubble, user_role, user=null) => {
         const btns = create("div", container, null, ["btn-task"])
 
         create("div", btns, "Modifier", ["modifButton"]).addEventListener("click", function(){
-            modifReunion(container, props, user)
+            modifReunion(container, props, user, multi)
         })
         create("div", btns, "Supprimer", ["delButton"]).addEventListener("click", function(){
             supprimeCreneau(container, props, bubble)
@@ -361,7 +361,7 @@ const reunion = (container, props, bubble, user_role, user=null) => {
 }
 
 
-const conduite = (container, props, bubble, user_role, user=null) => {
+const conduite = (container, props, bubble, user_role, user=null, multi=false) => {
 
     let heure_debut = formatedHour(new Date(props.begining).getHours())
     let min_debut = formatedHour(new Date(props.begining).getMinutes())
@@ -394,7 +394,7 @@ const conduite = (container, props, bubble, user_role, user=null) => {
         const btns = create("div", container, null, ["btn-task"])
         
         create("div", btns, "Modifier", ["modifButton"]).addEventListener("click", function(){
-            modifConduite(container, props, user)
+            modifConduite(container, props, user, multi)
         })
         create("div", btns, "Supprimer", ["delButton"]).addEventListener("click", function(){
             supprimeCreneau(container, props, bubble)
@@ -405,7 +405,7 @@ const conduite = (container, props, bubble, user_role, user=null) => {
 }
 
 
-const indispo = (container, props, bubble, user_role, user=null) => {
+const indispo = (container, props, bubble, user_role, user=null, multi=false) => {
 
     let heure_debut = formatedHour(new Date(props.begining).getHours())
     let min_debut = formatedHour(new Date(props.begining).getMinutes())
@@ -424,7 +424,7 @@ const indispo = (container, props, bubble, user_role, user=null) => {
         const btns = create("div", container, null, ["btn-task"])
         
         create("div", btns, "Modifier", ["modifButton"]).addEventListener("click", function(){
-            modifIndispo(container, props, user)
+            modifIndispo(container, props, user, multi)
         })
         create("div", btns, "Supprimer", ["delButton"]).addEventListener("click", function(){
             supprimeCreneau(container, props, bubble)
@@ -436,7 +436,7 @@ const indispo = (container, props, bubble, user_role, user=null) => {
 
 
 // fonction qui permet d'afficher un créneau horaire affecté à l'utilisateur connecté
-export const toggleTask = (container, props, bubble, user=null) => {
+export const toggleTask = (container, props, bubble, user=null, multi=false) => {
 
     const main = document.querySelector("#app")
     main.classList.add("cache")
@@ -460,11 +460,11 @@ export const toggleTask = (container, props, bubble, user=null) => {
     })
 
     switch (props.name) {
-        case "Conduite": conduite(task, props, bubble, role, user)
+        case "Conduite": conduite(task, props, bubble, role, user, multi)
             break;
-        case "Réunion": reunion(task, props, bubble, role, user)
+        case "Réunion": reunion(task, props, bubble, role, user, multi)
             break;
-        case "Indisponibilité": indispo(task, props, bubble, role, user)
+        case "Indisponibilité": indispo(task, props, bubble, role, user, multi)
             break;
         default: create("h2", task, "Une erreur est survenue")
             break;
