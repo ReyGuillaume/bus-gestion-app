@@ -1,4 +1,5 @@
-import { create, createChamp, createChampCheckbox, createChampRadio } from "../main";
+import { create, createChamp, createChampCheckbox, createChampRadio, toggleAlert, toggleError } from "../main";
+import { toggleEspaceAdmin } from "./espaceAdmin";
 
 import axios from 'axios';
 //------------------------------------------------------- */
@@ -10,7 +11,8 @@ export const toggleAjoutUser = () => {
     main.replaceChildren("")
     
     create("h2", main, "Ajout d'Utilisateur")
-    create("p", main, " Rentrez les informations suivantes : ")
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
@@ -50,7 +52,7 @@ export const toggleAjoutUser = () => {
     });
 
 
-    const bouton = create("button", form, "Envoyer")
+    const bouton = create("div", form, "Envoyer", ["submitButton"])
     bouton.addEventListener("click", function (event){
         // return the type of the user checked
         function typeUser () {
@@ -72,7 +74,15 @@ export const toggleAjoutUser = () => {
         //creation of the url
         let url = `users/users.php?function=create&login=${login}&password=gobus123&confirm=gobus123&date=${date}&name=${name}&firstname=${firstname}&email=${email}&type=${type}`
 
-        axios.get(url)
+        axios.get(url).then(function(response){
+            toggleEspaceAdmin()
+            if(response.data){
+                toggleAlert("BRAVO", "L'utilisateur a bien été ajouté")
+            }
+            else{
+                toggleError("ERREUR", "L'utilisateur n'a pas pu être ajouté")
+            }
+        })
 
     })
     form.appendChild(bouton);
@@ -87,7 +97,8 @@ export const toggleModifyUser = () => {
     main.replaceChildren("")
     
     create("h2", main, "Modification d'Utilisateur")
-    create("p", main, " Choisissez l'utilisateur à modifier : ")
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, "Choisissez l'utilisateur à modifier :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
@@ -143,7 +154,7 @@ export const toggleModifyUser = () => {
                 createChamp(form, "date", "birthDate").value = responseUser.data.birth_date;
                 create("br", form);
 
-                const bouton = create("button", form, "Envoyer")
+                const bouton = create("div", form, "Modifier", ["submitButton"])
                 bouton.addEventListener("click", function (event){
                     // return the type of the user checked
                     function typeUser () {
@@ -164,7 +175,15 @@ export const toggleModifyUser = () => {
 
                     //creation of the url
                     let url = `users/users.php?function=update&id=${idUserToModify}&email=${email}&login=${login}`;
-                    axios.get(url)
+                    axios.get(url).then(function(response){
+                        toggleEspaceAdmin()
+                        if(response.data){
+                            toggleAlert("BRAVO", "L'utilisateur a bien été ajouté")
+                        }
+                        else{
+                            toggleError("ERREUR", "L'utilisateur n'a pas pu être ajouté")
+                        }
+                    })
 
                 })
                 form.appendChild(bouton);
@@ -186,7 +205,8 @@ export const toggleSupprimeUser = () => {
     main.replaceChildren("")
     
     create("h2", main, "Suppression d'Utilisateur")
-    create("p", main, " Rentrez les informations suivantes : ")
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
@@ -205,7 +225,7 @@ export const toggleSupprimeUser = () => {
     });
 
     // Creation of submit button
-    const bouton = create("button", form, "Envoyer")
+    const bouton = create("div", form, "Supprimer", ["submitButton"])
     bouton.addEventListener("click", function (event){
 
         // delete the user who are checked
@@ -213,7 +233,15 @@ export const toggleSupprimeUser = () => {
             let url = `users/users.php?function=delete&id=`;
             if (user.checked) {
                 url += user.value;
-                axios.get(url)
+                axios.get(url).then(function(response){
+                    toggleEspaceAdmin()
+                    if(response.data){
+                        toggleAlert("BRAVO", "L'utilisateur a bien été supprimé")
+                    }
+                    else{
+                        toggleError("ERREUR", "L'utilisateur n'a pas pu être supprimé")
+                    }
+                })
             }
         }
     })

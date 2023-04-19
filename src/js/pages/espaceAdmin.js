@@ -2,7 +2,7 @@ import { create } from "../main";
 import { toggleAgenda } from "./agenda";
 import { toggleAddCreneau,toggleSupprimeCreneau,toggleModifCreneau } from "../pages/gestionTimeslots";
 import{toggleAjoutUser, toggleSupprimeUser, toggleModifyUser} from "../pages/gestionUsers";
-import {AjoutBus, SupprimerBus, ModifBus}from "../pages/gestionBuses";
+import {DisponibilityBus, AjoutBus, SupprimerBus, ModifBus}from "../pages/gestionBuses";
 import { toggleAddLine, toggleSupprLine, toggleModifLine, toggleVerifCouvertureSemaine, toggleRemplissageAutoConduiteSemaine } from "./gestionLigne";
 import { toggleDrivers, toggleResp, toggleBuses, toggleLines } from "./agendaUsers";
 

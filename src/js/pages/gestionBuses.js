@@ -1,16 +1,66 @@
-import { create, createChamp, createChampCheckbox, createChampRadio } from "../main";
+import { create, createChamp, createChampCheckbox, createChampRadio, toggleAlert, toggleError } from "../main";
+import { toggleEspaceAdmin } from "./espaceAdmin";
+import { toggleAgenda } from "./agenda";
 
 import axios from 'axios';
 //------------------------------------------------------- */
 //   Gestion Bus 
 //------------------------------------------------------- */
 
+export const DisponibilityBus = () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+    
+    create("h2", main, "Disponibilité des bus")
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, "Afficher les bus disponibles selon la plage horaire :", ["presentation"])
+
+    // Creation of the form
+    const form = create("form", main)
+
+    // Begining
+    create("label", form, "Début :")
+    createChamp(form, "datetime-local", "StartDateTime")
+
+    // End
+    create("label", form, "Fin :")
+    createChamp(form, "datetime-local", "EndDateTime")
+
+    const btn = create("div", form, "Envoyer", ["submitButton"])
+    btn.addEventListener("click", function(){
+
+        let start = document.querySelector("input[name='StartDateTime']").value;
+        let end = document.querySelector("input[name='EndDateTime']").value;
+
+        axios.get("buses/buses.php?function=buses").then(function(response){
+
+            let buses = response.data;
+            let ul = document.querySelector("#lstBuses");
+            if(ul){
+                ul.remove()
+            }
+            ul = create("ul", form, "Liste des bus disponibles :", ["ul-info"], "lstBuses")
+            
+            for(let bus of buses){
+                axios.get("buses/buses.php?function=available&id="+bus.id+"&beginning="+start+"&end="+end).then(function(response){
+                    if(response.data){
+                        create("li", ul, "Bus n°"+bus.id + " est disponible").addEventListener("click", function(){
+                            toggleAgenda(bus)
+                        })
+                    }
+                })
+            }
+        })
+    })
+}
+
 export const AjoutBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
     create("h2", main, "Ajout d'un bus ")
-    create("p", main, " Rentrez les informations suivantes : ")
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
@@ -30,11 +80,19 @@ export const AjoutBus = () => {
           }
     });
     // Creation of submit button
-    const bouton = create("button", form, "Envoyer")
+    const bouton = create("div", form, "Envoyer", ["submitButton"])
     bouton.addEventListener("click", function (event){
         for(var type of document.querySelectorAll("input[name='typeBus']")){
             if (type.checked) {
-                axios.get(`buses/buses.php?function=create&type=`+type.value);
+                axios.get(`buses/buses.php?function=create&type=`+type.value).then(function(response){
+                    toggleEspaceAdmin()
+                    if(response.data){
+                        toggleAlert("BRAVO", "Le bus a bien été ajouté")
+                    }
+                    else{
+                        toggleError("ERREUR", "Le bus n'a pas pu être ajouté")
+                    }
+                })
             }
         }
     })
@@ -49,7 +107,8 @@ export const ModifBus = () => {
     main.replaceChildren("")
     
     create("h2", main, "Modification d'un bus ")
-    create("p", main, " Rentrez les informations suivantes : ")
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
@@ -81,7 +140,7 @@ export const ModifBus = () => {
           }
     });
     // Creation of submit button
-    const bouton = create("button", form, "Envoyer")
+    const bouton = create("div", form, "Modifier", ["submitButton"])
     bouton.addEventListener("click", function (event){
 
         function idBusModify () {
@@ -104,7 +163,15 @@ export const ModifBus = () => {
         let type = typeBusModify();
 
         let url = `buses/buses.php?function=updatebus&id=${id}&type=${type}`
-        axios.get(url);
+        axios.get(url).then(function(response){
+            toggleEspaceAdmin()
+            if(response.data){
+                toggleAlert("BRAVO", "Le bus a bien été modifié")
+            }
+            else{
+                toggleError("ERREUR", "Le bus n'a pas pu être modifié")
+            }
+        })
 
 
     })
@@ -119,7 +186,8 @@ export const SupprimerBus = () => {
     main.replaceChildren("")
     
     create("h2", main, "Suppression d'un bus ")
-    create("p", main, " Rentrez les informations suivantes : ")
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
@@ -137,13 +205,21 @@ export const SupprimerBus = () => {
           }
     });
     // Creation of submit button
-    const bouton = create("button", form, "Envoyer")
+    const bouton = create("div", form, "Supprimer", ["submitButton"])
     bouton.addEventListener("click", function (event){
         for(var bus of document.querySelectorAll("input[name='idBus']")){
             let url = `buses/buses.php?function=delete&id=`;
             if (bus.checked) {
                 url += bus.value;
-                axios.get(url)
+                axios.get(url).then(function(response){
+                    toggleEspaceAdmin()
+                    if(response.data){
+                        toggleAlert("BRAVO", "Le bus a bien été supprimé")
+                    }
+                    else{
+                        toggleError("ERREUR", "Le bus n'a pas pu être supprimé")
+                    }
+                })
             }
         }
     })
