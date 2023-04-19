@@ -160,6 +160,44 @@ function create_table_line_time_slot() {
     $stm = bdd()->query($sql);
 }
 
+/**
+ * Execute la requête SQL qui crée la table LineType
+ */
+function create_table_line_type() {
+    $sql = "CREATE TABLE IF NOT EXISTS LineType (
+        `id_type` INT NOT NULL AUTO_INCREMENT,
+        `name` VARCHAR(50) NOT NULL UNIQUE,
+        CONSTRAINT pk_lineType PRIMARY KEY (id_type)
+    )";
+    $stm = bdd()->query($sql);
+}
+
+/**
+ * Execute la requête SQL qui crée la table LineType_Line
+ */
+function create_table_lineType_line() {
+    $sql = "CREATE TABLE IF NOT EXISTS LineType_Line (
+        `id_type` INT NOT NULL,
+        `num_line` INT NOT NULL,
+        CONSTRAINT pk_lineType PRIMARY KEY (num_line),
+        CONSTRAINT fk_linetypeline_numline FOREIGN KEY (num_line) REFERENCES `Line` (`number`),
+        CONSTRAINT fk_linetypeline_idtype FOREIGN KEY (id_type) REFERENCES `LineType` (`id_type`)
+    )";
+    $stm = bdd()->query($sql);
+}
+
+function create_table_creneau_couverture(){
+    $sql = "CREATE TABLE IF NOT EXISTS LineTypeConditions (
+        `id_type` INT NOT NULL,
+        `begin` TIME NOT NULL,
+        `end` TIME NOT NULL,
+        `intervalle` INT NOT NULL,
+        CONSTRAINT pk_LineTypeConditions PRIMARY KEY (id_type, begin, end ),
+        CONSTRAINT fk_LineTypeConditions_idtype FOREIGN KEY (id_type) REFERENCES `LineType` (`id_type`)
+    )";
+    $stm = bdd()->query($sql);
+}
+
 // ==================== Création des tables de la base ====================
 create_table_bus_type();
 create_table_bus();
@@ -172,8 +210,9 @@ create_table_user();
 create_table_bus_time_slot();
 create_table_user_time_slot();
 create_table_line_time_slot();
-
-
+create_table_line_type();
+create_table_lineType_line();
+create_table_creneau_couverture();
 // ==================== Instanciation des types de créneaux ====================
 $timeSlotTypes = array('Conduite', 'Réunion', 'Indisponibilité');
 
@@ -215,3 +254,42 @@ foreach ($busLines as $num => $time) {
     $sql = "INSERT INTO `Line` (`number`, `travel_time`) VALUE ({$num}, {$time})";
     bdd()->query($sql);
 }
+
+// ==================== Instanciation des types de ligne ====================
+
+$lineType = array(
+    1 => "principale",
+    2 => "secondaire"
+);
+
+foreach ($lineType as $id => $name) {
+    $sql = "INSERT INTO `LineType` (`id_type`, `name`) VALUE ({$id}, '{$name}')";
+    bdd()->query($sql);
+}
+
+// ==================== Association des types de ligne de base ====================
+
+$line_lineType = array(
+   1 => 1,
+   2 => 1, 
+   3 => 2,
+   4 => 2,
+);
+
+foreach ($line_lineType as $id_line => $id_type) {
+    $sql = "INSERT INTO `LineType_line` (`id_type`, `num_line`) VALUE ({$id_type}, {$id_line})";
+    bdd()->query($sql);
+}
+// ==================== Remplissage des creneau de couverture des types de ligne de base ====================
+
+$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (1, '06:30:00', '20:30:00', 10)";
+bdd()->query($sql);
+
+$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '07:00:00', '09:00:00', 10)";
+bdd()->query($sql);
+
+$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '11:00:00', '13:30:00', 10)";
+bdd()->query($sql);
+
+$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '17:00:00', '18:45:00', 10)";
+bdd()->query($sql);

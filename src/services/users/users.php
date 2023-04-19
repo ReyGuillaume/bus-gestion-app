@@ -217,6 +217,85 @@ function delete_user($id) { //supprime également les lignes de Code et de User_
     return false;
 }
 
+/**
+    Indique si un utilisateur est libre sur une periode de temps.
+
+    @param id_user : l'id de l'utilisateur dont on souhaite vérifier la disponibilité.
+    @param begining : La date et heure du début du créneau de disponibilité recherché.
+    @param end : La date et heure du début du créneau de disponibilité recherché.
+
+    @return boolean.
+*/
+function is_free($id_user, $begining, $end){
+    $result = bdd()->
+    query("SELECT id FROM `timeslot` ts
+     JOIN user_timeslot uts ON ts.id = uts.id_time_slot 
+     WHERE uts.id_user = '{$id_user}' 
+     AND (ts.begining BETWEEN '{$begining}' AND '{$end}' 
+     OR ts.end BETWEEN '{$begining}' AND '{$end}')");
+
+   if ($result->rowCount() == 0) {
+        return true;    
+    } else {
+        return false;
+        }
+}
+
+/**
+    Donne tous les conducteurs libres sur une periode donée.
+
+    @param begining : La date et heure du début du créneau de disponibilité recherché.
+    @param end : La date et heure du début du créneau de disponibilité recherché.
+
+    @return une liste des identifiant des conducteurs libres sur la periode.
+*/
+function find_drivers_free($begining, $end){
+    
+    //array with all the id of the free drivers
+    $free_drivers = array(); 
+
+    //array with all the id of the drivers
+    $all_drivers = bdd()->
+    query("SELECT id FROM `user`WHERE id_user_type = '3' ");
+
+    // for each driver we check if he is if free on the periode 
+    // if yes we add it to the free drivers array 
+    foreach ($all_drivers as $driver) {
+        if(is_free($driver['id'], $begining, $end)){
+            $free_drivers[] = $driver['id']; // ajouter l'id du conducteur disponible au tableau
+        }
+    }
+
+   return $free_drivers;
+}
+
+/**
+    Donne tous les utilisateurs libres sur une periode donée.
+
+    @param begining : La date et heure du début du créneau de disponibilité recherché.
+    @param end : La date et heure du début du créneau de disponibilité recherché.
+
+    @return une liste des identifiant des utilisateurs libres sur la periode.
+*/
+function find_users_free($begining, $end){
+    //array with all the id of the free users
+    $free_users = array(); 
+
+    //array with all the id of the users
+    $all_users = bdd()->
+    query("SELECT id FROM `user`");
+
+    // for each user we check if he is if free on the periode 
+    // if yes we add it to the free users array 
+    foreach ($all_users as $user) {
+        if(is_free($user['id'], $begining, $end)){
+            $free_users[] = $user['id'];
+        }
+    }
+
+   return $free_users;
+}
+
 
 
 switch ($_GET['function']) {
@@ -253,6 +332,15 @@ switch ($_GET['function']) {
     case 'delete':     // id
         $res = delete_user($_GET['id']);
         break;
+    case 'isFree':     //++++
+        $res = is_free($_GET['id'], $_GET['beginning'], $_GET['end']);
+        break;
+    case 'freeDrivers':
+        $res = find_drivers_free($_GET['beginning'], $_GET['end']);
+        break;
+    case 'freeUsers':
+        $res = find_users_free($_GET['beginning'], $_GET['end']);
+        break;
     default:
         $res = "invalid function";
         break;
@@ -270,5 +358,8 @@ fetch("http://localhost/projetL2S4/src/services/users/users.php?function=bytype&
 fetch("http://localhost/projetL2S4/src/services/users/users.php?function=update&id=4&email=grey02@orange.fr&login=Moi").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/users/users.php?function=updatepwd&id=4&old=1234&new=12345&confirm=12345").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/users/users.php?function=delete&id=4").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/users/users.php?function=isFree&id=4&beginning=2023-04-27%2000:00:00&end=2023-04-27%2004:45:00").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/users/users.php?function=freeUsers&beginning=2023-02-27%2000:00:00&end=2023-02-27%2004:45:00").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/users/users.php?function=freeDrivers&beginning=2023-02-27%2000:00:00&end=2023-02-27%2004:45:00").then(response => response.json()).then(response => console.log(response))
 
 */

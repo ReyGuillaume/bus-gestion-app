@@ -7,6 +7,25 @@ import axios from 'axios';
 //   Gestion Lignes
 //------------------------------------------------------- */
 
+// Fonction de recuperation du type selectionnée
+function typeSelected () {
+    for(var typeLine of document.querySelectorAll("input[name='selectionTypeLine']")){
+        console.log(typeLine);
+        if (typeLine.checked) {
+            return typeLine.value;
+        }
+    }
+}
+
+// Fonction de recuperation de la ligne selectionnée
+function lineSelected () {
+    for(var ligne of document.querySelectorAll("input[name='selectionLigne']")){
+        if (ligne.checked) {
+            return ligne.value;
+        }
+    }
+}
+
 export const toggleAddLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
@@ -25,15 +44,29 @@ export const toggleAddLine = () => {
     create("label", form, "Entrez la durée d'un trajet sur cette ligne (en minutes) :", ["form-info"]);
     createChamp(form, "integer", "travel_time");
 
+    //Creation of the radio to choose the type of the Line 
+    var divRadioTypelines = create("div", form);
+    axios.get(`lines/lines.php?function=typesline`).then((response)=>{
+        for(var type of response.data){
+            create("br", divRadioTypelines);
+            createChampRadio(divRadioTypelines, type.id_type , "selectionTypeLine", type.id_type);
+            var label = create("label", divRadioTypelines, "Type - " + type.name);
+            label.setAttribute("for", type.id_type);
+        }
+    });
 
+    
+
+    
+    
     // Creation of submit button
     const bouton = create("div", form, "Envoyer", ["submitButton"])
     bouton.addEventListener("click", function(){
-
+        var id_type = typeSelected();
         let number = document.querySelector("input[name='number']").value;
         let travel_time = document.querySelector("input[name='travel_time']").value;
-
-        axios.get (`lines/lines.php?function=create&number=${number}&travel_time=${travel_time}`).then(function(response){
+        console.log("Number "+number + " travel_time "+ travel_time + " id_type "+id_type);
+        axios.get (`lines/lines.php?function=create&number=${number}&travel_time=${travel_time}&id_type=${id_type}`).then(function(response){
             toggleEspaceAdmin();
             if(response.data){
                 toggleAlert("BRAVO", "La ligne a bien été ajoutée");
@@ -167,5 +200,81 @@ export const toggleModifLine = () => {
    );
 
     return main
+
+}
+
+export const toggleVerifCouvertureSemaine = () => {
+
+    // Recuperation de la div à modifier 
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+    
+    // Mise en place des titres
+    create("h2", main, "Verification de couvertures des lignes")
+    create("p", main, "Indiquer la semaine à verifier")
+
+    // Creation of the form
+    const form = create("form", main)
+
+    // Remplissage du formulaire 
+    createChamp(form, "week", "semaine");
+
+    // Creation of submit button
+    const bouton = create("div", form, "Envoyer")
+    bouton.addEventListener("click", function(){
+
+        let semaine = document.querySelector("input[name='semaine']").value;
+        
+
+        axios.get (`lines/lines.php?function=WeekCovered&week=${semaine}`).then(function(response){
+            toggleEspaceAdmin();
+            console.log(response);
+            if(response.data){
+                toggleAlert("BRAVO", "Le semaine est bien couverte");
+            }
+            else{
+                toggleError("OUPS", "Il semblerait que tout ne soit pas bien rempli...");
+            }
+        }) 
+
+    })
+
+}
+
+export const toggleRemplissageAutoConduiteSemaine = () => {
+
+    // Recuperation de la div à modifier 
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+    
+    // Mise en place des titres
+    create("h2", main, "Remplissage automatique de la semaine")
+    create("p", main, "Indiquer la semaine à remplir, attention cela supprime les créneaux de conduite déjà ajoutés")
+
+    // Creation of the form
+    const form = create("form", main)
+
+    // Remplissage du formulaire 
+    createChamp(form, "week", "semaine");
+
+    // Creation of submit button
+    const bouton = create("div", form, "Envoyer")
+    bouton.addEventListener("click", function(){
+
+        let semaine = document.querySelector("input[name='semaine']").value;
+        
+
+        axios.get (`lines/lines.php?function=coverWeek&week=${semaine}`).then(function(response){
+            toggleEspaceAdmin();
+            console.log(response);
+            if(response.data){
+                toggleAlert("BRAVO", "Toutes les conduites de la semaine ont étées ajoutées");
+            }
+            else{
+                toggleError("OUPS", "Il semblerait que tout ne se soit pas passé comme prévu...");
+            }
+        }) 
+
+    })
 
 }

@@ -173,6 +173,57 @@ function delete_bus_type($id) { // supprimer également tous les bus qui sont d�
     return false;
 }
 
+/**
+    Indique si un bus est libre sur une periode de temps.
+
+    @param id_user : l'id du bus dont on souhaite vérifier la disponibilité.
+    @param begining : La date et heure du début du créneau de disponibilité recherché.
+    @param end : La date et heure du début du créneau de disponibilité recherché.
+
+    @return boolean.
+*/
+function is_free($id_bus, $begining, $end){
+    $result = bdd()->
+    query("SELECT id FROM `timeslot` ts
+     JOIN bus_timeslot bts ON ts.id = bts.id_time_slot 
+     WHERE bts.id_bus = '{$id_bus}' 
+     AND (ts.begining BETWEEN '{$begining}' AND '{$end}' 
+     OR ts.end BETWEEN '{$begining}' AND '{$end}')");
+
+
+   if ($result->rowCount() == 0) {
+        return true;    
+    } else {
+        return false;
+        }
+}
+
+/**
+    Donne tous les bus libres sur une periode donée.
+
+    @param begining : La date et heure du début du créneau de disponibilité recherché.
+    @param end : La date et heure du début du créneau de disponibilité recherché.
+
+    @return une liste des identifiant des bus libres sur la periode.
+*/
+function find_buses_free($begining, $end){
+    //array with all the id of the free buses
+    $free_buses = array(); 
+
+    //array with all the id of the buses
+    $all_buses = bdd()->
+    query("SELECT id FROM `bus`");
+
+    // for each bus we check if he is if free on the periode 
+    // if yes we add it to the free buses array 
+    foreach ($all_buses as $bus) {
+        if(is_free($bus['id'], $begining, $end)){
+            $free_buses[] = $bus['id'];
+        }
+    }
+
+   return $free_buses;
+}
 
 
 switch ($_GET['function']) {
@@ -209,6 +260,12 @@ switch ($_GET['function']) {
     case 'deletetype':     // id
         $res = delete_bus_type($_GET['id']);
         break;
+    case 'isFree' : 
+        $res = is_free($_GET['id'], $_GET['beginning'], $_GET['end']);
+        break;
+    case 'freeBuses':
+        $res = find_buses_free($_GET['beginning'], $_GET['end']);
+        break;
     default:
         $res = "invalid function";
         break;
@@ -227,5 +284,7 @@ fetch("http://localhost/projetL2S4/src/services/buses/buses.php?function=updateb
 fetch("http://localhost/projetL2S4/src/services/buses/buses.php?function=updatebustype&id=17&name=nouveau&nb=150").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/buses/buses.php?function=delete&id=5").then(response => response.json()).then(response => console.log(response))
 fetch("http://localhost/projetL2S4/src/services/buses/buses.php?function=deletetype&id=1").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/buses/buses.php?function=isFree&id=1&beginning=2023-02-27%2000:00:00&end=2023-02-27%2004:45:00").then(response => response.json()).then(response => console.log(response))
+fetch("http://localhost/projetL2S4/src/services/buses/buses.php?function=freeBuses&beginning=2023-04-27%2000:00:00&end=2023-04-27%2004:45:00").then(response => response.json()).then(response => console.log(response))
 
 */
