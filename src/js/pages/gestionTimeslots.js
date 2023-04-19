@@ -6,8 +6,62 @@ import {
     toggleError,
     toggleAlert
 } from "../main";
-
+import { toggleEspaceAdmin } from "./espaceAdmin";
 import axios from 'axios';
+
+
+// select the types of participants and return those who are checked in a string : 1,2,...
+export const participantsTimeslot = () => {
+    var response = "";
+    for(var user of document.querySelectorAll("input[name='selectionParticipant']")){
+        if (user.checked) {
+            if (response != ""){
+                response += ",";
+            }
+            response += user.value;
+        }
+    } return response;
+}
+
+// select the types of buses and return those who are checked in a string : 1,2,...
+export const busesTimeslot = () => {
+    var response = "";
+    for(var bus of document.querySelectorAll("input[name='selectionBus']")){
+        if (bus.checked) {
+            if (response != ""){
+                response += ",";
+            }
+            response += bus.value;
+        }
+    } return response;
+}
+
+// select the types of timeslots and return the one who is checked in a string
+export const typeTimeslot = () => {
+    for(var type of document.querySelectorAll("input[name='selectionType']")){
+        if (type.checked) {
+            return type.value;
+        }
+    }
+}
+
+// select the direction of the line and return the one who is checked in a string
+export const lineDirectionTimeslot = () => {
+    for(var direction of document.querySelectorAll("input[name='selectionDirection']")){
+        if (direction.checked) {
+            return direction.value;
+        }
+    }
+}
+    
+// select the line of the timeslot and return the one who is checked in a string
+export const lineTimeslot = () => {
+    for(var line of document.querySelectorAll("input[name='selectionLigne']")){
+        if (line.checked) {
+            return line.value;
+        }
+    }
+}
 
 
 // Fonction de recuperation du type creneau selectionnée
@@ -465,7 +519,8 @@ export const toggleAddCreneau = () => {
     main.replaceChildren("");
     
     create("h2", main, "Ajout de crénaux");
-    create("p", main, " Rentrez les informations suivantes : ");
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, " Rentrez les informations suivantes : ", ["presentation"]);
 
     // Creation of the form
     const form = create("form", main);
@@ -548,11 +603,19 @@ export const toggleAddCreneau = () => {
 
 
     // Creation of submit button
-    const bouton = create("button", form, "Envoyer")
+    const bouton = create("div", form, "Envoyer", ["submitButton"])
     bouton.addEventListener("click", function (event){
 
         let url = axiosUrlSendWhenADD(typeSelected());
-        axios.get(url);
+        axios.get(url).then(function(response){
+            toggleEspaceAdmin()
+            if(response.data){
+                toggleAlert("BRAVO", "Le créneau a bien été ajouté")
+            }
+            else{
+                toggleError("ERREUR", "Le créneau n'a pas pu être ajouté")
+            }
+        })
     })
 
     form.appendChild(bouton);
@@ -566,7 +629,8 @@ export const toggleModifCreneau = () => {
     main.replaceChildren("")
     
     create("h2", main, "Modification de Créneau")
-    create("p", main, " Choisir le créneau à modifier : ")
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, "Choisir le créneau à modifier :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
@@ -717,7 +781,7 @@ export const toggleModifCreneau = () => {
                     champRetour.checked = true;
                 }
                 // Creation of submit button
-                const bouton = create("button", form, "Envoyer")
+                const bouton = create("div", form, "Modifier", ["submitButton"])
                 bouton.addEventListener("click", function (event){
                     // selection of the start and end time
                     let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
@@ -734,37 +798,6 @@ export const toggleModifCreneau = () => {
                                 response += user.value;
                             }
                         } return response;
-                    }
-
-                    function busesTimeslot () {
-                        // select the types of buses and return those who are checked in a string : 1,2,...
-                        var response = "";
-                        for(var bus of document.querySelectorAll("input[name='selectionBus']")){
-                            if (bus.checked) {
-                                if (response != ""){
-                                    response += ",";
-                                }
-                                response += bus.value;
-                            }
-                        } return response;
-                    }
-
-                    function lineDirectionTimeslot () {
-                        // select the direction of the line and return the one who is checked in a string
-                        for(var direction of document.querySelectorAll("input[name='selectionDirection']")){
-                            if (direction.checked) {
-                                return direction.value;
-                            }
-                        }
-                    }
-
-                    function lineTimeslot () {
-                        // select the line of the timeslot and return the one who is checked in a string
-                        for(var line of document.querySelectorAll("input[name='selectionLigne']")){
-                            if (line.checked) {
-                                return line.value;
-                            }
-                        }
                     }
 
                     // selection of the type of timeslot, participants and buses
@@ -788,7 +821,15 @@ export const toggleModifCreneau = () => {
                         url += `&directions=${direction}`;
                     }
 
-                    axios.get(url)
+                    axios.get(url).then(function(response){
+                        toggleEspaceAdmin()
+                        if(response.data){
+                            toggleAlert("BRAVO", "Le créneau a bien été modifié")
+                        }
+                        else{
+                            toggleError("ERREUR", "Le créneau n'a pas pu être modifié")
+                        }
+                    })
                 })
                 form.appendChild(bouton);
             });
@@ -809,7 +850,8 @@ export const toggleSupprimeCreneau = () => {
     main.replaceChildren("")
     
     create("h2", main, "Suppression de Créneau")
-    create("p", main, " Rentrez les informations suivantes : ")
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
     const form = create("form", main)
@@ -827,11 +869,14 @@ export const toggleSupprimeCreneau = () => {
     });
 
     // Creation of submit button
-    const bouton = create("button", form, "Envoyer")
+    const bouton = create("div", form, "Supprimer", ["submitButton"])
     bouton.addEventListener("click", function (event){
         for(var date of document.querySelectorAll("input[name='selectionTimeslot']")){
             if (date.checked) {
-                axios.get (`timeslots/timeslots.php?function=delete&id=${date.value}`);
+                axios.get (`timeslots/timeslots.php?function=delete&id=${date.value}`).then(function(response){
+                    toggleEspaceAdmin()
+                    toggleAlert("BRAVO", "Le créneau a bien été supprimé")
+                })
             }
         }
         })

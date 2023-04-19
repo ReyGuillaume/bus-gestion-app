@@ -70,16 +70,48 @@ const handlerDragStart = e => {
     e.dataTransfer.setData('text/plain', e.target.id)
 }
 
+// fonction qui renvoie un booléen indiquant si le user a un rôle qui lui permet de modifier tel créneau
+const possibleDrag = (user_role, timeslot_name) => {
+    if(user_role == "Conducteur"){
+        if(timeslot_name == "Indisponibilité"){
+            return true;
+        }
+        return false;
+    }
+    else if(user_role == "Responsable Logistique"){
+        if(timeslot_name == "Conduite"){
+            return true;
+        }
+        return false;
+    }
+    else{
+        if(timeslot_name == "Conduite" || timeslot_name == "Réunion"){
+            return true;
+        }
+        return false;
+    }
+}
+
 // fonction qui affiche tous les créneaux horaires récupérés, affectés à l'utilisateur connecté
-const createTimeSlots = async (date, container, user=null) => {
+const createTimeSlots = async (date, container, user=null, multi=false, index=0) => {
+    const sessionData = JSON.parse(sessionStorage.getItem("userData"))
+    const user_role = sessionData["role"]
     const footer = document.querySelector("#footer")
     const res = await fetchTimeSlots(date, user)
     if (res.length > 0) {
         res.forEach(timeslot => {
-            const div = create("div", container, null, ['timeslot'], [`ts${timeslot.id}`])
-            div.addEventListener("click", () => toggleTask(footer, timeslot, div))
-            div.setAttribute('draggable', true);
-
+            let div
+            if(multi){
+                div = create("div", container, null, ['timeslot_multi'], [`ts${timeslot.id}`])
+            }
+            else{
+                div = create("div", container, null, ['timeslot'], [`ts${timeslot.id}`])
+            }
+            div.addEventListener("click", () => toggleTask(footer, timeslot, div, user))
+            
+            if(possibleDrag(user_role, timeslot.name)){
+                div.setAttribute('draggable', true);
+            }
             // Positionnement en fonction du début et de la fin
             let heure_debut = new Date(timeslot.begining).getHours()
             let min_debut = new Date(timeslot.begining).getMinutes()
@@ -94,28 +126,39 @@ const createTimeSlots = async (date, container, user=null) => {
             div.style.top = `${top}px`
             div.style.height = `${height}px`
 
+            if(multi){
+                div.style.left = (25 * index) + "px"
+            }
+
             const color = create("div", div, null, ["timeslot__color", timeslot.name])
-            create("div", color, null, ["div-color"])
+            const div_color = create("div", color, null, ["div-color"])
+            div_color.style.height = duree + "px"
 
             const houres = create("div", div, null, ["timeslot__houres"])
 
             //ajout du drag & drop
-            div.ondragstart = handlerDragStart
+            if(div.getAttribute("draggable")){
+                div.ondragstart = handlerDragStart
+            }
 
-            create("h2", houres, formatedHour(heure_debut) + ":" + formatedHour(min_debut), ['beginning'])
-            create("h2", houres, formatedHour(heure_fin) + ":" + formatedHour(min_fin), ['end'])
+            if(!multi){
+                create("h2", houres, formatedHour(heure_debut) + ":" + formatedHour(min_debut), ['beginning'])
+                create("h2", houres, formatedHour(heure_fin) + ":" + formatedHour(min_fin), ['end'])
+            }
 
-            const body = create("div", div, null, ["timeslot__body"])
+            if(!multi){
+                const body = create("div", div, null, ["timeslot__body"])
             
-            switch(timeslot.name){
-                case "Conduite": create("h3", body, "Conduite")
-                    break;
-                case "Réunion": create("h3", body, "Réunion")
-                    break;
-                case "Indisponibilité": create("h3", body, "Indisponible")
-                    break;
-                default: create("h3", body, "ERREUR")
-                    break;
+                switch(timeslot.name){
+                    case "Conduite": create("h3", body, "Conduite")
+                        break;
+                    case "Réunion": create("h3", body, "Réunion")
+                        break;
+                    case "Indisponibilité": create("h3", body, "Indisponible")
+                        break;
+                    default: create("h3", body, "ERREUR")
+                        break;
+                }
             }
 
             const goto = create("div", div, null, ["timeslot__goto"])
@@ -145,7 +188,21 @@ export const toggleDay = (date, user=null) => {
 }
 
 
-export const toggleDayOfWeek = (container, date, user=null) => {
+export const toggleDayOfWeek = (container, date, user=null, multi=false) => {
 
-    createTimeSlots(date, container, user)
+    createTimeSlots(date, container, user, multi)
+}
+
+export const toggleMultiDay = async (container, date) => {
+
+    let users = []
+    let i = 0
+
+    await axios.get(`users/users.php?function=bytype&type=3`)
+    .then(res => users = res.data)
+
+    for(let user of users){
+        createTimeSlots(date, container, user, true, i)
+        i += 1
+    }
 }

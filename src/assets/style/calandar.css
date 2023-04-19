@@ -88,13 +88,23 @@
   width: 150px;
   align-items: center;
 }
-.timeslot{
+.timeslots__day_multi{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+  align-items:first baseline;
+}
+.timeslot, .timeslot_multi{
   position: absolute;
   display: flex;
   align-items: center;
   background-color: #eae9e9;
   border-radius: 8px;
   cursor: pointer;
+}
+.timeslot_multi{
+  width: 25px;
 }
 .timeslot div{
   font-size: 0.6em;
@@ -105,8 +115,7 @@
   flex-direction: column;
 }
 .timeslot__color, .div-color{
-  width: 5px;
-  height: 40px;
+  width: 7px;
 }
 .back-button{
   cursor: pointer;

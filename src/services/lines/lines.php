@@ -12,13 +12,15 @@ include_once "../connexion.php";
 
     @return boolean si l'ajout est un succès.
 */
-function create_line($number, $travel_time) {
-    if(!bdd()->query("SELECT * FROM `Line`  WHERE `number` = {$number}")->fetch()){
-        bdd()->query("INSERT INTO `Line` (`number`, `travel_time`) VALUE ({$number}, {$travel_time})");
-        return true;
+function create_line($number, $travel_time, $id_type_line) {
+    if(!bdd()->query("SELECT * FROM `Line`  WHERE `number` = '{$number}'")->fetch()){
+        bdd()->query("INSERT INTO `Line` (`number`, `travel_time`) VALUE ('{$number}', '{$travel_time}')");
+        bdd()->query("INSERT INTO `linetype_line`(`id_type`, `num_line`) VALUE ('{$id_type_line}', '{$number}')");
+        $res = true;  
+        
     }
     else{
-        return false;
+        $res = false;
     }
 }
 
@@ -29,6 +31,16 @@ function create_line($number, $travel_time) {
 */
 function fetch_lines() {
     $res = bdd()->query("SELECT * FROM `Line`");
+    return $res->fetchAll();
+}
+
+/**
+    Renvoie tous les types de ligne existant.
+    
+    @return liste des lignes (id_type : Int, name : String).
+*/
+function fetch_linetypes() {
+    $res = bdd()->query("SELECT * FROM `linetype`");
     return $res->fetchAll();
 }
 
@@ -404,7 +416,7 @@ function couvrire_creneau ($crenau, $jour, $id_line){
 
 switch ($_GET['function']) {
     case 'create':      // number, temps de trajet
-        $res = create_line($_GET['number'], $_GET['travel_time']);
+        $res = create_line($_GET['number'], $_GET['travel_time'],$_GET['id_type'] );
         break;
     case 'lines':
         $res = fetch_lines();
@@ -429,6 +441,9 @@ switch ($_GET['function']) {
         break;
     case 'coverWeek': // week
         $res = cover_a_week ($_GET['week']);
+        break;
+    case 'typesline':
+        $res =fetch_linetypes();
         break;
     default:
         $res = "invalid function";

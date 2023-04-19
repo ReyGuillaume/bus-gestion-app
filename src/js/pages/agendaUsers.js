@@ -9,16 +9,18 @@ const drawUsers = (idtype) => {
     main.replaceChildren("")
 
     const h2 = create("h2", main, null, ['mainTitle'])
-    const ul = create("ul", main, null, ['lstUsers'])
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    const titre = create("div", main, "", ["presentation"])
+    const ul = create("ul", main, null, ['navBar'])
 
     if(idtype == 2){
         h2.innerText = "Agenda des responsables logistiques"
-        ul.innerText = "Liste des responsables logistiques :"
+        titre.innerText = "Liste des responsables logistiques :"
     }
 
     else if(idtype == 3){
         h2.innerText = "Agenda des chauffeurs"
-        ul.innerText = "Liste des chauffeurs :"
+        titre.innerText = "Liste des chauffeurs :"
     }
 
     // on récupère tous les users de la base de données, du type renseigné
@@ -27,14 +29,15 @@ const drawUsers = (idtype) => {
         let users = response.data;
         
         for(let user of users){
-            let li = create("li", ul)
+            let li = create("li", ul, null, ["navBar__item"])
             let a = create("div", li, user.firstname + " " + user.name.toUpperCase())
             a.addEventListener("click", function(){
                 toggleAgenda(user)
             })
         }
-
-        create("div", main, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
+        create("div", main, "Vision globale", ["submitButton"]).addEventListener("click", function(){
+            toggleAgenda(undefined, undefined, true)
+        })
     })
     
     return main
@@ -66,7 +69,9 @@ export const toggleBuses = () => {
     main.replaceChildren("")
 
     create("h2", main, "Agenda des bus", ['mainTitle'])
-    const ul = create("ul", main, "Liste des bus :", ['lstUsers'])
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("div", main, "Liste des bus :", ["presentation"])
+    const ul = create("ul", main, null, ["navBar"])
 
     // on récupère tous les users de la base de données, du type renseigné
     axios.get("buses/buses.php?function=buses").then(function(response){
@@ -75,15 +80,13 @@ export const toggleBuses = () => {
         
         for(let bus of buses){
             axios.get("buses/buses.php?function=bus&id="+bus.id).then(function(responseBus){
-                let li = create("li", ul)
+                let li = create("li", ul, null, ["navBar__item"])
                 let a = create("div", li, "Bus n°" + responseBus.data.id + " (" + responseBus.data.nb_places + " places)")
                 a.addEventListener("click", function(){
                     toggleAgenda(bus)
                 })
             })
         }
-
-        create("div", main, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
     })
     
     return main
@@ -110,7 +113,9 @@ export const toggleLines = () => {
     main.replaceChildren("")
 
     create("h2", main, "Agenda des lignes de bus", ['mainTitle'])
-    const ul = create("ul", main, "Liste des lignes de bus :", ['lstUsers'])
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("div", main, "Liste des lignes de bus :", ["presentation"])
+    const ul = create("ul", main, null, ['navBar'])
 
     // on récupère tous les users de la base de données, du type renseigné
     axios.get("lines/lines.php?function=lines").then(function(response){
@@ -118,14 +123,12 @@ export const toggleLines = () => {
         let lines = response.data;
         
         for(let line of lines){
-            let li = create("li", ul)
+            let li = create("li", ul, null, ["navBar__item"])
             let a = create("div", li, "Ligne " + line.number + " (" + convertMinutesToTime(line.travel_time) + " de trajet)")
             a.addEventListener("click", function(){
                 toggleAgenda(line)
             })
         }
-
-        create("div", main, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
     })
     
     return main
