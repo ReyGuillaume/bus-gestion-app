@@ -8,6 +8,7 @@ import {
 } from "../main";
 import { toggleEspaceAdmin } from "./espaceAdmin";
 import axios from 'axios';
+import { timeSlotCanBeSubmit } from "./testTimeSlot";
 
 
 // select the types of participants and return those who are checked in a string : 1,2,...
@@ -419,19 +420,36 @@ function selectedLine () {
     }
 }
 
-// fonction qui renvoie l'url axios en fonction du type de creneau selectionné
-function axiosUrlSendWhenADD(type){
+const verifTimeSlot = (type) => {
+    // creation & assignement of the variables
+    let StartDateTime, EndDateTime, users, drivers, buses, line, direction
+    ({StartDateTime, EndDateTime, users, drivers, buses, line, direction} = getFormData())
 
+    return timeSlotCanBeSubmit(StartDateTime, EndDateTime, type, users + drivers, buses)
+}
+
+
+const getFormData = () => {
     // selection of the start and end time
     let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
     let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
 
     // creation of the variables
-    let users;
-    let drivers;
-    let buses;
-    let line;
-    let direction;
+    let users = selectedUsers();
+    let drivers = selectedDrivers();
+    let buses = selectedBuses();
+    let line = selectedLine();
+    let direction = selectedDirection();
+    
+    return {StartDateTime, EndDateTime, users, drivers, buses, line, direction}
+}
+
+// fonction qui renvoie l'url axios en fonction du type de creneau selectionné
+function axiosUrlSendWhenADD(type){
+
+    // creation & assignement of the variables
+    let StartDateTime, EndDateTime, users, drivers, buses, line, direction
+    ({StartDateTime, EndDateTime, users, drivers, buses, line, direction} = getFormData())
 
     // creation of the default url
     let url = `timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}&type=${type}`;
@@ -441,37 +459,30 @@ function axiosUrlSendWhenADD(type){
 
         // CONDUITE
         case "1" :
-            drivers = selectedDrivers();
-            buses = selectedBuses();
-            line = selectedLine();
-            direction = selectedDirection();
-            if (drivers != "" && buses != "" && line != "" && direction != ""){
+            if (![drivers, buses, line, direction].includes("")){
                 url += `&users=${drivers}&buses=${buses}&lines=${line}&directions=${direction}`;
                 toggleAlert("REUSSITE", "Le créneau à bien été ajouté !");
-                break;
             }
             else
             {
-                toggleError("ATTENTION", "Formulaire invalide !"); break;
+                toggleError("ATTENTION", "Formulaire invalide !");
             }
-
+            break
 
         // REUNION
         case "2" :
-            users = selectedUsers();
             if (users != ""){
-                url += `&users=${users}`; break;
+                url += `&users=${users}`;
                 toggleAlert("REUSSITE", "Le créneau à bien été ajouté !");
             }
             else
             {
-                toggleError("ATTENTION", "Formulaire invalide !"); break;
+                toggleError("ATTENTION", "Formulaire invalide !");
             }
-
+            break
 
         // INDISPONIBILITE
         case "3" :
-            drivers = selectedDrivers();
             if (drivers != "") {
                 url += `&users=${drivers}`;
                 toggleAlert("REUSSITE", "Le créneau à bien été ajouté !");
@@ -479,14 +490,15 @@ function axiosUrlSendWhenADD(type){
             }
             else
             {
-                toggleError("ATTENTION", "Formulaire invalide !"); break;
+                toggleError("ATTENTION", "Formulaire invalide !"); 
+                break;
             }
 
         // ERREUR
         default :
             url = ``;
-            toggleError("ATTENTION", "Formulaire invalide !"); break;
-
+            toggleError("ATTENTION", "Formulaire invalide !");
+            break;
     }
 
     return url;
@@ -514,7 +526,7 @@ function axiosUrlSendWhenADD(type){
     }
  }
 
-export const toggleAddCreneau = () => {
+export const toggleAddCreneau = async () => {
     const main = document.querySelector("#app");
     main.replaceChildren("");
     
@@ -604,21 +616,28 @@ export const toggleAddCreneau = () => {
 
     // Creation of submit button
     const bouton = create("div", form, "Envoyer", ["submitButton"])
-    bouton.addEventListener("click", function (event){
+    bouton.addEventListener("click", async function (event){
 
-        let url = axiosUrlSendWhenADD(typeSelected());
-        axios.get(url).then(function(response){
-            toggleEspaceAdmin()
-            if(response.data){
-                toggleAlert("BRAVO", "Le créneau a bien été ajouté")
-            }
-            else{
-                toggleError("ERREUR", "Le créneau n'a pas pu être ajouté")
-            }
-        })
+        let typeCreneau = typeSelected()
+        let url = axiosUrlSendWhenADD(typeSelected(typeCreneau));
+
+        if (verifTimeSlot(typeCreneau)) {
+            axios.get(url).then(function(response){
+                toggleEspaceAdmin()
+                if(response.data){
+                    toggleAlert("BRAVO", "Le créneau a bien été ajouté")
+                }
+                else{
+                    toggleError("ERREUR", "Le créneau n'a pas pu être ajouté")
+                }
+            })
+        } else {
+            toggleError("ERREUR", "Paramètres renseignés invalides ou participant indisponible.")
+        }
+
     })
 
-    form.appendChild(bouton);
+    // form.appendChild(bouton);
 
 
     return main
