@@ -386,7 +386,7 @@ body {
   padding: 10px;
 }
 
-#app .unread {
+#app .unread .divInfoNotif {
   font-weight: bolder;
 }
 
