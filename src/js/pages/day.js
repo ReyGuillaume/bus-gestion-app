@@ -102,7 +102,7 @@ const createTimeSlots = async (date, container, user=null, multi=false, index=0)
         res.forEach(timeslot => {
             let div
             if(multi){
-                div = create("div", container, null, ['timeslot_multi'], [`ts${timeslot.id}`])
+                div = create("div", container, null, ['timeslot_multi_'+timeslot.name], [`ts${timeslot.id}`])
             }
             else{
                 div = create("div", container, null, ['timeslot'], [`ts${timeslot.id}`])
@@ -129,10 +129,11 @@ const createTimeSlots = async (date, container, user=null, multi=false, index=0)
             if(multi){
                 div.style.left = (25 * index) + "px"
             }
-
-            const color = create("div", div, null, ["timeslot__color", timeslot.name])
-            const div_color = create("div", color, null, ["div-color"])
-            div_color.style.height = duree + "px"
+            else{
+                const color = create("div", div, null, ["timeslot__color", timeslot.name])
+                const div_color = create("div", color, null, ["div-color"])
+                div_color.style.height = duree + "px"
+            }
 
             const houres = create("div", div, null, ["timeslot__houres"])
 
@@ -144,9 +145,6 @@ const createTimeSlots = async (date, container, user=null, multi=false, index=0)
             if(!multi){
                 create("h2", houres, formatedHour(heure_debut) + ":" + formatedHour(min_debut), ['beginning'])
                 create("h2", houres, formatedHour(heure_fin) + ":" + formatedHour(min_fin), ['end'])
-            }
-
-            if(!multi){
                 const body = create("div", div, null, ["timeslot__body"])
             
                 switch(timeslot.name){
@@ -161,8 +159,13 @@ const createTimeSlots = async (date, container, user=null, multi=false, index=0)
                 }
             }
 
-            const goto = create("div", div, null, ["timeslot__goto"])
-            create("i", goto , null, ['fa-solid', 'fa-chevron-right'])
+            if(!multi){
+                const goto = create("div", div, null, ["timeslot__goto"])
+                create("i", goto , null, ['fa-solid', 'fa-chevron-right'])
+            }
+            else{
+                create("div", div, timeslot.name.substr(0,1).toUpperCase(), ["multi-info"])
+            }
         })
     }
 }

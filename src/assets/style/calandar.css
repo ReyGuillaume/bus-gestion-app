@@ -95,16 +95,34 @@
   width: 150px;
   align-items:first baseline;
 }
-.timeslot, .timeslot_multi{
+.timeslot, .timeslot_multi_Conduite, .timeslot_multi_Réunion, .timeslot_multi_Indisponibilité{
   position: absolute;
   display: flex;
   align-items: center;
-  background-color: #eae9e9;
   border-radius: 8px;
   cursor: pointer;
 }
-.timeslot_multi{
+.timeslot{
+  background-color: #eae9e9;
+}
+.timeslot_multi_Conduite, .timeslot_multi_Réunion, .timeslot_multi_Indisponibilité{
   width: 25px;
+  justify-content: center;
+}
+.timeslot_multi_Conduite{
+  background: linear-gradient(to bottom, rgb(190, 243, 255), rgb(227, 243, 255));
+}
+.timeslot_multi_Réunion{
+  background: linear-gradient(to bottom, rgb(255, 190, 239), rgb(248, 227, 255));
+}
+.timeslot_multi_Indisponibilité{
+  background-color: rgb(251, 225, 159);
+  background: linear-gradient(to bottom, rgb(251, 225, 159), rgb(255, 251, 227));
+}
+.multi-info{
+  color: white;
+  font-weight: bold;
+  -webkit-text-stroke: 1px black;
 }
 .timeslot div{
   font-size: 0.6em;
@@ -203,7 +221,7 @@
   z-index: -1;
 }
 #task {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   background-color: white;
