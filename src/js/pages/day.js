@@ -137,7 +137,7 @@ const createTimeSlots = async (date, container, user=null, multi=false, index=0)
             const houres = create("div", div, null, ["timeslot__houres"])
 
             //ajout du drag & drop
-            if(possibleDrag(user_role, timeslot.name)){
+            if(div.getAttribute("draggable")){
                 div.ondragstart = handlerDragStart
             }
 

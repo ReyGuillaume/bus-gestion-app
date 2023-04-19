@@ -225,6 +225,8 @@ body {
   border: solid 2px #3D7C98;
   background-color: #3D7C98;
   width: max-content;
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 20px;
   padding: 8px 20px;
   color: white;
