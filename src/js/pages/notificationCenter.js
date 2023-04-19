@@ -11,14 +11,17 @@ function statusSelected () {
     }
 }
 
-function readNotif (id){
-    fetch("http://localhost/projetL2S4/src/services/notifications/notifications.php?function=read&id="+id);
+async function readNotif (id){
+    await fetch("http://localhost/projetL2S4/src/services/notifications/notifications.php?function=read&id="+id)
+    toggleNotificationCenter()
 }
-function unreadNotif (id){
-    fetch("http://localhost/projetL2S4/src/services/notifications/notifications.php?function=unread&id="+id);
+async function unreadNotif (id){
+    await fetch("http://localhost/projetL2S4/src/services/notifications/notifications.php?function=unread&id="+id)
+    toggleNotificationCenter()
 }
-function archiveNotif (id){
-    fetch("http://localhost/projetL2S4/src/services/notifications/notifications.php?function=archive&id="+id);
+async function archiveNotif (id){
+    await fetch("http://localhost/projetL2S4/src/services/notifications/notifications.php?function=archive&id="+id)
+    toggleNotificationCenter()
 }
 
 async function fetch_data (divAllNotif, id_user, mode){
@@ -56,12 +59,10 @@ async function fetch_data (divAllNotif, id_user, mode){
                     create("div", img, 'A').addEventListener("click", function(e) {
                         e.stopPropagation()
                         archiveNotif(id_notif)
-                        toggleNotificationCenter()
                     } );
                     create("div", img, 'R').addEventListener("click", function(e) {
                         e.stopPropagation()
                         readNotif(id_notif)
-                        toggleNotificationCenter()
                     } );
                     break;
 
@@ -69,12 +70,10 @@ async function fetch_data (divAllNotif, id_user, mode){
                     create("div", img, 'A').addEventListener("click", function(e) {
                         e.stopPropagation()
                         archiveNotif(id_notif)
-                        toggleNotificationCenter()
                     } );
                     create("div", img, 'U').addEventListener("click", function(e) {
                         e.stopPropagation()
                         unreadNotif(id_notif)
-                        toggleNotificationCenter()
                     } );
                     break;
 
@@ -82,12 +81,10 @@ async function fetch_data (divAllNotif, id_user, mode){
                     create("div", img, 'R').addEventListener("click", function(e) {
                         e.stopPropagation()
                         readNotif(id_notif)
-                        toggleNotificationCenter()
                     } );
                     create("div", img, 'U').addEventListener("click", function(e) {
                         e.stopPropagation()
                         unreadNotif(id_notif)
-                        toggleNotificationCenter()
                     } );
                     break;
 
@@ -95,17 +92,14 @@ async function fetch_data (divAllNotif, id_user, mode){
                     create("div", img, 'A').addEventListener("click", function(e) {
                         e.stopPropagation()
                         archiveNotif(id_notif)
-                        toggleNotificationCenter()
                     } );
                     create("div", img, 'R').addEventListener("click", function(e) {
                         e.stopPropagation()
                         readNotif(id_notif)
-                        toggleNotificationCenter()
                     } );
                     create("div", img, 'U').addEventListener("click", function(e) {
                         e.stopPropagation()
                         unreadNotif(id_notif)
-                        toggleNotificationCenter()
                     } );
                     break;
             }
@@ -132,8 +126,14 @@ function showNotification (notif, divAllNotif){
 
     const img = create("div", divAllNotif, null, ["notif_image"]);
     const id_notif = notif.id_notif;
-    create("div", img, 'Marquer comme non lu').addEventListener("click", function() {unreadNotif(id_notif); location.reload();} );
-    create("div", img, 'Archiver').addEventListener("click", function() {archiveNotif(id_notif);location.reload();} );
+    create("div", img, 'Marquer comme non lu').addEventListener("click", function() {
+        unreadNotif(id_notif)
+        toggleNotificationCenter()
+    })
+    create("div", img, 'Archiver').addEventListener("click", function() {
+        archiveNotif(id_notif)
+        toggleNotificationCenter()
+    })
 
 }
 export const toggleNotificationCenter = () => {

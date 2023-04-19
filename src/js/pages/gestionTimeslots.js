@@ -561,6 +561,50 @@ export const toggleAddCreneau = () => {
     return main
 }
 
+export function participantsTimeslot () {
+    // select the types of participants and return those who are checked in a string : 1,2,...
+    var response = "";
+    for(var user of document.querySelectorAll("input[name='selectionParticipant']")){
+        if (user.checked) {
+            if (response != ""){
+                response += ",";
+            }
+            response += user.value;
+        }
+    } return response;
+}
+
+export function busesTimeslot () {
+    // select the types of buses and return those who are checked in a string : 1,2,...
+    var response = "";
+    for(var bus of document.querySelectorAll("input[name='selectionBus']")){
+        if (bus.checked) {
+            if (response != ""){
+                response += ",";
+            }
+            response += bus.value;
+        }
+    } return response;
+}
+
+export function lineDirectionTimeslot () {
+    // select the direction of the line and return the one who is checked in a string
+    for(var direction of document.querySelectorAll("input[name='selectionDirection']")){
+        if (direction.checked) {
+            return direction.value;
+        }
+    }
+}
+
+export function lineTimeslot () {
+    // select the line of the timeslot and return the one who is checked in a string
+    for(var line of document.querySelectorAll("input[name='selectionLigne']")){
+        if (line.checked) {
+            return line.value;
+        }
+    }
+}
+
 export const toggleModifCreneau = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
@@ -722,50 +766,6 @@ export const toggleModifCreneau = () => {
                     // selection of the start and end time
                     let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
                     let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
-
-                    function participantsTimeslot () {
-                        // select the types of participants and return those who are checked in a string : 1,2,...
-                        var response = "";
-                        for(var user of document.querySelectorAll("input[name='selectionParticipant']")){
-                            if (user.checked) {
-                                if (response != ""){
-                                    response += ",";
-                                }
-                                response += user.value;
-                            }
-                        } return response;
-                    }
-
-                    function busesTimeslot () {
-                        // select the types of buses and return those who are checked in a string : 1,2,...
-                        var response = "";
-                        for(var bus of document.querySelectorAll("input[name='selectionBus']")){
-                            if (bus.checked) {
-                                if (response != ""){
-                                    response += ",";
-                                }
-                                response += bus.value;
-                            }
-                        } return response;
-                    }
-
-                    function lineDirectionTimeslot () {
-                        // select the direction of the line and return the one who is checked in a string
-                        for(var direction of document.querySelectorAll("input[name='selectionDirection']")){
-                            if (direction.checked) {
-                                return direction.value;
-                            }
-                        }
-                    }
-
-                    function lineTimeslot () {
-                        // select the line of the timeslot and return the one who is checked in a string
-                        for(var line of document.querySelectorAll("input[name='selectionLigne']")){
-                            if (line.checked) {
-                                return line.value;
-                            }
-                        }
-                    }
 
                     // selection of the type of timeslot, participants and buses
                     let users = participantsTimeslot();
