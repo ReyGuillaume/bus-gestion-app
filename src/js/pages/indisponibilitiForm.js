@@ -1,4 +1,4 @@
-import { create, createChamp, createChampCheckbox, toggleAlert } from "../main";
+import { create, createChamp, createChampCheckbox, toggleAlert, addslashes} from "../main";
 import { toggleEspaceUser } from "./espaceUser";
 import axios from 'axios';
 
@@ -32,7 +32,12 @@ export const toggleIndisponibilitiForm = () => {
         axios.get(url).then(function(){
             toggleEspaceUser();
             toggleAlert("BRAVO", "Votre indisponibilité a bien été ajoutée");
-        })
+        });
+
+        let messageDebut = addslashes ("Votre créneau d'indisponibilité du ");
+        let messageFin = addslashes(" a bien été ajouté.");
+        axios.get(`notifications/notifications.php?function=create&title=Attention&message=`+messageDebut+ StartDateTime +` au `+ EndDateTime +messageFin+`&recipient=`+JSON.parse(sessionStorage.getItem("userData")).id);
+
 
     });
 
@@ -54,12 +59,31 @@ export const toggleSupprIndispo = () => {
    let user = JSON.parse(sessionStorage.getItem("userData")).id;
 
    axios.get(`timeslots/timeslots.php?function=indispoDriver&id=${user}`).then((response)=>{
-        for(var timeslot of response.data){
-            let div = create("div", form)
-            createChampCheckbox(div, timeslot.id , "selectionTimeslot", timeslot.id);
-            var label = create("label", div, timeslot.begining + " "+ timeslot.end+ " ");
-            label.setAttribute("for", timeslot.id);
-        }
+       for(var timeslot of response.data){
+        create("br", divCheckboxCreneau);
+        createChampCheckbox(divCheckboxCreneau, timeslot.id , "selectionTimeslot", timeslot.id);
+        var label = create("label", divCheckboxCreneau, timeslot.begining + " "+ timeslot.end+ " ");
+        label.setAttribute("for", timeslot.id);
+      }
+   });
+
+    // Creation of submit button
+    const bouton = create("div", form, "Envoyer")
+    bouton.addEventListener("click", function(){
+        for(var date of document.querySelectorAll("input[name='selectionTimeslot']")){
+            if (date.checked){
+                axios.get(`timeslots/timeslots.php?function=delete&id=${date.value}`).then(function(){
+                    toggleEspaceUser();
+                    toggleAlert("BRAVO", "Votre indisponibilité a bien été supprimée");
+                });
+
+                axios.get(`timeslots/timeslots.php?function=timeslot&id=${date.value}`).then((response)=>{
+                    let messageDebut = addslashes ("Votre créneau d'indisponibilité du ");
+                    let messageFin = addslashes(" a bien été supprimé.");
+                    axios.get(`notifications/notifications.php?function=create&title=Attention&message=`+messageDebut+ response.data.begining +` au `+ response.data.end +messageFin+`&recipient=`+JSON.parse(sessionStorage.getItem("userData")).id);
+                })
+            }
+
         // Creation of submit button
         const bouton = create("div", form, "Supprimer", ["submitButton"])
         bouton.addEventListener("click", function(){
@@ -72,6 +96,7 @@ export const toggleSupprIndispo = () => {
                 }
             }
         })
+    }
    });
 
     return main

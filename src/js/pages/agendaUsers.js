@@ -35,6 +35,9 @@ const drawUsers = (idtype) => {
                 toggleAgenda(user)
             })
         }
+        create("div", main, "Vision globale", ["submitButton"]).addEventListener("click", function(){
+            toggleAgenda(undefined, undefined, true)
+        })
     })
     
     return main

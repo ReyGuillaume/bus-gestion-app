@@ -224,7 +224,9 @@ body {
   transition: 0.5s;
   border: solid 2px #3D7C98;
   background-color: #3D7C98;
-  width: auto;
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 20px;
   padding: 8px 20px;
   color: white;
@@ -390,4 +392,71 @@ body {
   height: 20px;
 }
 
+#app .navNotif {
+  display: table;
+  list-style: none;
+  overflow: hidden;
+  background: #e7e7e7;
+  border: 2px solid #4aa04a;
+  border-radius: 5px;
+  padding: 0;
+  margin: 0;
+}
+
+#app .navNotif_item {
+  display: table-cell;
+  width: 1%;
+
+}
+
+#app .navNotif_item:not(:first-child) {
+  border-left: 2px solid #4aa04a;
+}
+
+#app .navNotif_name{
+  display: block;
+  color: #4aa04a;
+  text-align: center;
+  line-height: 36px;
+  padding: 0 10px;
+}
+
+#app .navNotif_name:hover {
+  color: #ecf0f1;
+  background: #4AA04AFF;
+}
+
+
+#app .divNotif, .divTitresNotif, .notif_image{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+#app .divTitresNotif{
+  padding: 10px 0;
+  margin: 0 20px;
+}
+
+#app .divNotif{
+  background-color: #f4f4f4;
+  margin-bottom: 1px;
+  padding: 3px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2274509804));
+}
+
+#app .item_notif_archive{
+  padding: 10px;
+}
+
+#app .unread .divInfoNotif {
+  font-weight: bolder;
+}
+
+#app .read {
+  background-color: #f3faf3;
+}
+
+#app .archive .divInfoNotif {
+  font-style: italic;
+}
 /*# sourceMappingURL=main.css.map */
