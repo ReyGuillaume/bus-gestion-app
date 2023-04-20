@@ -105,6 +105,10 @@
 .timeslot{
   background-color: #eae9e9;
 }
+.timeslot:hover{
+  z-index: 90;
+  border: 1px solid #888;
+}
 .timeslot_multi_Conduite, .timeslot_multi_Réunion, .timeslot_multi_Indisponibilité{
   width: 25px;
   justify-content: center;
