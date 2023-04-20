@@ -5,6 +5,7 @@ import{toggleAjoutUser, toggleSupprimeUser, toggleModifyUser} from "../pages/ges
 import {DisponibilityBus, AjoutBus, SupprimerBus, ModifBus}from "../pages/gestionBuses";
 import { toggleAddLine, toggleSupprLine, toggleModifLine, toggleVerifCouvertureSemaine, toggleRemplissageAutoConduiteSemaine } from "./gestionLigne";
 import { toggleDrivers, toggleResp, toggleBuses, toggleLines } from "./agendaUsers";
+import {toggleNotificationCenter} from "./notificationCenter.js";
 
 
 export const toggleEspaceAdmin = () => {
@@ -93,6 +94,13 @@ export const toggleEspaceAdmin = () => {
     const img9 = create("div", div9, null, ["navBar_image", "bleu_clair"])
     create("img", img9).src = "src/assets/images/nav_gestion.png"
     create("div", div9, 'Gérer les lignes', ['navBar__item'])
+
+    // notif
+    const div10 = create("div", nav, null, ["navBar_container"])
+    div10.addEventListener("click", toggleNotificationCenter)
+    const img10 = create("div", div10, null, ["navBar_image", "orange"])
+    create("img", img10).src = "src/assets/images/nav_notif.png"
+    create("div", div10, 'Afficher les notifications', ['navBar__item'])
 
     return main
 }

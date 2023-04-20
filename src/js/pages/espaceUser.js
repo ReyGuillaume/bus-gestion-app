@@ -2,6 +2,7 @@ import { create } from "../main";
 import { toggleAgenda } from "./agenda";
 
 import { toggleIndisponibilitiForm, toggleSupprIndispo } from "../pages/indisponibilitiForm"
+import {toggleNotificationCenter} from "./notificationCenter.js";
 
 export const toggleEspaceUser = () => {
     const main = document.querySelector("#app")
@@ -43,6 +44,13 @@ export const toggleEspaceUser = () => {
     const img3 = create("div", div3, null, ["navBar_image", "rouge"])
     create("img", img3).src = "src/assets/images/nav_creneau.png"
     create("div", div3, "Supprimer un creneau d'indisponibilité", ['navBar__item'])
+
+    // notif
+    const div10 = create("div", nav, null, ["navBar_container"])
+    div10.addEventListener("click", toggleNotificationCenter)
+    const img10 = create("div", div10, null, ["navBar_image", "orange"])
+    create("img", img10).src = "src/assets/images/nav_notif.png"
+    create("div", div10, 'Afficher les notifications', ['navBar__item'])
     
     return main
 }
