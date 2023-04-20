@@ -290,6 +290,8 @@
   background-color: #0000003c;
 }
 .validation {
+  display: flex;
+  flex-direction: column;
   height: 50vh;
   width: 50vw;
   background-color: #f4f4f4;
@@ -298,6 +300,59 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  padding: 1.5rem;
+}
+.validation .important {
+  font-weight: bold;
+}
+.validation .content {
+  flex-grow: 1;
+}
+.validation .button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+}
+.second-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  border-radius: 5rem;
+  padding: 1.5rem;
+  width: 8.5rem;
+  height: 2rem;
+  border: #3D7C98 2px solid;
+  color: #3D7C98;
+  background-color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: .3s;
+}
+.second-button:hover {
+  color: #ffffff;
+  background-color: #3D7C98;
+}
+.primary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  border-radius: 5rem;
+  padding: 1.5rem;
+  width: 8.5rem;
+  height: 2rem;
+  border: #3D7C98 2px solid;
+  color: #ffffff;
+  background-color: #3D7C98;
+  font-weight: bold;
+  cursor: pointer;
+  transition: .3s;
+}
+.primary-button:hover {
+  color: #3D7C98;
+  background-color: #ffffff;
 }
 
 /*# sourceMappingURL=calandar.css.map */
