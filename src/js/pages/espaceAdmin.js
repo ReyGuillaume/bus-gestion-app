@@ -6,6 +6,7 @@ import {DisponibilityBus, AjoutBus, SupprimerBus, ModifBus}from "../pages/gestio
 import { toggleAddLine, toggleSupprLine, toggleModifLine, toggleVerifCouvertureSemaine, toggleRemplissageAutoConduiteSemaine } from "./gestionLigne";
 import { toggleDrivers, toggleResp, toggleBuses, toggleLines } from "./agendaUsers";
 import {toggleNotificationCenter} from "./notificationCenter.js";
+import { toggleMultiEntities } from "./day";
 
 
 export const toggleEspaceAdmin = () => {
@@ -44,13 +45,19 @@ export const toggleEspaceAdmin = () => {
     create("img", img2).src = "src/assets/images/nav_gens.png"
     create("div", div2, "Voir l'agenda des chauffeurs", ['navBar__item'])
 
-    // agenda responsables
+    // agenda responsables && agenda multiple
     if(sessionData["role"] == "Directeur"){
         const div3 = create("div", nav, null, ["navBar_container"])
         div3.addEventListener("click", toggleResp)
         const img3 = create("div", div3, null, ["navBar_image", "orange"])
         create("img", img3).src = "src/assets/images/nav_gens.png"
         create("div", div3, "Voir l'agenda des responsables logistiques", ['navBar__item'])
+
+        const div3_2 = create("div", nav, null, ["navBar_container"])
+        div3_2.addEventListener("click", toggleMultiEntities)
+        const img3_2 = create("div", div3_2, null, ["navBar_image", "vert_clair"])
+        create("img", img3_2).src = "src/assets/images/nav_agenda.png"
+        create("div", div3_2, "Croiser plusieurs agendas", ['navBar__item'])
     }
 
     // agenda bus
@@ -98,7 +105,7 @@ export const toggleEspaceAdmin = () => {
     // notif
     const div10 = create("div", nav, null, ["navBar_container"])
     div10.addEventListener("click", toggleNotificationCenter)
-    const img10 = create("div", div10, null, ["navBar_image", "orange"])
+    const img10 = create("div", div10, null, ["navBar_image", "jaune_clair"])
     create("img", img10).src = "src/assets/images/nav_notif.png"
     create("div", div10, 'Afficher les notifications', ['navBar__item'])
 
@@ -173,8 +180,6 @@ export const toggleGestionLigne = () => {
 
     create("div", nav, "Verifier la couverture d'une semaine", ['navBar__item']).addEventListener("click", toggleVerifCouvertureSemaine)
     create("div", nav, "Remplissage automatique des conduite de la semaine", ['navBar__item']).addEventListener("click", toggleRemplissageAutoConduiteSemaine)
-
-    create("div", nav, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
 
     return main
 }

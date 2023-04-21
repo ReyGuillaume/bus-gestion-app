@@ -1,4 +1,5 @@
 import {create, createChampRadio} from "../main";
+import { toggleEspaceAdmin } from "./espaceAdmin";
 import axios from "axios";
 
 
@@ -146,6 +147,8 @@ export const toggleNotificationCenter = () => {
     const main = document.querySelector("#app");
     const id_user = JSON.parse(sessionStorage.getItem("userData")).id;
     main.replaceChildren("");
+
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
 
 
     const nav = create("ul", main, null, ['navNotif']);

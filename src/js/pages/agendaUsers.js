@@ -35,9 +35,11 @@ const drawUsers = (idtype) => {
                 toggleAgenda(user)
             })
         }
-        create("div", main, "Vision globale", ["submitButton"]).addEventListener("click", function(){
-            toggleAgenda(undefined, undefined, true)
-        })
+        if(idtype == 3){
+            create("div", main, "Vision globale", ["submitButton"]).addEventListener("click", function(){
+                toggleAgenda(undefined, undefined, true)
+            })
+        }
     })
     
     return main
@@ -83,7 +85,7 @@ export const toggleBuses = () => {
                 let li = create("li", ul, null, ["navBar__item"])
                 let a = create("div", li, "Bus n°" + responseBus.data.id + " (" + responseBus.data.nb_places + " places)")
                 a.addEventListener("click", function(){
-                    toggleAgenda(bus)
+                    toggleAgenda(responseBus.data)
                 })
             })
         }

@@ -174,18 +174,21 @@ body {
   transition: 0.5s;
   padding: 8px;
 }
-.rose, .jaune, .rouge, .orange, .bleu, .bleu_clair, .gris, .violet, .vert{
+.rose, .jaune, .jaune_clair, .rouge, .orange, .bleu, .bleu_clair, .gris, .violet, .vert, .vert_clair{
   transition: 0.5s;
   border-radius: 35px;
 }
-.rose:hover, .jaune:hover, .rouge:hover, .orange:hover, .bleu:hover, .bleu_clair:hover, .gris:hover, .violet:hover, .vert:hover{
+.rose:hover, .jaune:hover, .jaune_clair:hover, .rouge:hover, .orange:hover, .bleu:hover, .bleu_clair:hover, .gris:hover, .violet:hover, .vert:hover, .vert_clair:hover{
   border-radius: 20px;
 }
 .rose{
   background-color: #E2A9FD;
 }
 .jaune{
-  background-color: #F1E1A8;
+  background-color: #fde385;
+}
+.jaune_clair{
+  background-color: #fff79e;
 }
 .rouge{
   background-color: #F2A1A1;
@@ -206,7 +209,10 @@ body {
   background-color: #a68bff;
 }
 .vert{
-  background-color: #A1F2A9;
+  background-color: #79fb86;
+}
+.vert_clair{
+  background-color: #baf8bf;
 }
 #footer {
   display: flex;
