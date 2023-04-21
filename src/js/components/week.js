@@ -1,65 +1,11 @@
 import { create, toggleAlert, toggleError } from "../main";
-import '../../assets/style/calandar.css';
-import { toggleDayOfWeek, datePhp, toggleMultiDay } from "../pages/day";
-import axios from "axios"
+import { toggleDayOfWeek, toggleMultiDay } from "../pages/day";
+import { datePhp } from "../utils/dates";
 import { toggleAgenda } from "../pages/agenda";
+import { getMonthToString, getIdOfDay, getDayToString, formatedHour, getFirstMonday, getNearestHour, getNearestMinute } from "../utils/dates"
+import axios from "axios"
 
-
-export const getIdOfDay = day => {
-    switch (day) {
-        case "Dimanche": return 0
-        case "Lundi": return 1
-        case "Mardi": return 2
-        case "Mercredi": return 3
-        case "Jeudi": return 4
-        case "Vendredi": return 5
-        case "Samedi": return 6
-        default: return null
-    }
-}
-
-
-export const getDayToString = (index) => {
-    switch (index) {
-        case 0: return "Dimanche"
-        case 1: return "Lundi"
-        case 2: return "Mardi"
-        case 3: return "Mercredi"
-        case 4: return "Jeudi"
-        case 5: return "Vendredi"
-        case 6: return "Samedi"
-        default: return null
-    }
-}
-
-
-export const getMonthToString = (index) => {
-    switch (index) {
-        case 0: return "Janvier"
-        case 1: return "Février"
-        case 2: return "Mars"
-        case 3: return "Avril"
-        case 4: return "Mai"
-        case 5: return "Juin"
-        case 6: return "Juillet"
-        case 7: return "Août"
-        case 8: return "Septembre"
-        case 9: return "Octobre"
-        case 10: return "Novembre"
-        case 11: return "Décembre"
-        default: return null
-    }
-}
-
-// rajoute un "0" si l'horaire est inférieur à 10 (8 => 08)
-export const formatedHour = (horaire) => {
-    if(horaire < 10){
-        return "0" + horaire
-    }
-    else{
-        return horaire
-    }
-}
+import '../../assets/style/calandar.css';
 
 // fonction qui crée le header du calendrier d'un mois entier (mois + année)
 const createWeek = (container, date, user=null, multi=false) => {
@@ -81,20 +27,6 @@ const createWeek = (container, date, user=null, multi=false) => {
     rightDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setDate(date.getDate() + 7)), user, multi))
 
     return mainDiv
-}
-
-// fonction qui recupère le 1er Lundi de la semaine de la date
-const getFirstMonday = (date) => {
-    let initDate = new Date(date)
-
-    let day = getDayToString(initDate.getDay())
-
-    while(day != "Lundi"){
-        initDate = new Date(new Date(initDate).setDate(initDate.getDate() - 1))
-        day = getDayToString(initDate.getDay())
-    }
-
-    return initDate
 }
 
 
@@ -142,28 +74,6 @@ const handleDrop = (e, date, user, multi=false) => {
     }
 }
 
-// Fonction pour obtenir l'heure la plus proche à la demi-heure près
-const getNearestHour = (hour, minute) => {
-    if(minute <= 15){
-        return hour;
-    }
-    else if(minute <= 45){
-        return hour;
-    }
-    else{
-        return (hour + 1) % 24;
-    }
-  }
-  
-// Fonction pour obtenir la minute la plus proche à la demi-heure près
-const getNearestMinute = (minute) => {
-if(minute >= 45 || minute < 15){
-    return 0;
-} 
-else{
-    return 30;
-}
-}
 
 const toggleModifValidation = async (e, dateOfMonday, user, multi=false) => {
 

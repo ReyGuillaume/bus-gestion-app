@@ -1,6 +1,7 @@
 import { create } from "../main";
 import { toggleAgenda } from "./agenda";
 import { toggleEspaceAdmin } from "./espaceAdmin";
+import { convertMinutesToTime } from "../utils/dates"
 import axios from 'axios';
 
 // afficher la liste des users de type idtype
@@ -92,20 +93,7 @@ export const toggleBuses = () => {
     return main
 }
 
-// fonction qui prend en paramètres un nombre de minutes (int) et renvoie le temps en heures (string)
-const convertMinutesToTime = (minutes) => {
-    let hours = Math.floor(minutes / 60);
-    let remainingMinutes = minutes % 60;
-  
-    if (hours < 10) {
-      hours = "0" + hours;
-    }
-    if (remainingMinutes < 10) {
-      remainingMinutes = "0" + remainingMinutes;
-    }
-  
-    return hours + "h" + remainingMinutes;
-  }
+
 
 // afficher l'agenda des lignes de bus
 export const toggleLines = () => {

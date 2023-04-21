@@ -11,8 +11,7 @@ export const toggleIndisponibilitiForm = () => {
     create("p", main, "Renseignez la plage horaire de votre indisponibilité :", ["presentation"])
 
     // Creation of the form
-    const form = create("form", main)
-    
+    const form = create("div", main)
 
     // Creation of each champ
     create("label", form, "Début :");
@@ -53,7 +52,7 @@ export const toggleSupprIndispo = () => {
     create("p", main, "Choisissez le(s) créneau(x) à supprimer :", ["presentation"])
 
     // Creation of the form
-    const form = create("form", main)
+    const form = create("div", main)
 
    // Creation of the checkbox to define the user to delete
    let user = JSON.parse(sessionStorage.getItem("userData")).id;
@@ -64,11 +63,10 @@ export const toggleSupprIndispo = () => {
         createChampCheckbox(divCheckboxCreneau, timeslot.id , "selectionTimeslot", timeslot.id);
         var label = create("label", divCheckboxCreneau, timeslot.begining + " "+ timeslot.end+ " ");
         label.setAttribute("for", timeslot.id);
-      }
-   });
+    }});
 
     // Creation of submit button
-    const bouton = create("div", form, "Envoyer")
+    const bouton = create("button", form, "Envoyer")
     bouton.addEventListener("click", function(){
         for(var date of document.querySelectorAll("input[name='selectionTimeslot']")){
             if (date.checked){
@@ -77,26 +75,13 @@ export const toggleSupprIndispo = () => {
                     toggleAlert("BRAVO", "Votre indisponibilité a bien été supprimée");
                 });
 
-                axios.get(`timeslots/timeslots.php?function=timeslot&id=${date.value}`).then((response)=>{
+                axios.get(`timeslots/timeslots.php?function=timeslot&id=${date.value}`).then(response => {
                     let messageDebut = addslashes ("Votre créneau d'indisponibilité du ");
                     let messageFin = addslashes(" a bien été supprimé.");
                     axios.get(`notifications/notifications.php?function=create&title=Attention&message=`+messageDebut+ response.data.begining +` au `+ response.data.end +messageFin+`&recipient=`+JSON.parse(sessionStorage.getItem("userData")).id);
                 })
             }
-
-        // Creation of submit button
-        const bouton = create("div", form, "Supprimer", ["submitButton"])
-        bouton.addEventListener("click", function(){
-            for(var date of document.querySelectorAll("input[name='selectionTimeslot']")){
-                if (date.checked){
-                    axios.get(`timeslots/timeslots.php?function=delete&id=${date.value}`).then(function(){
-                        toggleEspaceUser();
-                        toggleAlert("BRAVO", "Votre indisponibilité a bien été supprimée");
-                    })
-                }
-            }
-        })
-    }
+        }
    });
 
     return main

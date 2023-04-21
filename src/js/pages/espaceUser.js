@@ -1,6 +1,5 @@
 import { create } from "../main";
 import { toggleAgenda } from "./agenda";
-
 import { toggleIndisponibilitiForm, toggleSupprIndispo } from "../pages/indisponibilitiForm"
 import {toggleNotificationCenter} from "./notificationCenter.js";
 

@@ -10,7 +10,7 @@ const createNavBar = () => {
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
     if (sessionData) {
         // si l'utilisateur est un responsable logistique ou le gérant
-        if(sessionData["role"] == "Responsable Logistique" || sessionData["role"] == "Directeur"){
+        if(["Responsable Logistique", "Directeur"].includes(sessionData["role"])){
             create("a", nav, 'Espace administrateur', ['navBar__item']).href = "/espaceAdmin"
         }
         // si l'utilisateur est un chauffeur

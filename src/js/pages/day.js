@@ -1,7 +1,7 @@
 import { create } from "../main";
 import { toggleAgenda } from "./agenda";
 import { toggleTask } from "./userTask";
-import { getMonthToString , getDayToString, formatedHour } from "../components/week";
+import { getMonthToString , getDayToString, datePhp, formatedHour } from "../utils/dates";
 import axios from "axios";
 
 // fonction qui crée tous les jours d'un mois
@@ -23,10 +23,6 @@ const createDaysBar = (date, container, user=null) => {
 
     return container
 }
-
-
-// renvoie une date JS sous forme 2023-02-16 00:00:00
-export const datePhp = date => date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
 
 
 // fonction qui récupère tous les créneaux horaires affectés à l'utilisateur connecté, à une certaine date

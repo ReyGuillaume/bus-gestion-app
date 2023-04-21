@@ -7,6 +7,8 @@ import {
     toggleAlert
 } from "../main";
 import { toggleEspaceAdmin } from "./espaceAdmin";
+import { valueFirstElementChecked } from "../utils/formGestion";
+
 import axios from 'axios';
 
 
@@ -266,9 +268,9 @@ function toogleDriversChoices(choicesDiv){
 }
 
 
- // Creation of the checkbox to define the drivers involved in the timeslot
- // BUT with only the one that are free on the periode
- // @param choiceDiv la div dans lequel mettre ça 
+// Creation of the checkbox to define the drivers involved in the timeslot
+// BUT with only the one that are free on the periode
+// @param choiceDiv la div dans lequel mettre ça 
  function toogleFreeDriverChoices(choicesDiv){
 
     // On recupere la div de choix d'utilisateur
@@ -305,9 +307,6 @@ function toogleDriversChoices(choicesDiv){
 }
 
 
-
-
-
 // Creation of the radio to define the direction
  // @param choiceDiv la div dans lequel mettre ça 
 
@@ -322,17 +321,12 @@ function toogleDirectionChoices(choicesDiv){
     createChampRadio(divRadioDirection, "retour" , "selectionDirection", "retour");
     var label = create("label", divRadioDirection, "retour");
     label.setAttribute("for", "retour");    
- }
+}
 
+// Creation of the radio to define the line
+// @param choiceDiv la div dans lequel mettre ça 
 
-
-
-
-
- // Creation of the radio to define the line
-  // @param choiceDiv la div dans lequel mettre ça 
-
- function toogleLineChoices(choicesDiv){
+function toogleLineChoices(choicesDiv){
     var divRadioLigne = create("div", choicesDiv);
     create("label", divRadioLigne, "Choisissez une ligne :");
     axios.get(`lines/lines.php?function=lines`).then((response)=>{
@@ -342,16 +336,7 @@ function toogleDirectionChoices(choicesDiv){
         label.setAttribute("for", line.number);
         }
     });
- }
-
-
-
-
-
-
-
-
-
+}
 
 //------------------------------------------------------- */
 //   Gestion URL
@@ -409,15 +394,16 @@ function selectedDirection () {
     }
 }
 
-// fonction qui renvoie la ligne selectionnée dans le formulaire.
-function selectedLine () {
-    // select the line of the timeslot and return the one who is checked in a string
-    for(var line of document.querySelectorAll("input[name='selectionLigne']")){
-        if (line.checked) {
-            return line.value;
-        }
+const getData = () => {
+    return {
+        users : selectedUsers(),
+        drivers : selectedDrivers(),
+        buses : selectedBuses(),
+        line : valueFirstElementChecked("input[name='selectionLigne']"),
+        direction : selectedDirection()
     }
 }
+
 
 // fonction qui renvoie l'url axios en fonction du type de creneau selectionné
 function axiosUrlSendWhenADD(type){
@@ -427,11 +413,9 @@ function axiosUrlSendWhenADD(type){
     let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
 
     // creation of the variables
-    let users;
-    let drivers;
-    let buses;
-    let line;
-    let direction;
+    let users, drivers, buses,  line, direction
+    ({users, drivers, buses,  line, direction} = getData())
+
 
     // creation of the default url
     let url = `timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}&type=${type}`;
@@ -441,10 +425,6 @@ function axiosUrlSendWhenADD(type){
 
         // CONDUITE
         case "1" :
-            drivers = selectedDrivers();
-            buses = selectedBuses();
-            line = selectedLine();
-            direction = selectedDirection();
             if (drivers != "" && buses != "" && line != "" && direction != ""){
                 url += `&users=${drivers}&buses=${buses}&lines=${line}&directions=${direction}`;
                 toggleAlert("REUSSITE", "Le créneau à bien été ajouté !");
@@ -458,10 +438,10 @@ function axiosUrlSendWhenADD(type){
 
         // REUNION
         case "2" :
-            users = selectedUsers();
             if (users != ""){
-                url += `&users=${users}`; break;
+                url += `&users=${users}`;
                 toggleAlert("REUSSITE", "Le créneau à bien été ajouté !");
+                break;
             }
             else
             {
@@ -471,7 +451,6 @@ function axiosUrlSendWhenADD(type){
 
         // INDISPONIBILITE
         case "3" :
-            drivers = selectedDrivers();
             if (drivers != "") {
                 url += `&users=${drivers}`;
                 toggleAlert("REUSSITE", "Le créneau à bien été ajouté !");
@@ -523,7 +502,7 @@ export const toggleAddCreneau = () => {
     create("p", main, " Rentrez les informations suivantes : ", ["presentation"]);
 
     // Creation of the form
-    const form = create("form", main);
+    const form = create("div", main);
 
     // Creation of each champ
     create("label", form, "Entrez la date de début du créneau :");
@@ -633,7 +612,7 @@ export const toggleModifCreneau = () => {
     create("p", main, "Choisir le créneau à modifier :", ["presentation"])
 
     // Creation of the form
-    const form = create("form", main)
+    const form = create("div", main)
 
    // Creation of the radio to select the timeslot to modify
     var divRadioCreneau = create("div", form);
@@ -841,7 +820,7 @@ export const toggleSupprimeCreneau = () => {
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
-    const form = create("form", main)
+    const form = create("div", main)
 
     // Creation of the radio to define the timeslot to delete
     var divCheckboxCreneau = create("div", form);

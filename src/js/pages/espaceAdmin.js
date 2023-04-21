@@ -10,7 +10,6 @@ import {toggleNotificationCenter} from "./notificationCenter.js";
 
 export const toggleEspaceAdmin = () => {
 
-
     const main = document.querySelector("#app")
     main.replaceChildren("")
 

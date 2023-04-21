@@ -1,4 +1,4 @@
-import { create, toggleAlert } from "../main";
+import { create } from "../main";
 
 export const toggleAccueil = () => {
     const main = document.querySelector("#app")
