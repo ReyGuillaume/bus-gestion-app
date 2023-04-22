@@ -47,27 +47,20 @@ export const toggleAddLine = () => {
         }
     });
 
-    
-
-    
-    
     // Creation of submit button
     const bouton = create("div", form, "Envoyer", ["submitButton"])
     bouton.addEventListener("click", function(){
         var id_type = valueFirstElementChecked("input[name='selectionTypeLine']");
         let number = document.querySelector("input[name='number']").value;
         let travel_time = document.querySelector("input[name='travel_time']").value;
-        console.log("Number "+number + " travel_time "+ travel_time + " id_type "+id_type);
         axios.get (`lines/lines.php?function=create&number=${number}&travel_time=${travel_time}&id_type=${id_type}`).then(function(response){
             toggleEspaceAdmin();
             if(response.data){
                 toggleAlert("BRAVO", "La ligne a bien été ajoutée");
-            }
-            else{
+            } else {
                 toggleError("ERREUR", "La ligne n'a pas pu être ajoutée");
             }
         })
-
     })
 
     return main

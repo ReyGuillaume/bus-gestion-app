@@ -33,14 +33,10 @@ export const toggleIndisponibilitiForm = () => {
             toggleAlert("BRAVO", "Votre indisponibilité a bien été ajoutée");
         });
 
-        let messageDebut = addslashes ("Votre créneau d'indisponibilité du ");
-        let messageFin = addslashes(" a bien été ajouté.");
-        axios.get(`notifications/notifications.php?function=create&title=Attention&message=`+messageDebut+ StartDateTime +` au `+ EndDateTime +messageFin+`&recipient=`+JSON.parse(sessionStorage.getItem("userData")).id);
+        let message = `Votre créneau d'indisponibilité du ${StartDateTime} au ${EndDateTime} a bien été ajouté.`
+        axios.get(`notifications/notifications.php?function=create&title=Attention&message=${addslashes(message)}&recipient=`+JSON.parse(sessionStorage.getItem("userData")).id);
 
-
-    });
-
-    return main
+    })
 }
 
 export const toggleSupprIndispo = () => {
@@ -76,14 +72,10 @@ export const toggleSupprIndispo = () => {
                 });
 
                 axios.get(`timeslots/timeslots.php?function=timeslot&id=${date.value}`).then(response => {
-                    let messageDebut = addslashes ("Votre créneau d'indisponibilité du ");
-                    let messageFin = addslashes(" a bien été supprimé.");
-                    axios.get(`notifications/notifications.php?function=create&title=Attention&message=`+messageDebut+ response.data.begining +` au `+ response.data.end +messageFin+`&recipient=`+JSON.parse(sessionStorage.getItem("userData")).id);
+                    let message = `Votre créneau d'indisponibilité du ${response.data.begining} au ${response.data.end} a bien été supprimé.`
+                    axios.get(`notifications/notifications.php?function=create&title=Attention&message=${addslashes(message)}&recipient=`+JSON.parse(sessionStorage.getItem("userData")).id);
                 })
             }
         }
-   });
-
-    return main
-    
+   })
 }

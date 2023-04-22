@@ -1,8 +1,8 @@
 import { create } from "../main";
 import { toggleAgenda } from "./agenda";
-import { toggleAddCreneau,toggleSupprimeCreneau,toggleModifCreneau } from "../pages/gestionTimeslots";
-import{toggleAjoutUser, toggleSupprimeUser, toggleModifyUser} from "../pages/gestionUsers";
-import {DisponibilityBus, AjoutBus, SupprimerBus, ModifBus}from "../pages/gestionBuses";
+import { toggleAddCreneau } from "../pages/gestionTimeslots";
+import { toggleAjoutUser, toggleSupprimeUser, toggleModifyUser } from "../pages/gestionUsers";
+import {DisponibilityBus, AjoutBus, SupprimerBus, ModifBus }from "../pages/gestionBuses";
 import { toggleAddLine, toggleSupprLine, toggleModifLine, toggleVerifCouvertureSemaine, toggleRemplissageAutoConduiteSemaine } from "./gestionLigne";
 import { toggleDrivers, toggleResp, toggleBuses, toggleLines } from "./agendaUsers";
 import {toggleNotificationCenter} from "./notificationCenter.js";
@@ -68,10 +68,10 @@ export const toggleEspaceAdmin = () => {
 
     // créneaux
     const div6 = create("div", nav, null, ["navBar_container"])
-    div6.addEventListener("click", toggleGestionTimeslots)
+    div6.addEventListener("click", toggleAddCreneau)
     const img6 = create("div", div6, null, ["navBar_image", "gris"])
     create("img", img6).src = "src/assets/images/nav_creneau.png"
-    create("div", div6, "Gérer les créneaux", ['navBar__item'])
+    create("div", div6, "Ajouter un créneaux", ['navBar__item'])
 
     // utilisateurs
     const div7 = create("div", nav, null, ["navBar_container"])
@@ -135,23 +135,6 @@ export const toggleGestionBus = () => {
     create("div", nav, 'Ajouter un bus', ['navBar__item']).addEventListener("click", AjoutBus)
     create("div", nav, "Modifier un bus", ['navBar__item']).addEventListener("click", ModifBus)
     create("div", nav, "Supprimer un bus", ['navBar__item']).addEventListener("click", SupprimerBus)
-
-    return main
-}
-
-export const toggleGestionTimeslots = () => {
-    const main = document.querySelector("#app")
-    main.replaceChildren("")
-
-    create("h2", main, "Gestion des Créneaux")
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
-    create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
-
-    const nav = create("nav", main, null, ['navBar'])
-
-    create("div", nav, "Ajouter un Creneau", ['navBar__item']).addEventListener("click", toggleAddCreneau)
-    create("div", nav, "Modifier un Creneau", ['navBar__item']).addEventListener("click", toggleModifCreneau)
-    create("div", nav, "Supprimer un Creneau", ['navBar__item']).addEventListener("click", toggleSupprimeCreneau)
 
     return main
 }

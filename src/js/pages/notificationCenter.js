@@ -1,16 +1,9 @@
 import {create, createChampRadio} from "../main";
 import { valueFirstElementChecked } from "../utils/formGestion";
+import { toggleEspaceAdmin } from "./espaceAdmin"
+import { toggleEspaceUser } from "./espaceUser";
+
 import axios from "axios";
-
-
-// Fonction de recuperation du statut sélectionné
-function statusSelected () {
-    for(var status of document.querySelectorAll("input[name='selectionStatus']")){
-        if (status.checked) {
-            return status.value;
-        }
-    }
-}
 
 async function readNotif (id){
     await fetch("http://localhost/projetL2S4/src/services/notifications/notifications.php?function=read&id="+id)
@@ -37,6 +30,61 @@ const createReadButton = (container, id_notif) => createActionButton(container, 
 const createUnreadButton = (container, id_notif) => createActionButton(container, 'U', unreadNotif, id_notif)
 
 
+const displayActionButtons = (mode, container, id_notif) => {
+    switch (mode) {
+        case "unread" :
+            createArchiveButton(container, id_notif)
+            createReadButton(container, id_notif)
+            break
+
+        case "read" :
+            createArchiveButton(container, id_notif)
+            createUnreadButton(container, id_notif)
+            break;
+
+        case "archive" :
+            createReadButton(container, id_notif)
+            createUnreadButton(container, id_notif)
+            break;
+
+        default :
+            createArchiveButton(container, id_notif)
+            createReadButton(container, id_notif)
+            createUnreadButton(container, id_notif)
+            break;
+    }
+}
+
+const displayNotifs = (container, data, mode) => {
+    for(let notif of data){
+        let divNotif = create("div", container, null, ['divNotif', notif.status]);
+
+        let title = notif.title;
+        let message = notif.message;
+        if (notif.title.length > 18){
+            title = (notif.title).slice(0,18)+'.';
+        }
+        if (notif.message.length > 38){
+            message = (notif.message).slice(0,38)+'...';
+        }
+        let divInfoNotif = create("div", divNotif, null ,["divInfoNotif"]);
+        create("h3", divInfoNotif, title);
+        create("p", divInfoNotif, message);
+        create("p", divInfoNotif, notif.date);
+
+        let img = create("div", divNotif, null, ["notif_image"]);
+        let id_notif = notif.id_notif;
+
+        displayActionButtons(mode, img, id_notif)
+
+        //Listener pour afficher la notification sur l'entièreté de la page
+        divNotif.addEventListener("click", function() {
+            showNotification(notif, container)
+            readNotif(id_notif);
+        })
+    }
+}
+
 async function fetch_data (divAllNotif, id_user, mode){
     axios.get(`notifications/notifications.php?function=fetch_`+mode+`&id=`+id_user).then((response)=>{
         divAllNotif.replaceChildren("");
@@ -48,53 +96,7 @@ async function fetch_data (divAllNotif, id_user, mode){
         create("p", divTitres, "Dates de reception");
         create("hr", divTitres);
         create("p", divTitres, "Actions");
-        for(var notif of response.data){
-            let divNotif = create("div", divAllNotif, null, ['divNotif', notif.status]);
-            let title = notif.title;
-            let message = notif.message;
-            if (notif.title.length > 18){
-                title = (notif.title).slice(0,18)+'.';
-            }
-            if (notif.message.length > 38){
-                message = (notif.message).slice(0,38)+'...';
-            }
-            let divInfoNotif = create("div", divNotif, null ,["divInfoNotif"]);
-            create("h3", divInfoNotif, title);
-            create("p", divInfoNotif, message);
-            create("p", divInfoNotif, notif.date);
-
-            let img = create("div", divNotif, null, ["notif_image"]);
-            let id_notif = notif.id_notif;
-
-            switch (mode) {
-                case "unread" :
-                    createArchiveButton(img, id_notif)
-                    createReadButton(img, id_notif)
-                    break
-
-                case "read" :
-                    createArchiveButton(img, id_notif)
-                    createUnreadButton(img, id_notif)
-                    break;
-
-                case "archive" :
-                    createReadButton(img, id_notif)
-                    createUnreadButton(img, id_notif)
-                    break;
-
-                default :
-                    createArchiveButton(img, id_notif)
-                    createReadButton(img, id_notif)
-                    createUnreadButton(img, id_notif)
-                    break;
-            }
-            //Listener pour afficher la notification sur l'entièreté de la page
-            divNotif.addEventListener("click", function() {
-                showNotification(notif, divAllNotif)
-                readNotif(id_notif);
-            })
-
-        }
+        displayNotifs(divAllNotif, response.data, mode)
     });
 }
 
@@ -118,67 +120,61 @@ function showNotification (notif, divAllNotif){
         archiveNotif(id_notif)
         toggleNotificationCenter()
     })
-
 }
 
 
 export const toggleNotificationCenter = () => {
     const main = document.querySelector("#app");
-    const id_user = JSON.parse(sessionStorage.getItem("userData")).id;
     main.replaceChildren("");
+    const id_user = JSON.parse(sessionStorage.getItem("userData")).id;
 
+    const sessionData = JSON.parse(sessionStorage.getItem("userData"));
+    const back = create("div", main, "<< Retour", ["return"])
+    if(sessionData["role"] == "Conducteur"){
+        back.addEventListener("click", toggleEspaceUser)
+    } else {
+        back.addEventListener("click", toggleEspaceAdmin)
+    }
 
     const nav = create("ul", main, null, ['navNotif']);
     let listeStatus = ["unread", "read", "archive", "all"];
 
     const divAllNotif = create("div", main);
 
-        for(var status of listeStatus){
+    for(var status of listeStatus){
+        
+        // Au clic du choix de type de créneau on affiche les autres infos à choisir
+        let li = create("li", nav, null, ['navNotif_item']);
+        var radio = createChampRadio(li, status , "selectionStatus", status);
+        radio.style.position = "fixed";
+        radio.style.opacity = 0;
             
-            /*--------------
-            Au clic du choix de type de créneau on affiche les autres infos à choisir
-            ---------------*/
-            let li = create("li", nav, null, ['navNotif_item']);
-            var radio = createChampRadio(li, status , "selectionStatus", status);
-            radio.style.position = "fixed";
-            radio.style.opacity = 0;
-            
-            radio.addEventListener('click', async function () {
-                // Recuperation du type du créneau en création
-                var statusToHandle = valueFirstElementChecked("input[name='selectionStatus']");
-                
-                
+        radio.addEventListener('click', async function () {
+            // Recuperation du type du créneau en création
+            var statusToHandle = valueFirstElementChecked("input[name='selectionStatus']");
 
-                switch (statusToHandle) {
-                    case 'unread' :
-                        await fetch_data(divAllNotif, id_user, "unread");
-                        break;
+            switch (statusToHandle) {
+                case 'unread' :
+                    await fetch_data(divAllNotif, id_user, "unread");
+                    break;
 
-                    case 'read' :
-                        await fetch_data(divAllNotif, id_user, "read");
-                        break;
+                case 'read' :
+                    await fetch_data(divAllNotif, id_user, "read");
+                    break;
 
-                    case 'archive' :
-                        await fetch_data(divAllNotif, id_user, "archive");
-                        break;
+                case 'archive' :
+                    await fetch_data(divAllNotif, id_user, "archive");
+                    break;
 
-                    case 'all' :
-                        await fetch_data(divAllNotif, id_user, "all");
-                        break;
+                default :
+                    await fetch_data(divAllNotif, id_user, "all");
+                    break;
+            }
+        })
 
-                    default :
-                        await fetch_data(divAllNotif, id_user, "all");
-                        break;
-                }
-                ;
+        var label = create("label", li, status, ["navNotif_name"]);
+        label.setAttribute("for", status);
+    }
 
-            });
-
-
-            var label = create("label", li, status, ["navNotif_name"]);
-            label.setAttribute("for", status);
-        }
-
-        fetch_data(divAllNotif, id_user, "all")
-
+    fetch_data(divAllNotif, id_user, "all")
 }

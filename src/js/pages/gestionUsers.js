@@ -3,6 +3,7 @@ import { toggleEspaceAdmin } from "./espaceAdmin";
 import { valueFirstElementChecked } from "../utils/formGestion";
 
 import axios from 'axios';
+
 //------------------------------------------------------- */
 //   Gestion Utilisateurs
 //------------------------------------------------------- */
@@ -99,13 +100,12 @@ export const toggleModifyUser = () => {
     var divRadioUser = create("div", form);
 
     // Recuperation de tous les utilisateurs
-    axios.get(`users/users.php?function=users`).then((response)=>{
+    axios.get(`users/users.php?function=users`).then(response => {
 
         for(var user of response.data){
-            create("br", divRadioUser);
 
             //Ajout d'un evenement au clic d'un radio
-           createChampRadio(divRadioUser, user.id , "selectionUser", user.id).addEventListener('click', function(){
+            createChampRadio(divRadioUser, user.id , "selectionUser", user.id).addEventListener('click', function(){
 
             // Recuperation de l'utilisateur a modifier
             var idUserToModify = valueFirstElementChecked("input[name='selectionUser']");
@@ -137,7 +137,7 @@ export const toggleModifyUser = () => {
                 create("br", form);
 
                 const bouton = create("div", form, "Modifier", ["submitButton"])
-                bouton.addEventListener("click", function (event){
+                bouton.addEventListener("click", function (){
                     
                     // selection the infos
                     let login = document.querySelector("input[name='loginUser']").value;
@@ -160,9 +160,24 @@ export const toggleModifyUser = () => {
 
         var label = create("label", divRadioUser, user.name + " "+ user.firstname);
         label.setAttribute("for", user.id);
-    }});
+    }})
+}
 
-    return main
+// delete the user who are checked
+const deleteUsersChecked = () => {
+    for(var user of document.querySelectorAll("input[name='selectionUSer']")){
+        if (user.checked) {
+            let url = `users/users.php?function=delete&id=${user.value}`;
+            axios.get(url).then(function(response){
+                toggleEspaceAdmin()
+                if(response.data){
+                    toggleAlert("BRAVO", "L'utilisateur a bien été supprimé")
+                } else {
+                    toggleError("ERREUR", "L'utilisateur n'a pas pu être supprimé")
+                }
+            })
+        }
+    }
 }
 
 export const toggleSupprimeUser = () => {
@@ -190,26 +205,5 @@ export const toggleSupprimeUser = () => {
 
     // Creation of submit button
     const bouton = create("div", form, "Supprimer", ["submitButton"])
-    bouton.addEventListener("click", function (){
-
-        // delete the user who are checked
-        for(var user of document.querySelectorAll("input[name='selectionUSer']")){
-            let url = `users/users.php?function=delete&id=`;
-            if (user.checked) {
-                url += user.value;
-                axios.get(url).then(function(response){
-                    toggleEspaceAdmin()
-                    if(response.data){
-                        toggleAlert("BRAVO", "L'utilisateur a bien été supprimé")
-                    }
-                    else{
-                        toggleError("ERREUR", "L'utilisateur n'a pas pu être supprimé")
-                    }
-                })
-            }
-        }
-    })
-
-    return main
-
+    bouton.onclick = () => deleteUsersChecked()
 }

@@ -1,5 +1,18 @@
 import axios from 'axios'
 
+/**
+ * @param {int} id du bus testé
+ * @param {String} beginning début de la plage horaire testée
+ * @param {String} end fin de la plage horaire testée
+ * @returns 
+ */
+const isFreeEntity = async axiosRequest => {
+    let res
+    await axios
+    .get(axiosRequest)
+    .then(response => res = response.data.length == 0)
+    return res
+}
 
 /**
  * 
@@ -8,16 +21,7 @@ import axios from 'axios'
  * @param {String} end fin de la plage horaire testée
  * @returns 
  */
-const isFreeUser = async (id, beginning, end) => {
-    let res
-    await axios
-    .get(`timeslots/timeslots.php?function=timeslotbyuser&user=${id}&beginning=${beginning}&end=${end}`)
-    .then(response=>{
-        res = response.data.length == 0
-    })
-    return res
-}
-
+const isFreeUser = async (id, beginning, end) => isFreeEntity(`timeslots/timeslots.php?function=timeslotbyuser&user=${id}&beginning=${beginning}&end=${end}`)
 
 /**
  * @param {int} id du bus testé
@@ -25,13 +29,19 @@ const isFreeUser = async (id, beginning, end) => {
  * @param {String} end fin de la plage horaire testée
  * @returns 
  */
-const isFreeBus = async (id, beginning, end) => {
-    let res
-    await axios
-    .get(`timeslots/timeslots.php?function=timeslotbybus&bus=${id}&beginning=${beginning}&end=${end}`)
-    .then(response=>{
-        res = response.data.length == 0
-    })
+const isFreeBus = async (id, beginning, end) => isFreeEntity(`timeslots/timeslots.php?function=timeslotbybus&bus=${id}&beginning=${beginning}&end=${end}`)
+
+
+const areFreeEntities = async(beginning, end, elts, fun) => {
+    let res = true
+    let size = elts.length
+    let i = 0
+
+    while (res === true && i < size ) {
+        res = await fun(elts[i], beginning, end)
+        i++
+    }
+
     return res
 }
 
@@ -45,28 +55,10 @@ const isFreeBus = async (id, beginning, end) => {
  * @returns boolean si le créneau d'indisponibilité peut être ajouté
  */
 const conduite = async(beginning, end, users, buses) => {
-    let res = true
-
-    let size = users.length
-    let i = 0
-
-    while (res === true && i < size ) {
-        res = await isFreeUser(users[i], beginning, end)
-        if (res === false)
-            console.log(`user ${i}`)
-        i++
+    let res = areFreeEntities(beginning, end, users, isFreeUser)
+    if (res) {   
+        areFreeEntities(beginning, end, buses, isFreeBus)
     }
-
-    size = buses.length
-    i = 0
-
-    while (res === true && i < size ) {
-        res = await isFreeBus(buses[i], beginning, end)
-        if (res === false)
-            console.log(`bus ${i}`)
-        i++
-    }
-
     return res
 }
 
@@ -78,18 +70,7 @@ const conduite = async(beginning, end, users, buses) => {
  * @param {Array} users liste des utilisateurs qui seront affectés au créneau
  * @returns boolean si le créneau d'indisponibilité peut être ajouté
  */
-const reunion = async(beginning, end, users) => {
-    let res = true
-    let size = users.length
-    let i = 0
-
-    while (res === true && i < size ) {
-        res = await isFreeUser(users[i], beginning, end)
-        i++
-    }
-
-    return res
-}
+const reunion = async(beginning, end, users) => await areFreeEntities(beginning, end, users, isFreeUser)
 
 
 /**
@@ -99,18 +80,7 @@ const reunion = async(beginning, end, users) => {
  * @param {Array} users liste des utilisateurs qui seront affectés au créneau
  * @returns boolean si le créneau d'indisponibilité peut être ajouté
  */
-const indispo = async(beginning, end, users) => {
-    let res = true
-    let size = users.length
-    let i = 0
-
-    while (res === true && i < size ) {
-        res = await isFreeUser(users[i], beginning, end)
-        i++
-    }
-
-    return res
-}
+const indispo = async(beginning, end, users) => await areFreeEntities(beginning, end, users, isFreeUser)
 
 
 /**
