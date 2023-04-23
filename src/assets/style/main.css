@@ -244,22 +244,26 @@ body {
   color: #3D7C98;
 }
 #adminFormulaire{
+  display: flex;
+  flex-direction: column;
   width: min-content;
   margin: 0 auto;
-  padding: 10px 105px 25px 105px;
+  padding: 20px 60px;
   background-color: white;
   border-radius: 15px;
   box-shadow: 0px 0px 5px gray;
+  align-items: center;
 }
-
 #adminFormulaire input{
-  padding: 15px 50px 15px 60px;
-  margin: 5px 0px 5px 0px;
+  padding: 10px;
+  margin: 5px;
   border-radius: 30px;
   border: 0px;
   background-color: #e7e7e7;
 }
-
+#adminFormulaire #adminButton{
+  margin: 5px;
+}
 #adminFormulaire label{
   display: block;
   text-align: center;

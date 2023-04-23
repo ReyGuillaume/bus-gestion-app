@@ -109,6 +109,15 @@
   z-index: 90;
   border: 1px solid #888;
 }
+.initiales{
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  background-color: rgb(212, 212, 212);
+  border: solid 1px black;
+  font-size: 50%;
+  margin-top: -25px;
+}
 .timeslot_multi_Conduite, .timeslot_multi_Réunion, .timeslot_multi_Indisponibilité{
   justify-content: center;
 }
@@ -126,6 +135,11 @@
   color: white;
   font-weight: bold;
   -webkit-text-stroke: 1px black;
+}
+.multi-form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .timeslot div{
   font-size: 0.6em;
@@ -162,30 +176,30 @@
 }
 .choix{
   color: rgb(255, 125, 125);
+  padding: 20px;
+  font-weight: bold;
 }
 .choix div{
   color: black;
+  font-weight: 100;
 }
 .modifButton{
-  color: white;
   background-color: rgb(99, 120, 225);
-  width: max-content;
-  padding: 3px;
-  border-radius: 10px;
-  margin: 0 auto;
 }
 .delButton{
-  color: white;
   background-color: rgb(225, 99, 99);
+}
+.modifButton, .delButton{
+  color: white;
   width: max-content;
   padding: 3px;
   border-radius: 10px;
   margin: 0 auto;
+  transition: 0.5s;
 }
 .modifButton:hover, .delButton:hover{
   background-color: black;
   cursor: pointer;
-  transition: 0.5s;
 }
 .calandar__body .numbers {
   display: flex;

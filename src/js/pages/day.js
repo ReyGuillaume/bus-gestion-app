@@ -93,12 +93,38 @@ const possibleDrag = (user_role, timeslot_name) => {
     }
 }
 
+// affiche les initiales d'une entité sur l'agenda
+const afficheInitiales = (entite) => {
+    if(entite.firstname){
+        return entite.firstname.substr(0,1) + entite.name.substr(0,1)
+    }
+    else if(entite.nb_places){
+        return "Bus " + entite.id
+    }
+    else if(entite.number){
+        return "Ligne " + entite.number
+    }
+}
+
 // fonction qui affiche tous les créneaux horaires récupérés, affectés à l'utilisateur connecté
 const createTimeSlots = async (date, container, user=null, multi=false, entites=null, index=0) => {
     const sessionData = JSON.parse(sessionStorage.getItem("userData"))
     const user_role = sessionData["role"]
     const footer = document.querySelector("#footer")
     const res = await fetchTimeSlots(date, user)
+    
+    // initiales des 6 chauffeurs
+    if(multi && !entites){
+        let initiales = create("div", container, afficheInitiales(user), ["initiales"])
+        initiales.style.left = (25 * index) + "px"
+        initiales.style.width = 25 + "px"
+    }
+    // initiales d'entités différentes
+    else if(multi && entites){
+        let initiales = create("div", container, afficheInitiales(entites[index]), ["initiales"])
+        initiales.style.left = ((150 / entites.length) * index) + "px"
+        initiales.style.width = (150 / entites.length) + "px"
+    }
     if (res.length > 0) {
         res.forEach(timeslot => {
             let div
@@ -224,6 +250,7 @@ export const toggleMultiEntities = async () => {
     main.replaceChildren("")
 
     create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("p", main, "Sélectionnez au maximum 4 agendas que vous souhaitez afficher", ["presentation"])
 
     let users = []
     let buses = []
@@ -239,8 +266,10 @@ export const toggleMultiEntities = async () => {
     await axios.get(`lines/lines.php?function=lines`)
     .then(res => lines = res.data)
 
+    const multi_form = create("div", main, null, ["multi-form"])
+
     // affichage des utilisateurs
-    const div_users = create("div", main, "Utilisateurs :", ["choix"])
+    const div_users = create("div", multi_form, "Utilisateurs :", ["choix"])
 
     for(let user of users){
         let div_user = create("div", div_users, null, ["selectMulti"])
@@ -249,7 +278,7 @@ export const toggleMultiEntities = async () => {
     }
 
     // affichage des bus
-    const div_buses = create("div", main, "Bus :", ["choix"])
+    const div_buses = create("div", multi_form, "Bus :", ["choix"])
 
     for(let bus of buses){
         let div_bus = create("div", div_buses, null, ["selectMulti"])
@@ -258,7 +287,7 @@ export const toggleMultiEntities = async () => {
     }
 
     // affichage des lignes
-    const div_lines = create("div", main, "Lignes :", ["choix"])
+    const div_lines = create("div", multi_form, "Lignes :", ["choix"])
 
     for(let line of lines){
         let div_line = create("div", div_lines, null, ["selectMulti"])
@@ -266,7 +295,7 @@ export const toggleMultiEntities = async () => {
         create("div", div_line, "Ligne " + line.number)
     }
 
-    create("div", main, "Afficher", ["modifButton"]).addEventListener("click", function(){
+    create("div", multi_form, "Afficher", ["modifButton"]).addEventListener("click", function(){
         if(entites.length > 4){
             toggleError("ERREUR", "Vous ne pouvez sélectionner que 4 entités")
         }
