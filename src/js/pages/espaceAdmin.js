@@ -2,14 +2,14 @@ import { create } from "../main";
 import { toggleAgenda } from "./agenda";
 import { toggleAddCreneau } from "../pages/gestionTimeslots";
 import { toggleAjoutUser, toggleSupprimeUser, toggleModifyUser } from "../pages/gestionUsers";
-import {DisponibilityBus, AjoutBus, SupprimerBus, ModifBus }from "../pages/gestionBuses";
+import { DisponibilityBus, AjoutBus, SupprimerBus, ModifBus }from "../pages/gestionBuses";
 import { toggleAddLine, toggleSupprLine, toggleModifLine, toggleVerifCouvertureSemaine, toggleRemplissageAutoConduiteSemaine } from "./gestionLigne";
 import { toggleDrivers, toggleResp, toggleBuses, toggleLines } from "./agendaUsers";
-import {toggleNotificationCenter} from "./notificationCenter.js";
+import { toggleNotificationCenter } from "./notificationCenter.js";
+import { createMenuElement } from "../components/menuItem";
 
 
 export const toggleEspaceAdmin = () => {
-
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -30,76 +30,35 @@ export const toggleEspaceAdmin = () => {
     const nav = create("nav", main, null, ['navBar_Admin'])
 
     // agenda
-    const div = create("div", nav, null, ["navBar_container"])
-    div.addEventListener("click", toggleAgenda)
-    const img = create("div", div, null, ["navBar_image", "rose"])
-    create("img", img).src = "src/assets/images/nav_agenda.png"
-    create("div", div, 'Voir mon agenda', ['navBar__item'])
+    createMenuElement(nav, toggleAgenda, "rose", "src/assets/images/nav_agenda.png", "Voir mon agenda", "Voir mon agenda")
 
     // agenda chauffeurs
-    const div2 = create("div", nav, null, ["navBar_container"])
-    div2.addEventListener("click", toggleDrivers)
-    const img2 = create("div", div2, null, ["navBar_image", "jaune"])
-    create("img", img2).src = "src/assets/images/nav_gens.png"
-    create("div", div2, "Voir l'agenda des chauffeurs", ['navBar__item'])
+    createMenuElement(nav, toggleDrivers, "jaune", "src/assets/images/nav_gens.png", "Voir l'agenda des chauffeurs", "Voir l'agenda des chauffeurs")
 
     // agenda responsables
-    if(sessionData["role"] == "Directeur"){
-        const div3 = create("div", nav, null, ["navBar_container"])
-        div3.addEventListener("click", toggleResp)
-        const img3 = create("div", div3, null, ["navBar_image", "orange"])
-        create("img", img3).src = "src/assets/images/nav_gens.png"
-        create("div", div3, "Voir l'agenda des responsables logistiques", ['navBar__item'])
-    }
+    if(sessionData["role"] == "Directeur")
+        createMenuElement(nav, toggleResp, "orange", "src/assets/images/nav_gens.png", "Voir l'agenda des responsables logistiques", "Voir l'agenda des responsables logistiques")
 
     // agenda bus
-    const div4 = create("div", nav, null, ["navBar_container"])
-    div4.addEventListener("click", toggleBuses)
-    const img4 = create("div", div4, null, ["navBar_image", "rouge"])
-    create("img", img4).src = "src/assets/images/nav_bus.png"
-    create("div", div4, "Voir l'agenda des bus", ['navBar__item'])
+    createMenuElement(nav, toggleBuses, "rouge", "src/assets/images/nav_bus.png", "Voir l'agenda des bus", "Voir l'agenda des bus")
 
     // agenda lignes de bus
-    const div5 = create("div", nav, null, ["navBar_container"])
-    div5.addEventListener("click", toggleLines)
-    const img5 = create("div", div5, null, ["navBar_image", "bleu"])
-    create("img", img5).src = "src/assets/images/nav_ligne.png"
-    create("div", div5, "Voir l'agenda des lignes de bus", ['navBar__item'])
+    createMenuElement(nav, toggleLines, "bleu", "src/assets/images/nav_ligne.png", "Voir l'agenda des lignes de bus", "Voir l'agenda des lignes de bus")
 
     // créneaux
-    const div6 = create("div", nav, null, ["navBar_container"])
-    div6.addEventListener("click", toggleAddCreneau)
-    const img6 = create("div", div6, null, ["navBar_image", "gris"])
-    create("img", img6).src = "src/assets/images/nav_creneau.png"
-    create("div", div6, "Ajouter un créneaux", ['navBar__item'])
+    createMenuElement(nav, toggleAddCreneau, "gris", "src/assets/images/nav_creneau.png", "Ajouter un créneaux", "Ajouter un créneaux")
 
     // utilisateurs
-    const div7 = create("div", nav, null, ["navBar_container"])
-    div7.addEventListener("click", toggleGestionUsers)
-    const img7 = create("div", div7, null, ["navBar_image", "violet"])
-    create("img", img7).src = "src/assets/images/nav_user.png"
-    create("div", div7, 'Gérer les utilisateurs', ['navBar__item'])
+    createMenuElement(nav, toggleGestionUsers, "violet", "src/assets/images/nav_user.png", 'Gérer les utilisateurs', 'Gérer les utilisateurs')
 
     // bus
-    const div8 = create("div", nav, null, ["navBar_container"])
-    div8.addEventListener("click", toggleGestionBus)
-    const img8 = create("div", div8, null, ["navBar_image", "vert"])
-    create("img", img8).src = "src/assets/images/nav_bus.png"
-    create("div", div8, 'Gérer les bus', ['navBar__item'])
+    createMenuElement(nav, toggleGestionBus, "vert", "src/assets/images/nav_bus.png", 'Gérer les bus', 'Gérer les bus')
 
     // lignes
-    const div9 = create("div", nav, null, ["navBar_container"])
-    div9.addEventListener("click", toggleGestionLigne)
-    const img9 = create("div", div9, null, ["navBar_image", "bleu_clair"])
-    create("img", img9).src = "src/assets/images/nav_gestion.png"
-    create("div", div9, 'Gérer les lignes', ['navBar__item'])
+    createMenuElement(nav, toggleGestionLigne, "bleu_clair", "src/assets/images/nav_gestion.png", 'Gérer les lignes', 'Gérer les lignes')
 
     // notif
-    const div10 = create("div", nav, null, ["navBar_container"])
-    div10.addEventListener("click", toggleNotificationCenter)
-    const img10 = create("div", div10, null, ["navBar_image", "orange"])
-    create("img", img10).src = "src/assets/images/nav_notif.png"
-    create("div", div10, 'Afficher les notifications', ['navBar__item'])
+    createMenuElement(nav, toggleNotificationCenter, "orange", "src/assets/images/nav_notif.png", 'Afficher les notifications', 'Afficher les notifications')
 
     return main
 }

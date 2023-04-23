@@ -85,7 +85,6 @@ const drawCalandar = (container, date, user=null) => {
 }
 
 
-
 export const calandar = (
     container,
     user=null,

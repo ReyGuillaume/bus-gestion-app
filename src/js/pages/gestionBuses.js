@@ -1,7 +1,7 @@
-import { create, createChamp, createChampCheckbox, createChampRadio, toggleAlert, toggleError } from "../main";
+import { create, createChamp } from "../main";
 import { toggleEspaceAdmin } from "./espaceAdmin";
 import { toggleAgenda } from "./agenda";
-import { valueFirstElementChecked } from "../utils/formGestion";
+import { fetchUrlRedirectAndAlert, valueFirstElementChecked, createCheckboxOfElement } from "../utils/formGestion";
 
 import axios from 'axios';
 //------------------------------------------------------- */
@@ -70,40 +70,18 @@ export const AjoutBus = () => {
     // Creation of the radio to define the bus to add
     var divRadio = create("div", form);
     create("label", divRadio, "Choisissez le type de bus :");
-    axios.get(`buses/buses.php?function=bustypes`).then((response)=>{
-        console.log(response.data);
-        for(var bustype of response.data){
-            create("br", divRadio);
-            createChampRadio(divRadio, bustype.id , "typeBus", bustype.id);
-            var label = create("label", divRadio, bustype.name );
-            label.setAttribute("for", bustype.id);
-            
+    axios.get(`buses/buses.php?function=bustypes`).then(response => response.data.forEach(bustype => createCheckboxOfElement(divRadio, bustype, "typeBus")))
 
-          }
-    });
     // Creation of submit button
     const bouton = create("div", form, "Envoyer", ["submitButton"])
-    bouton.addEventListener("click", function (event){
+    bouton.addEventListener("click", function (){
         for(var type of document.querySelectorAll("input[name='typeBus']")){
             if (type.checked) {
-                axios.get(`buses/buses.php?function=create&type=`+type.value).then(function(response){
-                    toggleEspaceAdmin()
-                    if(response.data){
-                        toggleAlert("BRAVO", "Le bus a bien été ajouté")
-                    }
-                    else{
-                        toggleError("ERREUR", "Le bus n'a pas pu être ajouté")
-                    }
-                })
+                fetchUrlRedirectAndAlert(`buses/buses.php?function=create&type=${type.value}`, toggleEspaceAdmin, "Le bus a bien été ajouté", "Le bus n'a pas pu être ajouté")
             }
         }
     })
-    form.appendChild(bouton);
-
-    return main
-
 }
-
 
 export const ModifBus = () => {
     const main = document.querySelector("#app")
@@ -119,52 +97,22 @@ export const ModifBus = () => {
     // Creation of the radio to define the bus to modify
     var divRadio = create("div", form);
     create("label", divRadio, "Choisissez le bus à modifier :");
-    axios.get(`buses/buses.php?function=buses`).then((response)=>{
-        console.log(response);
-        for(var bus of response.data){
-            create("br", divRadio);
-            createChampRadio(divRadio, bus.id , "idBus", bus.id);
-            var label = create("label", divRadio, bus.id );
-            label.setAttribute("for", bus.id);
-          }
-    });
+    axios.get(`buses/buses.php?function=buses`).then(response => response.data.forEach(bus => createCheckboxOfElement(divRadio, bus, "idBus")))
 
     //Creation of the radio to choose the new type of the bus
-
     var divRadioType = create("div", form);
     create("label", divRadioType, "Choisissez le type de bus :");
-    axios.get(`buses/buses.php?function=bustypes`).then((response)=>{
-        console.log(response.data);
-        for(var bustype of response.data){
-            create("br", divRadioType);
-            createChampRadio(divRadioType, bustype.id , "typeBus", bustype.id);
-            var label = create("label", divRadioType, bustype.name );
-            label.setAttribute("for", bustype.id);
-          }
-    });
+    axios.get(`buses/buses.php?function=bustypes`).then(response => response.data.forEach(bustype => createCheckboxOfElement(divRadioType, bustype, "typeBus")))
+
     // Creation of submit button
     const bouton = create("div", form, "Modifier", ["submitButton"])
     bouton.addEventListener("click", function (){
-
         let id = valueFirstElementChecked("input[name='idBus']");
         let type = valueFirstElementChecked("input[name='typeBus']");
-
         let url = `buses/buses.php?function=updatebus&id=${id}&type=${type}`
-        axios.get(url).then(function(response){
-            toggleEspaceAdmin()
-            if(response.data){
-                toggleAlert("BRAVO", "Le bus a bien été modifié")
-            }
-            else{
-                toggleError("ERREUR", "Le bus n'a pas pu être modifié")
-            }
-        })
-
+        fetchUrlRedirectAndAlert(url, toggleEspaceAdmin, "Le bus a bien été modifié", "Le bus n'a pas pu être modifié")
     })
-
-    return main
 }
-
 
 export const SupprimerBus = () => {
     const main = document.querySelector("#app")
@@ -180,33 +128,17 @@ export const SupprimerBus = () => {
     // Creation of the checkbox to define the bus to add
     var divCheckboxBus = create("div", form);
     create("label", divCheckboxBus, "Choisissez le(s) bus à supprimer :");
-    axios.get(`buses/buses.php?function=buses`).then((response)=>{
-        for(var bus of response.data){
-            create("br", divCheckboxBus);
-            createChampCheckbox(divCheckboxBus, bus.id , "idBus", bus.id);
-            var label = create("label", divCheckboxBus, bus.id );
-            label.setAttribute("for", bus.id);
-          }
-    });
+    axios.get(`buses/buses.php?function=buses`).then(response => response.data.forEach(bus => createCheckboxOfElement(divCheckboxBus, bus, "idBus")))
+
     // Creation of submit button
     const bouton = create("div", form, "Supprimer", ["submitButton"])
-    bouton.addEventListener("click", function (event){
+    bouton.addEventListener("click", function (){
         for(var bus of document.querySelectorAll("input[name='idBus']")){
             let url = `buses/buses.php?function=delete&id=`;
             if (bus.checked) {
                 url += bus.value;
-                axios.get(url).then(function(response){
-                    toggleEspaceAdmin()
-                    if(response.data){
-                        toggleAlert("BRAVO", "Le bus a bien été supprimé")
-                    }
-                    else{
-                        toggleError("ERREUR", "Le bus n'a pas pu être supprimé")
-                    }
-                })
+                fetchUrlRedirectAndAlert(url, toggleEspaceAdmin, "Le bus a bien été supprimé", "Le bus n'a pas pu être supprimé")
             }
         }
     })
-
-    return main
 }

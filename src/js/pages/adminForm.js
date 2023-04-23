@@ -49,20 +49,13 @@ export const toggleAdminForm = () => {
                 // Refresh display of header (to show the user's session)
                 createHeader();
 
-                // Redirection to the user page according to his role
-                if (idrole == 1 || idrole == 2){
-                    window.location = "/espaceAdmin"
-                }
-                else{
-                    window.location = "/espaceUser"
-                }        
-            }
-            else{
+                redirectUser(idrole)
+            } else {
                 toggleError("ATTENTION", "Formulaire invalide !")
             }
         })
-    });
-
-    return main
-    
+    })
 }
+
+// Redirection to the user page according to his role
+const redirectUser = (idrole) => window.location = (["1", "2"].includes(idrole) ? "/espaceAdmin" : "/espaceUser")

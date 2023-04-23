@@ -311,6 +311,8 @@ const conduite = (container, props, bubble, user_role, user=null, multi=false) =
 
 const indispo = (container, props, bubble, user_role, user=null, multi=false) => {
 
+    
+
     let heure_debut = formatedHour(new Date(props.begining).getHours())
     let min_debut = formatedHour(new Date(props.begining).getMinutes())
     let heure_fin = formatedHour(new Date(props.end).getHours())
@@ -321,7 +323,7 @@ const indispo = (container, props, bubble, user_role, user=null, multi=false) =>
     let month = getMonthToString(new Date(props.begining).getMonth())
 
     create('p', container, props.name, ["task-name"])
-    create("p", container, "Est noté comme indisponible le " + day + " " + nb + " " + month)
+    create("p", container, "Noté comme indisponible le " + day + " " + nb + " " + month)
     create("p", container, "de " + heure_debut + ":" + min_debut + " à " + heure_fin + ":" + min_fin)
 
     if(user_role == "Conducteur"){
@@ -352,7 +354,7 @@ export const toggleTask = (container, props, bubble, user=null, multi=false) => 
 
     const task = create("div", container, null, null, "task")
 
-    create("div", main, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(task)
+    create("div", task, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(task)
 
     switch (props.name) {
         case "Conduite": conduite(task, props, bubble, role, user, multi)

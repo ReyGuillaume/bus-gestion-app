@@ -1,6 +1,6 @@
 import { create, createChamp, createChampCheckbox, createChampRadio, toggleAlert, toggleError } from "../main";
 import { toggleEspaceAdmin } from "./espaceAdmin";
-import { valueFirstElementChecked } from "../utils/formGestion";
+import { fetchUrlRedirectAndAlert, valueFirstElementChecked } from "../utils/formGestion";
 
 import axios from 'axios';
 
@@ -54,7 +54,7 @@ export const toggleAjoutUser = () => {
 
 
     const bouton = create("div", form, "Envoyer", ["submitButton"])
-    bouton.addEventListener("click", function (event){
+    bouton.addEventListener("click", function (){
         // return the type of the user checked
         
         // selection the infos
@@ -67,22 +67,8 @@ export const toggleAjoutUser = () => {
 
         //creation of the url
         let url = `users/users.php?function=create&login=${login}&password=gobus123&confirm=gobus123&date=${date}&name=${name}&firstname=${firstname}&email=${email}&type=${type}`
-
-        axios.get(url).then(function(response){
-            toggleEspaceAdmin()
-            if(response.data){
-                toggleAlert("BRAVO", "L'utilisateur a bien été ajouté")
-            }
-            else{
-                toggleError("ERREUR", "L'utilisateur n'a pas pu être ajouté")
-            }
-        })
-
+        fetchUrlRedirectAndAlert(url, toggleEspaceAdmin, "L'utilisateur a bien été ajouté", "L'utilisateur n'a pas pu être ajouté")
     })
-
-    return main
-   
-
 }
 
 export const toggleModifyUser = () => {
@@ -144,16 +130,8 @@ export const toggleModifyUser = () => {
                     let email = document.querySelector("input[name='mailUser']").value;
 
                     //creation of the url
-                    let url = `users/users.php?function=update&id=${idUserToModify}&email=${email}&login=${login}`;
-                    axios.get(url).then(function(response){
-                        toggleEspaceAdmin()
-                        if(response.data){
-                            toggleAlert("BRAVO", "L'utilisateur a bien été ajouté")
-                        }
-                        else{
-                            toggleError("ERREUR", "L'utilisateur n'a pas pu être ajouté")
-                        }
-                    })
+                    let url = `users/users.php?function=update&id=${idUserToModify}&email=${email}&login=${login}`
+                    fetchUrlRedirectAndAlert(url, toggleEspaceAdmin, "L'utilisateur a bien été ajouté", "L'utilisateur n'a pas pu être ajouté")
                 })
             });
         });
@@ -168,14 +146,7 @@ const deleteUsersChecked = () => {
     for(var user of document.querySelectorAll("input[name='selectionUSer']")){
         if (user.checked) {
             let url = `users/users.php?function=delete&id=${user.value}`;
-            axios.get(url).then(function(response){
-                toggleEspaceAdmin()
-                if(response.data){
-                    toggleAlert("BRAVO", "L'utilisateur a bien été supprimé")
-                } else {
-                    toggleError("ERREUR", "L'utilisateur n'a pas pu être supprimé")
-                }
-            })
+            fetchUrlRedirectAndAlert(url, toggleEspaceAdmin, "L'utilisateur a bien été supprimé", "L'utilisateur n'a pas pu être supprimé")
         }
     }
 }
