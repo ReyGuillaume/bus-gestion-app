@@ -10,8 +10,8 @@ import { toggleAdminForm } from './js/pages/adminForm'
 import { disconnectUser } from './js/pages/disconnect'
 import { toggle404 } from './js/pages/404'
 import { toggleEspaceAdmin } from './js/pages/espaceAdmin'
-import {toggleEspaceUser} from './js/pages/espaceUser'
-import {toggleNotificationCenter} from './js/pages/notificationCenter'
+import { toggleEspaceUser } from './js/pages/espaceUser'
+import { toggleNotificationCenter } from './js/pages/notificationCenter'
 
 axios.defaults.baseURL = "http://localhost/projetL2S4/src/services"
 

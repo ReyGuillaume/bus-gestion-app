@@ -93,7 +93,7 @@ const indispo = async(beginning, end, users) => await areFreeEntities(beginning,
  * @param {Array} buses : la liste des id des bus affectés au créneau
  * @returns boolean si le créneau peut être ou non posé
  */
-export const timeSlotCanBeSubmit = async(beginning, end, type, users=null, buses=null) => {
+const timeSlotCanBeSubmit = async(beginning, end, type, users=null, buses=null) => {
     let t
     t = typeof(type) != "number" ? parseInt(type) : type
 
@@ -104,3 +104,5 @@ export const timeSlotCanBeSubmit = async(beginning, end, type, users=null, buses
         default: return false
     }
 }
+
+export { timeSlotCanBeSubmit }

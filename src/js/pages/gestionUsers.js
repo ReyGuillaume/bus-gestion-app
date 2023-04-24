@@ -8,7 +8,7 @@ import axios from 'axios';
 //   Gestion Utilisateurs
 //------------------------------------------------------- */
 
-export const toggleAjoutUser = () => {
+const toggleAjoutUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
@@ -71,7 +71,7 @@ export const toggleAjoutUser = () => {
     })
 }
 
-export const toggleModifyUser = () => {
+const toggleModifyUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
@@ -151,7 +151,7 @@ const deleteUsersChecked = () => {
     }
 }
 
-export const toggleSupprimeUser = () => {
+const toggleSupprimeUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
@@ -177,4 +177,11 @@ export const toggleSupprimeUser = () => {
     // Creation of submit button
     const bouton = create("div", form, "Supprimer", ["submitButton"])
     bouton.onclick = () => deleteUsersChecked()
+}
+
+
+export {
+    toggleAjoutUser,
+    toggleModifyUser,
+    toggleSupprimeUser
 }

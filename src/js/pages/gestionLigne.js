@@ -8,7 +8,7 @@ import axios from 'axios';
 //   Gestion Lignes
 //------------------------------------------------------- */
 
-export const toggleAddLine = () => {
+const toggleAddLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
@@ -48,7 +48,7 @@ export const toggleAddLine = () => {
     })
 }
 
-export const toggleSupprLine = () => {
+const toggleSupprLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
@@ -110,7 +110,7 @@ const createLineRadio = (form, container, line) => {
     label.setAttribute("for", line.number);
 }
 
-export const toggleModifLine = () => {
+const toggleModifLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
@@ -132,7 +132,7 @@ export const toggleModifLine = () => {
    })
 }
 
-export const toggleVerifCouvertureSemaine = () => {
+const toggleVerifCouvertureSemaine = () => {
 
     // Recuperation de la div à modifier 
     const main = document.querySelector("#app")
@@ -157,7 +157,7 @@ export const toggleVerifCouvertureSemaine = () => {
 
 }
 
-export const toggleRemplissageAutoConduiteSemaine = () => {
+const toggleRemplissageAutoConduiteSemaine = () => {
 
     // Recuperation de la div à modifier 
     const main = document.querySelector("#app")
@@ -179,4 +179,12 @@ export const toggleRemplissageAutoConduiteSemaine = () => {
         let semaine = document.querySelector("input[name='semaine']").value;
         fetchUrlRedirectAndAlert(`lines/lines.php?function=coverWeek&week=${semaine}`, toggleEspaceAdmin, "Toutes les conduites de la semaine ont étées ajoutées", "Il semblerait que tout ne se soit pas passé comme prévu...")
     })
+}
+
+export {
+    toggleAddLine,
+    toggleSupprLine,
+    toggleModifLine,
+    toggleVerifCouvertureSemaine,
+    toggleRemplissageAutoConduiteSemaine
 }

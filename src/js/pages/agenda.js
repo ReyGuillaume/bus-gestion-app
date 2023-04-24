@@ -46,7 +46,7 @@ const drawAgenda = (user=null, date=null, multi=false) => {
     return main
 }
 
-export const toggleAgenda = (user=null, date=null, multi=false) => {
+const toggleAgenda = (user=null, date=null, multi=false) => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
@@ -58,3 +58,5 @@ export const toggleAgenda = (user=null, date=null, multi=false) => {
 
     return main
 }
+
+export { toggleAgenda }

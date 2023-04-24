@@ -85,7 +85,7 @@ const drawCalandar = (container, date, user=null) => {
 }
 
 
-export const calandar = (
+const calandar = (
     container,
     user=null,
     year = new Date().getFullYear(), 
@@ -100,3 +100,5 @@ export const calandar = (
 
     return container
 }
+
+export { calandar }

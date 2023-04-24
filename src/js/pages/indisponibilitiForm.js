@@ -3,7 +3,7 @@ import { fetchUrlRedirectAndAlert, addslashes } from "../utils/formGestion";
 import { toggleEspaceUser } from "./espaceUser";
 import axios from 'axios';
 
-export const toggleIndisponibilitiForm = () => {
+const toggleIndisponibilitiForm = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -37,4 +37,8 @@ export const toggleIndisponibilitiForm = () => {
             toggleError("ERREUR", "L'un des champs du formulaire n'a pas été renseigné")
         }
     })
+}
+
+export {
+    toggleIndisponibilitiForm
 }

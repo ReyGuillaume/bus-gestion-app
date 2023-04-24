@@ -9,7 +9,7 @@ import { toggleNotificationCenter } from "./notificationCenter.js";
 import { createMenuElement } from "../components/menuItem";
 
 
-export const toggleEspaceAdmin = () => {
+const toggleEspaceAdmin = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -63,7 +63,7 @@ export const toggleEspaceAdmin = () => {
     return main
 }
 
-export const toggleGestionUsers = () => {
+const toggleGestionUsers = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -80,7 +80,7 @@ export const toggleGestionUsers = () => {
     return main
 }
 
-export const toggleGestionBus = () => {
+const toggleGestionBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -98,7 +98,7 @@ export const toggleGestionBus = () => {
     return main
 }
 
-export const toggleGestionLigne = () => {
+const toggleGestionLigne = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -118,4 +118,11 @@ export const toggleGestionLigne = () => {
     create("div", nav, 'Retour', ['navBar__item']).addEventListener("click", toggleEspaceAdmin)
 
     return main
+}
+
+export {
+    toggleEspaceAdmin,
+    toggleGestionUsers,
+    toggleGestionBus,
+    toggleGestionLigne
 }

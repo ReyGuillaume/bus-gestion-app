@@ -123,7 +123,7 @@ function showNotification (notif, divAllNotif){
 }
 
 
-export const toggleNotificationCenter = () => {
+const toggleNotificationCenter = () => {
     const main = document.querySelector("#app");
     main.replaceChildren("");
     const id_user = JSON.parse(sessionStorage.getItem("userData")).id;
@@ -178,3 +178,5 @@ export const toggleNotificationCenter = () => {
 
     fetch_data(divAllNotif, id_user, "all")
 }
+
+export { toggleNotificationCenter }

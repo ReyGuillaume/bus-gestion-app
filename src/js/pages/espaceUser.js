@@ -4,7 +4,7 @@ import { toggleIndisponibilitiForm } from "../pages/indisponibilitiForm"
 import {toggleNotificationCenter} from "./notificationCenter.js";
 import { createMenuElement } from "../components/menuItem";
 
-export const toggleEspaceUser = () => {
+const toggleEspaceUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -36,3 +36,4 @@ export const toggleEspaceUser = () => {
     return main
 }
 
+export { toggleEspaceUser }

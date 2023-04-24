@@ -5,7 +5,7 @@ import { toggleAgenda } from "../pages/agenda";
 import { getMonthToString, getIdOfDay, getDayToString, formatedHour, getFirstMonday, getNearestHour, getNearestMinute } from "../utils/dates"
 import axios from "axios"
 
-import '../../assets/style/calandar.css';
+import '../../assets/style/calandar.css'
 
 // fonction qui crée le header du calendrier d'un mois entier (mois + année)
 const createWeek = (container, date, user=null, multi=false) => {
@@ -63,9 +63,7 @@ const handleDargEnter = e => {
 
 const handleDargOver = e => e.preventDefault()
 
-const handleDargLeave = e => {
-    e.target.classList.toggle("dragover")
-}
+const handleDargLeave = e => e.target.classList.toggle("dragover")
 
 const handleDrop = (e, date, user, multi=false) => {
     e.target.classList.toggle("dragover")
@@ -252,7 +250,7 @@ const drawCalandar = (container, date, user=null, multi=false) => {
 
 
 
-export const calandar = (
+const calandar = (
     container,
     user=null,
     multi=false,
@@ -268,3 +266,6 @@ export const calandar = (
 
     return container
 }
+
+
+export { calandar }

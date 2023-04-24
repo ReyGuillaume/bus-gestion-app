@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { create, toggleAlert, toggleError, createChampCheckbox } from './domManipulation';
 
-export function valueFirstElementChecked (selector) {
+function valueFirstElementChecked (selector) {
     for (var elem of document.querySelectorAll(selector)) {
         if (elem.checked) {
             return elem.value
@@ -9,7 +9,7 @@ export function valueFirstElementChecked (selector) {
     }
 }
 
-export const idOfAllElementChecked = (selector) => {
+const idOfAllElementChecked = (selector) => {
     let res = ""
     for(let elem of document.querySelectorAll(selector)){
         if (elem.checked) {
@@ -20,7 +20,7 @@ export const idOfAllElementChecked = (selector) => {
     return res
 }
 
-export const fetchUrlRedirectAndAlert = (url, redirectFunction, successMessage, failurMessage) => {
+const fetchUrlRedirectAndAlert = (url, redirectFunction, successMessage, failurMessage) => {
     axios.get(url).then(response => {
         redirectFunction()
         response.data ? toggleAlert("BRAVO", successMessage) : toggleError("ERREUR", failurMessage)
@@ -28,14 +28,14 @@ export const fetchUrlRedirectAndAlert = (url, redirectFunction, successMessage, 
 }
 
 
-export const createCheckboxOfElement = (container, elt, checkboxName) => {
+const createCheckboxOfElement = (container, elt, checkboxName) => {
     createChampCheckbox(container, elt.id , checkboxName, elt.id);
     var label = create("label", container, elt.id );
     label.setAttribute("for", elt.id);
 }
 
 
-export const createCheckBoxOfElements = (axiosRequet, axiosRequestFetchchElement, container, checkBoxName, labelTextFunction) => {
+const createCheckBoxOfElements = (axiosRequet, axiosRequestFetchchElement, container, checkBoxName, labelTextFunction) => {
     axios.get(axiosRequet).then(response => {
         for(var elt_id of response.data){
             axios.get(axiosRequestFetchchElement + elt_id).then(res => {
@@ -49,7 +49,7 @@ export const createCheckBoxOfElements = (axiosRequet, axiosRequestFetchchElement
 }
 
 
-export function addslashes(string) {
+function addslashes(string) {
     return string.replace(/\\/g, '\\\\').
     replace(/\u0008/g, '\\b').
     replace(/\t/g, '\\t').
@@ -58,4 +58,14 @@ export function addslashes(string) {
     replace(/\r/g, '\\r').
     replace(/'/g, '\\\'').
     replace(/"/g, '\\"');
+}
+
+
+export {
+    valueFirstElementChecked,
+    idOfAllElementChecked,
+    fetchUrlRedirectAndAlert,
+    createCheckboxOfElement,
+    createCheckBoxOfElements,
+    addslashes
 }

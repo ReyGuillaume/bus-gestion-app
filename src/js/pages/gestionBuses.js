@@ -8,7 +8,7 @@ import axios from 'axios';
 //   Gestion Bus 
 //------------------------------------------------------- */
 
-export const DisponibilityBus = () => {
+const DisponibilityBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
@@ -56,7 +56,7 @@ export const DisponibilityBus = () => {
     })
 }
 
-export const AjoutBus = () => {
+const AjoutBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
@@ -83,7 +83,7 @@ export const AjoutBus = () => {
     })
 }
 
-export const ModifBus = () => {
+const ModifBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
@@ -114,7 +114,7 @@ export const ModifBus = () => {
     })
 }
 
-export const SupprimerBus = () => {
+const SupprimerBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
@@ -141,4 +141,11 @@ export const SupprimerBus = () => {
             }
         }
     })
+}
+
+export {
+    DisponibilityBus,
+    ModifBus,
+    SupprimerBus,
+    AjoutBus,
 }

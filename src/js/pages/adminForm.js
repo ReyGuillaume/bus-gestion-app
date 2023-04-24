@@ -2,7 +2,7 @@ import { create, createChamp, toggleError } from "../utils/domManipulation";
 import { createHeader } from "../components/header";
 import axios from 'axios';
 
-export const toggleAdminForm = () => {
+const toggleAdminForm = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -59,3 +59,5 @@ export const toggleAdminForm = () => {
 
 // Redirection to the user page according to his role
 const redirectUser = (idrole) => window.location = (["1", "2"].includes(idrole) ? "/espaceAdmin" : "/espaceUser")
+
+export { toggleAdminForm }

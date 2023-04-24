@@ -338,7 +338,7 @@ const indispo = (container, props, bubble, user_role, user=null, multi=false) =>
 
 
 // fonction qui permet d'afficher un créneau horaire affecté à l'utilisateur connecté
-export const toggleTask = (container, props, bubble, user=null, multi=false) => {
+const toggleTask = (container, props, bubble, user=null, multi=false) => {
 
     const main = document.querySelector("#app")
     main.classList.add("cache")
@@ -367,3 +367,6 @@ export const toggleTask = (container, props, bubble, user=null, multi=false) => 
             break;
     }
 }
+
+
+export { toggleTask }

@@ -17,7 +17,6 @@ const createNavBar = () => {
         else{
             create("a", nav, 'Espace utilisateur', ['navBar__item']).href = "/espaceUser"
         }
-
         create("a", nav, 'Se déconnecter', ['navBar__item']).href = "/disconnect"
     }
     else{
@@ -27,7 +26,6 @@ const createNavBar = () => {
     return nav
 }
 
-
 const toggleNavBar = () => {
     document.querySelector("#header .navBar").classList.toggle('hide')
     const i = document.querySelector("#header .toggleNav i")
@@ -35,8 +33,7 @@ const toggleNavBar = () => {
     i.classList.toggle('fa-close')
 }
 
-
-export const createHeader = () => {
+const createHeader = () => {
     const h = document.querySelector("#header")
     h.replaceChildren("")
 
@@ -59,4 +56,8 @@ export const createHeader = () => {
     createNavBar()
 
     return h;
+}
+
+export {
+    createHeader
 }

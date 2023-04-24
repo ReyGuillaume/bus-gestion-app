@@ -13,22 +13,22 @@ import axios from 'axios';
 
 
 // select the types of participants and return those who are checked in a string : 1,2,...
-export const participantsTimeslot = () => idOfAllElementChecked("input[name='selectionParticipant']")
+const participantsTimeslot = () => idOfAllElementChecked("input[name='selectionParticipant']")
 
 // select the types of participants and return those who are checked in a string : 1,2,...
-export const selectedDrivers = () => idOfAllElementChecked("input[name='selectionConducteurs']")
+const selectedDrivers = () => idOfAllElementChecked("input[name='selectionConducteurs']")
 
 // select the types of buses and return those who are checked in a string : 1,2,...
-export const busesTimeslot = () => idOfAllElementChecked("input[name='selectionBus']")
+const busesTimeslot = () => idOfAllElementChecked("input[name='selectionBus']")
 
 // select the types of timeslots and return the one who is checked in a string
-export const typeTimeslot = () => valueFirstElementChecked("input[name='selectionType']")
+const typeTimeslot = () => valueFirstElementChecked("input[name='selectionType']")
 
 // select the direction of the line and return the one who is checked in a string
-export const lineDirectionTimeslot = () => valueFirstElementChecked("input[name='selectionDirection']")
+const lineDirectionTimeslot = () => valueFirstElementChecked("input[name='selectionDirection']")
     
 // select the line of the timeslot and return the one who is checked in a string
-export const lineTimeslot = () => valueFirstElementChecked("input[name='selectionLigne']")
+const lineTimeslot = () => valueFirstElementChecked("input[name='selectionLigne']")
 
 // renvoie un objet contenant les résultats des champs du formulaire d'ajout de créneau
 const getData = () => {
@@ -208,7 +208,7 @@ function toogleDriversChoices(choicesDiv){
 // Creation of the checkbox to define the drivers involved in the timeslot
 // BUT with only the one that are free on the periode
 // @param choiceDiv la div dans lequel mettre ça 
- function toogleFreeDriverChoices(choicesDiv){
+function toogleFreeDriverChoices(choicesDiv){
 
     // On recupere la div de choix d'utilisateur
     var divCheckboxDrivers = document.querySelector("#divCheckboxDrivers");
@@ -237,8 +237,7 @@ function toogleDriversChoices(choicesDiv){
 }
 
 // Creation of the radio to define the direction
- // @param choiceDiv la div dans lequel mettre ça 
-
+// @param choiceDiv la div dans lequel mettre ça 
 function toogleDirectionChoices(choicesDiv){
     var divRadioDirection = create("div", choicesDiv);
     create("label", divRadioDirection, "Choisissez la direction  :");
@@ -254,7 +253,6 @@ function toogleDirectionChoices(choicesDiv){
 
 // Creation of the radio to define the line
 // @param choiceDiv la div dans lequel mettre ça 
-
 function toogleLineChoices(choicesDiv){
     var divRadioLigne = create("div", choicesDiv);
     create("label", divRadioLigne, "Choisissez une ligne :");
@@ -316,7 +314,7 @@ function axiosUrlSendWhenADD(type){
     return url;
 }
 
-export const toggleAddCreneau = () => {
+const toggleAddCreneau = () => {
     const main = document.querySelector("#app");
     main.replaceChildren("");
     
@@ -386,4 +384,15 @@ export const toggleAddCreneau = () => {
         let url = axiosUrlSendWhenADD(typeTimeslot())
         fetchUrlRedirectAndAlert(url, toggleEspaceAdmin, "Le créneau a bien été ajouté", "Le créneau n'a pas pu être ajouté")
     })
+}
+
+
+export {
+    participantsTimeslot,
+    selectedDrivers,
+    busesTimeslot,
+    typeTimeslot,
+    lineDirectionTimeslot,
+    lineTimeslot,
+    toggleAddCreneau
 }

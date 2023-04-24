@@ -150,7 +150,7 @@ const createTimeSlots = async (date, container, user=null, multi=false, index=0)
     })
 }
 
-export const toggleDay = (date, user=null) => {
+const toggleDay = (date, user=null) => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -171,9 +171,9 @@ export const toggleDay = (date, user=null) => {
 }
 
 
-export const toggleDayOfWeek = (container, date, user=null, multi=false) => createTimeSlots(date, container, user, multi)
+const toggleDayOfWeek = (container, date, user=null, multi=false) => createTimeSlots(date, container, user, multi)
 
-export const toggleMultiDay = async (container, date) => {
+const toggleMultiDay = async (container, date) => {
     let users = []
     let i = 0
 
@@ -184,4 +184,10 @@ export const toggleMultiDay = async (container, date) => {
         createTimeSlots(date, container, user, true, i)
         i += 1
     }
+}
+
+export {
+    toggleDay,
+    toggleDayOfWeek,
+    toggleMultiDay
 }

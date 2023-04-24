@@ -1,4 +1,4 @@
-export const getDayToString = (index) => {
+const getDayToString = (index) => {
     switch (index) {
         case 0: return "Dimanche"
         case 1: return "Lundi"
@@ -12,7 +12,7 @@ export const getDayToString = (index) => {
 }
 
 
-export const getMonthToString = (index) => {
+const getMonthToString = (index) => {
     switch (index) {
         case 0: return "Janvier"
         case 1: return "Février"
@@ -30,7 +30,7 @@ export const getMonthToString = (index) => {
     }
 }
 
-export const getIdOfDay = day => {
+const getIdOfDay = day => {
     switch (day) {
         case "Dimanche": return 0
         case "Lundi": return 1
@@ -44,11 +44,11 @@ export const getIdOfDay = day => {
 }
 
 // renvoie une date JS sous forme 2023-02-16 00:00:00
-export const datePhp = date => date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
+const datePhp = date => date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
 
 
 // rajoute un "0" si l'horaire est inférieur à 10 (8 => 08)
-export const formatedHour = (horaire) => {
+const formatedHour = (horaire) => {
     if(horaire < 10){
         return "0" + horaire
     }
@@ -59,7 +59,7 @@ export const formatedHour = (horaire) => {
 
 
 // fonction qui recupère le 1er Lundi de la semaine de la date
-export const getFirstMonday = (date) => {
+const getFirstMonday = (date) => {
     let initDate = new Date(date)
 
     let day = getDayToString(initDate.getDay())
@@ -74,7 +74,7 @@ export const getFirstMonday = (date) => {
 
 
 // Fonction pour obtenir l'heure la plus proche à la demi-heure près
-export const getNearestHour = (hour, minute) => {
+const getNearestHour = (hour, minute) => {
     if(minute <= 15){
         return hour;
     }
@@ -87,7 +87,7 @@ export const getNearestHour = (hour, minute) => {
 }
 
 // Fonction pour obtenir la minute la plus proche à la demi-heure près
-export const getNearestMinute = (minute) => {
+const getNearestMinute = (minute) => {
     if(minute >= 45 || minute < 15){
         return 0;
     } 
@@ -97,7 +97,7 @@ export const getNearestMinute = (minute) => {
 }
 
 // fonction qui prend en paramètres un nombre de minutes (int) et renvoie le temps en heures (string)
-export const convertMinutesToTime = (minutes) => {
+const convertMinutesToTime = (minutes) => {
     let hours = Math.floor(minutes / 60);
     let remainingMinutes = minutes % 60;
   
@@ -107,6 +107,17 @@ export const convertMinutesToTime = (minutes) => {
     if (remainingMinutes < 10) {
       remainingMinutes = "0" + remainingMinutes;
     }
-  
     return hours + "h" + remainingMinutes;
-  }
+}
+
+export {
+    getDayToString,
+    getMonthToString,
+    getIdOfDay,
+    datePhp,
+    formatedHour,
+    getFirstMonday,
+    getNearestHour,
+    getNearestMinute,
+    convertMinutesToTime
+}

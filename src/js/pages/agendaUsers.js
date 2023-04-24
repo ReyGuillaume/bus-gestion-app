@@ -42,21 +42,21 @@ const drawUsers = (idtype) => {
 }
 
 // fonction qui réclame l'affichage de la liste des chauffeurs de bus
-export const toggleDrivers = () => {
+const toggleDrivers = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     drawUsers(3)
 }
 
 // fonction qui réclame l'affichage de la liste des responsables logistiques
-export const toggleResp = () => {
+const toggleResp = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     drawUsers(2)
 }
 
 // afficher l'agenda des bus
-export const toggleBuses = () => {
+const toggleBuses = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -81,7 +81,7 @@ export const toggleBuses = () => {
 
 
 // afficher l'agenda des lignes de bus
-export const toggleLines = () => {
+const toggleLines = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -95,4 +95,11 @@ export const toggleLines = () => {
         let lines = response.data;
         lines.forEach(line => createListeItem(ul, line, `Ligne ${line.number} (${convertMinutesToTime(line.travel_time)} de trajet)`))
     })
+}
+
+export {
+    toggleDrivers,
+    toggleBuses,
+    toggleResp,
+    toggleLines
 }
