@@ -31,14 +31,14 @@ const getMonthToString = (index) => {
 }
 
 const getIdOfDay = day => {
-    switch (day) {
-        case "Dimanche": return 0
-        case "Lundi": return 1
-        case "Mardi": return 2
-        case "Mercredi": return 3
-        case "Jeudi": return 4
-        case "Vendredi": return 5
-        case "Samedi": return 6
+    switch (day.toLowerCase()) {
+        case "dimanche": return 0
+        case "lundi": return 1
+        case "mardi": return 2
+        case "mercredi": return 3
+        case "jeudi": return 4
+        case "vendredi": return 5
+        case "samedi": return 6
         default: return null
     }
 }
@@ -48,14 +48,7 @@ const datePhp = date => date.getFullYear() + '-' + (date.getMonth() + 1) + '-' +
 
 
 // rajoute un "0" si l'horaire est inférieur à 10 (8 => 08)
-const formatedHour = (horaire) => {
-    if(horaire < 10){
-        return "0" + horaire
-    }
-    else{
-        return horaire
-    }
-}
+const formatedHour = (horaire) => horaire < 10 ? "0" + horaire : horaire
 
 
 // fonction qui recupère le 1er Lundi de la semaine de la date
