@@ -1,4 +1,4 @@
-import {create, createChampRadio} from "../main";
+import {create, createChampRadio} from "../utils/domManipulation";
 import { valueFirstElementChecked } from "../utils/formGestion";
 import { toggleEspaceAdmin } from "./espaceAdmin"
 import { toggleEspaceUser } from "./espaceUser";

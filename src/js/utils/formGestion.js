@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { create, toggleAlert, toggleError, createChampCheckbox } from '../main';
+import { create, toggleAlert, toggleError, createChampCheckbox } from './domManipulation';
 
 export function valueFirstElementChecked (selector) {
     for (var elem of document.querySelectorAll(selector)) {
@@ -46,4 +46,16 @@ export const createCheckBoxOfElements = (axiosRequet, axiosRequestFetchchElement
             })
         }
     })
+}
+
+
+export function addslashes(string) {
+    return string.replace(/\\/g, '\\\\').
+    replace(/\u0008/g, '\\b').
+    replace(/\t/g, '\\t').
+    replace(/\n/g, '\\n').
+    replace(/\f/g, '\\f').
+    replace(/\r/g, '\\r').
+    replace(/'/g, '\\\'').
+    replace(/"/g, '\\"');
 }

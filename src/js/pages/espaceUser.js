@@ -1,4 +1,4 @@
-import { create } from "../main";
+import { create } from "../utils/domManipulation";
 import { toggleAgenda } from "./agenda";
 import { toggleIndisponibilitiForm } from "../pages/indisponibilitiForm"
 import {toggleNotificationCenter} from "./notificationCenter.js";

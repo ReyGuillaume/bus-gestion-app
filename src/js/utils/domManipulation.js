@@ -1,16 +1,3 @@
-import axios from 'axios'
-
-
-
-/**
- * Exécute l'appel à la base de donnée pour créer toutes les tables si elle ne le sont pas déjà.
- */
-export const createTables = () => {
-    axios.get("createTables.php")
-}
-
-
-
 /**
  * Crée un élément Html avec les propriétés passées en paramètres contenu dans le container parent.
  * 
@@ -32,7 +19,6 @@ export const create = (tagName, container, text=null, classNames=null, id=null, 
     alt ? elt.alt = alt : elt
     return elt
 }
-
 
 /**
  * Crée un élément Html INPUT avec les propriétés passées en paramètres contenu dans le container parent.
@@ -94,7 +80,6 @@ export const createChampCheckbox = ( container, id=null, name= null, value=null)
     return champ
 }
 
-
 /**
  * Crée une petite fenêtre d'alerte, qui notifie l'utilisateur d'une action qu'il a effectuée
  * 
@@ -155,16 +140,4 @@ export const toggleError = (titre, message) => {
     }, 3000);
 
     return div
-}
-
-
-export function addslashes(string) {
-    return string.replace(/\\/g, '\\\\').
-    replace(/\u0008/g, '\\b').
-    replace(/\t/g, '\\t').
-    replace(/\n/g, '\\n').
-    replace(/\f/g, '\\f').
-    replace(/\r/g, '\\r').
-    replace(/'/g, '\\\'').
-    replace(/"/g, '\\"');
 }

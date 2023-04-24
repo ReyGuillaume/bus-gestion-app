@@ -1,7 +1,7 @@
 import { calandar } from "../components/week";
 import { toggleEspaceUser } from "./espaceUser";
 import { toggleEspaceAdmin } from "./espaceAdmin";
-import { create } from "../main";
+import { create } from "../utils/domManipulation";
 
 const drawAgenda = (user=null, date=null, multi=false) => {
     const main = document.querySelector("#app")

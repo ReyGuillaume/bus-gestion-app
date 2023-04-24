@@ -1,4 +1,4 @@
-import { create, createChamp } from "../main";
+import { create, createChamp } from "../utils/domManipulation";
 import { toggleEspaceAdmin } from "./espaceAdmin";
 import { toggleAgenda } from "./agenda";
 import { fetchUrlRedirectAndAlert, valueFirstElementChecked, createCheckboxOfElement } from "../utils/formGestion";

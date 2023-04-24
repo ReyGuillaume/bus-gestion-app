@@ -5,7 +5,7 @@ import {
     createChampRadio,
     toggleError,
     toggleAlert
-} from "../main";
+} from "../utils/domManipulation";
 import { toggleEspaceAdmin } from "./espaceAdmin";
 import { valueFirstElementChecked, idOfAllElementChecked, fetchUrlRedirectAndAlert, createCheckBoxOfElements } from "../utils/formGestion";
 

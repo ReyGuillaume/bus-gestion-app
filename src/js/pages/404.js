@@ -1,4 +1,4 @@
-import { create } from "../main";
+import { create } from "../utils/domManipulation";
 
 export const toggle404 = () => {
     const main = document.querySelector("#app")

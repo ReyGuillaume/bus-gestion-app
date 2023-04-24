@@ -1,4 +1,4 @@
-import { create } from "../main";
+import { create } from "../utils/domManipulation";
 import { toggleAgenda } from "./agenda";
 import { toggleEspaceAdmin } from "./espaceAdmin";
 import { convertMinutesToTime } from "../utils/dates"

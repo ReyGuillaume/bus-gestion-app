@@ -1,4 +1,4 @@
-import { create } from "../main"
+import { create } from "../utils/domManipulation"
 
 export const createMenuElement = (container, redirectFunction, backgroundColor, imgSrc, imgAlt, elementText) => {
     const div = create("div", container, null, ["navBar_container"])

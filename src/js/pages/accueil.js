@@ -1,4 +1,4 @@
-import { create } from "../main";
+import { create } from "../utils/domManipulation";
 
 export const toggleAccueil = () => {
     const main = document.querySelector("#app")

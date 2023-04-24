@@ -1,4 +1,4 @@
-import { create, createChamp, toggleError } from "../main";
+import { create, createChamp, toggleError } from "../utils/domManipulation";
 import { createHeader } from "../components/header";
 import axios from 'axios';
 

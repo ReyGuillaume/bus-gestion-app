@@ -1,5 +1,5 @@
-import { create, createChamp, toggleError, addslashes} from "../main";
-import { fetchUrlRedirectAndAlert } from "../utils/formGestion";
+import { create, createChamp, toggleError} from "../utils/domManipulation";
+import { fetchUrlRedirectAndAlert, addslashes } from "../utils/formGestion";
 import { toggleEspaceUser } from "./espaceUser";
 import axios from 'axios';
 

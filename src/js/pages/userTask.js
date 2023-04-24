@@ -1,4 +1,4 @@
-import { create, createChamp, createChampRadio, createChampCheckbox, toggleAlert, toggleError } from "../main"
+import { create, createChamp, createChampRadio, createChampCheckbox, toggleAlert, toggleError } from "../utils/domManipulation"
 import { getDayToString, getMonthToString, formatedHour } from "../utils/dates";
 import { participantsTimeslot, busesTimeslot, lineTimeslot, lineDirectionTimeslot }  from "./gestionTimeslots"
 import { toggleAgenda } from "./agenda";

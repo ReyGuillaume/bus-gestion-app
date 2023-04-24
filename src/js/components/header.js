@@ -1,4 +1,4 @@
-import { create } from "../main";
+import { create } from "../utils/domManipulation";
 
 const createNavBar = () => {
     const h = document.querySelector("#header")

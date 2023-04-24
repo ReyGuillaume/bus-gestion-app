@@ -1,4 +1,4 @@
-import { create, toggleAlert, toggleError } from "../main";
+import { create, toggleAlert, toggleError } from "../utils/domManipulation";
 import { toggleDayOfWeek, toggleMultiDay } from "../pages/day";
 import { datePhp } from "../utils/dates";
 import { toggleAgenda } from "../pages/agenda";

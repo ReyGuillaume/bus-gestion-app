@@ -1,4 +1,4 @@
-import { create, createChamp, createChampCheckbox, createChampRadio } from "../main";
+import { create, createChamp, createChampCheckbox, createChampRadio } from "../utils/domManipulation";
 import { toggleEspaceAdmin } from "./espaceAdmin";
 import { fetchUrlRedirectAndAlert, valueFirstElementChecked, createCheckboxOfElement } from "../utils/formGestion";
 

@@ -1,5 +1,4 @@
 import './assets/style/main.css'
-import { createTables } from './js/main'
 import { createHeader } from './js/components/header'
 import { createFooter } from './js/components/footer'
 
@@ -16,8 +15,8 @@ import {toggleNotificationCenter} from './js/pages/notificationCenter'
 
 axios.defaults.baseURL = "http://localhost/projetL2S4/src/services"
 
-// Appel à la création des tables
-createTables()
+// Exécute l'appel à la base de donnée pour créer toutes les tables si elle ne le sont pas déjà.
+axios.get("createTables.php")
 
 // Appel aux composants de la page principale
 createHeader()
