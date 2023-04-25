@@ -1,10 +1,10 @@
-import { create } from "../main";
+import { create } from "../utils/domManipulation";
 import { toggleAgenda } from "./agenda";
-
-import { toggleIndisponibilitiForm, toggleSupprIndispo } from "../pages/indisponibilitiForm"
+import { toggleIndisponibilitiForm } from "../pages/indisponibilitiForm"
 import {toggleNotificationCenter} from "./notificationCenter.js";
+import { createMenuElement } from "../components/menuItem";
 
-export const toggleEspaceUser = () => {
+const toggleEspaceUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -25,33 +25,15 @@ export const toggleEspaceUser = () => {
     const nav = create("nav", main, null, ['navBar_User'])
 
     // agenda
-    const div = create("div", nav, null, ["navBar_container"])
-    div.addEventListener("click", toggleAgenda)
-    const img = create("div", div, null, ["navBar_image", "rose"])
-    create("img", img).src = "src/assets/images/nav_agenda.png"
-    create("div", div, 'Voir mon agenda', ['navBar__item'])
+    createMenuElement(nav, toggleAgenda, "rose", "src/assets/images/nav_agenda.png", "Voir mon agenda", "Voir mon agenda")
 
     // signaler indispo
-    const div2 = create("div", nav, null, ["navBar_container"])
-    div2.addEventListener("click", toggleIndisponibilitiForm)
-    const img2 = create("div", div2, null, ["navBar_image", "jaune"])
-    create("img", img2).src = "src/assets/images/nav_creneau.png"
-    create("div", div2, "Signaler un creneau d'indisponibilité", ['navBar__item'])
-    
-    // supprimer indispo
-    const div3 = create("div", nav, null, ["navBar_container"])
-    div3.addEventListener("click", toggleSupprIndispo)
-    const img3 = create("div", div3, null, ["navBar_image", "rouge"])
-    create("img", img3).src = "src/assets/images/nav_creneau.png"
-    create("div", div3, "Supprimer un creneau d'indisponibilité", ['navBar__item'])
+    createMenuElement(nav, toggleIndisponibilitiForm, "jaune", "src/assets/images/nav_creneau.png", "Signaler un creneau d'indisponibilité", "Signaler un creneau d'indisponibilité")
 
     // notif
-    const div10 = create("div", nav, null, ["navBar_container"])
-    div10.addEventListener("click", toggleNotificationCenter)
-    const img10 = create("div", div10, null, ["navBar_image", "orange"])
-    create("img", img10).src = "src/assets/images/nav_notif.png"
-    create("div", div10, 'Afficher les notifications', ['navBar__item'])
+    createMenuElement(nav, toggleNotificationCenter, "orange", "src/assets/images/nav_notif.png", "Afficher les notifications", "Afficher les notifications")
     
     return main
 }
 
+export { toggleEspaceUser }

@@ -1,40 +1,8 @@
 import { create } from "../main";
-import '../../assets/style/calandar.css';
 import { toggleDay } from "../pages/day";
+import { getMonthToString } from "../utils/dates"
 
-
-export const getDayToString = (index) => {
-    switch (index) {
-        case 0: return "Dimanche"
-        case 1: return "Lundi"
-        case 2: return "Mardi"
-        case 3: return "Mercredi"
-        case 4: return "Jeudi"
-        case 5: return "Vendredi"
-        case 6: return "Samedi"
-        default: return null
-    }
-}
-
-
-export const getMonthToString = (index) => {
-    switch (index) {
-        case 0: return "Janvier"
-        case 1: return "Février"
-        case 2: return "Mars"
-        case 3: return "Avril"
-        case 4: return "Mai"
-        case 5: return "Juin"
-        case 6: return "Juillet"
-        case 7: return "Août"
-        case 8: return "Septembre"
-        case 9: return "Octobre"
-        case 10: return "Novembre"
-        case 11: return "Décembre"
-        default: return null
-    }
-}
-
+import '../../assets/style/calandar.css';
 
 // fonction qui crée le header du calendrier d'un mois entier (mois + année)
 const createMonth = (container, date, user=null) => {
@@ -117,8 +85,7 @@ const drawCalandar = (container, date, user=null) => {
 }
 
 
-
-export const calandar = (
+const calandar = (
     container,
     user=null,
     year = new Date().getFullYear(), 
@@ -133,3 +100,5 @@ export const calandar = (
 
     return container
 }
+
+export { calandar }

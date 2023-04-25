@@ -1,6 +1,6 @@
-import { create, toggleAlert } from "../main";
+import { create } from "../utils/domManipulation";
 
-export const toggleAccueil = () => {
+const toggleAccueil = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -101,3 +101,5 @@ export const toggleAccueil = () => {
 
     return main
 }
+
+export { toggleAccueil }

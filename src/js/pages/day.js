@@ -1,8 +1,7 @@
-import { create, createChampCheckbox, toggleError } from "../main";
+import { create } from "../utils/domManipulation";
 import { toggleAgenda } from "./agenda";
 import { toggleTask } from "./userTask";
-import { getMonthToString , getDayToString, formatedHour } from "../components/week";
-import { toggleEspaceAdmin } from "./espaceAdmin";
+import { getMonthToString , getDayToString, datePhp, formatedHour } from "../utils/dates";
 import axios from "axios";
 
 // fonction qui crée tous les jours d'un mois
@@ -26,10 +25,6 @@ const createDaysBar = (date, container, user=null) => {
 }
 
 
-// renvoie une date JS sous forme 2023-02-16 00:00:00
-export const datePhp = date => date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
-
-
 // fonction qui récupère tous les créneaux horaires affectés à l'utilisateur connecté, à une certaine date
 const fetchTimeSlots = async (date, user=null) => {
     let data = []
@@ -42,29 +37,26 @@ const fetchTimeSlots = async (date, user=null) => {
         let idUser = user.id
         await axios.get(`timeslots/timeslots.php?function=timeslotbyuser&user=${idUser}&beginning=${d1}&end=${d2}`)
         .then(res => data = res.data)
-        return [...data]
     }
     // bus
     else if(user != null && user.nb_places){
         let idBus = user.id
         await axios.get(`timeslots/timeslots.php?function=timeslotbybus&bus=${idBus}&beginning=${d1}&end=${d2}`)
         .then(res => data = res.data)
-        return [...data]
     }
     // ligne
     else if(user != null && user.number){
         let idLine = user.number
         await axios.get(`timeslots/timeslots.php?function=timeslotbyline&line=${idLine}&beginning=${d1}&end=${d2}`)
         .then(res => data = res.data)
-        return [...data]
     }
     // personnel
     else{
         let idUser = sessionData['id']
         await axios.get(`timeslots/timeslots.php?function=timeslotbyuser&user=${idUser}&beginning=${d1}&end=${d2}`)
         .then(res => data = res.data)
-        return [...data]
     }
+    return [...data]
 }
 
 const handlerDragStart = e => {
@@ -74,22 +66,11 @@ const handlerDragStart = e => {
 // fonction qui renvoie un booléen indiquant si le user a un rôle qui lui permet de modifier tel créneau
 const possibleDrag = (user_role, timeslot_name) => {
     if(user_role == "Conducteur"){
-        if(timeslot_name == "Indisponibilité"){
-            return true;
-        }
-        return false;
-    }
-    else if(user_role == "Responsable Logistique"){
-        if(timeslot_name == "Conduite"){
-            return true;
-        }
-        return false;
-    }
-    else{
-        if(timeslot_name == "Conduite" || timeslot_name == "Réunion"){
-            return true;
-        }
-        return false;
+        return timeslot_name == "Indisponibilité"
+    } else if (user_role == "Responsable Logistique"){
+        return timeslot_name == "Conduite"
+    } else {
+        return timeslot_name == "Conduite" || timeslot_name == "Réunion"
     }
 }
 
@@ -135,6 +116,7 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
                 div = create("div", container, null, ['timeslot'], [`ts${timeslot.id}`])
             }
             div.addEventListener("click", () => toggleTask(footer, timeslot, div, user, multi))
+
             
             if(possibleDrag(user_role, timeslot.name)){
                 div.setAttribute('draggable', true);
@@ -149,7 +131,7 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
 
             let top = container.clientHeight * ((heure_debut * 60 + min_debut) - 6*60) / ((23 - 6) * 60)
             let height = duree * container.clientHeight / ((23 - 6) * 60)
-            
+                
             div.style.top = `${top}px`
             div.style.height = `${height}px`
 
@@ -202,7 +184,7 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
     }
 }
 
-export const toggleDay = (date, user=null) => {
+const toggleDay = (date, user=null) => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -223,14 +205,27 @@ export const toggleDay = (date, user=null) => {
 }
 
 // afficher l'agenda d'un jour de la semaine
-export const toggleDayOfWeek = (container, date, user=null, multi=false, entites=null) => {
+const toggleDayOfWeek = (container, date, user=null, multi=false, entites=null) => {
 
     createTimeSlots(date, container, user, multi, entites)
 }
 
 // afficher l'agenda des 6 chauffeurs (sur un jour)
-export const toggleDrivers = async (container, date) => {
+const toggleDrivers = async (container, date) => {
+    let users = []
+    let i = 0
 
+    await axios.get(`users/users.php?function=bytype&type=3`)
+    .then(res => users = res.data)
+
+    for(let user of users){
+        createTimeSlots(date, container, user, true, null, i)
+        i += 1
+    }
+}
+
+
+const toggleMultiDay = async (container, date) => {
     let users = []
     let i = 0
 
@@ -244,7 +239,7 @@ export const toggleDrivers = async (container, date) => {
 }
 
 // afficher 4 agendas (au choix)
-export const toggleMultiEntities = async () => {
+const toggleMultiEntities = async () => {
 
     const main = document.querySelector("#app")
     main.replaceChildren("")
@@ -308,7 +303,7 @@ export const toggleMultiEntities = async () => {
     })
 }
 
-
+// renvoie la liste des agendas sélectionnés
 const entitiesSelected = async () => {
     let selected = []
     for(let user of document.querySelectorAll("input[name='selectionUser']")){
@@ -334,7 +329,8 @@ const entitiesSelected = async () => {
     return selected
 }
 
-export const toggleMultiAgenda = async (container, date, entites) => {
+
+const toggleMultiAgenda = async (container, date, entites) => {
     let i = 0
     let agendas = await entites
 
@@ -342,4 +338,13 @@ export const toggleMultiAgenda = async (container, date, entites) => {
         createTimeSlots(date, container, entite, true, agendas, i)
         i += 1
     }
+}
+
+export {
+    toggleDay,
+    toggleDayOfWeek,
+    toggleMultiDay,
+    toggleDrivers,
+    toggleMultiEntities,
+    toggleMultiAgenda
 }

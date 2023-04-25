@@ -1,65 +1,11 @@
-import { create, toggleAlert, toggleError } from "../main";
-import '../../assets/style/calandar.css';
-import { toggleDayOfWeek, datePhp, toggleDrivers, toggleMultiAgenda } from "../pages/day";
-import axios from "axios"
+import { create, toggleAlert, toggleError } from "../utils/domManipulation";
+import { toggleDayOfWeek, toggleMultiDay } from "../pages/day";
+import { datePhp } from "../utils/dates";
 import { toggleAgenda } from "../pages/agenda";
+import { getMonthToString, getIdOfDay, getDayToString, formatedHour, getFirstMonday, getNearestHour, getNearestMinute } from "../utils/dates"
+import axios from "axios"
 
-
-export const getIdOfDay = day => {
-    switch (day) {
-        case "Dimanche": return 0
-        case "Lundi": return 1
-        case "Mardi": return 2
-        case "Mercredi": return 3
-        case "Jeudi": return 4
-        case "Vendredi": return 5
-        case "Samedi": return 6
-        default: return null
-    }
-}
-
-
-export const getDayToString = (index) => {
-    switch (index) {
-        case 0: return "Dimanche"
-        case 1: return "Lundi"
-        case 2: return "Mardi"
-        case 3: return "Mercredi"
-        case 4: return "Jeudi"
-        case 5: return "Vendredi"
-        case 6: return "Samedi"
-        default: return null
-    }
-}
-
-
-export const getMonthToString = (index) => {
-    switch (index) {
-        case 0: return "Janvier"
-        case 1: return "Février"
-        case 2: return "Mars"
-        case 3: return "Avril"
-        case 4: return "Mai"
-        case 5: return "Juin"
-        case 6: return "Juillet"
-        case 7: return "Août"
-        case 8: return "Septembre"
-        case 9: return "Octobre"
-        case 10: return "Novembre"
-        case 11: return "Décembre"
-        default: return null
-    }
-}
-
-// rajoute un "0" si l'horaire est inférieur à 10 (8 => 08)
-export const formatedHour = (horaire) => {
-    if(horaire < 10){
-        return "0" + horaire
-    }
-    else{
-        return horaire
-    }
-}
+import '../../assets/style/calandar.css'
 
 // fonction qui crée le header du calendrier d'un mois entier (mois + année)
 const createWeek = (container, date, user=null, multi=false, entites=null) => {
@@ -81,20 +27,6 @@ const createWeek = (container, date, user=null, multi=false, entites=null) => {
     rightDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setDate(date.getDate() + 7)), user, multi, entites))
 
     return mainDiv
-}
-
-// fonction qui recupère le 1er Lundi de la semaine de la date
-const getFirstMonday = (date) => {
-    let initDate = new Date(date)
-
-    let day = getDayToString(initDate.getDay())
-
-    while(day != "Lundi"){
-        initDate = new Date(new Date(initDate).setDate(initDate.getDate() - 1))
-        day = getDayToString(initDate.getDay())
-    }
-
-    return initDate
 }
 
 
@@ -131,9 +63,7 @@ const handleDargEnter = e => {
 
 const handleDargOver = e => e.preventDefault()
 
-const handleDargLeave = e => {
-    e.target.classList.toggle("dragover")
-}
+const handleDargLeave = e => e.target.classList.toggle("dragover")
 
 const handleDrop = (e, date, user, multi=false, entites=null) => {
     e.target.classList.toggle("dragover")
@@ -142,28 +72,6 @@ const handleDrop = (e, date, user, multi=false, entites=null) => {
     }
 }
 
-// Fonction pour obtenir l'heure la plus proche à la demi-heure près
-const getNearestHour = (hour, minute) => {
-    if(minute <= 15){
-        return hour;
-    }
-    else if(minute <= 45){
-        return hour;
-    }
-    else{
-        return (hour + 1) % 24;
-    }
-  }
-  
-// Fonction pour obtenir la minute la plus proche à la demi-heure près
-const getNearestMinute = (minute) => {
-if(minute >= 45 || minute < 15){
-    return 0;
-} 
-else{
-    return 30;
-}
-}
 
 const toggleModifValidation = async (e, dateOfMonday, user, multi=false, entites=null) => {
 
@@ -219,12 +127,14 @@ const toggleModifValidation = async (e, dateOfMonday, user, multi=false, entites
     // création des composants
     const overlay = create("div", app, null, ["overlay"])
     const modale = create("div", overlay, null, ['validation'])
-    const back = create("div", modale)
-    create("i", back , null, ['fa-solid', 'fa-chevron-left', 'back-button'])
+    const back = create("div", modale, '<< Retour', ['return'])
     create("h1", modale, "Voulez vous effectuer cette action ?")
-    create("p", modale, `Déplacer le créneau de type ${type.name} du ${jour} ${formatedHour(num)} ${mois} ${annee} à ${formatedHour(h)}h${formatedHour(min)}`)
-    create("p", modale, `Vers le ${nouvjour} ${formatedHour(nouvnum)} ${nouvmois} ${nouvannee} à ${formatedHour(heure_arrondie)}h${formatedHour(minute_arrondie)}`)
-    const buttonDiv = create("div", modale)
+    const content = create("div", modale, null, ['content'])
+    create("p", content, `Déplacer le créneau de type ${type.name} du :`)
+    create("p", content, `${jour} ${formatedHour(num)} ${mois} ${annee} à ${formatedHour(h)}h${formatedHour(min)}`, ['important'])
+    create("p", content, `Vers le :`)
+    create("p", content, `${nouvjour} ${formatedHour(nouvnum)} ${nouvmois} ${nouvannee} à ${formatedHour(heure_arrondie)}h${formatedHour(minute_arrondie)}`, ['important'])
+    const buttonDiv = create("div", modale, null, ["button-container"])
     const annuler = create("button", buttonDiv, "Annuler", ['second-button'])
     const valider = create("button", buttonDiv, "Valider", ['primary-button'])
     
@@ -343,7 +253,7 @@ const drawCalandar = (container, date, user=null, multi=false, entites=null) => 
 
 
 
-export const calandar = (
+const calandar = (
     container,
     user=null,
     multi=false,
@@ -360,3 +270,6 @@ export const calandar = (
 
     return container
 }
+
+
+export { calandar }

@@ -1,7 +1,7 @@
 import { calandar } from "../components/week";
 import { toggleEspaceUser } from "./espaceUser";
 import { toggleEspaceAdmin } from "./espaceAdmin";
-import { create } from "../main";
+import { create } from "../utils/domManipulation";
 
 const afficheEntites = (entites) => {
     let str = "("
@@ -69,7 +69,8 @@ const drawAgenda = (user=null, date=null, multi=false, entites=null) => {
     return main
 }
 
-export const toggleAgenda = (user=null, date=null, multi=false, entites=null) => {
+const toggleAgenda = (user=null, date=null, multi=false, entites=null) => {
+
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
@@ -81,3 +82,5 @@ export const toggleAgenda = (user=null, date=null, multi=false, entites=null) =>
 
     return main
 }
+
+export { toggleAgenda }

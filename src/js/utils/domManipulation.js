@@ -1,16 +1,3 @@
-import axios from 'axios'
-
-
-
-/**
- * Exécute l'appel à la base de donnée pour créer toutes les tables si elle ne le sont pas déjà.
- */
-export const createTables = () => {
-    axios.get("createTables.php")
-}
-
-
-
 /**
  * Crée un élément Html avec les propriétés passées en paramètres contenu dans le container parent.
  * 
@@ -23,7 +10,7 @@ export const createTables = () => {
  * @param {string} alt : déscription de l'image ajoutée. Null par défaut.
  * @returns l'élément html nouvellement construit.
  */
-export const create = (tagName, container, text=null, classNames=null, id=null, src=null, alt=null) => {
+const create = (tagName, container, text=null, classNames=null, id=null, src=null, alt=null) => {
     let elt = container.appendChild(document.createElement(tagName))
     text ? elt.appendChild(document.createTextNode(text)) : elt
     classNames ? classNames.forEach(className => elt.classList.add(className)) : elt
@@ -32,7 +19,6 @@ export const create = (tagName, container, text=null, classNames=null, id=null, 
     alt ? elt.alt = alt : elt
     return elt
 }
-
 
 /**
  * Crée un élément Html INPUT avec les propriétés passées en paramètres contenu dans le container parent.
@@ -43,7 +29,7 @@ export const create = (tagName, container, text=null, classNames=null, id=null, 
  * @param {string} placeholder : Placeholder de l'input. Null par défaut.
  * @returns l'élément html nouvellement construit.
  */
-export const createChamp = ( container, type="text", name= null, placeholder=null) => {
+const createChamp = ( container, type="text", name= null, placeholder=null) => {
 
     let champ = container.appendChild(document.createElement("input"))
 
@@ -63,7 +49,7 @@ export const createChamp = ( container, type="text", name= null, placeholder=nul
  * @param {string} value : Valeur de l'input. Null par défaut.
  * @returns l'élément html nouvellement construit.
  */
-export const createChampRadio = ( container, id=null, name= null, value=null) => {
+const createChampRadio = ( container, id=null, name= null, value=null) => {
 
     let champ = container.appendChild(document.createElement("input"))
     champ.setAttribute("type", "radio") 
@@ -83,7 +69,7 @@ export const createChampRadio = ( container, id=null, name= null, value=null) =>
  * @param {string} name : Nom de l'input checkbox. Null par défaut.
  * @returns l'élément html nouvellement construit.
  */
-export const createChampCheckbox = ( container, id=null, name= null, value=null) => {
+const createChampCheckbox = ( container, id=null, name= null, value=null) => {
 
     let champ = container.appendChild(document.createElement("input"))
     champ.setAttribute("type", "checkbox") 
@@ -94,7 +80,6 @@ export const createChampCheckbox = ( container, id=null, name= null, value=null)
     return champ
 }
 
-
 /**
  * Crée une petite fenêtre d'alerte, qui notifie l'utilisateur d'une action qu'il a effectuée
  * 
@@ -102,7 +87,7 @@ export const createChampCheckbox = ( container, id=null, name= null, value=null)
  * @param {string} message : message d'alerte à afficher.
  * @returns l'élément html nouvellement construit.
  */
-export const toggleAlert = (titre, message) => {
+const toggleAlert = (titre, message) => {
 
     const ancienne_div = document.querySelector("#fenetreAlerte")
     if(ancienne_div){
@@ -133,7 +118,7 @@ export const toggleAlert = (titre, message) => {
  * @param {string} message : message d'erreur à afficher.
  * @returns l'élément html nouvellement construit.
  */
-export const toggleError = (titre, message) => {
+const toggleError = (titre, message) => {
 
     const ancienne_div = document.querySelector("#fenetreAlerte")
     if(ancienne_div){
@@ -157,14 +142,11 @@ export const toggleError = (titre, message) => {
     return div
 }
 
-
-export function addslashes(string) {
-    return string.replace(/\\/g, '\\\\').
-    replace(/\u0008/g, '\\b').
-    replace(/\t/g, '\\t').
-    replace(/\n/g, '\\n').
-    replace(/\f/g, '\\f').
-    replace(/\r/g, '\\r').
-    replace(/'/g, '\\\'').
-    replace(/"/g, '\\"');
+export {
+    create,
+    createChamp,
+    createChampCheckbox,
+    createChampRadio,
+    toggleAlert,
+    toggleError
 }

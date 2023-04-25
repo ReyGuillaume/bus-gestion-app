@@ -1,7 +1,14 @@
-import { create } from "../main";
+import { create } from "../utils/domManipulation";
 import { toggleAgenda } from "./agenda";
 import { toggleEspaceAdmin } from "./espaceAdmin";
+import { convertMinutesToTime } from "../utils/dates"
 import axios from 'axios';
+
+const createListeItem = (ul, elem, itemText) => {
+    let li = create("li", ul, null, ["navBar__item"])
+    let div = create("div", li, itemText)
+    div.onclick = () => toggleAgenda(elem)
+}
 
 // afficher la liste des users de type idtype
 const drawUsers = (idtype) => {
@@ -25,48 +32,32 @@ const drawUsers = (idtype) => {
 
     // on récupère tous les users de la base de données, du type renseigné
     axios.get("users/users.php?function=bytype&type="+idtype).then(function(response){
-
         let users = response.data;
-        
-        for(let user of users){
-            let li = create("li", ul, null, ["navBar__item"])
-            let a = create("div", li, user.firstname + " " + user.name.toUpperCase())
-            a.addEventListener("click", function(){
-                toggleAgenda(user)
-            })
-        }
-        if(idtype == 3){
-            create("div", main, "Vision globale", ["submitButton"]).addEventListener("click", function(){
-                toggleAgenda(undefined, undefined, true)
-            })
-        }
+
+        users.forEach(user => createListeItem(ul, user, `${user.firstname} ${user.name.toUpperCase()}`))
+
+        create("div", main, "Vision globale", ["submitButton"]).onclick = () => toggleAgenda(undefined, undefined, true)
     })
     
     return main
 }
 
 // fonction qui réclame l'affichage de la liste des chauffeurs de bus
-export const toggleDrivers = () => {
+const toggleDrivers = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
-    
     drawUsers(3)
-    
-    return main
 }
 
 // fonction qui réclame l'affichage de la liste des responsables logistiques
-export const toggleResp = () => {
+const toggleResp = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
-    
     drawUsers(2)
-    
-    return main
 }
 
 // afficher l'agenda des bus
-export const toggleBuses = () => {
+const toggleBuses = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -82,35 +73,17 @@ export const toggleBuses = () => {
         
         for(let bus of buses){
             axios.get("buses/buses.php?function=bus&id="+bus.id).then(function(responseBus){
-                let li = create("li", ul, null, ["navBar__item"])
-                let a = create("div", li, "Bus n°" + responseBus.data.id + " (" + responseBus.data.nb_places + " places)")
-                a.addEventListener("click", function(){
-                    toggleAgenda(responseBus.data)
-                })
+
+                let bus = responseBus.data
+                createListeItem(ul, bus, `Bus n°${bus.id} (${bus.nb_places} places)`)
             })
         }
     })
-    
-    return main
 }
 
-// fonction qui prend en paramètres un nombre de minutes (int) et renvoie le temps en heures (string)
-const convertMinutesToTime = (minutes) => {
-    let hours = Math.floor(minutes / 60);
-    let remainingMinutes = minutes % 60;
-  
-    if (hours < 10) {
-      hours = "0" + hours;
-    }
-    if (remainingMinutes < 10) {
-      remainingMinutes = "0" + remainingMinutes;
-    }
-  
-    return hours + "h" + remainingMinutes;
-  }
 
 // afficher l'agenda des lignes de bus
-export const toggleLines = () => {
+const toggleLines = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -121,17 +94,14 @@ export const toggleLines = () => {
 
     // on récupère tous les users de la base de données, du type renseigné
     axios.get("lines/lines.php?function=lines").then(function(response){
-
         let lines = response.data;
-        
-        for(let line of lines){
-            let li = create("li", ul, null, ["navBar__item"])
-            let a = create("div", li, "Ligne " + line.number + " (" + convertMinutesToTime(line.travel_time) + " de trajet)")
-            a.addEventListener("click", function(){
-                toggleAgenda(line)
-            })
-        }
+        lines.forEach(line => createListeItem(ul, line, `Ligne ${line.number} (${convertMinutesToTime(line.travel_time)} de trajet)`))
     })
-    
-    return main
+}
+
+export {
+    toggleDrivers,
+    toggleBuses,
+    toggleResp,
+    toggleLines
 }
