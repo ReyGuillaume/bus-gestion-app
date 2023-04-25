@@ -32,5 +32,3 @@ router.on('/disconnect', disconnectUser)
 router.on('/notificationCenter', toggleNotificationCenter)
 router.on('*', toggle404)
 router.resolve()
-
-// test
