@@ -46,9 +46,7 @@ const DisponibilityBus = () => {
                 axios.get("buses/buses.php?function=available&id="+bus.id+"&beginning="+start+"&end="+end)
                 .then(function(response){
                     if(response.data){
-                        create("li", ul, "Bus n°"+bus.id + " est disponible").addEventListener("click", function(){
-                            toggleAgenda(bus)
-                        })
+                        create("li", ul, "Bus n°"+bus.id + " est disponible")
                     }
                 })
             }

@@ -1,5 +1,6 @@
-import { create } from "../utils/domManipulation";
+import { create, createChampCheckbox, toggleError } from "../utils/domManipulation";
 import { toggleAgenda } from "./agenda";
+import { toggleEspaceAdmin } from "./espaceAdmin";
 import { toggleTask } from "./userTask";
 import { getMonthToString , getDayToString, datePhp, formatedHour } from "../utils/dates";
 import axios from "axios";
@@ -83,7 +84,7 @@ const afficheInitiales = (entite) => {
         return "Bus " + entite.id
     }
     else if(entite.number){
-        return "Ligne " + entite.number
+        return "L" + entite.number
     }
 }
 
@@ -225,19 +226,6 @@ const toggleDrivers = async (container, date) => {
 }
 
 
-const toggleMultiDay = async (container, date) => {
-    let users = []
-    let i = 0
-
-    await axios.get(`users/users.php?function=bytype&type=3`)
-    .then(res => users = res.data)
-
-    for(let user of users){
-        createTimeSlots(date, container, user, true, null, i)
-        i += 1
-    }
-}
-
 // afficher 4 agendas (au choix)
 const toggleMultiEntities = async () => {
 
@@ -343,7 +331,6 @@ const toggleMultiAgenda = async (container, date, entites) => {
 export {
     toggleDay,
     toggleDayOfWeek,
-    toggleMultiDay,
     toggleDrivers,
     toggleMultiEntities,
     toggleMultiAgenda

@@ -120,8 +120,7 @@ function showNotification (notif, divAllNotif){
         toggleNotificationCenter()
     })
 }
-
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+   
 
 
 const toggleNotificationCenter = () => {

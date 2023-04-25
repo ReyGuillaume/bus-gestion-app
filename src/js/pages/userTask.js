@@ -288,7 +288,9 @@ const conduite = (container, props, bubble, user_role, user=null, multi=false) =
     });
 
     create("div", container, "Sur la ligne : ", ["form-info"])
-    create("em", container, props.lines[0].number + " (" + props.lines[0].direction + ")")
+    props.lines.forEach(element => {
+        create("em", container, element.number + " (" + element.direction + ")")
+    });
 
     const debut = create("div", container)
     create("span", debut, "Début : ", ["form-info"])

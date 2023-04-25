@@ -1,5 +1,5 @@
 import { create, toggleAlert, toggleError } from "../utils/domManipulation";
-import { toggleDayOfWeek, toggleMultiDay } from "../pages/day";
+import { toggleDayOfWeek, toggleDrivers, toggleMultiAgenda } from "../pages/day";
 import { datePhp } from "../utils/dates";
 import { toggleAgenda } from "../pages/agenda";
 import { getMonthToString, getIdOfDay, getDayToString, formatedHour, getFirstMonday, getNearestHour, getNearestMinute } from "../utils/dates"

@@ -36,7 +36,9 @@ const drawUsers = (idtype) => {
 
         users.forEach(user => createListeItem(ul, user, `${user.firstname} ${user.name.toUpperCase()}`))
 
-        create("div", main, "Vision globale", ["submitButton"]).onclick = () => toggleAgenda(undefined, undefined, true)
+        if(idtype == 3){
+            create("div", main, "Vision globale", ["submitButton"]).onclick = () => toggleAgenda(undefined, undefined, true)
+        }
     })
     
     return main
