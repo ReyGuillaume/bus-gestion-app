@@ -58,6 +58,6 @@ const toggleAdminForm = () => {
 }
 
 // Redirection to the user page according to his role
-const redirectUser = (idrole) => window.location = (["1", "2"].includes(idrole) ? "/espaceAdmin" : "/espaceUser")
+const redirectUser = (idrole) => window.location = ([1, 2].includes(idrole) ? "/espaceAdmin" : "/espaceUser")
 
 export { toggleAdminForm }

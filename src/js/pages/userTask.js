@@ -28,14 +28,39 @@ const supprimeCreneau = (container, props, bubble) => {
 const afficheEntites = (container, tabEntite, axiosRequest, checkBoxName) => {
     axios.get(axiosRequest).then(response => {
         for(var elem of response.data){
-            var champ = createChampCheckbox(container, elem.id , checkBoxName, elem.id);
-            
-            if (tabEntite.includes(elem.id)){
+            var champ
+            // user ou bus
+            if(elem.id){
+                champ = createChampCheckbox(container, elem.id, checkBoxName, elem.id);
+            }
+            // ligne
+            else{
+                champ = createChampCheckbox(container, elem.number, checkBoxName, elem.number);  
+            }
+
+            if(elem.id && tabEntite.includes(elem.id)){
+                champ.checked = true;
+            }
+            else if(elem.number && tabEntite.includes(elem.number)){
                 champ.checked = true;
             }
 
-            var label = create("label", container, elem.id);
-            label.setAttribute("for", elem.id);
+            var label
+            // user
+            if(elem.firstname){
+                label = create("label", container, elem.firstname.substr(0,1) + "." + elem.name);
+                label.setAttribute("for", elem.id);
+            }
+            // bus
+            else if(elem.id_bus_type){
+                label = create("label", container, elem.id);
+                label.setAttribute("for", elem.id);
+            }
+            // ligne
+            else{
+                label = create("label", container, elem.number);
+                label.setAttribute("for", elem.number);
+            }
         }
     })
 }
@@ -148,7 +173,7 @@ const modifConduite = (container, props, user=null, multi=false) => {
             url += users ?  `&users=${users}` : `&users=`
             url += buses ? `&buses=${buses}` : `&buses=`
             url += line ? `&lines=${line}` : `&lines=`
-            url += direction ? `&directions=${direction}` : `&directions=`
+            url += line && direction ? `&directions=${direction}` : `&directions=`
 
             executeAction(container, url, StartDateTime, user, "La conduite a bien été modifiée", "La conduite n'a pas pu être modifiée", multi)
         })
