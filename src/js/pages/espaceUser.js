@@ -1,8 +1,8 @@
 import { create } from "../utils/domManipulation";
 import { toggleAgenda } from "./agenda";
 import { toggleIndisponibilitiForm } from "../pages/indisponibilitiForm"
-import {toggleNotificationCenter} from "./notificationCenter.js";
 import { createMenuElement } from "../components/menuItem";
+import { redirect } from "../utils/redirection";
 
 const toggleEspaceUser = () => {
     const main = document.querySelector("#app")
@@ -31,7 +31,7 @@ const toggleEspaceUser = () => {
     createMenuElement(nav, toggleIndisponibilitiForm, "jaune", "src/assets/images/nav_creneau.png", "Signaler un creneau d'indisponibilité", "Signaler un creneau d'indisponibilité")
 
     // notif
-    createMenuElement(nav, toggleNotificationCenter, "orange", "src/assets/images/nav_notif.png", "Afficher les notifications", "Afficher les notifications")
+    createMenuElement(nav, () => redirect("/notification-center"), "orange", "src/assets/images/nav_notif.png", "Afficher les notifications", "Afficher les notifications")
     
     return main
 }

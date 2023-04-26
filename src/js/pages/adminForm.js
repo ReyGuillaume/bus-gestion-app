@@ -1,5 +1,6 @@
 import { create, createChamp, toggleError } from "../utils/domManipulation";
 import { createHeader } from "../components/header";
+import { redirectUser } from "../utils/redirection";
 import axios from 'axios';
 
 const toggleAdminForm = () => {
@@ -49,15 +50,16 @@ const toggleAdminForm = () => {
                 // Refresh display of header (to show the user's session)
                 createHeader();
 
-                redirectUser(idrole)
+                redirectUser(
+                    () => window.location = "/espace-admin", 
+                    () => window.location = "/espace-admin", 
+                    () => window.location = "/espace-utilisateur"
+                )
             } else {
                 toggleError("ATTENTION", "Formulaire invalide !")
             }
         })
     })
 }
-
-// Redirection to the user page according to his role
-const redirectUser = (idrole) => window.location = ([1, 2].includes(idrole) ? "/espaceAdmin" : "/espaceUser")
 
 export { toggleAdminForm }

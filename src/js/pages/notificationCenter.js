@@ -1,7 +1,6 @@
 import {create, createChampRadio} from "../utils/domManipulation";
 import { valueFirstElementChecked } from "../utils/formGestion";
-import { toggleEspaceAdmin } from "./espaceAdmin"
-import { toggleEspaceUser } from "./espaceUser";
+import { redirectUser } from "../utils/redirection";
 import axios from "axios";
 
 async function readNotif (id){
@@ -128,12 +127,13 @@ const toggleNotificationCenter = () => {
     main.replaceChildren("");
     const id_user = JSON.parse(sessionStorage.getItem("userData")).id;
 
-    const sessionData = JSON.parse(sessionStorage.getItem("userData"));
     const back = create("div", main, "<< Retour", ["return"])
-    if(sessionData["role"] == "Conducteur"){
-        back.addEventListener("click", toggleEspaceUser)
-    } else {
-        back.addEventListener("click", toggleEspaceAdmin)
+    back.onclick = () => {
+        redirectUser(
+            () => window.location = "/espace-admin", 
+            () => window.location = "/espace-admin", 
+            () => window.location = "/espace-utilisateur"
+        )
     }
 
     const nav = create("ul", main, null, ['navNotif']);

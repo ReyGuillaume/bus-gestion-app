@@ -12,8 +12,8 @@ const toggleAjoutUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("h2", main, "Ajout d'Utilisateur")
     create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("h2", main, "Ajout d'Utilisateur")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
@@ -75,8 +75,8 @@ const toggleModifyUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("h2", main, "Modification d'Utilisateur")
     create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("h2", main, "Modification d'Utilisateur")
     create("p", main, "Choisissez l'utilisateur à modifier :", ["presentation"])
 
     // Creation of the form
@@ -155,8 +155,8 @@ const toggleSupprimeUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("h2", main, "Suppression d'Utilisateur")
     create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("h2", main, "Suppression d'Utilisateur")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form

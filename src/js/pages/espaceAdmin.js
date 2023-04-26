@@ -8,6 +8,7 @@ import { toggleDrivers, toggleResp, toggleBuses, toggleLines } from "./agendaUse
 import { toggleMultiEntities } from "./day";
 import { toggleNotificationCenter } from "./notificationCenter.js";
 import { createMenuElement } from "../components/menuItem";
+import { redirect } from "../utils/redirection";
 
 
 const toggleEspaceAdmin = () => {
@@ -61,7 +62,7 @@ const toggleEspaceAdmin = () => {
     createMenuElement(nav, toggleGestionLigne, "bleu_clair", "src/assets/images/nav_gestion.png", 'Gérer les lignes', 'Gérer les lignes')
 
     // notif
-    createMenuElement(nav, toggleNotificationCenter, "orange", "src/assets/images/nav_notif.png", 'Afficher les notifications', 'Afficher les notifications')
+    createMenuElement(nav, () => redirect("/notification-center"), "orange", "src/assets/images/nav_notif.png", 'Afficher les notifications', 'Afficher les notifications')
 
     return main
 }
@@ -70,8 +71,8 @@ const toggleGestionUsers = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    create("h2", main, "Gestion des utilisateurs")
     create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("h2", main, "Gestion des utilisateurs")
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
     const nav = create("nav", main, null, ['navBar'])
@@ -87,8 +88,8 @@ const toggleGestionBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    create("h2", main, "Gestion des Bus")
     create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("h2", main, "Gestion des Bus")
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
     const nav = create("nav", main, null, ['navBar'])
@@ -105,8 +106,8 @@ const toggleGestionLigne = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    create("h2", main, "Gestion des Lignes")
     create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("h2", main, "Gestion des Lignes")
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
     const nav = create("nav", main, null, ['navBar'])

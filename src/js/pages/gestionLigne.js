@@ -12,8 +12,8 @@ const toggleAddLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("h2", main, "Ajout d'une Ligne ")
     create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+    create("h2", main, "Ajout d'une Ligne ")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
@@ -52,8 +52,8 @@ const toggleSupprLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("h2", main, "Suppression d'une Ligne ")
     create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+    create("h2", main, "Suppression d'une Ligne ")
     create("p", main, "Choisir la(les) ligne(s) à supprimer :", ["presentation"])
 
     // Creation of the form
@@ -114,8 +114,8 @@ const toggleModifLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("h2", main, "Modification d'une Ligne ")
     create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+    create("h2", main, "Modification d'une Ligne ")
     create("p", main, "Choisir la ligne à modifier :", ["presentation"])
 
     // Creation of the form
@@ -139,6 +139,7 @@ const toggleVerifCouvertureSemaine = () => {
     main.replaceChildren("")
     
     // Mise en place des titres
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
     create("h2", main, "Verification de couvertures des lignes")
     create("p", main, "Indiquer la semaine à verifier")
 
@@ -164,6 +165,7 @@ const toggleRemplissageAutoConduiteSemaine = () => {
     main.replaceChildren("")
     
     // Mise en place des titres
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
     create("h2", main, "Remplissage automatique de la semaine")
     create("p", main, "Indiquer la semaine à remplir, attention cela supprime les créneaux de conduite déjà ajoutés")
 

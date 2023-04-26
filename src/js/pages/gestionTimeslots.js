@@ -318,8 +318,8 @@ const toggleAddCreneau = () => {
     const main = document.querySelector("#app");
     main.replaceChildren("");
     
-    create("h2", main, "Ajout de crénaux");
     create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("h2", main, "Ajout de crénaux");
     create("p", main, " Rentrez les informations suivantes : ", ["presentation"]);
 
     // Creation of the form

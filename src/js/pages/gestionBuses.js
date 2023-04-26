@@ -12,8 +12,8 @@ const DisponibilityBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("h2", main, "Disponibilité des bus")
     create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("h2", main, "Disponibilité des bus")
     create("p", main, "Afficher les bus disponibles selon la plage horaire :", ["presentation"])
 
     // Creation of the form
@@ -58,8 +58,8 @@ const AjoutBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("h2", main, "Ajout d'un bus ")
     create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("h2", main, "Ajout d'un bus ")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
@@ -85,8 +85,8 @@ const ModifBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("h2", main, "Modification d'un bus ")
     create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("h2", main, "Modification d'un bus ")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
@@ -116,8 +116,8 @@ const SupprimerBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("h2", main, "Suppression d'un bus ")
     create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("h2", main, "Suppression d'un bus ")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
