@@ -1,6 +1,6 @@
 import { create, createChamp, createChampCheckbox, createChampRadio } from "../utils/domManipulation";
-import { toggleEspaceAdmin } from "./espaceAdmin";
-import { fetchUrlRedirectAndAlert, valueFirstElementChecked, createCheckboxOfElement } from "../utils/formGestion";
+import { fetchUrlRedirectAndAlert, valueFirstElementChecked } from "../utils/formGestion";
+import { redirect } from "../utils/redirection";
 
 import axios from 'axios';
 
@@ -12,7 +12,7 @@ const toggleAddLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Ajout d'une Ligne ")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
@@ -44,7 +44,7 @@ const toggleAddLine = () => {
         let number = document.querySelector("input[name='number']").value;
         let travel_time = document.querySelector("input[name='travel_time']").value;
 
-        fetchUrlRedirectAndAlert(`lines/lines.php?function=create&number=${number}&travel_time=${travel_time}&id_type=${id_type}`, toggleEspaceAdmin, "La ligne a bien été ajoutée", "La ligne n'a pas pu être ajoutée")
+        fetchUrlRedirectAndAlert(`lines/lines.php?function=create&number=${number}&travel_time=${travel_time}&id_type=${id_type}`, () => redirect("/espace-admin"), "La ligne a bien été ajoutée", "La ligne n'a pas pu être ajoutée")
     })
 }
 
@@ -52,7 +52,7 @@ const toggleSupprLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Suppression d'une Ligne ")
     create("p", main, "Choisir la(les) ligne(s) à supprimer :", ["presentation"])
 
@@ -73,7 +73,7 @@ const toggleSupprLine = () => {
         bouton.addEventListener("click", function(){
             for(var line of document.querySelectorAll("input[name='selectionLigne']")){
                 if (line.checked) {
-                    fetchUrlRedirectAndAlert(`lines/lines.php?function=delete&number=${line.value}`, toggleEspaceAdmin, "La ligne a bien été supprimée", "La ligne n'a pas pu être supprimée")
+                    fetchUrlRedirectAndAlert(`lines/lines.php?function=delete&number=${line.value}`, () => redirect("/espace-admin"), "La ligne a bien été supprimée", "La ligne n'a pas pu être supprimée")
                 }
             }
         })
@@ -102,7 +102,7 @@ const createLineRadio = (form, container, line) => {
             bouton.addEventListener("click", function(){
                 let travel_time = document.querySelector("input[name='travel_time']").value;
                 let number = document.querySelector("input[name='number']").value;
-                fetchUrlRedirectAndAlert(`lines/lines.php?function=updateline&number=${number}&travel_time=${travel_time}`, toggleEspaceAdmin, "La ligne a bien été modifiée", "La ligne n'a pas pu être modifiée")
+                fetchUrlRedirectAndAlert(`lines/lines.php?function=updateline&number=${number}&travel_time=${travel_time}`, () => redirect("/espace-admin"), "La ligne a bien été modifiée", "La ligne n'a pas pu être modifiée")
             })
         })
     })
@@ -114,7 +114,7 @@ const toggleModifLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Modification d'une Ligne ")
     create("p", main, "Choisir la ligne à modifier :", ["presentation"])
 
@@ -139,7 +139,7 @@ const toggleVerifCouvertureSemaine = () => {
     main.replaceChildren("")
     
     // Mise en place des titres
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Verification de couvertures des lignes")
     create("p", main, "Indiquer la semaine à verifier")
 
@@ -153,7 +153,7 @@ const toggleVerifCouvertureSemaine = () => {
     const bouton = create("div", form, "Envoyer")
     bouton.addEventListener("click", function(){
         let semaine = document.querySelector("input[name='semaine']").value;
-        fetchUrlRedirectAndAlert(`lines/lines.php?function=WeekCovered&week=${semaine}`, toggleEspaceAdmin, "Le semaine est bien couverte", "Il semblerait que tout ne soit pas bien rempli...")
+        fetchUrlRedirectAndAlert(`lines/lines.php?function=WeekCovered&week=${semaine}`, () => redirect("/espace-admin"), "Le semaine est bien couverte", "Il semblerait que tout ne soit pas bien rempli...")
     })
 
 }
@@ -165,7 +165,7 @@ const toggleRemplissageAutoConduiteSemaine = () => {
     main.replaceChildren("")
     
     // Mise en place des titres
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Remplissage automatique de la semaine")
     create("p", main, "Indiquer la semaine à remplir, attention cela supprime les créneaux de conduite déjà ajoutés")
 
@@ -179,7 +179,7 @@ const toggleRemplissageAutoConduiteSemaine = () => {
     const bouton = create("div", form, "Envoyer")
     bouton.addEventListener("click", function(){
         let semaine = document.querySelector("input[name='semaine']").value;
-        fetchUrlRedirectAndAlert(`lines/lines.php?function=coverWeek&week=${semaine}`, toggleEspaceAdmin, "Toutes les conduites de la semaine ont étées ajoutées", "Il semblerait que tout ne se soit pas passé comme prévu...")
+        fetchUrlRedirectAndAlert(`lines/lines.php?function=coverWeek&week=${semaine}`, () => redirect("/espace-admin"), "Toutes les conduites de la semaine ont étées ajoutées", "Il semblerait que tout ne se soit pas passé comme prévu...")
     })
 }
 

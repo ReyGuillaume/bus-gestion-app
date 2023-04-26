@@ -1,6 +1,6 @@
 import { calandar } from "../components/week";
 import { create } from "../utils/domManipulation";
-import { redirectUser } from "../utils/redirection";
+import { redirectUser, redirect } from "../utils/redirection";
 
 
 const afficheEntites = (entites) => {
@@ -28,9 +28,9 @@ const drawAgenda = (user=null, date=null, multi=false, entites=null) => {
     const back = create("div", main, "<< Retour", ["return"])
     back.onclick = () => {
         redirectUser(
-            () => window.location = "/espace-admin", 
-            () => window.location = "/espace-admin", 
-            () => window.location = "/espace-utilisateur"
+            () => redirect("/espace-admin"), 
+            () => redirect("/espace-admin"), 
+            () => redirect("/espace-utilisateur")
         )
     }
     // agenda d'un utilisateur
@@ -71,12 +71,7 @@ const toggleAgenda = (user=null, date=null, multi=false, entites=null) => {
     main.replaceChildren("")
 
     // redirection vers l'accueil si user n'est pas connecté
-    redirectUser(
-        () => null, 
-        () => null, 
-        () => null, 
-        () => window.location = "/"
-    )
+    redirectUser()
     
     drawAgenda(user, date, multi, entites)
 

@@ -38,7 +38,7 @@ const toggleAccueil = () => {
         create("a", paragraphe2, "Voir votre espace utilisateur").href = "/"
     }
     else{
-        create("a", paragraphe2, "Voir votre espace utilisateur").href = "/espaceUser"
+        create("a", paragraphe2, "Voir votre espace utilisateur").href = "/espace-utilisateur"
     }
 
     // Présentation du responsable logistique
@@ -56,7 +56,7 @@ const toggleAccueil = () => {
         create("a", paragraphe3, "Voir votre espace administrateur").href = "/"
     }
     else{
-        create("a", paragraphe3, "Voir votre espace administrateur").href = "/espaceAdmin"
+        create("a", paragraphe3, "Voir votre espace administrateur").href = "/espace-admin"
     }
 
     // Présentation du gérant
@@ -78,7 +78,7 @@ const toggleAccueil = () => {
         create("a", paragraphe4, "Voir votre espace administrateur").href = "/"
     }
     else{
-        create("a", paragraphe4, "Voir votre espace administrateur").href = "/espaceAdmin"
+        create("a", paragraphe4, "Voir votre espace administrateur").href = "/espace-admin"
     }
 
     // Présentation des fonctionnalités

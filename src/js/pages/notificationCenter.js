@@ -1,6 +1,6 @@
 import {create, createChampRadio} from "../utils/domManipulation";
 import { valueFirstElementChecked } from "../utils/formGestion";
-import { redirectUser } from "../utils/redirection";
+import { redirect, redirectUser } from "../utils/redirection";
 import axios from "axios";
 
 async function readNotif (id){
@@ -130,9 +130,9 @@ const toggleNotificationCenter = () => {
     const back = create("div", main, "<< Retour", ["return"])
     back.onclick = () => {
         redirectUser(
-            () => window.location = "/espace-admin", 
-            () => window.location = "/espace-admin", 
-            () => window.location = "/espace-utilisateur"
+            () => redirect("/espace-admin"), 
+            () => redirect("/espace-admin"), 
+            () => redirect("/espace-utilisateur")
         )
     }
 

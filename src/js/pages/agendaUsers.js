@@ -1,6 +1,5 @@
 import { create } from "../utils/domManipulation";
 import { toggleAgenda } from "./agenda";
-import { toggleEspaceAdmin } from "./espaceAdmin";
 import { convertMinutesToTime } from "../utils/dates"
 import { redirectUser, redirect } from "../utils/redirection";
 import axios from 'axios';
@@ -16,7 +15,7 @@ const drawUsers = (idtype) => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
     
     if(idtype == 2){
         create("h2", main, "Agenda des responsables logistiques", ['mainTitle'])
@@ -60,7 +59,7 @@ const toggleBuses = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Agenda des bus", ['mainTitle'])
     create("div", main, "Liste des bus :", ["presentation"])
     const ul = create("ul", main, null, ["navBar"])
@@ -91,10 +90,10 @@ const toggleLines = () => {
         () => null, 
         () => null, 
         () => null, 
-        () => window.location = "/"
+        () => redirect("/")
     )
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Agenda des lignes de bus", ['mainTitle'])
     create("div", main, "Liste des lignes de bus :", ["presentation"])
     const ul = create("ul", main, null, ['navBar'])

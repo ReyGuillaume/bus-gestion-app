@@ -6,8 +6,8 @@ import {
     toggleError,
     toggleAlert
 } from "../utils/domManipulation";
-import { toggleEspaceAdmin } from "./espaceAdmin";
 import { valueFirstElementChecked, idOfAllElementChecked, fetchUrlRedirectAndAlert, createCheckBoxOfElements } from "../utils/formGestion";
+import { redirect } from "../utils/redirection";
 
 import axios from 'axios';
 
@@ -318,7 +318,7 @@ const toggleAddCreneau = () => {
     const main = document.querySelector("#app");
     main.replaceChildren("");
     
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Ajout de crénaux");
     create("p", main, " Rentrez les informations suivantes : ", ["presentation"]);
 
@@ -382,7 +382,7 @@ const toggleAddCreneau = () => {
     const bouton = create("div", form, "Envoyer", ["submitButton"])
     bouton.addEventListener("click", function (){
         let url = axiosUrlSendWhenADD(typeTimeslot())
-        fetchUrlRedirectAndAlert(url, toggleEspaceAdmin, "Le créneau a bien été ajouté", "Le créneau n'a pas pu être ajouté")
+        fetchUrlRedirectAndAlert(url, () => redirect("/espace-admin"), "Le créneau a bien été ajouté", "Le créneau n'a pas pu être ajouté")
     })
 }
 

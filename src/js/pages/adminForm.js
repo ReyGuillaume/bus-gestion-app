@@ -1,6 +1,6 @@
 import { create, createChamp, toggleError } from "../utils/domManipulation";
 import { createHeader } from "../components/header";
-import { redirectUser } from "../utils/redirection";
+import { redirectUser, redirect } from "../utils/redirection";
 import axios from 'axios';
 
 const toggleAdminForm = () => {
@@ -51,9 +51,9 @@ const toggleAdminForm = () => {
                 createHeader();
 
                 redirectUser(
-                    () => window.location = "/espace-admin", 
-                    () => window.location = "/espace-admin", 
-                    () => window.location = "/espace-utilisateur"
+                    () => redirect("/espace-admin"), 
+                    () => redirect("/espace-admin"), 
+                    () => redirect("/espace-utilisateur")
                 )
             } else {
                 toggleError("ATTENTION", "Formulaire invalide !")

@@ -8,17 +8,12 @@ const toggleEspaceUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    const sessionData = JSON.parse(sessionStorage.getItem("userData"));
-
-    // si l'utilisateur n'est pas connecté
-    if(!sessionData){
-        window.location = "/"
-    }
-    // si l'utilisateur n'est pas un chauffeur
-    else if(sessionData["role"] != "Conducteur"){
-        window.location = "/"
-    }
-
+    redirectUser(
+        () => redirect("/"),
+        () => redirect("/"),
+        () => null
+    )
+        
     create("h2", main, "Bienvenue sur votre espace personnel")
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 

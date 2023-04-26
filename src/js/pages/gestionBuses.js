@@ -1,6 +1,4 @@
 import { create, createChamp } from "../utils/domManipulation";
-import { toggleEspaceAdmin } from "./espaceAdmin";
-import { toggleAgenda } from "./agenda";
 import { fetchUrlRedirectAndAlert, valueFirstElementChecked, createCheckboxOfElement } from "../utils/formGestion";
 
 import axios from 'axios';
@@ -12,7 +10,7 @@ const DisponibilityBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Disponibilité des bus")
     create("p", main, "Afficher les bus disponibles selon la plage horaire :", ["presentation"])
 
@@ -58,7 +56,7 @@ const AjoutBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Ajout d'un bus ")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
@@ -75,7 +73,7 @@ const AjoutBus = () => {
     bouton.addEventListener("click", function (){
         for(var type of document.querySelectorAll("input[name='typeBus']")){
             if (type.checked) {
-                fetchUrlRedirectAndAlert(`buses/buses.php?function=create&type=${type.value}`, toggleEspaceAdmin, "Le bus a bien été ajouté", "Le bus n'a pas pu être ajouté")
+                fetchUrlRedirectAndAlert(`buses/buses.php?function=create&type=${type.value}`, () => redirect("/espace-admin"), "Le bus a bien été ajouté", "Le bus n'a pas pu être ajouté")
             }
         }
     })
@@ -85,7 +83,7 @@ const ModifBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Modification d'un bus ")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
@@ -108,7 +106,7 @@ const ModifBus = () => {
         let id = valueFirstElementChecked("input[name='idBus']");
         let type = valueFirstElementChecked("input[name='typeBus']");
         let url = `buses/buses.php?function=updatebus&id=${id}&type=${type}`
-        fetchUrlRedirectAndAlert(url, toggleEspaceAdmin, "Le bus a bien été modifié", "Le bus n'a pas pu être modifié")
+        fetchUrlRedirectAndAlert(url, () => redirect("/espace-admin"), "Le bus a bien été modifié", "Le bus n'a pas pu être modifié")
     })
 }
 
@@ -116,7 +114,7 @@ const SupprimerBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Suppression d'un bus ")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
@@ -135,7 +133,7 @@ const SupprimerBus = () => {
             let url = `buses/buses.php?function=delete&id=`;
             if (bus.checked) {
                 url += bus.value;
-                fetchUrlRedirectAndAlert(url, toggleEspaceAdmin, "Le bus a bien été supprimé", "Le bus n'a pas pu être supprimé")
+                fetchUrlRedirectAndAlert(url, () => redirect("/espace-admin"), "Le bus a bien été supprimé", "Le bus n'a pas pu être supprimé")
             }
         }
     })
