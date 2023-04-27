@@ -28,10 +28,6 @@ jobs:
           path: |
             dist
             !dist/**/*.md
-      - uses: actions/download-artifact@v3
-        with:
-          name: dist-download
-          path: ~/dist
       - name: Archive code coverage results
         uses: actions/upload-artifact@v3
         with:
