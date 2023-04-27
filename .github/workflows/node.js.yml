@@ -21,20 +21,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-
     - run: npm ci
-
     - run: npm run build
-
     - run: npm test
-
-    - uses: actions/upload-artifact@v3
-      with:
-        name: Build project
-        path: dist/
+    - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist-folder
+          path: dist
