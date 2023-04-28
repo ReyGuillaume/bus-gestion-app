@@ -1,7 +1,7 @@
 import { create } from "../utils/domManipulation";
 import { toggleAgenda } from "./agenda";
-import { toggleEspaceAdmin } from "./espaceAdmin";
 import { convertMinutesToTime } from "../utils/dates"
+import { redirectUser, redirect } from "../utils/redirection";
 import axios from 'axios';
 
 const createListeItem = (ul, elem, itemText, color) => {
@@ -15,21 +15,17 @@ const drawUsers = (idtype) => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    const h2 = create("h2", main, null, ['mainTitle'])
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
-    const titre = create("div", main, "", ["presentation"])
-    const ul = create("ul", main, null, ['navBar'])
-
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    
     if(idtype == 2){
-        h2.innerText = "Agenda des responsables logistiques"
-        titre.innerText = "Liste des responsables logistiques :"
+        create("h2", main, "Agenda des responsables logistiques", ['mainTitle'])
+        create("div", main, "Liste des responsables logistiques :", ["presentation"])
+    } else if(idtype == 3){
+        create("h2", main, "Agenda des chauffeurs", ['mainTitle'])
+        create("div", main, "Liste des chauffeurs :", ["presentation"])
     }
-
-    else if(idtype == 3){
-        h2.innerText = "Agenda des chauffeurs"
-        titre.innerText = "Liste des chauffeurs :"
-    }
-
+    
+    const ul = create("ul", main, null, ['navBar'])
     // on récupère tous les users de la base de données, du type renseigné
     axios.get("users/users.php?function=bytype&type="+idtype).then(function(response){
         let users = response.data;
@@ -63,8 +59,8 @@ const toggleBuses = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Agenda des bus", ['mainTitle'])
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
     create("div", main, "Liste des bus :", ["presentation"])
     const ul = create("ul", main, null, ["navBar"])
 
@@ -88,9 +84,17 @@ const toggleBuses = () => {
 const toggleLines = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+    
+    // redirection vers l'accueil si user n'est pas connecté
+    redirectUser(
+        () => null, 
+        () => null, 
+        () => null, 
+        () => redirect("/")
+    )
 
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Agenda des lignes de bus", ['mainTitle'])
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
     create("div", main, "Liste des lignes de bus :", ["presentation"])
     const ul = create("ul", main, null, ['navBar'])
 

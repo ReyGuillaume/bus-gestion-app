@@ -6,28 +6,24 @@ import { DisponibilityBus, AjoutBus, SupprimerBus, ModifBus }from "../pages/gest
 import { toggleAddLine, toggleSupprLine, toggleModifLine, toggleVerifCouvertureSemaine, toggleRemplissageAutoConduiteSemaine } from "./gestionLigne";
 import { toggleDrivers, toggleResp, toggleBuses, toggleLines } from "./agendaUsers";
 import { toggleMultiEntities } from "./day";
-import { toggleNotificationCenter } from "./notificationCenter.js";
 import { createMenuElement } from "../components/menuItem";
+import { redirect, redirectUser } from "../utils/redirection";
 
 
 const toggleEspaceAdmin = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    const sessionData = JSON.parse(sessionStorage.getItem("userData"));
-
-    // si l'utilisateur n'est pas connecté
-    if(!sessionData){
-        window.location = "/"
-    }
-    // si l'utilisateur est un chauffeur
-    else if(sessionData["role"] == "Conducteur"){
-        window.location = "/"
-    }
-
+    redirectUser(
+        () => null,
+        () => null,
+        () => redirect("/")
+    )
+        
     create("h2", main, "Bienvenue sur votre espace Admin")
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
-
+        
+    const sessionData = JSON.parse(sessionStorage.getItem("userData"));
     const nav = create("nav", main, null, ['navBar_Admin'])
 
     // agenda
@@ -61,7 +57,7 @@ const toggleEspaceAdmin = () => {
     createMenuElement(nav, toggleGestionLigne, "bleu_clair", "src/assets/images/nav_gestion.png", 'Gérer les lignes', 'Gérer les lignes')
 
     // notif
-    createMenuElement(nav, toggleNotificationCenter, "orange", "src/assets/images/nav_notif.png", 'Afficher les notifications', 'Afficher les notifications')
+    createMenuElement(nav, () => redirect("/notification-center"), "orange", "src/assets/images/nav_notif.png", 'Afficher les notifications', 'Afficher les notifications')
 
     return main
 }
@@ -70,8 +66,8 @@ const toggleGestionUsers = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Gestion des utilisateurs")
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
     const nav = create("nav", main, null, ['liste_gestion'])
@@ -87,8 +83,8 @@ const toggleGestionBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Gestion des Bus")
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
     const nav = create("nav", main, null, ['liste_gestion'])
@@ -105,8 +101,8 @@ const toggleGestionLigne = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Gestion des Lignes")
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
     const nav = create("nav", main, null, ['liste_gestion'])

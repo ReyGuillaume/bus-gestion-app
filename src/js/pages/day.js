@@ -1,8 +1,8 @@
 import { create, createChampCheckbox, toggleError } from "../utils/domManipulation";
 import { toggleAgenda } from "./agenda";
-import { toggleEspaceAdmin } from "./espaceAdmin";
 import { toggleTask } from "./userTask";
 import { getMonthToString , getDayToString, datePhp, formatedHour } from "../utils/dates";
+import { redirect } from "../utils/redirection";
 import axios from "axios";
 
 // fonction qui crée tous les jours d'un mois
@@ -232,7 +232,7 @@ const toggleMultiEntities = async () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
     create("p", main, "Sélectionnez au maximum 4 agendas que vous souhaitez afficher", ["presentation"])
 
     let users = []

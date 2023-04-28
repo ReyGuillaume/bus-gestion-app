@@ -1,7 +1,7 @@
 import { calandar } from "../components/week";
-import { toggleEspaceUser } from "./espaceUser";
-import { toggleEspaceAdmin } from "./espaceAdmin";
 import { create } from "../utils/domManipulation";
+import { redirectUser, redirect } from "../utils/redirection";
+
 
 const afficheEntites = (entites) => {
     let str = "("
@@ -26,16 +26,13 @@ const drawAgenda = (user=null, date=null, multi=false, entites=null) => {
     main.replaceChildren("")
 
     const back = create("div", main, "<< Retour", ["return"])
-
-    back.addEventListener("click", function(){
-        const sessionData = JSON.parse(sessionStorage.getItem("userData"))
-        if(sessionData["role"] == "Conducteur"){
-            toggleEspaceUser()
-        }
-        else if(sessionData["role"] == "Responsable Logistique" || sessionData["role"] == "Directeur"){
-            toggleEspaceAdmin()
-        }
-    })
+    back.onclick = () => {
+        redirectUser(
+            () => redirect("/espace-admin"), 
+            () => redirect("/espace-admin"), 
+            () => redirect("/espace-utilisateur")
+        )
+    }
     // agenda d'un utilisateur
     if(user && user.firstname){
         create("h2", main, "Agenda de " + user.firstname + " " + user.name.toUpperCase(), ['mainTitle'])
@@ -54,7 +51,6 @@ const drawAgenda = (user=null, date=null, multi=false, entites=null) => {
     }
     // agenda des chauffeurs
     else if(multi && entites){
-        console.log(entites)
         create("h2", main, "Agenda multiple " + afficheEntites(entites), ['mainTitle'])
     }
     else{
@@ -73,12 +69,11 @@ const toggleAgenda = (user=null, date=null, multi=false, entites=null) => {
 
     const main = document.querySelector("#app")
     main.replaceChildren("")
-    
-    let isUserConnected = JSON.parse(sessionStorage.getItem("userData"));
 
-    if(isUserConnected) {
-        drawAgenda(user, date, multi, entites)
-    }
+    // redirection vers l'accueil si user n'est pas connecté
+    redirectUser()
+    
+    drawAgenda(user, date, multi, entites)
 
     return main
 }

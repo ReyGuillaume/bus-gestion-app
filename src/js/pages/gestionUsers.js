@@ -1,6 +1,6 @@
-import { create, createChamp, createChampCheckbox, createChampRadio, toggleAlert, toggleError } from "../utils/domManipulation";
-import { toggleEspaceAdmin } from "./espaceAdmin";
+import { create, createChamp, createChampCheckbox, createChampRadio } from "../utils/domManipulation";
 import { fetchUrlRedirectAndAlert, valueFirstElementChecked } from "../utils/formGestion";
+import { redirect } from "../utils/redirection";
 
 import axios from 'axios';
 
@@ -12,8 +12,8 @@ const toggleAjoutUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Ajout d'Utilisateur")
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
@@ -66,7 +66,7 @@ const toggleAjoutUser = () => {
 
         //creation of the url
         let url = `users/users.php?function=create&login=${login}&password=gobus123&confirm=gobus123&date=${date}&name=${name}&firstname=${firstname}&email=${email}&type=${type}`
-        fetchUrlRedirectAndAlert(url, toggleEspaceAdmin, "L'utilisateur a bien été ajouté", "L'utilisateur n'a pas pu être ajouté")
+        fetchUrlRedirectAndAlert(url, () => redirect("/espace-admin"), "L'utilisateur a bien été ajouté", "L'utilisateur n'a pas pu être ajouté")
     })
 }
 
@@ -74,8 +74,8 @@ const toggleModifyUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Modification d'Utilisateur")
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
     create("p", main, "Choisissez l'utilisateur à modifier :", ["presentation"])
 
     // Creation of the form
@@ -123,7 +123,7 @@ const toggleModifyUser = () => {
 
                     //creation of the url
                     let url = `users/users.php?function=update&id=${idUserToModify}&email=${email}&login=${login}`
-                    fetchUrlRedirectAndAlert(url, toggleEspaceAdmin, "L'utilisateur a bien été ajouté", "L'utilisateur n'a pas pu être ajouté")
+                    fetchUrlRedirectAndAlert(url, () => redirect("/espace-admin"), "L'utilisateur a bien été ajouté", "L'utilisateur n'a pas pu être ajouté")
                 })
             });
         });
@@ -138,7 +138,7 @@ const deleteUsersChecked = () => {
     for(var user of document.querySelectorAll("input[name='selectionUSer']")){
         if (user.checked) {
             let url = `users/users.php?function=delete&id=${user.value}`;
-            fetchUrlRedirectAndAlert(url, toggleEspaceAdmin, "L'utilisateur a bien été supprimé", "L'utilisateur n'a pas pu être supprimé")
+            fetchUrlRedirectAndAlert(url, () => redirect("/espace-admin"), "L'utilisateur a bien été supprimé", "L'utilisateur n'a pas pu être supprimé")
         }
     }
 }
@@ -147,8 +147,8 @@ const toggleSupprimeUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Suppression d'Utilisateur")
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
