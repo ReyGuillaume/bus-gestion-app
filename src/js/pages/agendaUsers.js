@@ -4,8 +4,8 @@ import { toggleEspaceAdmin } from "./espaceAdmin";
 import { convertMinutesToTime } from "../utils/dates"
 import axios from 'axios';
 
-const createListeItem = (ul, elem, itemText) => {
-    let li = create("li", ul, null, ["navBar__item"])
+const createListeItem = (ul, elem, itemText, color) => {
+    let li = create("li", ul, null, [color])
     let div = create("div", li, itemText)
     div.onclick = () => toggleAgenda(elem)
 }
@@ -34,7 +34,7 @@ const drawUsers = (idtype) => {
     axios.get("users/users.php?function=bytype&type="+idtype).then(function(response){
         let users = response.data;
 
-        users.forEach(user => createListeItem(ul, user, `${user.firstname} ${user.name.toUpperCase()}`))
+        users.forEach(user => createListeItem(ul, user, `${user.firstname} ${user.name.toUpperCase()}`, "liste_users_"+idtype))
 
         if(idtype == 3){
             create("div", main, "Vision globale", ["submitButton"]).onclick = () => toggleAgenda(undefined, undefined, true)
@@ -77,7 +77,7 @@ const toggleBuses = () => {
             axios.get("buses/buses.php?function=bus&id="+bus.id).then(function(responseBus){
 
                 let bus = responseBus.data
-                createListeItem(ul, bus, `Bus n°${bus.id} (${bus.nb_places} places)`)
+                createListeItem(ul, bus, `Bus n°${bus.id} (${bus.nb_places} places)`, "liste_bus")
             })
         }
     })
@@ -97,7 +97,7 @@ const toggleLines = () => {
     // on récupère tous les users de la base de données, du type renseigné
     axios.get("lines/lines.php?function=lines").then(function(response){
         let lines = response.data;
-        lines.forEach(line => createListeItem(ul, line, `Ligne ${line.number} (${convertMinutesToTime(line.travel_time)} de trajet)`))
+        lines.forEach(line => createListeItem(ul, line, `Ligne ${line.number} (${convertMinutesToTime(line.travel_time)} de trajet)`, "liste_lignes"))
     })
 }
 

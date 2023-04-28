@@ -176,8 +176,20 @@
 }
 .choix{
   color: rgb(255, 125, 125);
-  padding: 20px;
+  padding: 10px;
+  margin: 10px;
   font-weight: bold;
+  border-radius: 10px;
+  box-shadow: 0px 0px 5px gray;
+}
+.choix_users{
+  background: linear-gradient(to bottom, #ddf5df, #fff);
+}
+.choix_bus{
+  background: linear-gradient(to bottom, #f5dddd, #fff);
+}
+.choix_lignes{
+  background: linear-gradient(to bottom, #d1e9ee, #fff);
 }
 .choix div{
   color: black;

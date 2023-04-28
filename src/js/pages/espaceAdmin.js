@@ -74,11 +74,11 @@ const toggleGestionUsers = () => {
     create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
-    const nav = create("nav", main, null, ['navBar'])
+    const nav = create("nav", main, null, ['liste_gestion'])
 
-    create("div", nav, 'Ajouter un utilisateur', ['navBar__item']).addEventListener("click", toggleAjoutUser)
-    create("div", nav, "Modifier un utilisateur", ['navBar__item']).addEventListener("click", toggleModifyUser)
-    create("div", nav, "Supprimer un utilisateur", ['navBar__item']).addEventListener("click", toggleSupprimeUser)
+    create("div", nav, 'Ajouter un utilisateur', ['gestion_users']).addEventListener("click", toggleAjoutUser)
+    create("div", nav, "Modifier un utilisateur", ['gestion_users']).addEventListener("click", toggleModifyUser)
+    create("div", nav, "Supprimer un utilisateur", ['gestion_users']).addEventListener("click", toggleSupprimeUser)
 
     return main
 }
@@ -91,12 +91,12 @@ const toggleGestionBus = () => {
     create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
-    const nav = create("nav", main, null, ['navBar'])
+    const nav = create("nav", main, null, ['liste_gestion'])
 
-    create("div", nav, 'Voir la disponibilité des bus', ['navBar__item']).addEventListener("click", DisponibilityBus)
-    create("div", nav, 'Ajouter un bus', ['navBar__item']).addEventListener("click", AjoutBus)
-    create("div", nav, "Modifier un bus", ['navBar__item']).addEventListener("click", ModifBus)
-    create("div", nav, "Supprimer un bus", ['navBar__item']).addEventListener("click", SupprimerBus)
+    create("div", nav, 'Voir la disponibilité des bus', ['gestion_bus']).addEventListener("click", DisponibilityBus)
+    create("div", nav, 'Ajouter un bus', ['gestion_bus']).addEventListener("click", AjoutBus)
+    create("div", nav, "Modifier un bus", ['gestion_bus']).addEventListener("click", ModifBus)
+    create("div", nav, "Supprimer un bus", ['gestion_bus']).addEventListener("click", SupprimerBus)
 
     return main
 }
@@ -109,14 +109,14 @@ const toggleGestionLigne = () => {
     create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
-    const nav = create("nav", main, null, ['navBar'])
+    const nav = create("nav", main, null, ['liste_gestion'])
 
-    create("div", nav, "Ajouter une Ligne", ['navBar__item']).addEventListener("click", toggleAddLine)
-    create("div", nav, "Modifier une Ligne", ['navBar__item']).addEventListener("click", toggleModifLine)
-    create("div", nav, "Supprimer une Ligne", ['navBar__item']).addEventListener("click", toggleSupprLine)
+    create("div", nav, "Ajouter une Ligne", ['gestion_lignes']).addEventListener("click", toggleAddLine)
+    create("div", nav, "Modifier une Ligne", ['gestion_lignes']).addEventListener("click", toggleModifLine)
+    create("div", nav, "Supprimer une Ligne", ['gestion_lignes']).addEventListener("click", toggleSupprLine)
 
-    create("div", nav, "Verifier la couverture d'une semaine", ['navBar__item']).addEventListener("click", toggleVerifCouvertureSemaine)
-    create("div", nav, "Remplissage automatique des conduite de la semaine", ['navBar__item']).addEventListener("click", toggleRemplissageAutoConduiteSemaine)
+    create("div", nav, "Verifier la couverture d'une semaine", ['gestion_lignes']).addEventListener("click", toggleVerifCouvertureSemaine)
+    create("div", nav, "Remplissage automatique des conduite de la semaine", ['gestion_lignes']).addEventListener("click", toggleRemplissageAutoConduiteSemaine)
 
     return main
 }

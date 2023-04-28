@@ -17,32 +17,31 @@ const toggleAjoutUser = () => {
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
-    const form = create("div", main)
-    create("br", form);
+    const form = create("div", main, null, ["app-form"])
 
-    create("label", form, "Entrez le prénom de l'utilisateur :");
-    createChamp(form, "text", "nameUser");
-    create("br", form);
+    const div_prenom = create("div", form, null, ["form-div"])
+    create("label", div_prenom, "Entrez le prénom de l'utilisateur :", ["label-info"]);
+    createChamp(div_prenom, "text", "nameUser");
 
-    create("label", form, "Entrez le nom de l'utilisateur :");
-    createChamp(form, "text", "lastNameUser");
-    create("br", form);
+    const div_nom = create("div", form, null, ["form-div"])
+    create("label", div_nom, "Entrez le nom de l'utilisateur :", ["label-info"]);
+    createChamp(div_nom, "text", "lastNameUser");
 
-    create("label", form, "Entrez le login de l'utilisateur :");
-    createChamp(form, "text", "loginUser");
-    create("br", form);
+    const div_login = create("div", form, null, ["form-div"])
+    create("label", div_login, "Entrez le login de l'utilisateur :", ["label-info"]);
+    createChamp(div_login, "text", "loginUser");
 
-    create("label", form, "Entrez son email :");
-    createChamp(form, "email", "mailUser");
-    create("br", form);
+    const div_email = create("div", form, null, ["form-div"])
+    create("label", div_email, "Entrez son email :", ["label-info"]);
+    createChamp(div_email, "email", "mailUser");
 
-    create("label", form, "Entrez la date de naissance de l'utilisateur :");
-    createChamp(form, "date", "birthDate");
-    create("br", form);
+    const div_naiss = create("div", form, null, ["form-div"])
+    create("label", div_naiss, "Entrez la date de naissance de l'utilisateur :", ["label-info"]);
+    createChamp(div_naiss, "date", "birthDate");
 
     // creation of a radio to choose the role of the user created
     var divRadio = create("div", form);
-    create("label", divRadio, "Choisissez le type de l'utilisateur :");
+    create("label", divRadio, "Choisissez le type de l'utilisateur :", ["label-info"]);
     axios.get(`users/users.php?function=usertypes`).then((response)=>{
         for(var type of response.data){
             create("br", divRadio);
@@ -80,18 +79,16 @@ const toggleModifyUser = () => {
     create("p", main, "Choisissez l'utilisateur à modifier :", ["presentation"])
 
     // Creation of the form
-    const form = create("div", main)
-
-    // Creation of the radio to select the user to modify
-    var divRadioUser = create("div", form);
+    const form = create("div", main, null, ["app-form"])
 
     // Recuperation de tous les utilisateurs
     axios.get(`users/users.php?function=users`).then(response => {
 
         for(var user of response.data){
+            var div_user = create("div", form, null, ["form-div-radio"])
 
             //Ajout d'un evenement au clic d'un radio
-            createChampRadio(divRadioUser, user.id , "selectionUser", user.id).addEventListener('click', function(){
+            createChampRadio(div_user, user.id , "selectionUser", user.id).addEventListener('click', function(){
 
             // Recuperation de l'utilisateur a modifier
             var idUserToModify = valueFirstElementChecked("input[name='selectionUser']");
@@ -99,28 +96,23 @@ const toggleModifyUser = () => {
                    
                 // Creation du formulaire pré remplie de modif de user
                 main.replaceChildren("")
-                const form = create("div", main)
-                create("br", form);
+                create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+                const form = create("div", main, null, ["app-form"])
 
-                create("label", form, "Le prénom de l'utilisateur :");
+                create("label", form, "Le prénom de l'utilisateur :", ["label-info"]);
                 createChamp(form, "text", "nameUser").value = responseUser.data.firstname;
-                create("br", form);
 
-                create("label", form, "Le nom de l'utilisateur :");
+                create("label", form, "Le nom de l'utilisateur :", ["label-info"]);
                 createChamp(form, "text", "lastNameUser").value = responseUser.data.name;
-                create("br", form);
 
-                create("label", form, "Le login de l'utilisateur :");
+                create("label", form, "Le login de l'utilisateur :", ["label-info"]);
                 createChamp(form, "text", "loginUser").value = responseUser.data.login;
-                create("br", form);
 
-                create("label", form, "L'email de l'utilisateur :");
+                create("label", form, "L'email de l'utilisateur :", ["label-info"]);
                 createChamp(form, "email", "mailUser").value = responseUser.data.email;
-                create("br", form);
 
-                create("label", form, "La date de naissance de l'utilisateur :");
+                create("label", form, "La date de naissance de l'utilisateur :", ["label-info"]);
                 createChamp(form, "date", "birthDate").value = responseUser.data.birth_date;
-                create("br", form);
 
                 const bouton = create("div", form, "Modifier", ["submitButton"])
                 bouton.addEventListener("click", function (){
@@ -136,7 +128,7 @@ const toggleModifyUser = () => {
             });
         });
 
-        var label = create("label", divRadioUser, user.name + " "+ user.firstname);
+        var label = create("label", div_user, user.name + " "+ user.firstname);
         label.setAttribute("for", user.id);
     }})
 }
@@ -160,23 +152,22 @@ const toggleSupprimeUser = () => {
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
-    const form = create("div", main)
+    const form = create("div", main, null, ["app-form"])
 
     // Creation of the checkbox to define the user to delete
-    var divCheckboxUsers = create("div", form);
-    create("label", divCheckboxUsers, "Choisissez le(s) utilisateur(s) à supprimer :");
+    create("label", form, "Choisissez le(s) utilisateur(s) à supprimer :", ["label-info"]);
     axios.get(`users/users.php?function=users`).then((response)=>{
         for(var user of response.data){
-            create("br", divCheckboxUsers);
-            createChampCheckbox(divCheckboxUsers, user.id , "selectionUSer", user.id);
-            var label = create("label", divCheckboxUsers, user.name + " "+ user.firstname);
+            var div_user = create("div", form, null, ["form-div-radio"])
+            create("br", div_user);
+            createChampCheckbox(div_user, user.id , "selectionUSer", user.id);
+            var label = create("label", div_user, user.name + " "+ user.firstname);
             label.setAttribute("for", user.id);
         }
+        // Creation of submit button
+        const bouton = create("div", form, "Supprimer", ["submitButton"])
+        bouton.onclick = () => deleteUsersChecked()
     });
-
-    // Creation of submit button
-    const bouton = create("div", form, "Supprimer", ["submitButton"])
-    bouton.onclick = () => deleteUsersChecked()
 }
 
 

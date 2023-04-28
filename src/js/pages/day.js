@@ -252,7 +252,7 @@ const toggleMultiEntities = async () => {
     const multi_form = create("div", main, null, ["multi-form"])
 
     // affichage des utilisateurs
-    const div_users = create("div", multi_form, "Utilisateurs :", ["choix"])
+    const div_users = create("div", multi_form, "Utilisateurs :", ["choix", "choix_users"])
 
     for(let user of users){
         let div_user = create("div", div_users, null, ["selectMulti"])
@@ -261,7 +261,7 @@ const toggleMultiEntities = async () => {
     }
 
     // affichage des bus
-    const div_buses = create("div", multi_form, "Bus :", ["choix"])
+    const div_buses = create("div", multi_form, "Bus :", ["choix", "choix_bus"])
 
     for(let bus of buses){
         let div_bus = create("div", div_buses, null, ["selectMulti"])
@@ -270,7 +270,7 @@ const toggleMultiEntities = async () => {
     }
 
     // affichage des lignes
-    const div_lines = create("div", multi_form, "Lignes :", ["choix"])
+    const div_lines = create("div", multi_form, "Lignes :", ["choix", "choix_lignes"])
 
     for(let line of lines){
         let div_line = create("div", div_lines, null, ["selectMulti"])
@@ -281,6 +281,9 @@ const toggleMultiEntities = async () => {
     create("div", multi_form, "Afficher", ["modifButton"]).addEventListener("click", function(){
         if(entites.length > 4){
             toggleError("ERREUR", "Vous ne pouvez sélectionner que 4 entités")
+        }
+        else if(entites.length < 1){
+            toggleError("ERREUR", "Veuillez choisir au moins une entité")
         }
         else if(entites.length == 1){
             toggleAgenda(entites[0])

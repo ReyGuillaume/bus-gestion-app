@@ -323,19 +323,19 @@ const toggleAddCreneau = () => {
     create("p", main, " Rentrez les informations suivantes : ", ["presentation"]);
 
     // Creation of the form
-    const form = create("div", main);
+    const form = create("div", main, null, ["app-form"]);
 
     // Creation of each champ
-    create("label", form, "Entrez la date de début du créneau :");
+    create("label", form, "Entrez la date de début du créneau :", ["label-info"]);
     createChamp(form, "datetime-local", "StartDateTime");
     create("br", form);
-    create("label", form, "Entrez la date de fin du creneau :");
+    create("label", form, "Entrez la date de fin du creneau :", ["label-info"]);
     createChamp(form, "datetime-local", "EndDateTime");
     create("br", form);
 
     // Creation of the radio to define the type of the timeslot
     var divRadio = create("div", form);
-    create("label", divRadio, "Choisissez le type du créneau :");
+    create("label", divRadio, "Choisissez le type du créneau :", ["label-info"]);
     axios.get(`timeslots/timeslots.php?function=types`).then((response)=>{
         for(var type of response.data){
 
