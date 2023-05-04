@@ -1,5 +1,6 @@
 import { create, createChamp, createChampCheckbox, createChampRadio } from "../utils/domManipulation";
 import { fetchUrlRedirectAndAlert, valueFirstElementChecked } from "../utils/formGestion";
+import { toggleEspaceAdmin } from "./espaceAdmin";
 import { redirect } from "../utils/redirection";
 
 import axios from 'axios';

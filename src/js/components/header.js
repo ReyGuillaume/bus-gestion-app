@@ -11,11 +11,11 @@ const createNavBar = () => {
     if (sessionData) {
         // si l'utilisateur est un responsable logistique ou le gérant
         if(["Responsable Logistique", "Directeur"].includes(sessionData["role"])){
-            create("a", nav, 'Espace administrateur', ['navBar__item']).href = "/espaceAdmin"
+            create("a", nav, 'Espace administrateur', ['navBar__item']).href = "/espace-admin"
         }
         // si l'utilisateur est un chauffeur
         else{
-            create("a", nav, 'Espace utilisateur', ['navBar__item']).href = "/espaceUser"
+            create("a", nav, 'Espace utilisateur', ['navBar__item']).href = "/espace-utilisateur"
         }
         create("a", nav, 'Se déconnecter', ['navBar__item']).href = "/disconnect"
     }

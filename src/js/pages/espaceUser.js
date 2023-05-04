@@ -2,7 +2,7 @@ import { create } from "../utils/domManipulation";
 import { toggleAgenda } from "./agenda";
 import { toggleIndisponibilitiForm } from "../pages/indisponibilitiForm"
 import { createMenuElement } from "../components/menuItem";
-import { redirect } from "../utils/redirection";
+import { redirect, redirectUser } from "../utils/redirection";
 
 const toggleEspaceUser = () => {
     const main = document.querySelector("#app")

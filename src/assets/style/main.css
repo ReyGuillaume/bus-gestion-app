@@ -350,7 +350,7 @@ body {
   color: rgb(177, 96, 96);
 }
 
-.app-form input[type="datetime-local"], .app-form input[type="week"]{
+input[type="datetime-local"], input[type="week"]{
   border: 2px solid #ccc;
   padding: 5px;
   border-radius: 15px;

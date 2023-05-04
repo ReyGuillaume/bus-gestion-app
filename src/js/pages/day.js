@@ -150,14 +150,13 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
                 div_color.style.height = duree + "px"
             }
 
-            const houres = create("div", div, null, ["timeslot__houres"])
-
             //ajout du drag & drop
             if(div.getAttribute("draggable")){
                 div.ondragstart = handlerDragStart
             }
 
             if(!multi){
+                const houres = create("div", div, null, ["timeslot__houres"])
                 create("h2", houres, formatedHour(heure_debut) + ":" + formatedHour(min_debut), ['beginning'])
                 create("h2", houres, formatedHour(heure_fin) + ":" + formatedHour(min_fin), ['end'])
                 const body = create("div", div, null, ["timeslot__body"])
@@ -173,13 +172,18 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
                         break;
                 }
             }
+            else{
+                const houres_multi = create("div", div, null, ["timeslot__houres_multi"])
+                create("div", houres_multi, formatedHour(heure_debut) + ":" + formatedHour(min_debut), ['beginning_multi'])
+                create("div", houres_multi, formatedHour(heure_fin) + ":" + formatedHour(min_fin), ['end_multi'])
+            }
 
             if(!multi){
                 const goto = create("div", div, null, ["timeslot__goto"])
                 create("i", goto , null, ['fa-solid', 'fa-chevron-right'])
             }
             else{
-                create("div", div, timeslot.name.substr(0,1).toUpperCase(), ["multi-info"])
+                create("div", div, timeslot.name, ["multi-info"])
             }
         })
     }

@@ -190,10 +190,10 @@ const modifReunion = (container, props, user=null, multi=false) => {
         create("div", container, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(container)
 
         // Creation of each champ
-        create("label", container, "Début :");
+        create("label", container, "Début :", ["form-info"]);
         createChamp(container, "datetime-local", "StartDateTime").value = responseCreneau.data.begining;
 
-        create("label", container, "Fin :");
+        create("label", container, "Fin :", ["form-info"]);
         createChamp(container, "datetime-local", "EndDateTime").value = responseCreneau.data.end;
 
         //recup tous les user 
@@ -204,7 +204,7 @@ const modifReunion = (container, props, user=null, multi=false) => {
 
         // Creation of the checkbox to define the users involved in the timeslot
         var divCheckboxUsers = create("div", container);
-        create("div", divCheckboxUsers, "Participants :");
+        create("div", divCheckboxUsers, "Participants :", ["form-info"]);
         afficheUsers(divCheckboxUsers, tabUser)
         
         // Creation of submit button
@@ -236,10 +236,10 @@ const modifIndispo = (container, props, user=null, multi=false) => {
         create("div", container, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(container)
 
         // Creation of each champ
-        create("label", container, "Début :");
+        create("label", container, "Début :", ["form-info"]);
         createChamp(container, "datetime-local", "StartDateTime").value = responseCreneau.data.begining;
 
-        create("label", container, "Fin :");
+        create("label", container, "Fin :", ["form-info"]);
         createChamp(container, "datetime-local", "EndDateTime").value = responseCreneau.data.end;
         
         //recup tous les user 

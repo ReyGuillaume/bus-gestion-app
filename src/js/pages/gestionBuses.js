@@ -1,4 +1,5 @@
 import { create, createChamp } from "../utils/domManipulation";
+import { redirect } from "../utils/redirection";
 import { fetchUrlRedirectAndAlert, valueFirstElementChecked, createCheckboxOfElement } from "../utils/formGestion";
 
 import axios from 'axios';
