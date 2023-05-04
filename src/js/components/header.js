@@ -13,9 +13,14 @@ const createNavBar = () => {
         if(["Responsable Logistique", "Directeur"].includes(sessionData["role"])){
             create("a", nav, 'Espace administrateur', ['navBar__item']).href = "/espaceAdmin"
         }
-        // si l'utilisateur est un chauffeur
-        else{
-            create("a", nav, 'Espace utilisateur', ['navBar__item']).href = "/espaceUser"
+        // si l'utilisateur est un abonné
+        else {
+            if (["Abonné"].includes(sessionData["role"])) {
+                create("a", nav, 'Espace utilisateur', ['navBar__item']).href = "/espace-abonne"
+            } else {
+                // si l'utilisateur est un chauffeur
+                create("a", nav, 'Espace utilisateur', ['navBar__item']).href = "/espaceUser"
+            }
         }
         create("a", nav, 'Se déconnecter', ['navBar__item']).href = "/disconnect"
     }

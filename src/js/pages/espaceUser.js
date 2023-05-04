@@ -11,7 +11,8 @@ const toggleEspaceUser = () => {
     redirectUser(
         () => redirect("/"),
         () => redirect("/"),
-        () => null
+        () => null,
+        () => redirect("/")
     )
         
     create("h2", main, "Bienvenue sur votre espace personnel")

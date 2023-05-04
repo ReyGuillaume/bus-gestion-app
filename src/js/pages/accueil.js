@@ -81,6 +81,27 @@ const toggleAccueil = () => {
         create("a", paragraphe4, "Voir votre espace administrateur").href = "/espace-admin"
     }
 
+    const paragraphe7 = create("div", main, null, ["paragraphe"])
+    create("h3", paragraphe7, "Vous êtes un abonné qui veut réserver un bus ?", ["phrasePres"])
+    const p7 = create("p", paragraphe7, null, ["sous_paragraphe"])
+    create("span", p7, "Organisez", ["GoBus_role"])
+    p7.innerHTML += " et "
+    create("span", p7, "planifiez", ["GoBus_role"])
+    p7.innerHTML +=  " des réunions, "
+    create("span", p7, "gérez", ["GoBus_role"])
+    p7.innerHTML +=  " et "
+    create("span", p7, "visualisez", ["GoBus_role"])
+    p7.innerHTML += " l'emploi du temps des différentes lignes de bus !"
+    if(!sessionData){
+        create("a", paragraphe7, "Voir votre espace d'abonné").href = "/connexion"
+    }
+    else if(sessionData["role"] != "Abonné"){
+        create("a", paragraphe4, "Voir votre espace d'abonné").href = "/"
+    }
+    else{
+        create("a", paragraphe4, "Voir votre espace d'abonné").href = "/espace-abonne"
+    }
+
     // Présentation des fonctionnalités
     const paragraphe5 = create("div", main, null, ["paragraphe", "paragraphe_info"])
     create("p", paragraphe5, "Notre plateforme intuitive offre une interface facile à utiliser pour chacun des utilisateurs, ainsi qu'une vue d'ensemble en temps réel de l'emploi du temps de l'ensemble de l'entreprise. ")

@@ -244,7 +244,7 @@ foreach ($timeSlotTypes as $type) {
 
 
 // ==================== Instanciation des types d'utilisateurs ====================
-$userTypes = array('Directeur', 'Responsable Logistique', 'Conducteur');
+$userTypes = array('Directeur', 'Responsable Logistique', 'Conducteur', 'Abonné');
 
 foreach ($userTypes as $type) {
     $sql = "INSERT INTO UserType (`name`) VALUE ('{$type}')";

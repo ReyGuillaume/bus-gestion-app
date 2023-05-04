@@ -90,6 +90,7 @@ const toggleLines = () => {
         () => null, 
         () => null, 
         () => null, 
+        () => null,
         () => redirect("/")
     )
 

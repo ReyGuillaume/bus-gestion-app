@@ -42,9 +42,10 @@ const toggleAdminForm = () => {
                 let prenom = user.firstname;
                 let role = user.name;
                 let idrole = user.idrole;
+                let email = user.email;
                 
                 // Store the user's data in sessionStorage
-                const userData = { id, prenom, nom, role, idrole };
+                const userData = { id, prenom, nom, role, idrole, email };
                 sessionStorage.setItem("userData", JSON.stringify(userData));
 
                 // Refresh display of header (to show the user's session)
@@ -52,8 +53,9 @@ const toggleAdminForm = () => {
 
                 redirectUser(
                     () => redirect("/espace-admin"), 
-                    () => redirect("/espace-admin"), 
-                    () => redirect("/espace-utilisateur")
+                    () => redirect("/espace-admin"),
+                    () => redirect("/espace-utilisateur"),
+                    () => redirect("/espace-abonne")
                 )
             } else {
                 toggleError("ATTENTION", "Formulaire invalide !")

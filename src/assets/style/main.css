@@ -432,7 +432,7 @@ body {
   padding: 10px;
 }
 
-.gestion_users, .gestion_bus, .gestion_lignes{
+.gestion_users, .gestion_bus, .gestion_lignes, .gestion_infos{
   border-radius: 10px;
   padding: 10px;
   margin: 10px;
@@ -442,7 +442,7 @@ body {
   color: white;
 }
 
-.gestion_users:hover, .gestion_bus:hover, .gestion_lignes:hover{
+.gestion_users:hover, .gestion_bus:hover, .gestion_lignes:hover, .gestion_infos:hover{
   background: linear-gradient(to right, rgb(64, 64, 64), black);
 }
 
@@ -456,6 +456,10 @@ body {
 
 .gestion_lignes{
   background: linear-gradient(to right, rgb(184, 209, 255), rgb(164, 196, 255));
+}
+
+.gestion_infos{
+  background: linear-gradient(to right, rgb(255, 216, 184), rgb(255, 205, 164));
 }
 
 /* POP-UP */

@@ -17,6 +17,7 @@ const toggleEspaceAdmin = () => {
     redirectUser(
         () => null,
         () => null,
+        () => redirect("/"),
         () => redirect("/")
     )
         

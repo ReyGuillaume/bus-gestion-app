@@ -132,7 +132,8 @@ const toggleNotificationCenter = () => {
         redirectUser(
             () => redirect("/espace-admin"), 
             () => redirect("/espace-admin"), 
-            () => redirect("/espace-utilisateur")
+            () => redirect("/espace-utilisateur"),
+            () => redirect("/espace-abonne")
         )
     }
 

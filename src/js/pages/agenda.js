@@ -30,7 +30,8 @@ const drawAgenda = (user=null, date=null, multi=false, entites=null) => {
         redirectUser(
             () => redirect("/espace-admin"), 
             () => redirect("/espace-admin"), 
-            () => redirect("/espace-utilisateur")
+            () => redirect("/espace-utilisateur"),
+            () => redirect("/espace-abonne")
         )
     }
     // agenda d'un utilisateur

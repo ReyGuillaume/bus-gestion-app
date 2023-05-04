@@ -84,7 +84,7 @@ function user_log_in($login, $password) {
 */
 function user_infos($login, $password) {
     $pwd = hash("sha256", $password);
-    $sql = "SELECT u.id, u.name AS lastname, u.firstname, ut.name, ut.id AS idrole FROM Code c JOIN User u ON c.login = u.login JOIN Usertype ut ON u.id_user_type = ut.id WHERE c.login = '$login' AND c.password = '$pwd'";
+    $sql = "SELECT u.id, u.name AS lastname, u.firstname, ut.name, u.email, ut.id AS idrole FROM Code c JOIN User u ON c.login = u.login JOIN Usertype ut ON u.id_user_type = ut.id WHERE c.login = '$login' AND c.password = '$pwd'";
     $res = bdd()->query($sql);
     if($res){
         return $res->fetch();
@@ -152,14 +152,14 @@ function fetch_users_by_type($id_user_type) {
 
     @return boolean si la modification est un succès.
 */
-function modify_user_data($id, $email, $login) {
+function modify_user_data($id, $email, $login, $name, $firstname, $date) {
     $sql = "SELECT * FROM User u JOIN Code c ON u.login = c.login WHERE u.id = {$id}";
     $user = bdd()->query($sql);
     if ($user) {
         $user = $user->fetch();
         $old_login = $user['login'];
         $pwd = $user['password'];
-        bdd()->query("UPDATE `user` SET `email`='{$email}' WHERE id = {$id}");
+        bdd()->query("UPDATE `user` SET `email`='{$email}',`name`='{$name}',`firstname`='{$firstname}',`birth_date`='{$date}' WHERE id = {$id}");
         if ($old_login != $login) {
             bdd()->query("INSERT INTO Code (login, password) VALUE ('{$login}', '{$pwd}')");
             bdd()->query("UPDATE `user` SET `login`='{$login}' WHERE id = {$id}");
@@ -324,7 +324,7 @@ switch ($_GET['function']) {
         $res = fetch_users_by_type($_GET['type']);
         break;
     case 'update':     // id, email, login
-        $res = modify_user_data($_GET['id'], $_GET['email'], $_GET['login']);
+        $res = modify_user_data($_GET['id'], $_GET['email'], $_GET['login'], $_GET['name'], $_GET['firstname'], $_GET['date']);
         break;
     case 'updatepwd':     // id, old, new, confirm
         $res = modify_user_password($_GET['id'], $_GET['old'], $_GET['new'], $_GET['confirm']);
