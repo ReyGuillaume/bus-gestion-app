@@ -1,5 +1,34 @@
+import { toggleAlert, toggleError } from "./domManipulation"
+
 const redirect = (path) => {
     window.location = path
+}
+
+const redirectWithAlert = (route, type, message) => {
+    // stocke le message d'alerte
+    const alerte = { type, message }
+    sessionStorage.setItem("alerte", JSON.stringify(alerte))
+
+    // Effectue la redirection vers la route spécifiée
+    window.location = route
+}
+
+const toggleAlertMessage = () => {
+    // Récupère l'URL précédente à partir de la requête
+    var alerte_msg = JSON.parse(sessionStorage.getItem("alerte"))
+
+    if(alerte_msg){
+        const { type, message } = alerte_msg
+
+        if(type == "success"){
+            toggleAlert("BRAVO", message)
+        }
+        else{
+            toggleError("ERREUR", message)
+        }
+
+        sessionStorage.removeItem("alerte")
+    }
 }
 
 // Redirection to the user page according to his role
@@ -25,4 +54,9 @@ const redirectUser = (redirectGerant=()=>null, redirectReponsable=()=>null, redi
 }
 
 
-export {redirectUser, redirect}
+export {
+    redirectUser, 
+    redirect, 
+    redirectWithAlert, 
+    toggleAlertMessage
+}

@@ -7,7 +7,7 @@ import {
     toggleAlert
 } from "../utils/domManipulation";
 import { valueFirstElementChecked, idOfAllElementChecked, fetchUrlRedirectAndAlert, createCheckBoxOfElements } from "../utils/formGestion";
-import { redirect } from "../utils/redirection";
+import { redirect, redirectWithAlert } from "../utils/redirection";
 
 import axios from 'axios';
 
@@ -382,7 +382,7 @@ const toggleAddCreneau = () => {
     const bouton = create("div", form, "Envoyer", ["submitButton"])
     bouton.addEventListener("click", function (){
         let url = axiosUrlSendWhenADD(typeTimeslot())
-        fetchUrlRedirectAndAlert(url, () => redirect("/espace-admin"), "Le créneau a bien été ajouté", "Le créneau n'a pas pu être ajouté")
+        fetchUrlRedirectAndAlert(url, "/espace-admin", "Le créneau a bien été ajouté", "Le créneau n'a pas pu être ajouté")
     })
 }
 

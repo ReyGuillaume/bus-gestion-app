@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { create, toggleAlert, toggleError, createChampCheckbox } from './domManipulation';
+import { redirectWithAlert } from './redirection';
 
 function valueFirstElementChecked (selector) {
     for (var elem of document.querySelectorAll(selector)) {
@@ -20,10 +21,14 @@ const idOfAllElementChecked = (selector) => {
     return res
 }
 
-const fetchUrlRedirectAndAlert = (url, redirectFunction, successMessage, failurMessage) => {
+const fetchUrlRedirectAndAlert = (url, route, successMessage, failurMessage) => {
     axios.get(url).then(response => {
-        redirectFunction()
-        response.data ? toggleAlert("BRAVO", successMessage) : toggleError("ERREUR", failurMessage)
+        if(response.data){
+            redirectWithAlert(route, "success", successMessage)
+        }
+        else{
+            redirectWithAlert(route, "failure", failurMessage)
+        }
     })
 }
 
