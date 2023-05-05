@@ -1,5 +1,6 @@
 import { create, createChamp, createChampCheckbox, createChampRadio } from "../utils/domManipulation";
 import { fetchUrlRedirectAndAlert, valueFirstElementChecked } from "../utils/formGestion";
+import { toggleEspaceAdmin } from "./espaceAdmin";
 import { redirect } from "../utils/redirection";
 
 import axios from 'axios';
@@ -66,7 +67,7 @@ const toggleAjoutUser = () => {
 
         //creation of the url
         let url = `users/users.php?function=create&login=${login}&password=gobus123&confirm=gobus123&date=${date}&name=${name}&firstname=${firstname}&email=${email}&type=${type}`
-        fetchUrlRedirectAndAlert(url, () => redirect("/espace-admin"), "L'utilisateur a bien été ajouté", "L'utilisateur n'a pas pu être ajouté")
+        fetchUrlRedirectAndAlert(url, "/espace-admin", "L'utilisateur a bien été ajouté", "L'utilisateur n'a pas pu être ajouté")
     })
 }
 
@@ -123,7 +124,7 @@ const toggleModifyUser = () => {
 
                     //creation of the url
                     let url = `users/users.php?function=update&id=${idUserToModify}&email=${email}&login=${login}`
-                    fetchUrlRedirectAndAlert(url, () => redirect("/espace-admin"), "L'utilisateur a bien été ajouté", "L'utilisateur n'a pas pu être ajouté")
+                    fetchUrlRedirectAndAlert(url, "/espace-admin", "L'utilisateur a bien été modifié", "L'utilisateur n'a pas pu être modifié")
                 })
             });
         });
@@ -138,7 +139,7 @@ const deleteUsersChecked = () => {
     for(var user of document.querySelectorAll("input[name='selectionUSer']")){
         if (user.checked) {
             let url = `users/users.php?function=delete&id=${user.value}`;
-            fetchUrlRedirectAndAlert(url, () => redirect("/espace-admin"), "L'utilisateur a bien été supprimé", "L'utilisateur n'a pas pu être supprimé")
+            fetchUrlRedirectAndAlert(url, "/espace-admin", "L'utilisateur a bien été supprimé", "L'utilisateur n'a pas pu être supprimé")
         }
     }
 }

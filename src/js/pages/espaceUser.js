@@ -2,7 +2,7 @@ import { create } from "../utils/domManipulation";
 import { toggleAgenda } from "./agenda";
 import { toggleIndisponibilitiForm } from "../pages/indisponibilitiForm"
 import { createMenuElement } from "../components/menuItem";
-import { redirect } from "../utils/redirection";
+import { redirect, redirectUser, toggleAlertMessage } from "../utils/redirection";
 
 const toggleEspaceUser = () => {
     const main = document.querySelector("#app")
@@ -14,6 +14,9 @@ const toggleEspaceUser = () => {
         () => null,
         () => redirect("/")
     )
+
+    // affiche le potentiel message d'alerte en stock
+    toggleAlertMessage()
         
     create("h2", main, "Bienvenue sur votre espace personnel")
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])

@@ -12,12 +12,12 @@ const toggleIndisponibilitiForm = () => {
     create("p", main, "Renseignez la plage horaire de votre indisponibilité :", ["presentation"])
 
     // Creation of the form
-    const form = create("div", main)
+    const form = create("div", main, null, ["app-form"])
 
     // Creation of each champ
-    create("label", form, "Début :");
+    create("label", form, "Début :", ["label-info"]);
     createChamp(form, "datetime-local", "StartDateTime");
-    create("label", form, "Fin :");
+    create("label", form, "Fin :", ["label-info"]);
     createChamp(form, "datetime-local", "EndDateTime");
 
     // Creation of submit button
@@ -29,7 +29,7 @@ const toggleIndisponibilitiForm = () => {
         let user = JSON.parse(sessionStorage.getItem("userData")).id;
         if (![StartDateTime, EndDateTime].includes("")) {
             let url = `timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}&type=3&users=${user}`
-            fetchUrlRedirectAndAlert(url, toggleEspaceUser, "Votre indisponibilité a bien été ajoutée", "Votre indisponibilité n'a pas pu être ajoutée")
+            fetchUrlRedirectAndAlert(url, "espace-utilisateur", "Votre indisponibilité a bien été ajoutée", "Votre indisponibilité n'a pas pu être ajoutée")
 
             let message = `Votre créneau d'indisponibilité du ${StartDateTime} au ${EndDateTime} a bien été ajouté.`
             axios.get(`notifications/notifications.php?function=create&title=Attention&message=${addslashes(message)}&recipient=`+JSON.parse(sessionStorage.getItem("userData")).id)

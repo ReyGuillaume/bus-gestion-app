@@ -46,7 +46,7 @@ const toggleAddLine = () => {
         let number = document.querySelector("input[name='number']").value;
         let travel_time = document.querySelector("input[name='travel_time']").value;
 
-        fetchUrlRedirectAndAlert(`lines/lines.php?function=create&number=${number}&travel_time=${travel_time}&id_type=${id_type}`, () => redirect("/espace-admin"), "La ligne a bien été ajoutée", "La ligne n'a pas pu être ajoutée")
+        fetchUrlRedirectAndAlert(`lines/lines.php?function=create&number=${number}&travel_time=${travel_time}&id_type=${id_type}`, "/espace-admin", "La ligne a bien été ajoutée", "La ligne n'a pas pu être ajoutée")
     })
 }
 
@@ -75,7 +75,7 @@ const toggleSupprLine = () => {
         bouton.addEventListener("click", function(){
             for(var line of document.querySelectorAll("input[name='selectionLigne']")){
                 if (line.checked) {
-                    fetchUrlRedirectAndAlert(`lines/lines.php?function=delete&number=${line.value}`, () => redirect("/espace-admin"), "La ligne a bien été supprimée", "La ligne n'a pas pu être supprimée")
+                    fetchUrlRedirectAndAlert(`lines/lines.php?function=delete&number=${line.value}`, "/espace-admin", "La ligne a bien été supprimée", "La ligne n'a pas pu être supprimée")
                 }
             }
         })
@@ -107,7 +107,7 @@ const createLineRadio = (form, container, line) => {
             bouton.addEventListener("click", function(){
                 let travel_time = document.querySelector("input[name='travel_time']").value;
                 let number = document.querySelector("input[name='number']").value;
-                fetchUrlRedirectAndAlert(`lines/lines.php?function=updateline&number=${number}&travel_time=${travel_time}`, () => redirect("/espace-admin"), "La ligne a bien été modifiée", "La ligne n'a pas pu être modifiée")
+                fetchUrlRedirectAndAlert(`lines/lines.php?function=updateline&number=${number}&travel_time=${travel_time}`, "/espace-admin", "La ligne a bien été modifiée", "La ligne n'a pas pu être modifiée")
             })
         })
     })
@@ -157,7 +157,7 @@ const toggleVerifCouvertureSemaine = () => {
     const bouton = create("div", form, "Envoyer", ["submitButton"])
     bouton.addEventListener("click", function(){
         let semaine = document.querySelector("input[name='semaine']").value;
-        fetchUrlRedirectAndAlert(`lines/lines.php?function=WeekCovered&week=${semaine}`, () => redirect("/espace-admin"), "Le semaine est bien couverte", "Il semblerait que tout ne soit pas bien rempli...")
+        fetchUrlRedirectAndAlert(`lines/lines.php?function=WeekCovered&week=${semaine}`, "/espace-admin", "Le semaine est bien couverte", "Il semblerait que tout ne soit pas bien rempli...")
     })
 
 }
@@ -184,7 +184,7 @@ const toggleRemplissageAutoConduiteSemaine = () => {
     const bouton = create("div", form, "Envoyer", ["submitButton"])
     bouton.addEventListener("click", function(){
         let semaine = document.querySelector("input[name='semaine']").value;
-        fetchUrlRedirectAndAlert(`lines/lines.php?function=coverWeek&week=${semaine}`, () => redirect("/espace-admin"), "Toutes les conduites de la semaine ont étées ajoutées", "Il semblerait que tout ne se soit pas passé comme prévu...")
+        fetchUrlRedirectAndAlert(`lines/lines.php?function=coverWeek&week=${semaine}`, "/espace-admin", "Toutes les conduites de la semaine ont étées ajoutées", "Il semblerait que tout ne se soit pas passé comme prévu...")
     })
 }
 

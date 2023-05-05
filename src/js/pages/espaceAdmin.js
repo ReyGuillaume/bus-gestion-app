@@ -7,7 +7,7 @@ import { toggleAddLine, toggleSupprLine, toggleModifLine, toggleVerifCouvertureS
 import { toggleDrivers, toggleResp, toggleBuses, toggleLines } from "./agendaUsers";
 import { toggleMultiEntities } from "./day";
 import { createMenuElement } from "../components/menuItem";
-import { redirect, redirectUser } from "../utils/redirection";
+import { redirect, redirectUser, toggleAlertMessage } from "../utils/redirection";
 
 
 const toggleEspaceAdmin = () => {
@@ -20,6 +20,9 @@ const toggleEspaceAdmin = () => {
         () => redirect("/"),
         () => redirect("/")
     )
+
+    // affiche le potentiel message d'alerte en stock
+    toggleAlertMessage()
         
     create("h2", main, "Bienvenue sur votre espace Admin")
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])

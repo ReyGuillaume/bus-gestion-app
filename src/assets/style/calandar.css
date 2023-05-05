@@ -3,6 +3,8 @@
 }
 
 
+/* CALENDRIER */
+
 .calandar {
   display: flex;
   flex-direction: column;
@@ -61,6 +63,9 @@
   border-radius: 0.25rem;
   font-size: 1.2rem;
 }
+
+/* JOURS DU CALENDRIER */
+
 .days__day{
   display: flex;
   justify-content: center;
@@ -77,6 +82,9 @@
   border-radius: 0.25rem;
   font-size: 1.5rem;
 }
+
+/* CRÉNEAUX */
+
 .timeslots{
   display: flex;
   justify-content: space-around;
@@ -88,6 +96,30 @@
   width: 150px;
   align-items: center;
 }
+.timeslot:hover, .timeslot_multi_Conduite:hover, .timeslot_multi_Réunion:hover, .timeslot_multi_Indisponibilité:hover{
+  z-index: 90;
+  border: 1px solid #888;
+}
+.timeslot div{
+  font-size: 0.6em;
+  margin: 5px;
+}
+.timeslot__houres{
+  display: flex;
+  flex-direction: column;
+}
+.Conduite .div-color{
+  background-color: rgb(190, 243, 255);
+}
+.Réunion .div-color{
+  background-color: rgb(255, 190, 239);
+}
+.Indisponibilité .div-color{
+  background-color: rgb(251, 225, 159);
+}
+
+/* CRÉNEAUX DE L'AGENDA MULTIPLE */
+
 .timeslots__day_multi{
   position: relative;
   display: flex;
@@ -101,13 +133,7 @@
   align-items: center;
   border-radius: 8px;
   cursor: pointer;
-}
-.timeslot{
   background-color: #eae9e9;
-}
-.timeslot:hover{
-  z-index: 90;
-  border: 1px solid #888;
 }
 .initiales{
   position: absolute;
@@ -119,35 +145,41 @@
   margin-top: -25px;
 }
 .timeslot_multi_Conduite, .timeslot_multi_Réunion, .timeslot_multi_Indisponibilité{
-  justify-content: center;
+  justify-content: space-around;
+  overflow: hidden;
 }
-.timeslot_multi_Conduite{
-  background: linear-gradient(to bottom, rgb(190, 243, 255), rgb(227, 243, 255));
+.timeslot_multi_Conduite .timeslot__houres_multi{
+  background-color: rgb(190, 243, 255);
 }
-.timeslot_multi_Réunion{
-  background: linear-gradient(to bottom, rgb(255, 190, 239), rgb(248, 227, 255));
+.timeslot_multi_Réunion .timeslot__houres_multi{
+  background-color: rgb(255, 190, 239);
 }
-.timeslot_multi_Indisponibilité{
+.timeslot_multi_Indisponibilité .timeslot__houres_multi{
   background-color: rgb(251, 225, 159);
-  background: linear-gradient(to bottom, rgb(251, 225, 159), rgb(255, 251, 227));
 }
 .multi-info{
-  color: white;
   font-weight: bold;
-  -webkit-text-stroke: 1px black;
+  writing-mode: vertical-rl;
+  font-size: 50%;
+}
+.beginning_multi, .end_multi{
+  writing-mode: vertical-rl;
+  font-weight: bold;
+  color: black;
 }
 .multi-form{
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.timeslot div{
-  font-size: 0.6em;
-  margin: 5px;
-}
-.timeslot__houres{
+.timeslot__houres_multi{
   display: flex;
   flex-direction: column;
+  height: 100%;
+  justify-content: space-around;
+}
+.timeslot__houres_multi div{
+  font-size: 50%;
 }
 .timeslot__color, .div-color{
   width: 7px;
@@ -155,18 +187,12 @@
 .back-button{
   cursor: pointer;
 }
+
+/* POP-UP */
+
 .task-name{
   color: rgb(99, 99, 220);
   font-weight: bold;
-}
-.Conduite .div-color{
-  background-color: rgb(190, 243, 255);
-}
-.Réunion .div-color{
-  background-color: rgb(255, 190, 239);
-}
-.Indisponibilité .div-color{
-  background-color: rgb(251, 225, 159);
 }
 .btn-task{
   display: flex;
@@ -174,6 +200,9 @@
 .btn-task div{
   margin: 3px;
 }
+
+/* AGENDA PAR 4 */
+
 .choix{
   color: rgb(255, 125, 125);
   padding: 10px;
