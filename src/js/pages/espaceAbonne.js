@@ -1,6 +1,6 @@
 import {create, createChamp} from "../utils/domManipulation";
 import { createMenuElement} from "../components/menuItem";
-import {redirect, redirectUser} from "../utils/redirection";
+import {redirect, redirectUser, toggleAlertMessage} from "../utils/redirection";
 import { fetchUrlRedirectAndAlert} from "../utils/formGestion";
 import axios from 'axios';
 
@@ -17,6 +17,9 @@ export function toggleEspaceAbonne() {
         () => null
     );
 
+    // affiche le potentiel message d'alerte en stock
+    toggleAlertMessage()
+
     // création des titres
     create("h2", main, "Bienvenue sur votre espace personnel");
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"]);
@@ -24,7 +27,7 @@ export function toggleEspaceAbonne() {
     const nav = create("nav", main, null, ['navBar_User'])
 
     // informations de l'abonné
-    createMenuElement(nav, toggleInfoAbonne, "jaune", "src/assets/images/nav_gens.png", "Afficher mes informations", "Afficher mes informations")
+    createMenuElement(nav, () => redirect("/espace-informations-abonne"), "jaune", "src/assets/images/nav_gens.png", "Afficher mes informations", "Afficher mes informations")
 
     // notif
     createMenuElement(nav, () => redirect("/notification-center"), "orange", "src/assets/images/nav_notif.png", "Afficher mes notifications", "Afficher mes notifications")
@@ -33,9 +36,20 @@ export function toggleEspaceAbonne() {
 }
 
 
-function toggleInfoAbonne(){
+export function toggleInfoAbonne(){
     const main = document.querySelector("#app");
     main.replaceChildren("");
+
+    // redirection si l'utilisateur n'est pas un abonné
+    redirectUser(
+        () => redirect("/"),
+        () => redirect("/"),
+        () => redirect("/"),
+        () => null
+    );
+
+    // affiche le potentiel message d'alerte en stock
+    toggleAlertMessage()
 
     // recuperation des infos de l'utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
@@ -45,7 +59,6 @@ function toggleInfoAbonne(){
 
     // les informations de l'abonné + les boutons pour mofier le profil et le mot de passe
     axios.get(`users/users.php?function=user&id=`+sessionData["id"]).then((response) => {
-        console.log(response.data);
         const div = create("div", main);
         create("h2", div, "Voici vos informations personnelles :");
 
@@ -112,7 +125,7 @@ function changerInfoAbonne (){
 
             //création de l'url
             let url = `users/users.php?function=update&id=${sessionData["id"]}&email=${email}&login=${login}&name=${name}&firstname=${firstname}&date=${date}`;
-            fetchUrlRedirectAndAlert(url, () => toggleInfoAbonne(), "Votre profil a bien été modifié.", "Votre profil n'a pas été modifié.")
+            fetchUrlRedirectAndAlert(url, '/espace-informations-abonne', "Votre profil a bien été modifié.", "Votre profil n'a pas été modifié.")
         });
     })
 
@@ -162,7 +175,7 @@ function changerMdpAbonne (){
 
             //création de l'url
             let url = `users/users.php?function=updatepwd&id=${sessionData["id"]}&old=${oldPwdAbo}&new=${newPwdAbo}&confirm=${confNewPwdAbo}`;
-            fetchUrlRedirectAndAlert(url, () => toggleInfoAbonne(), "Votre mot de passe a bien été modifié.", "Votre mot de passe n'a pas été modifié.")
+            fetchUrlRedirectAndAlert(url, '/espace-informations-abonne', "Votre mot de passe a bien été modifié.", "Votre mot de passe n'a pas été modifié.")
         });
     })
     return main

@@ -84,22 +84,22 @@ const toggleAccueil = () => {
     const paragraphe7 = create("div", main, null, ["paragraphe"])
     create("h3", paragraphe7, "Vous êtes un abonné qui veut réserver un bus ?", ["phrasePres"])
     const p7 = create("p", paragraphe7, null, ["sous_paragraphe"])
-    create("span", p7, "Organisez", ["GoBus_role"])
+    create("span", p7, "Visualisez", ["GoBus_role"])
     p7.innerHTML += " et "
-    create("span", p7, "planifiez", ["GoBus_role"])
-    p7.innerHTML +=  " des réunions, "
+    create("span", p7, "prenez", ["GoBus_role"])
+    p7.innerHTML +=  " des réservations de bus, "
     create("span", p7, "gérez", ["GoBus_role"])
     p7.innerHTML +=  " et "
     create("span", p7, "visualisez", ["GoBus_role"])
-    p7.innerHTML += " l'emploi du temps des différentes lignes de bus !"
+    p7.innerHTML += " vos données personnelles !"
     if(!sessionData){
         create("a", paragraphe7, "Voir votre espace d'abonné").href = "/connexion"
     }
     else if(sessionData["role"] != "Abonné"){
-        create("a", paragraphe4, "Voir votre espace d'abonné").href = "/"
+        create("a", paragraphe7, "Voir votre espace d'abonné").href = "/"
     }
     else{
-        create("a", paragraphe4, "Voir votre espace d'abonné").href = "/espace-abonne"
+        create("a", paragraphe7, "Voir votre espace d'abonné").href = "/espace-abonne"
     }
 
     // Présentation des fonctionnalités

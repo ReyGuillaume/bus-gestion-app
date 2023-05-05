@@ -11,7 +11,7 @@ import { disconnectUser } from './js/pages/disconnect'
 import { toggle404 } from './js/pages/404'
 import { toggleEspaceAdmin } from './js/pages/espaceAdmin'
 import { toggleEspaceUser } from './js/pages/espaceUser'
-import { toggleEspaceAbonne } from './js/pages/espaceAbonne'
+import {toggleEspaceAbonne, toggleInfoAbonne} from './js/pages/espaceAbonne'
 import { toggleNotificationCenter } from './js/pages/notificationCenter'
 
 axios.defaults.baseURL = "http://localhost/projetL2S4/src/services"
@@ -29,6 +29,7 @@ router.on('/', toggleAccueil)
 router.on('/espace-admin', toggleEspaceAdmin)
 router.on('/espace-utilisateur', toggleEspaceUser)
 router.on('/espace-abonne', toggleEspaceAbonne)
+router.on('/espace-informations-abonne', toggleInfoAbonne)
 router.on('/connexion', toggleAdminForm)
 router.on('/disconnect', disconnectUser)
 router.on('/notification-center', toggleNotificationCenter)
