@@ -1,68 +1,14 @@
-import { create, toggleAlert, toggleError } from "../main";
-import '../../assets/style/calandar.css';
-import { toggleDayOfWeek, datePhp, toggleMultiDay } from "../pages/day";
-import axios from "axios"
+import { create, toggleAlert, toggleError } from "../utils/domManipulation";
+import { toggleDayOfWeek, toggleDrivers, toggleMultiAgenda } from "../pages/day";
+import { datePhp } from "../utils/dates";
 import { toggleAgenda } from "../pages/agenda";
+import { getMonthToString, getIdOfDay, getDayToString, formatedHour, getFirstMonday, getNearestHour, getNearestMinute } from "../utils/dates"
+import axios from "axios"
 
-
-export const getIdOfDay = day => {
-    switch (day) {
-        case "Dimanche": return 0
-        case "Lundi": return 1
-        case "Mardi": return 2
-        case "Mercredi": return 3
-        case "Jeudi": return 4
-        case "Vendredi": return 5
-        case "Samedi": return 6
-        default: return null
-    }
-}
-
-
-export const getDayToString = (index) => {
-    switch (index) {
-        case 0: return "Dimanche"
-        case 1: return "Lundi"
-        case 2: return "Mardi"
-        case 3: return "Mercredi"
-        case 4: return "Jeudi"
-        case 5: return "Vendredi"
-        case 6: return "Samedi"
-        default: return null
-    }
-}
-
-
-export const getMonthToString = (index) => {
-    switch (index) {
-        case 0: return "Janvier"
-        case 1: return "Février"
-        case 2: return "Mars"
-        case 3: return "Avril"
-        case 4: return "Mai"
-        case 5: return "Juin"
-        case 6: return "Juillet"
-        case 7: return "Août"
-        case 8: return "Septembre"
-        case 9: return "Octobre"
-        case 10: return "Novembre"
-        case 11: return "Décembre"
-        default: return null
-    }
-}
-
-// rajoute un "0" si l'horaire est inférieur à 10 (8 => 08)
-export const formatedHour = (horaire) => {
-    if(horaire < 10){
-        return "0" + horaire
-    }
-    else{
-        return horaire
-    }
-}
+import '../../assets/style/calandar.css'
 
 // fonction qui crée le header du calendrier d'un mois entier (mois + année)
-const createWeek = (container, date, user=null, multi=false) => {
+const createWeek = (container, date, user=null, multi=false, entites=null) => {
     const mainDiv = create("div", container, null, ['calandar__header'])
 
     // flèche gauche
@@ -77,24 +23,10 @@ const createWeek = (container, date, user=null, multi=false) => {
     const rightDiv = create("div", mainDiv, null, ['right-button'])
     create("i", rightDiv , null, ['fa-solid', 'fa-chevron-right'])
 
-    leftDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setDate(date.getDate() - 7)), user, multi))
-    rightDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setDate(date.getDate() + 7)), user, multi))
+    leftDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setDate(date.getDate() - 7)), user, multi, entites))
+    rightDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setDate(date.getDate() + 7)), user, multi, entites))
 
     return mainDiv
-}
-
-// fonction qui recupère le 1er Lundi de la semaine de la date
-const getFirstMonday = (date) => {
-    let initDate = new Date(date)
-
-    let day = getDayToString(initDate.getDay())
-
-    while(day != "Lundi"){
-        initDate = new Date(new Date(initDate).setDate(initDate.getDate() - 1))
-        day = getDayToString(initDate.getDay())
-    }
-
-    return initDate
 }
 
 
@@ -131,41 +63,17 @@ const handleDargEnter = e => {
 
 const handleDargOver = e => e.preventDefault()
 
-const handleDargLeave = e => {
+const handleDargLeave = e => e.target.classList.toggle("dragover")
+
+const handleDrop = (e, date, user, multi=false, entites=null) => {
     e.target.classList.toggle("dragover")
-}
-
-const handleDrop = (e, date, user, multi=false) => {
-    e.target.classList.toggle("dragover")
-    if(e.dataTransfer.getData('text/plain').substring(0, 2) === "ts"){
-        toggleModifValidation(e, date, user, multi)    //création d'une modale de validation
+    if(e.dataTransfer.getData('text/plain').substring(0, 2) === "ts" && e.target.classList.contains("drop")){
+        toggleModifValidation(e, date, user, multi, entites)    //création d'une modale de validation
     }
 }
 
-// Fonction pour obtenir l'heure la plus proche à la demi-heure près
-const getNearestHour = (hour, minute) => {
-    if(minute <= 15){
-        return hour;
-    }
-    else if(minute <= 45){
-        return hour;
-    }
-    else{
-        return (hour + 1) % 24;
-    }
-  }
-  
-// Fonction pour obtenir la minute la plus proche à la demi-heure près
-const getNearestMinute = (minute) => {
-if(minute >= 45 || minute < 15){
-    return 0;
-} 
-else{
-    return 30;
-}
-}
 
-const toggleModifValidation = async (e, dateOfMonday, user, multi=false) => {
+const toggleModifValidation = async (e, dateOfMonday, user, multi=false, entites=null) => {
 
     let app = document.querySelector("#app")
     let id = e.dataTransfer.getData('text/plain')
@@ -219,12 +127,14 @@ const toggleModifValidation = async (e, dateOfMonday, user, multi=false) => {
     // création des composants
     const overlay = create("div", app, null, ["overlay"])
     const modale = create("div", overlay, null, ['validation'])
-    const back = create("div", modale)
-    create("i", back , null, ['fa-solid', 'fa-chevron-left', 'back-button'])
+    const back = create("div", modale, '<< Retour', ['return'])
     create("h1", modale, "Voulez vous effectuer cette action ?")
-    create("p", modale, `Déplacer le créneau de type ${type.name} du ${jour} ${formatedHour(num)} ${mois} ${annee} à ${formatedHour(h)}h${formatedHour(min)}`)
-    create("p", modale, `Vers le ${nouvjour} ${formatedHour(nouvnum)} ${nouvmois} ${nouvannee} à ${formatedHour(heure_arrondie)}h${formatedHour(minute_arrondie)}`)
-    const buttonDiv = create("div", modale)
+    const content = create("div", modale, null, ['content'])
+    create("p", content, `Déplacer le créneau de type ${type.name} du :`)
+    create("p", content, `${jour} ${formatedHour(num)} ${mois} ${annee} à ${formatedHour(h)}h${formatedHour(min)}`, ['important'])
+    create("p", content, `Vers le :`)
+    create("p", content, `${nouvjour} ${formatedHour(nouvnum)} ${nouvmois} ${nouvannee} à ${formatedHour(heure_arrondie)}h${formatedHour(minute_arrondie)}`, ['important'])
+    const buttonDiv = create("div", modale, null, ["button-container"])
     const annuler = create("button", buttonDiv, "Annuler", ['second-button'])
     const valider = create("button", buttonDiv, "Valider", ['primary-button'])
     
@@ -260,22 +170,22 @@ const toggleModifValidation = async (e, dateOfMonday, user, multi=false) => {
         })
         await axios.get(`timeslots/timeslots.php?function=update&id=${id}&beginning=${beginning}&end=${end}&users=${users}&buses=${buses}&lines=${lines}&directions=${directions}`)
         .then(res => success = res.data)
-        toggleAgenda(user, newDate, multi)
+        toggleAgenda(user, newDate, multi, entites)
         success ? toggleAlert("Bravo !", "Le créneau a bien été modifié") : toggleError("Erreur", "Le créneau n'a pas pu être modifié")
     }
 }
 
 // création des zones de drop
-const addDragAndDrop = (div, date, user, multi=false) => {
+const addDragAndDrop = (div, date, user, multi=false, entites=null) => {
     div.ondragenter = handleDargEnter
     div.ondragover = handleDargOver
     div.ondragleave = handleDargLeave
-    div.ondrop = e => handleDrop(e, date, user, multi)
+    div.ondrop = e => handleDrop(e, date, user, multi, entites)
 }
 
 
 // fonction qui crée le corps du calendrier d'une semaine
-const createCalandar = (container, date, user=null, multi=false) => {
+const createCalandar = (container, date, user=null, multi=false, entites=null) => {
     const body = create("div", container, null, ['calandar__body'])
     const currentDate = new Date(Date.now())
 
@@ -306,14 +216,17 @@ const createCalandar = (container, date, user=null, multi=false) => {
         }
         
 
-        if(multi){
-            toggleMultiDay(timeslots_courant, date_courante)
+        if(multi && entites == null){
+            toggleDrivers(timeslots_courant, date_courante)
+        }
+        else if(multi && entites){
+            toggleMultiAgenda(timeslots_courant, date_courante, entites)
         }
         else{
-            toggleDayOfWeek(timeslots_courant, date_courante, user, multi)
+            toggleDayOfWeek(timeslots_courant, date_courante, user, multi, entites)
         }
 
-        addDragAndDrop(timeslots_courant, firstDay, user, multi)
+        addDragAndDrop(timeslots_courant, firstDay, user, multi, entites)
 
         // On ajoute la classe 'today' si c'est la date d'aujourd'hui
         currentDate.getFullYear() == date_courante.getFullYear() &&
@@ -329,21 +242,22 @@ const createCalandar = (container, date, user=null, multi=false) => {
 
 
 // fonction qui affiche le header et le corps du calendrier d'un mois entier
-const drawCalandar = (container, date, user=null, multi=false) => {
+const drawCalandar = (container, date, user=null, multi=false, entites=null) => {
     container.replaceChildren("")
 
-    createWeek(container, date, user, multi)
-    createCalandar(container, date, user, multi)
+    createWeek(container, date, user, multi, entites)
+    createCalandar(container, date, user, multi, entites)
 
     return container
 }
 
 
 
-export const calandar = (
+const calandar = (
     container,
     user=null,
     multi=false,
+    entites=null,
     year = new Date().getFullYear(), 
     monthIndex = new Date().getMonth(), 
     day = new Date().getDate()
@@ -352,7 +266,10 @@ export const calandar = (
 
     const cal = create("div", container, null, ['calandar'])
 
-    drawCalandar(cal, date, user, multi)
+    drawCalandar(cal, date, user, multi, entites)
 
     return container
 }
+
+
+export { calandar }

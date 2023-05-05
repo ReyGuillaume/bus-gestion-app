@@ -1,7 +1,8 @@
-import { create } from "../main";
+import { create, createChampCheckbox, toggleError } from "../utils/domManipulation";
 import { toggleAgenda } from "./agenda";
 import { toggleTask } from "./userTask";
-import { getMonthToString , getDayToString, formatedHour } from "../components/week";
+import { getMonthToString , getDayToString, datePhp, formatedHour } from "../utils/dates";
+import { redirect } from "../utils/redirection";
 import axios from "axios";
 
 // fonction qui crée tous les jours d'un mois
@@ -25,10 +26,6 @@ const createDaysBar = (date, container, user=null) => {
 }
 
 
-// renvoie une date JS sous forme 2023-02-16 00:00:00
-export const datePhp = date => date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
-
-
 // fonction qui récupère tous les créneaux horaires affectés à l'utilisateur connecté, à une certaine date
 const fetchTimeSlots = async (date, user=null) => {
     let data = []
@@ -41,29 +38,26 @@ const fetchTimeSlots = async (date, user=null) => {
         let idUser = user.id
         await axios.get(`timeslots/timeslots.php?function=timeslotbyuser&user=${idUser}&beginning=${d1}&end=${d2}`)
         .then(res => data = res.data)
-        return [...data]
     }
     // bus
-    else if(user != null && user.id_bus_type){
+    else if(user != null && user.nb_places){
         let idBus = user.id
         await axios.get(`timeslots/timeslots.php?function=timeslotbybus&bus=${idBus}&beginning=${d1}&end=${d2}`)
         .then(res => data = res.data)
-        return [...data]
     }
     // ligne
     else if(user != null && user.number){
         let idLine = user.number
         await axios.get(`timeslots/timeslots.php?function=timeslotbyline&line=${idLine}&beginning=${d1}&end=${d2}`)
         .then(res => data = res.data)
-        return [...data]
     }
     // personnel
     else{
         let idUser = sessionData['id']
         await axios.get(`timeslots/timeslots.php?function=timeslotbyuser&user=${idUser}&beginning=${d1}&end=${d2}`)
         .then(res => data = res.data)
-        return [...data]
     }
+    return [...data]
 }
 
 const handlerDragStart = e => {
@@ -73,31 +67,46 @@ const handlerDragStart = e => {
 // fonction qui renvoie un booléen indiquant si le user a un rôle qui lui permet de modifier tel créneau
 const possibleDrag = (user_role, timeslot_name) => {
     if(user_role == "Conducteur"){
-        if(timeslot_name == "Indisponibilité"){
-            return true;
-        }
-        return false;
+        return timeslot_name == "Indisponibilité"
+    } else if (user_role == "Responsable Logistique"){
+        return timeslot_name == "Conduite"
+    } else {
+        return timeslot_name == "Conduite" || timeslot_name == "Réunion"
     }
-    else if(user_role == "Responsable Logistique"){
-        if(timeslot_name == "Conduite"){
-            return true;
-        }
-        return false;
+}
+
+// affiche les initiales d'une entité sur l'agenda
+const afficheInitiales = (entite) => {
+    if(entite.firstname){
+        return entite.firstname.substr(0,1) + entite.name.substr(0,1)
     }
-    else{
-        if(timeslot_name == "Conduite" || timeslot_name == "Réunion"){
-            return true;
-        }
-        return false;
+    else if(entite.nb_places){
+        return "Bus " + entite.id
+    }
+    else if(entite.number){
+        return "L" + entite.number
     }
 }
 
 // fonction qui affiche tous les créneaux horaires récupérés, affectés à l'utilisateur connecté
-const createTimeSlots = async (date, container, user=null, multi=false, index=0) => {
+const createTimeSlots = async (date, container, user=null, multi=false, entites=null, index=0) => {
     const sessionData = JSON.parse(sessionStorage.getItem("userData"))
     const user_role = sessionData["role"]
     const footer = document.querySelector("#footer")
     const res = await fetchTimeSlots(date, user)
+    
+    // initiales des 6 chauffeurs
+    if(multi && !entites){
+        let initiales = create("div", container, afficheInitiales(user), ["initiales"])
+        initiales.style.left = (25 * index) + "px"
+        initiales.style.width = 25 + "px"
+    }
+    // initiales d'entités différentes
+    else if(multi && entites){
+        let initiales = create("div", container, afficheInitiales(entites[index]), ["initiales"])
+        initiales.style.left = ((150 / entites.length) * index) + "px"
+        initiales.style.width = (150 / entites.length) + "px"
+    }
     if (res.length > 0) {
         res.forEach(timeslot => {
             let div
@@ -107,7 +116,8 @@ const createTimeSlots = async (date, container, user=null, multi=false, index=0)
             else{
                 div = create("div", container, null, ['timeslot'], [`ts${timeslot.id}`])
             }
-            div.addEventListener("click", () => toggleTask(footer, timeslot, div, user))
+            div.addEventListener("click", () => toggleTask(footer, timeslot, div, user, multi))
+
             
             if(possibleDrag(user_role, timeslot.name)){
                 div.setAttribute('draggable', true);
@@ -122,12 +132,17 @@ const createTimeSlots = async (date, container, user=null, multi=false, index=0)
 
             let top = container.clientHeight * ((heure_debut * 60 + min_debut) - 6*60) / ((23 - 6) * 60)
             let height = duree * container.clientHeight / ((23 - 6) * 60)
-            
+                
             div.style.top = `${top}px`
             div.style.height = `${height}px`
 
-            if(multi){
+            if(multi && entites){
+                div.style.left = ((150 / entites.length) * index) + "px"
+                div.style.width = (150 / entites.length) + "px"
+            }
+            else if(multi && !entites){
                 div.style.left = (25 * index) + "px"
+                div.style.width = 25 + "px"
             }
             else{
                 const color = create("div", div, null, ["timeslot__color", timeslot.name])
@@ -135,14 +150,13 @@ const createTimeSlots = async (date, container, user=null, multi=false, index=0)
                 div_color.style.height = duree + "px"
             }
 
-            const houres = create("div", div, null, ["timeslot__houres"])
-
             //ajout du drag & drop
             if(div.getAttribute("draggable")){
                 div.ondragstart = handlerDragStart
             }
 
             if(!multi){
+                const houres = create("div", div, null, ["timeslot__houres"])
                 create("h2", houres, formatedHour(heure_debut) + ":" + formatedHour(min_debut), ['beginning'])
                 create("h2", houres, formatedHour(heure_fin) + ":" + formatedHour(min_fin), ['end'])
                 const body = create("div", div, null, ["timeslot__body"])
@@ -158,19 +172,24 @@ const createTimeSlots = async (date, container, user=null, multi=false, index=0)
                         break;
                 }
             }
+            else{
+                const houres_multi = create("div", div, null, ["timeslot__houres_multi"])
+                create("div", houres_multi, formatedHour(heure_debut) + ":" + formatedHour(min_debut), ['beginning_multi'])
+                create("div", houres_multi, formatedHour(heure_fin) + ":" + formatedHour(min_fin), ['end_multi'])
+            }
 
             if(!multi){
                 const goto = create("div", div, null, ["timeslot__goto"])
                 create("i", goto , null, ['fa-solid', 'fa-chevron-right'])
             }
             else{
-                create("div", div, timeslot.name.substr(0,1).toUpperCase(), ["multi-info"])
+                create("div", div, timeslot.name, ["multi-info"])
             }
         })
     }
 }
 
-export const toggleDay = (date, user=null) => {
+const toggleDay = (date, user=null) => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -190,14 +209,14 @@ export const toggleDay = (date, user=null) => {
     createTimeSlots(date, body, user)
 }
 
+// afficher l'agenda d'un jour de la semaine
+const toggleDayOfWeek = (container, date, user=null, multi=false, entites=null) => {
 
-export const toggleDayOfWeek = (container, date, user=null, multi=false) => {
-
-    createTimeSlots(date, container, user, multi)
+    createTimeSlots(date, container, user, multi, entites)
 }
 
-export const toggleMultiDay = async (container, date) => {
-
+// afficher l'agenda des 6 chauffeurs (sur un jour)
+const toggleDrivers = async (container, date) => {
     let users = []
     let i = 0
 
@@ -205,7 +224,121 @@ export const toggleMultiDay = async (container, date) => {
     .then(res => users = res.data)
 
     for(let user of users){
-        createTimeSlots(date, container, user, true, i)
+        createTimeSlots(date, container, user, true, null, i)
         i += 1
     }
+}
+
+
+// afficher 4 agendas (au choix)
+const toggleMultiEntities = async () => {
+
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    create("p", main, "Sélectionnez au maximum 4 agendas que vous souhaitez afficher", ["presentation"])
+
+    let users = []
+    let buses = []
+    let lines = []
+    let entites = []
+
+    await axios.get(`users/users.php?function=users`)
+    .then(res => users = res.data)
+
+    await axios.get(`buses/buses.php?function=buses`)
+    .then(res => buses = res.data)
+
+    await axios.get(`lines/lines.php?function=lines`)
+    .then(res => lines = res.data)
+
+    const multi_form = create("div", main, null, ["multi-form"])
+
+    // affichage des utilisateurs
+    const div_users = create("div", multi_form, "Utilisateurs :", ["choix", "choix_users"])
+
+    for(let user of users){
+        let div_user = create("div", div_users, null, ["selectMulti"])
+        createChampCheckbox(div_user, user.id, "selectionUser", user.id).onclick = async () => entites = await entitiesSelected()
+        create("div", div_user, user.firstname + " " + user.name.toUpperCase())
+    }
+
+    // affichage des bus
+    const div_buses = create("div", multi_form, "Bus :", ["choix", "choix_bus"])
+
+    for(let bus of buses){
+        let div_bus = create("div", div_buses, null, ["selectMulti"])
+        createChampCheckbox(div_bus, bus.id, "selectionBus", bus.id).onclick = async () => entites = await entitiesSelected()
+        create("div", div_bus, bus.id)
+    }
+
+    // affichage des lignes
+    const div_lines = create("div", multi_form, "Lignes :", ["choix", "choix_lignes"])
+
+    for(let line of lines){
+        let div_line = create("div", div_lines, null, ["selectMulti"])
+        createChampCheckbox(div_line, line.number, "selectionLine", line.number).onclick = async () => entites = await entitiesSelected()
+        create("div", div_line, "Ligne " + line.number)
+    }
+
+    create("div", multi_form, "Afficher", ["modifButton"]).addEventListener("click", function(){
+        if(entites.length > 4){
+            toggleError("ERREUR", "Vous ne pouvez sélectionner que 4 entités")
+        }
+        else if(entites.length < 1){
+            toggleError("ERREUR", "Veuillez choisir au moins une entité")
+        }
+        else if(entites.length == 1){
+            toggleAgenda(entites[0])
+        }
+        else{
+            toggleAgenda(undefined, undefined, true, entites)
+        }
+    })
+}
+
+// renvoie la liste des agendas sélectionnés
+const entitiesSelected = async () => {
+    let selected = []
+    for(let user of document.querySelectorAll("input[name='selectionUser']")){
+        if (user.checked) {
+            await axios.get("users/users.php?function=user&id="+user.id)
+            .then(res => selected.push(res.data))
+        }
+    }
+
+    for(let bus of document.querySelectorAll("input[name='selectionBus']")){
+        if (bus.checked) {
+            await axios.get("buses/buses.php?function=bus&id="+bus.id)
+            .then(res => selected.push(res.data))
+        }
+    }
+
+    for(let line of document.querySelectorAll("input[name='selectionLine']")){
+        if (line.checked) {
+            await axios.get("lines/lines.php?function=line&number="+line.id)
+            .then(res => selected.push(res.data))
+        }
+    }
+    return selected
+}
+
+
+const toggleMultiAgenda = async (container, date, entites) => {
+    let i = 0
+    let agendas = await entites
+
+    for(let entite of agendas){
+        createTimeSlots(date, container, entite, true, agendas, i)
+        i += 1
+    }
+}
+
+export {
+    toggleDay,
+    toggleDayOfWeek,
+    toggleDrivers,
+    toggleMultiEntities,
+    toggleMultiAgenda
 }

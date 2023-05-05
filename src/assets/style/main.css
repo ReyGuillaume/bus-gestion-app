@@ -174,18 +174,21 @@ body {
   transition: 0.5s;
   padding: 8px;
 }
-.rose, .jaune, .rouge, .orange, .bleu, .bleu_clair, .gris, .violet, .vert{
+.rose, .jaune, .jaune_clair, .rouge, .orange, .bleu, .bleu_clair, .gris, .violet, .vert, .vert_clair{
   transition: 0.5s;
   border-radius: 35px;
 }
-.rose:hover, .jaune:hover, .rouge:hover, .orange:hover, .bleu:hover, .bleu_clair:hover, .gris:hover, .violet:hover, .vert:hover{
+.rose:hover, .jaune:hover, .jaune_clair:hover, .rouge:hover, .orange:hover, .bleu:hover, .bleu_clair:hover, .gris:hover, .violet:hover, .vert:hover, .vert_clair:hover{
   border-radius: 20px;
 }
 .rose{
   background-color: #E2A9FD;
 }
 .jaune{
-  background-color: #F1E1A8;
+  background-color: #fde385;
+}
+.jaune_clair{
+  background-color: #fff79e;
 }
 .rouge{
   background-color: #F2A1A1;
@@ -206,8 +209,48 @@ body {
   background-color: #a68bff;
 }
 .vert{
-  background-color: #A1F2A9;
+  background-color: #79fb86;
 }
+.vert_clair{
+  background-color: #baf8bf;
+}
+
+.liste_users_2, .liste_users_3, .liste_bus, .liste_lignes{
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+  list-style-type: none;
+  cursor: pointer;
+  transition: 0.5s;
+  box-shadow: 0px 0px 4px gray;
+}
+
+.liste_users_2 div, .liste_users_3 div, .liste_bus div, .liste_lignes div{
+  color: white;
+}
+
+.liste_users_2{
+  background: linear-gradient(to right, rgb(255, 212, 126), rgb(236, 191, 101));
+}
+
+.liste_users_3{
+  background: linear-gradient(to right, rgb(255, 192, 239), rgb(250, 173, 230));
+}
+
+.liste_bus{
+  background: linear-gradient(to right, rgb(255, 141, 141), rgb(253, 102, 102));
+}
+
+.liste_lignes{
+  background: linear-gradient(to right, rgb(184, 209, 255), rgb(164, 196, 255));
+}
+
+.liste_users_2:hover, .liste_users_3:hover, .liste_bus:hover, .liste_lignes:hover{
+  background: linear-gradient(to right, rgb(64, 64, 64), black);
+}
+
+/* FOOTER */
+
 #footer {
   display: flex;
   align-items: center;
@@ -219,6 +262,9 @@ body {
   flex-direction: column;
   align-items: center;
 }
+
+/* FORMULAIRE D'AUTHENTIFICATION */
+
 .submitButton{
   cursor: pointer;
   transition: 0.5s;
@@ -238,22 +284,26 @@ body {
   color: #3D7C98;
 }
 #adminFormulaire{
+  display: flex;
+  flex-direction: column;
   width: min-content;
   margin: 0 auto;
-  padding: 10px 105px 25px 105px;
+  padding: 20px 60px;
   background-color: white;
   border-radius: 15px;
   box-shadow: 0px 0px 5px gray;
+  align-items: center;
 }
-
 #adminFormulaire input{
-  padding: 15px 50px 15px 60px;
-  margin: 5px 0px 5px 0px;
+  padding: 10px;
+  margin: 5px;
   border-radius: 30px;
   border: 0px;
   background-color: #e7e7e7;
 }
-
+#adminFormulaire #adminButton{
+  margin: 5px;
+}
 #adminFormulaire label{
   display: block;
   text-align: center;
@@ -281,6 +331,41 @@ body {
   background-color: #222630;
   transition: 0.5s ease;
 }
+
+/* AUTRES FORMULAIRES */
+
+.app-form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px;
+  border-radius: 15px;
+  box-shadow: 0px 0px 5px gray;
+}
+
+.label-info{
+  color: rgb(177, 96, 96);
+}
+
+input[type="datetime-local"], input[type="week"]{
+  border: 2px solid #ccc;
+  padding: 5px;
+  border-radius: 15px;
+}
+
+.app-form .form-div, .app-form .form-div-radio{
+  margin: 5px;
+  display: flex;
+}
+
+.app-form .form-div{
+  flex-direction: column;
+}
+
+/* PAGE D'ACCUEIL */
 
 #titreAccueil{
   color: rgb(51, 51, 173);
@@ -338,6 +423,43 @@ body {
   transition: 0.5s;
 }
 
+/* PAGES DE GESTION */
+
+.liste_gestion{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+.gestion_users, .gestion_bus, .gestion_lignes{
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+  list-style-type: none;
+  cursor: pointer;
+  transition: 0.5s;
+  color: white;
+}
+
+.gestion_users:hover, .gestion_bus:hover, .gestion_lignes:hover{
+  background: linear-gradient(to right, rgb(64, 64, 64), black);
+}
+
+.gestion_users{
+  background: linear-gradient(to right, rgb(238, 137, 251), rgb(234, 110, 250));
+}
+
+.gestion_bus{
+  background: linear-gradient(to right, rgb(132, 237, 106), rgb(83, 213, 50));
+}
+
+.gestion_lignes{
+  background: linear-gradient(to right, rgb(184, 209, 255), rgb(164, 196, 255));
+}
+
+/* POP-UP */
+
 #fenetreAlerte{
   position: fixed;
   top: 0;
@@ -391,6 +513,8 @@ body {
   width: 20px;
   height: 20px;
 }
+
+/* NOTIFICATIONS */
 
 #app .navNotif {
   display: table;

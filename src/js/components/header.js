@@ -1,4 +1,4 @@
-import { create } from "../main";
+import { create } from "../utils/domManipulation";
 
 const createNavBar = () => {
     const h = document.querySelector("#header")
@@ -10,14 +10,13 @@ const createNavBar = () => {
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
     if (sessionData) {
         // si l'utilisateur est un responsable logistique ou le gérant
-        if(sessionData["role"] == "Responsable Logistique" || sessionData["role"] == "Directeur"){
-            create("a", nav, 'Espace administrateur', ['navBar__item']).href = "/espaceAdmin"
+        if(["Responsable Logistique", "Directeur"].includes(sessionData["role"])){
+            create("a", nav, 'Espace administrateur', ['navBar__item']).href = "/espace-admin"
         }
         // si l'utilisateur est un chauffeur
         else{
-            create("a", nav, 'Espace utilisateur', ['navBar__item']).href = "/espaceUser"
+            create("a", nav, 'Espace utilisateur', ['navBar__item']).href = "/espace-utilisateur"
         }
-
         create("a", nav, 'Se déconnecter', ['navBar__item']).href = "/disconnect"
     }
     else{
@@ -27,7 +26,6 @@ const createNavBar = () => {
     return nav
 }
 
-
 const toggleNavBar = () => {
     document.querySelector("#header .navBar").classList.toggle('hide')
     const i = document.querySelector("#header .toggleNav i")
@@ -35,8 +33,7 @@ const toggleNavBar = () => {
     i.classList.toggle('fa-close')
 }
 
-
-export const createHeader = () => {
+const createHeader = () => {
     const h = document.querySelector("#header")
     h.replaceChildren("")
 
@@ -59,4 +56,8 @@ export const createHeader = () => {
     createNavBar()
 
     return h;
+}
+
+export {
+    createHeader
 }

@@ -1,6 +1,6 @@
-import { create } from "../main";
+import { create } from "../utils/domManipulation";
 
-export const toggle404 = () => {
+const toggle404 = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -9,3 +9,6 @@ export const toggle404 = () => {
     create("a", main, "Retour à l'accueil").href = "/"
     return main
 }
+
+
+export { toggle404 }

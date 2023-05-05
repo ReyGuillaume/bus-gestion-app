@@ -1,8 +1,9 @@
-import { create, createChamp, toggleError } from "../main";
+import { create, createChamp, toggleError } from "../utils/domManipulation";
 import { createHeader } from "../components/header";
+import { redirectUser, redirect } from "../utils/redirection";
 import axios from 'axios';
 
-export const toggleAdminForm = () => {
+const toggleAdminForm = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -49,20 +50,16 @@ export const toggleAdminForm = () => {
                 // Refresh display of header (to show the user's session)
                 createHeader();
 
-                // Redirection to the user page according to his role
-                if (idrole == 1 || idrole == 2){
-                    window.location = "/espaceAdmin"
-                }
-                else{
-                    window.location = "/espaceUser"
-                }        
-            }
-            else{
+                redirectUser(
+                    () => redirect("/espace-admin"), 
+                    () => redirect("/espace-admin"), 
+                    () => redirect("/espace-utilisateur")
+                )
+            } else {
                 toggleError("ATTENTION", "Formulaire invalide !")
             }
         })
-    });
-
-    return main
-    
+    })
 }
+
+export { toggleAdminForm }
