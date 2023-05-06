@@ -237,6 +237,7 @@ const toggleMultiEntities = async () => {
     main.replaceChildren("")
 
     create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    create("h2", main, "Agenda multiple")
     create("p", main, "Sélectionnez au maximum 4 agendas que vous souhaitez afficher", ["presentation"])
 
     let users = []
@@ -255,34 +256,39 @@ const toggleMultiEntities = async () => {
 
     const multi_form = create("div", main, null, ["multi-form"])
 
+    const multi_choix = create("div", multi_form, null, ["multi-choix"])
+
     // affichage des utilisateurs
-    const div_users = create("div", multi_form, "Utilisateurs :", ["choix", "choix_users"])
+    const div_users = create("div", multi_choix, null, ["choix", "choix_users"])
+    create("div", div_users, "Utilisateurs", ["choix-titre"])
 
     for(let user of users){
         let div_user = create("div", div_users, null, ["selectMulti"])
         createChampCheckbox(div_user, user.id, "selectionUser", user.id).onclick = async () => entites = await entitiesSelected()
-        create("div", div_user, user.firstname + " " + user.name.toUpperCase())
+        create("div", div_user, " " + user.firstname + " " + user.name.toUpperCase())
     }
 
     // affichage des bus
-    const div_buses = create("div", multi_form, "Bus :", ["choix", "choix_bus"])
+    const div_buses = create("div", multi_choix, null, ["choix", "choix_bus"])
+    create("div", div_buses, "Bus", ["choix-titre"])
 
     for(let bus of buses){
         let div_bus = create("div", div_buses, null, ["selectMulti"])
         createChampCheckbox(div_bus, bus.id, "selectionBus", bus.id).onclick = async () => entites = await entitiesSelected()
-        create("div", div_bus, bus.id)
+        create("div", div_bus, " Bus n°" + bus.id)
     }
 
     // affichage des lignes
-    const div_lines = create("div", multi_form, "Lignes :", ["choix", "choix_lignes"])
+    const div_lines = create("div", multi_choix, null, ["choix", "choix_lignes"])
+    create("div", div_lines, "Lignes", ["choix-titre"])
 
     for(let line of lines){
         let div_line = create("div", div_lines, null, ["selectMulti"])
         createChampCheckbox(div_line, line.number, "selectionLine", line.number).onclick = async () => entites = await entitiesSelected()
-        create("div", div_line, "Ligne " + line.number)
+        create("div", div_line, " Ligne " + line.number)
     }
 
-    create("div", multi_form, "Afficher", ["modifButton"]).addEventListener("click", function(){
+    create("div", multi_form, "Afficher", ["choixButton"]).addEventListener("click", function(){
         if(entites.length > 4){
             toggleError("ERREUR", "Vous ne pouvez sélectionner que 4 entités")
         }
