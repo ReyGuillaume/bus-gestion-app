@@ -40,7 +40,7 @@ const toggleEspaceAdmin = () => {
     // agenda responsables
     if(sessionData["role"] == "Directeur"){
         createMenuElement(nav, toggleResp, "orange", "src/assets/images/nav_gens.png", "Voir l'agenda des responsables logistiques", "Voir l'agenda des responsables logistiques")
-        createMenuElement(nav, toggleMultiEntities, "jaune_clair", "src/assets/images/nav_agenda.png", "Croiser plusieurs agendas", "Croiser plusieurs agendas")
+        createMenuElement(nav, toggleMultiEntities, "vert", "src/assets/images/nav_agenda.png", "Croiser plusieurs agendas", "Croiser plusieurs agendas")
     }
     // agenda bus
     createMenuElement(nav, toggleBuses, "rouge", "src/assets/images/nav_bus.png", "Voir l'agenda des bus", "Voir l'agenda des bus")
@@ -55,7 +55,7 @@ const toggleEspaceAdmin = () => {
     createMenuElement(nav, toggleGestionUsers, "violet", "src/assets/images/nav_user.png", 'Gérer les utilisateurs', 'Gérer les utilisateurs')
 
     // bus
-    createMenuElement(nav, toggleGestionBus, "vert", "src/assets/images/nav_bus.png", 'Gérer les bus', 'Gérer les bus')
+    createMenuElement(nav, toggleGestionBus, "vert_clair", "src/assets/images/nav_bus.png", 'Gérer les bus', 'Gérer les bus')
 
     // lignes
     createMenuElement(nav, toggleGestionLigne, "bleu_clair", "src/assets/images/nav_gestion.png", 'Gérer les lignes', 'Gérer les lignes')

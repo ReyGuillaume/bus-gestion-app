@@ -167,11 +167,6 @@
   font-weight: bold;
   color: black;
 }
-.multi-form{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
 .timeslot__houres_multi{
   display: flex;
   flex-direction: column;
@@ -203,26 +198,52 @@
 
 /* AGENDA PAR 4 */
 
+.multi-form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.multi-choix{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20px;
+}
 .choix{
-  color: rgb(255, 125, 125);
   padding: 10px;
   margin: 10px;
-  font-weight: bold;
   border-radius: 10px;
-  box-shadow: 0px 0px 5px gray;
+  box-shadow: 0px 0px 10px black;
+}
+.choix-titre{
+  color: white;
+  font-weight: bold;
+  text-shadow: 2px 2px black;
 }
 .choix_users{
-  background: linear-gradient(to bottom, #ddf5df, #fff);
+  border: solid 3px #2f6734;
+  background: linear-gradient(180deg, rgb(187, 246, 187), rgb(144, 229, 144));
 }
 .choix_bus{
-  background: linear-gradient(to bottom, #f5dddd, #fff);
+  border: solid 3px #542d2d;
+  background: linear-gradient(180deg, rgb(246, 187, 187), rgb(229, 144, 144));
 }
 .choix_lignes{
-  background: linear-gradient(to bottom, #d1e9ee, #fff);
+  border: solid 3px #2b565f;
+  background: linear-gradient(180deg, rgb(187, 238, 246), rgb(144, 198, 229));
 }
-.choix div{
-  color: black;
-  font-weight: 100;
+.choixButton{
+  background-color: #3D7C98;
+  color: white;
+  padding: 10px;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: 0.5s;
+}
+.choixButton:hover{
+  background-color: white;
+  color: #3D7C98;
+  border: solid 2px #3D7C98;
 }
 .modifButton{
   background-color: rgb(99, 120, 225);
