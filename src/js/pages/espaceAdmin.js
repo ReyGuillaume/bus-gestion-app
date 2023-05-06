@@ -8,6 +8,8 @@ import { toggleDrivers, toggleResp, toggleBuses, toggleLines } from "./agendaUse
 import { toggleMultiEntities } from "./day";
 import { createMenuElement } from "../components/menuItem";
 import { redirect, redirectUser, toggleAlertMessage } from "../utils/redirection";
+import axios from "axios";
+import {displayReserv} from "./espaceAbonne.js";
 
 
 const toggleEspaceAdmin = () => {
@@ -63,6 +65,8 @@ const toggleEspaceAdmin = () => {
     // notif
     createMenuElement(nav, () => redirect("/notification-center"), "orange", "src/assets/images/nav_notif.png", 'Afficher les notifications', 'Afficher les notifications')
 
+    // reservation
+    createMenuElement(nav, toggleReservation, "rouge", "src/assets/images/nav_reservation.png", "Voir les réservations", "Voir les réservations")
     return main
 }
 
@@ -117,6 +121,24 @@ const toggleGestionLigne = () => {
 
     create("div", nav, "Verifier la couverture d'une semaine", ['gestion_lignes']).addEventListener("click", toggleVerifCouvertureSemaine)
     create("div", nav, "Remplissage automatique des conduite de la semaine", ['gestion_lignes']).addEventListener("click", toggleRemplissageAutoConduiteSemaine)
+
+    return main
+}
+
+const toggleReservation = () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+
+    // bouton de retour
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+
+    create("h2", main, "Voir les réservations")
+
+    let divAllReserv = create("div", main);
+
+    axios.get(`timeslots/timeslots.php?function=fetch_all_reservation_attente`).then((response)=>{
+        displayReserv (divAllReserv, response.data);
+    })
 
     return main
 }

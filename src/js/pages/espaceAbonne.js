@@ -302,15 +302,23 @@ function toggleSeeModeReservation(idClient, etat){
 }
 
 
-const displayReserv = (container, data) => {
+export function displayReserv (container, data) {
+
+    // recuperation des infos de l'utilisateur
+    //const roleUser = JSON.parse(sessionStorage.getItem("userData")).role;
+
     for(let reserv of data){
         let divReserv = create("div", container);
 
         let title = reserv.arretDepart + "  -  "+ reserv.arretArrive;
         let message = reserv.dateDepart;
 
-        let divInfoReserv = create("div", divReserv);
-        create("h3", divInfoReserv, title);
-        create("p", divInfoReserv, message);
+        let divInfoReserv = create("div", divReserv, null, ["divNotif"]);
+        let div = create("div", divInfoReserv);
+        create("h3", div, title);
+        create("p", div, message);
+
+        //if(roleUser != "Abonné"){
+        //}
     }
 }
