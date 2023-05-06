@@ -3,6 +3,7 @@ import { createMenuElement} from "../components/menuItem";
 import {redirect, redirectUser, toggleAlertMessage} from "../utils/redirection";
 import { fetchUrlRedirectAndAlert} from "../utils/formGestion";
 import axios from 'axios';
+import {toggleAjoutUser, toggleModifyUser, toggleSupprimeUser} from "./gestionUsers.js";
 
 
 export function toggleEspaceAbonne() {
@@ -31,6 +32,10 @@ export function toggleEspaceAbonne() {
 
     // notif
     createMenuElement(nav, () => redirect("/notification-center"), "orange", "src/assets/images/nav_notif.png", "Afficher mes notifications", "Afficher mes notifications")
+
+
+    // reservation
+    createMenuElement(nav, toogleReservAbonne, "rouge", "src/assets/images/nav_reservation.png", "Gérer mes réservations", "Gérer mes réservations")
 
     return main
 }
@@ -180,4 +185,132 @@ function changerMdpAbonne (){
     })
     return main
 
+}
+
+function toogleReservAbonne (){
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-abonne"))
+    create("h2", main, "Gestion des réservations")
+    create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
+
+    const nav = create("nav", main, null, ['liste_gestion'])
+
+    create("div", nav, 'Ajouter une réservation', ['gestion_users']).addEventListener("click", toggleAddReservation)
+    create("div", nav, "Modifier une réservation", ['gestion_users']).addEventListener("click", toggleUpdateReservation)
+    create("div", nav, "Supprimer une réservation", ['gestion_users']).addEventListener("click", toggleDeleteReservation)
+    create("div", nav, "Voir les réservations", ['gestion_users']).addEventListener("click", toggleSeeReservation)
+
+    return main
+}
+
+
+function toggleAddReservation(){
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+
+    // bouton de retour
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toogleReservAbonne)
+
+    create("h2", main, "Gestion des réservations")
+    create("h3", main, "Ajouter une réservation")
+
+
+
+
+    return main
+}
+
+function toggleUpdateReservation(){
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+
+    // bouton de retour
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toogleReservAbonne)
+
+    create("h2", main, "Gestion des réservations")
+    create("h3", main, "Modifier une réservation")
+
+
+
+
+    return main
+}
+
+function toggleDeleteReservation(){
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+
+    // bouton de retour
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toogleReservAbonne)
+
+    create("h2", main, "Gestion des réservations")
+    create("h3", main, "Supprimer une réservation")
+
+
+
+
+    return main
+}
+
+function toggleSeeReservation(){
+
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+
+    // recuperation des infos de l'utilisateur
+    const idClient = JSON.parse(sessionStorage.getItem("userData")).id;
+
+    // bouton de retour
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toogleReservAbonne)
+
+    create("h2", main, "Gestion des réservations")
+    create("h3", main, "Voir les réservations")
+    create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
+
+    const nav = create("nav", main, null, ['liste_gestion'])
+
+
+
+    create("div", nav, "Voir les réservations en attente", ['gestion_users']).addEventListener("click", () => toggleSeeModeReservation(idClient, "attente"))
+    create("div", nav, "Voir les réservations validées", ['gestion_users']).addEventListener("click", () => toggleSeeModeReservation(idClient, "valide"))
+    create("div", nav, "Voir les réservations refusées", ['gestion_users']).addEventListener("click", () => toggleSeeModeReservation(idClient, "refuse"))
+
+    return main
+}
+
+function toggleSeeModeReservation(idClient, etat){
+
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+
+    // bouton de retour
+    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleSeeReservation)
+
+    create("h2", main, "Gestion des réservations")
+    create("h3", main, "Voir les réservations")
+
+    let divAllReserv = create("div", main);
+
+    axios.get(`timeslots/timeslots.php?function=fetch_by_id_client_and_etat&idClient=`+idClient+`&etat=`+etat).then((response)=>{
+        displayReserv (divAllReserv, response.data);
+    })
+
+
+    return main
+}
+
+
+const displayReserv = (container, data) => {
+    for(let reserv of data){
+        let divReserv = create("div", container);
+
+        let title = reserv.arretDepart + "  -  "+ reserv.arretArrive;
+        let message = reserv.dateDepart;
+
+        let divInfoReserv = create("div", divReserv);
+        create("h3", divInfoReserv, title);
+        create("p", divInfoReserv, message);
+    }
 }
