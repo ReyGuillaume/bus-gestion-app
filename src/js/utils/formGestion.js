@@ -33,21 +33,21 @@ const fetchUrlRedirectAndAlert = (url, route, successMessage, failurMessage) => 
 }
 
 
-const createCheckboxOfElement = (container, elt, checkboxName) => {
-    createChampCheckbox(container, elt.id , checkboxName, elt.id);
+const createCheckboxOfElement = (container, elt, checkboxName, letter) => {
+    createChampCheckbox(container, letter+elt.id , checkboxName, elt.id);
     var label = create("label", container, elt.id );
-    label.setAttribute("for", elt.id);
+    label.setAttribute("for", letter+elt.id);
 }
 
 
-const createCheckBoxOfElements = (axiosRequet, axiosRequestFetchchElement, container, checkBoxName, labelTextFunction) => {
+const createCheckBoxOfElements = (axiosRequet, axiosRequestFetchchElement, container, checkBoxName, labelTextFunction, letter) => {
     axios.get(axiosRequet).then(response => {
         for(var elt_id of response.data){
             axios.get(axiosRequestFetchchElement + elt_id).then(res => {
                 let elt = res.data;
-                createChampCheckbox(container, elt.id , checkBoxName, elt.id);
+                createChampCheckbox(container, letter+elt.id , checkBoxName, elt.id);
                 var label = create("label", container, labelTextFunction(elt));
-                label.setAttribute("for", elt.id);
+                label.setAttribute("for", lettre+elt.id);
             })
         }
     })

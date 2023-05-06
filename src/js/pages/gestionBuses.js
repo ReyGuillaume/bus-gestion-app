@@ -69,7 +69,7 @@ const AjoutBus = () => {
     // Creation of the radio to define the bus to add
     var divRadio = create("div", form);
     create("label", divRadio, "Choisissez le type de bus : ", ["label-info"]);
-    axios.get(`buses/buses.php?function=bustypes`).then(response => response.data.forEach(bustype => createCheckboxOfElement(divRadio, bustype, "typeBus")))
+    axios.get(`buses/buses.php?function=bustypes`).then(response => response.data.forEach(bustype => createCheckboxOfElement(divRadio, bustype, "typeBus","tb")))
 
     // Creation of submit button
     const bouton = create("div", form, "Envoyer", ["submitButton"])
@@ -96,12 +96,12 @@ const ModifBus = () => {
     // Creation of the radio to define the bus to modify
     var divRadio = create("div", form, null, ["form-div-radio"]);
     create("label", divRadio, "Choisissez le bus à modifier : ", ["label-info"]);
-    axios.get(`buses/buses.php?function=buses`).then(response => response.data.forEach(bus => createCheckboxOfElement(divRadio, bus, "idBus")))
+    axios.get(`buses/buses.php?function=buses`).then(response => response.data.forEach(bus => createCheckboxOfElement(divRadio, bus, "idBus", "b")))
 
     //Creation of the radio to choose the new type of the bus
     var divRadioType = create("div", form, null, ["form-div-radio"]);
     create("label", divRadioType, "Choisissez le type de bus : ", ["label-info"]);
-    axios.get(`buses/buses.php?function=bustypes`).then(response => response.data.forEach(bustype => createCheckboxOfElement(divRadioType, bustype, "typeBus")))
+    axios.get(`buses/buses.php?function=bustypes`).then(response => response.data.forEach(bustype => createCheckboxOfElement(divRadioType, bustype, "typeBus", "tb")))
 
     // Creation of submit button
     const bouton = create("div", form, "Modifier", ["submitButton"])
@@ -127,7 +127,7 @@ const SupprimerBus = () => {
     // Creation of the checkbox to define the bus to add
     var divCheckboxBus = create("div", form);
     create("label", divCheckboxBus, "Choisissez le(s) bus à supprimer : ", ["label-info"]);
-    axios.get(`buses/buses.php?function=buses`).then(response => response.data.forEach(bus => createCheckboxOfElement(divCheckboxBus, bus, "idBus")))
+    axios.get(`buses/buses.php?function=buses`).then(response => response.data.forEach(bus => createCheckboxOfElement(divCheckboxBus, bus, "idBus", "b")))
 
     // Creation of submit button
     const bouton = create("div", form, "Supprimer", ["submitButton"])

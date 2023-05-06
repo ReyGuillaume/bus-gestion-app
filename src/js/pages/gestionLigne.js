@@ -33,9 +33,9 @@ const toggleAddLine = () => {
     axios.get(`lines/lines.php?function=typesline`).then((response)=>{
         for(var type of response.data){
             create("br", divRadioTypelines);
-            createChampRadio(divRadioTypelines, type.id_type , "selectionTypeLine", type.id_type);
+            createChampRadio(divRadioTypelines, "tl"+type.id_type , "selectionTypeLine", type.id_type);
             var label = create("label", divRadioTypelines, "Type - " + type.name);
-            label.setAttribute("for", type.id_type);
+            label.setAttribute("for", "tl"+type.id_type);
         }
     });
 
@@ -65,9 +65,9 @@ const toggleSupprLine = () => {
     axios.get(`lines/lines.php?function=lines`).then((response)=>{
         for(var line of response.data){
             let div = create("div", form, null, ["form-div-radio"])
-            createChampCheckbox(div, line.number , "selectionLigne", line.number);
+            createChampCheckbox(div, "l"+line.number , "selectionLigne", line.number);
             var label = create("label", div, "Ligne " + line.number);
-            label.setAttribute("for", line.number);
+            label.setAttribute("for", "l"+line.number);
         }
 
         // Creation of submit button

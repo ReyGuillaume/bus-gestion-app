@@ -59,9 +59,9 @@ function toogleBusChoices(choicesDiv){
     // On cree chaque champs 
     axios.get(`buses/buses.php?function=buses`).then(response => {
         for(var bus of response.data){
-            createChampCheckbox(divCheckboxBus, bus.id , "selectionBus", bus.id);
+            createChampCheckbox(divCheckboxBus, "b"+bus.id , "selectionBus", bus.id);
             var label = create("label", divCheckboxBus, bus.id);
-            label.setAttribute("for", bus.id);
+            label.setAttribute("for", "b"+bus.id);
         }
     });
 
@@ -95,7 +95,7 @@ function toogleFreeBusChoices(choicesDiv){
     create("label", divCheckboxBus, "Choisissez les bus parmis ceux disponibles :")
 
     let axiosUrl = `buses/buses.php?function=freeBuses&beginning=${StartDateTime}&end=${EndDateTime}`
-    createCheckBoxOfElements(axiosUrl, "buses/buses.php?function=bus&id=", divCheckboxBus, "selectionBus", (elt => elt.id))
+    createCheckBoxOfElements(axiosUrl, "buses/buses.php?function=bus&id=", divCheckboxBus, "selectionBus", (elt => elt.id), "b")
     
     // On cree le bouton permettant d'afficher tous les utilisateurs
     var bouton = create("button", divCheckboxBus, "Afficher tous les bus");
@@ -123,9 +123,9 @@ function toogleUserChoices(choicesDiv){
     // On cree chaque champs 
     axios.get(`users/users.php?function=users`).then((response)=>{
         for(var user of response.data){
-            createChampCheckbox(divCheckboxUsers, user.id , "selectionParticipant", user.id);
+            createChampCheckbox(divCheckboxUsers, "p"+user.id , "selectionParticipant", user.id);
             var label = create("label", divCheckboxUsers, user.name + " "+ user.firstname);
-            label.setAttribute("for", user.id);
+            label.setAttribute("for", "p"+user.id);
         }
     });
 
@@ -158,7 +158,7 @@ function toogleFreeUserChoices(choicesDiv){
     create("label", divCheckboxUsers, "Choisissez les participants parmis ceux disponibles :");
 
     let axiosUrl = `users/users.php?function=freeUsers&beginning=${StartDateTime}&end=${EndDateTime}`
-    createCheckBoxOfElements(axiosUrl, "users/users.php?function=user&id=", divCheckboxUsers, "selectionParticipant", (elt => `${elt.name} ${elt.firstname}`))
+    createCheckBoxOfElements(axiosUrl, "users/users.php?function=user&id=", divCheckboxUsers, "selectionParticipant", (elt => `${elt.name} ${elt.firstname}`), "pd")
     
     // On cree le bouton permettant d'afficher tous les utilisateurs
     var bouton = create("button", divCheckboxUsers, "Afficher tous les utilisateurs");
@@ -189,9 +189,9 @@ function toogleDriversChoices(choicesDiv){
     axios.get(`users/users.php?function=users`).then((response)=>{
         for(var user of response.data){
             if (user.id_user_type == 3) {
-                createChampCheckbox(divCheckboxDrivers, user.id , "selectionConducteurs", user.id);
+                createChampCheckbox(divCheckboxDrivers, "c"+user.id , "selectionConducteurs", user.id);
                 var label = create("label", divCheckboxDrivers, user.name + " "+ user.firstname);
-                label.setAttribute("for", user.id);
+                label.setAttribute("for", "c"+user.id);
             }
         }
     });
@@ -225,7 +225,7 @@ function toogleFreeDriverChoices(choicesDiv){
     create("label", divCheckboxDrivers, "Choisissez les conducteurs parmis ceux disponibles :");
 
     let axiosUrl = `users/users.php?function=freeDrivers&beginning=${StartDateTime}&end=${EndDateTime}`
-    createCheckBoxOfElements(axiosUrl, "users/users.php?function=user&id=", divCheckboxDrivers, "selectionParticipant", (elt => `${elt.name} ${elt.firstname}`))
+    createCheckBoxOfElements(axiosUrl, "users/users.php?function=user&id=", divCheckboxDrivers, "selectionParticipant", (elt => `${elt.name} ${elt.firstname}`), "cd")
     
     // On cree le bouton permettant d'afficher tous les conducteurs
     var bouton = create("button", divCheckboxDrivers, "Afficher tous les conducteurs");
@@ -258,9 +258,9 @@ function toogleLineChoices(choicesDiv){
     create("label", divRadioLigne, "Choisissez une ligne :");
     axios.get(`lines/lines.php?function=lines`).then((response)=>{
     for(var line of response.data){
-         createChampRadio(divRadioLigne, line.number , "selectionLigne", line.number);
+         createChampRadio(divRadioLigne, "l"+line.number , "selectionLigne", line.number);
         var label = create("label", divRadioLigne, "Ligne " + line.number);
-        label.setAttribute("for", line.number);
+        label.setAttribute("for", "l"+line.number);
         }
     });
 }

@@ -22,6 +22,7 @@ function create_line($number, $travel_time, $id_type_line) {
     else{
         $res = false;
     }
+    return $res;
 }
 
 /**

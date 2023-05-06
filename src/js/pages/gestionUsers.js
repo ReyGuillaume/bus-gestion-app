@@ -46,9 +46,9 @@ const toggleAjoutUser = () => {
     axios.get(`users/users.php?function=usertypes`).then((response)=>{
         for(var type of response.data){
             create("br", divRadio);
-            createChampRadio(divRadio, type.id , "typeUser", type.id);
+            createChampRadio(divRadio, "ut"+type.id , "typeUser", type.id);
             var label = create("label", divRadio, type.name );
-            label.setAttribute("for", type.id);
+            label.setAttribute("for", "ut"+type.id);
           }
     });
 
@@ -89,7 +89,7 @@ const toggleModifyUser = () => {
             var div_user = create("div", form, null, ["form-div-radio"])
 
             //Ajout d'un evenement au clic d'un radio
-            createChampRadio(div_user, user.id , "selectionUser", user.id).addEventListener('click', function(){
+            createChampRadio(div_user, "u"+user.id , "selectionUser", user.id).addEventListener('click', function(){
 
             // Recuperation de l'utilisateur a modifier
             var idUserToModify = valueFirstElementChecked("input[name='selectionUser']");
@@ -130,7 +130,7 @@ const toggleModifyUser = () => {
         });
 
         var label = create("label", div_user, user.name + " "+ user.firstname);
-        label.setAttribute("for", user.id);
+        label.setAttribute("for", "u"+user.id);
     }})
 }
 
@@ -161,9 +161,9 @@ const toggleSupprimeUser = () => {
         for(var user of response.data){
             var div_user = create("div", form, null, ["form-div-radio"])
             create("br", div_user);
-            createChampCheckbox(div_user, user.id , "selectionUSer", user.id);
+            createChampCheckbox(div_user, "u"+user.id , "selectionUSer", user.id);
             var label = create("label", div_user, user.name + " "+ user.firstname);
-            label.setAttribute("for", user.id);
+            label.setAttribute("for", "u"+user.id);
         }
         // Creation of submit button
         const bouton = create("div", form, "Supprimer", ["submitButton"])
