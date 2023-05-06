@@ -5,7 +5,6 @@ const redirect = (path) => {
 
 // Redirection to the user page according to his role
 const redirectUser = (redirectGerant=()=>null, redirectReponsable=()=>null, redirectConducteur=()=>null, redirectOthers=()=>null) => {
-    console.log(1)
     let userSession = JSON.parse(sessionStorage.getItem("userData"));
     if(userSession) {
         switch (userSession.idrole) {

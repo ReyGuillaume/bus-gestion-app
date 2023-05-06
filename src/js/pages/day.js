@@ -4,6 +4,7 @@ import { toggleTask } from "./userTask";
 import { getMonthToString , getDayToString, datePhp, formatedHour } from "../utils/dates";
 import { redirect } from "../utils/redirection";
 import axios from "axios";
+import { creneauxMalPositionnes, isValideTimeSlot } from "../utils/isValideTimeSlot";
 
 // fonction qui crée tous les jours d'un mois
 const createDaysBar = (date, container, user=null) => {
@@ -108,17 +109,21 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
         initiales.style.width = (150 / entites.length) + "px"
     }
     if (res.length > 0) {
-        res.forEach(timeslot => {
+        res.forEach(async timeslot => {
             let div
             if(multi){
-                div = create("div", container, null, ['timeslot_multi_'+timeslot.name], [`ts${timeslot.id}`])
+                div = create("div", container, null, ['timeslot','timeslot_multi_'+timeslot.name], [`ts${timeslot.id}`])
             }
             else{
                 div = create("div", container, null, ['timeslot'], [`ts${timeslot.id}`])
             }
             div.addEventListener("click", () => toggleTask(footer, timeslot, div, user, multi))
 
-            
+            create("div", div, "!", ["timeslot__error"])
+            if(!await isValideTimeSlot(timeslot.id)){
+                div.classList.add("error")
+            }
+
             if(possibleDrag(user_role, timeslot.name)){
                 div.setAttribute('draggable', true);
             }
@@ -150,14 +155,13 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
                 div_color.style.height = duree + "px"
             }
 
-            const houres = create("div", div, null, ["timeslot__houres"])
-
             //ajout du drag & drop
             if(div.getAttribute("draggable")){
                 div.ondragstart = handlerDragStart
             }
-
+            
             if(!multi){
+                const houres = create("div", div, null, ["timeslot__houres"])
                 create("h2", houres, formatedHour(heure_debut) + ":" + formatedHour(min_debut), ['beginning'])
                 create("h2", houres, formatedHour(heure_fin) + ":" + formatedHour(min_fin), ['end'])
                 const body = create("div", div, null, ["timeslot__body"])
@@ -181,6 +185,10 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
             else{
                 create("div", div, timeslot.name.substr(0,1).toUpperCase(), ["multi-info"])
             }
+        })
+        creneauxMalPositionnes(res).forEach(id => {
+            let ts = container.querySelector(`#ts${id}`)
+            ts.classList.add("error")
         })
     }
 }
