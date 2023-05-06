@@ -30,12 +30,15 @@ const afficheEntites = (container, tabEntite, axiosRequest, checkBoxName) => {
         for(var elem of response.data){
             var champ
             // user ou bus
-            if(elem.id){
-                champ = createChampCheckbox(container, elem.id, checkBoxName, elem.id);
+            if(elem.id && elem.firstname){
+                champ = createChampCheckbox(container, "p"+elem.id, checkBoxName, elem.id, );
+            }
+            else if(elem.id ){
+                champ = createChampCheckbox(container, "bt"+elem.id, checkBoxName, elem.id, );
             }
             // ligne
             else{
-                champ = createChampCheckbox(container, elem.number, checkBoxName, elem.number);  
+                champ = createChampCheckbox(container, "l"+elem.number, checkBoxName, elem.number);
             }
 
             if(elem.id && tabEntite.includes(elem.id)){
@@ -48,18 +51,18 @@ const afficheEntites = (container, tabEntite, axiosRequest, checkBoxName) => {
             var label
             // user
             if(elem.firstname){
-                label = create("label", container, elem.firstname.substr(0,1) + "." + elem.name);
-                label.setAttribute("for", elem.id);
+                label = create("label", container, elem.firstname.substr(0,1) + "." + elem.name, null, "p"+elem.id);
+                label.setAttribute("for", "p"+elem.id);
             }
             // bus
             else if(elem.id_bus_type){
-                label = create("label", container, elem.id);
-                label.setAttribute("for", elem.id);
+                label = create("label", container, elem.id, null, "bt"+elem.id);
+                label.setAttribute("for", "bt"+elem.id);
             }
             // ligne
             else{
-                label = create("label", container, elem.number);
-                label.setAttribute("for", elem.number);
+                label = create("label", container, elem.number, null, "l"+elem.number);
+                label.setAttribute("for", "l"+elem.number);
             }
         }
     })
@@ -99,13 +102,13 @@ const modifConduite = (container, props, user=null, multi=false) => {
 
         create("label", container, "Fin :", ["form-info"]);
         createChamp(container, "datetime-local", "EndDateTime").value = responseCreneau.data.end;
-        
+
         //recup tous les bus 
         var tabBus= [];
         for (var bus of responseCreneau.data.buses){
             tabBus.push(bus.id);
         }
-        
+
         // Creation of the checkbox to define the bus involved in the timeslot
         var divCheckboxBus = create("div", container);
         create("div", divCheckboxBus, "Bus :", ["form-info"]);
@@ -151,8 +154,8 @@ const modifConduite = (container, props, user=null, multi=false) => {
         create("br", divRadioDirection);
         var champRetour =createChampRadio(divRadioDirection, "retour" , "selectionDirection", "retour");
         var label = create("label", divRadioDirection, "retour");
-        label.setAttribute("for", "retour");    
-        
+        label.setAttribute("for", "retour");
+
         tabDirAller ? champAller.checked = true : champRetour.checked = true
 
         // Creation of submit button
@@ -174,6 +177,72 @@ const modifConduite = (container, props, user=null, multi=false) => {
             url += buses ? `&buses=${buses}` : `&buses=`
             url += line ? `&lines=${line}` : `&lines=`
             url += line && direction ? `&directions=${direction}` : `&directions=`
+
+            executeAction(container, url, StartDateTime, user, "La conduite a bien été modifiée", "La conduite n'a pas pu être modifiée", multi)
+        })
+    });
+}
+
+// affiche le bouton pour modifier un créneau, puis son formulaire
+const modifAstreinte = (container, props, user=null, multi=false) => {
+    axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`).then((responseCreneau) =>{
+
+        // Creation du formulaire pré remplie de modif de ligne
+        container.replaceChildren("")
+
+        create("div", container, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(container)
+
+        // Creation of each champ
+        create("label", container, "Début :", ["form-info"]);
+        createChamp(container, "datetime-local", "StartDateTime").value = responseCreneau.data.begining;
+
+        create("label", container, "Fin :", ["form-info"]);
+        createChamp(container, "datetime-local", "EndDateTime").value = responseCreneau.data.end;
+
+        //recup tous les bus
+        var tabBus= [];
+        for (var bus of responseCreneau.data.buses){
+            tabBus.push(bus.id);
+        }
+
+        // Creation of the checkbox to define the bus involved in the timeslot
+        var divCheckboxBus = create("div", container);
+        create("div", divCheckboxBus, "Bus :", ["form-info"]);
+        afficheBuses(divCheckboxBus, tabBus)
+
+        //recup tous les user
+        var tabUser= [];
+        for (var response_user of responseCreneau.data.users){
+            tabUser.push(response_user.id);
+        }
+
+        // Creation of the checkbox to define the users involved in the timeslot
+        var divCheckboxUsers = create("div", container);
+        create("div", divCheckboxUsers, "Participants :", ["form-info"]);
+        afficheUsers(divCheckboxUsers, tabUser)
+
+        //recup ligne
+        var tabLine= [];
+        for (var line of responseCreneau.data.lines){
+            tabLine.push(line.number);
+        }
+
+
+        // Creation of submit button
+        const bouton = create("div", container, "Modifier", ["modifButton"])
+        bouton.addEventListener("click", function (){
+            // selection of the start and end time
+            let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
+            let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
+
+            // selection of the type of timeslot, participants and buses
+            let users = participantsTimeslot();
+            let buses = busesTimeslot();
+
+            let url = `timeslots/timeslots.php?function=update&id=${props.id}&beginning=${StartDateTime}&end=${EndDateTime}`;
+
+            url += users ?  `&users=${users}` : `&users=`
+            url += buses ? `&buses=${buses}` : `&buses=`
 
             executeAction(container, url, StartDateTime, user, "La conduite a bien été modifiée", "La conduite n'a pas pu être modifiée", multi)
         })
@@ -363,6 +432,43 @@ const indispo = (container, props, bubble, user_role, user=null, multi=false) =>
     return container
 }
 
+const astreinte = (container, props, bubble, user_role, user=null, multi=false) => {
+
+    let heure_debut = formatedHour(new Date(props.begining).getHours())
+    let min_debut = formatedHour(new Date(props.begining).getMinutes())
+    let heure_fin = formatedHour(new Date(props.end).getHours())
+    let min_fin = formatedHour(new Date(props.end).getMinutes())
+
+    create('p', container, props.name, ["task-name"])
+    create("div", container, "Conducteur : ", ["form-info"])
+    props.users.forEach(element => {
+        create("em", container, element.firstname + " " + element.name + ", ")
+    });
+
+    create("div", container, "Bus affectés : ", ["form-info"])
+    props.buses.forEach(element => {
+        create("em", container, element.id + " (" + element.nb_places + " places), ")
+    });
+
+
+    const debut = create("div", container)
+    create("span", debut, "Début : ", ["form-info"])
+    debut.innerHTML += heure_debut + ":" + min_debut
+
+    const fin = create("div", container)
+    create("span", fin, "Fin : ", ["form-info"])
+    fin.innerHTML += heure_fin + ":" + min_fin
+
+    if(["Responsable Logistique", "Directeur"].includes(user_role)){
+        const btns = create("div", container, null, ["btn-task"])
+
+        create("div", btns, "Modifier", ["modifButton"]).onclick = () => modifAstreinte(container, props, user, multi)
+        create("div", btns, "Supprimer", ["delButton"]).onclick = () => supprimeCreneau(container, props, bubble)
+    }
+
+    return container
+}
+
 
 // fonction qui permet d'afficher un créneau horaire affecté à l'utilisateur connecté
 const toggleTask = (container, props, bubble, user=null, multi=false) => {
@@ -389,6 +495,8 @@ const toggleTask = (container, props, bubble, user=null, multi=false) => {
         case "Réunion": reunion(task, props, bubble, role, user, multi)
             break;
         case "Indisponibilité": indispo(task, props, bubble, role, user, multi)
+            break;
+        case "Astreinte": astreinte(task, props, bubble, role, user, multi)
             break;
         default: create("h2", task, "Une erreur est survenue")
             break;

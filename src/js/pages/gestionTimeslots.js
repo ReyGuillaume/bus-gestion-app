@@ -306,6 +306,12 @@ function axiosUrlSendWhenADD(type){
                 requestSuccess = true
             }
             break;
+        case "5" :  // CONDUITE
+            if (![drivers, buses].includes("")){
+                url += `&users=${drivers}&buses=${buses}`;
+                requestSuccess = true
+            }
+            break;
         default :   // ERREUR
             url = ``;
             break;
@@ -360,6 +366,10 @@ const toggleAddCreneau = () => {
                         toogleUserChoices(choicesDiv);
                         break;
                     case '3' : //Indisponibilite
+                        toogleDriversChoices(choicesDiv);
+                        break;
+                    case '5' :  //Astreinte
+                        toogleBusChoices(choicesDiv);
                         toogleDriversChoices(choicesDiv);
                         break;
                     default :
