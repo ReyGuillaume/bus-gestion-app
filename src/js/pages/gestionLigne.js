@@ -144,7 +144,6 @@ const toggleVerifCouvertureSemaine = () => {
     // Mise en place des titres
     create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Verification de couvertures des lignes")
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
     create("p", main, "Indiquez la semaine à vérifier :", ["presentation"])
 
     // Creation of the form
@@ -160,6 +159,9 @@ const toggleVerifCouvertureSemaine = () => {
         fetchUrlRedirectAndAlert(`lines/lines.php?function=WeekCovered&week=${semaine}`, "/espace-admin", "Le semaine est bien couverte", "Il semblerait que tout ne soit pas bien rempli...")
     })
 
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+
+
 }
 
 const toggleRemplissageAutoConduiteSemaine = () => {
@@ -171,8 +173,7 @@ const toggleRemplissageAutoConduiteSemaine = () => {
     // Mise en place des titres
     create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Remplissage automatique de la semaine")
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
-    create("p", main, "Indiquer la semaine à remplir, attention cela supprime les créneaux de conduite déjà ajoutés", ["presentation"])
+    create("p", main, "Indiquer la semaine à remplir, attention cela ne prend pas en compte les créneaux de conduite déjà ajoutés", ["presentation"])
 
     // Creation of the form
     const form = create("div", main, null, ["app-form"])
@@ -186,6 +187,9 @@ const toggleRemplissageAutoConduiteSemaine = () => {
         let semaine = document.querySelector("input[name='semaine']").value;
         fetchUrlRedirectAndAlert(`lines/lines.php?function=coverWeek&week=${semaine}`, "/espace-admin", "Toutes les conduites de la semaine ont étées ajoutées", "Il semblerait que tout ne se soit pas passé comme prévu...")
     })
+
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
+
 }
 
 export {

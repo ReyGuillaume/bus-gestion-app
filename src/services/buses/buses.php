@@ -188,7 +188,8 @@ function is_free($id_bus, $begining, $end){
      JOIN bus_timeslot bts ON ts.id = bts.id_time_slot 
      WHERE bts.id_bus = '{$id_bus}' 
      AND (ts.begining BETWEEN '{$begining}' AND '{$end}' 
-     OR ts.end BETWEEN '{$begining}' AND '{$end}')");
+     OR ts.end BETWEEN '{$begining}' AND '{$end}'
+     OR (ts.begining < '{$begining}' AND ts.begining > '{$end}'))");
 
 
    if ($result->rowCount() == 0) {
@@ -224,7 +225,33 @@ function find_buses_free($begining, $end){
 
    return $free_buses;
 }
+/**
+    Fonction qui ajoute un bus au creneau donné.
 
+    @param idCreneau : L'id du créneau auquel on veut rajouter un bus.
+
+    @return un booléen indiquant si l'opération s'est bien passée. 
+*/
+function add_a_bus_to_timeslot($idCreneau){
+    $res = false; 
+    
+    // On recupere le timeslot en question
+    require_once '../timeslots/timeslots.php';
+    $creneau = fetch_time_slot($idCreneau);
+
+    // On regarde si un bus est libre pour ce timeslot 
+    $free_buses = find_buses_free($creneau['begining'], $creneau['end']);
+    
+    // On regarde si un bus est libre et si oui on le relie
+    if (count($free_buses) > 0) {
+        $random_index = rand(0, count($free_buses) - 1);
+        $res = bdd()->query("INSERT INTO `bus_timeslot`(`id_bus`, `id_time_slot`) VALUES ({$free_buses[$random_index]}, {$idCreneau})");
+        } 
+
+    //on indique si l'ajout c'est bien passé 
+    return $res; 
+    
+}
 
 switch ($_GET['function']) {
     case 'create':      // type

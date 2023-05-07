@@ -226,13 +226,14 @@ function delete_user($id) { //supprime également les lignes de Code et de User_
 
     @return boolean.
 */
-function is_free($id_user, $begining, $end){
+function is_free_user($id_user, $begining, $end){
     $result = bdd()->
     query("SELECT id FROM `timeslot` ts
      JOIN user_timeslot uts ON ts.id = uts.id_time_slot 
      WHERE uts.id_user = '{$id_user}' 
      AND (ts.begining BETWEEN '{$begining}' AND '{$end}' 
-     OR ts.end BETWEEN '{$begining}' AND '{$end}')");
+     OR ts.end BETWEEN '{$begining}' AND '{$end}'
+     OR (ts.begining < '{$begining}' AND ts.begining > '{$end}'))");
 
    if ($result->rowCount() == 0) {
         return true;    
@@ -261,7 +262,7 @@ function find_drivers_free($begining, $end){
     // for each driver we check if he is if free on the periode 
     // if yes we add it to the free drivers array 
     foreach ($all_drivers as $driver) {
-        if(is_free($driver['id'], $begining, $end)){
+        if(is_free_user($driver['id'], $begining, $end)){
             $free_drivers[] = $driver['id']; // ajouter l'id du conducteur disponible au tableau
         }
     }
@@ -288,7 +289,7 @@ function find_users_free($begining, $end){
     // for each user we check if he is if free on the periode 
     // if yes we add it to the free users array 
     foreach ($all_users as $user) {
-        if(is_free($user['id'], $begining, $end)){
+        if(is_free_user($user['id'], $begining, $end)){
             $free_users[] = $user['id'];
         }
     }
@@ -296,6 +297,34 @@ function find_users_free($begining, $end){
    return $free_users;
 }
 
+/**
+    Fonction qui ajoute un conducteur au creneau donné.
+
+    @param idCreneau : L'id du créneau auquel on veut rajouter un conducteur.
+
+    @return un booléen indiquant si l'opération s'est bien passée. 
+*/
+function add_a_driver_to_timeslot($idCreneau){
+    //On initialise le res 
+    $res = false; 
+    
+    // On recupere le timeslot en question
+    require_once '../timeslots/timeslots.php';
+    $creneau = fetch_time_slot($idCreneau);
+
+    // On regarde si un conducteur est libre pour ce timeslot 
+    $free_drivers = find_drivers_free($creneau['begining'], $creneau['end']);
+    
+    // On regarde si un conducteur est libre et si oui on le relie
+    if (count($free_drivers) > 0) {
+        $random_index = rand(0, count($free_drivers) - 1);
+        $res = bdd()->query("INSERT INTO `user_timeslot`(`id_user`, `id_time_slot`) VALUES({$free_drivers[$random_index]}, {$idCreneau})");
+        } 
+
+    //on indique si l'ajout c'est bien passé 
+    return $res; 
+    
+}
 
 
 switch ($_GET['function']) {
@@ -333,7 +362,7 @@ switch ($_GET['function']) {
         $res = delete_user($_GET['id']);
         break;
     case 'isFree':     //++++
-        $res = is_free($_GET['id'], $_GET['beginning'], $_GET['end']);
+        $res = is_free_user($_GET['id'], $_GET['beginning'], $_GET['end']);
         break;
     case 'freeDrivers':
         $res = find_drivers_free($_GET['beginning'], $_GET['end']);
@@ -345,6 +374,7 @@ switch ($_GET['function']) {
         $res = "invalid function";
         break;
 }
+
 
 echo json_encode($res);
 

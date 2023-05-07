@@ -462,6 +462,7 @@ function fetch_by_id_client_and_etat ($idClient, $etat) {
 
 
 
+
 switch ($_GET['function']) {
     case 'create':      // beginning, end, type, users, buses, lines
         $res = create_time_slot($_GET['beginning'], $_GET['end'], $_GET['type'], $_GET['users'], $_GET['buses'], $_GET['lines'], $_GET['directions']);
