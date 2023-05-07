@@ -4,7 +4,7 @@ import { toggleTask } from "./userTask";
 import { getMonthToString , getDayToString, datePhp, formatedHour } from "../utils/dates";
 import { redirect } from "../utils/redirection";
 import axios from "axios";
-import { creneauxMalPositionnes, isValideTimeSlot } from "../utils/isValideTimeSlot";
+import { checkTimeSlots } from "../utils/isValideTimeSlot";
 
 // fonction qui crée tous les jours d'un mois
 const createDaysBar = (date, container, user=null) => {
@@ -94,7 +94,7 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
     const sessionData = JSON.parse(sessionStorage.getItem("userData"))
     const user_role = sessionData["role"]
     const footer = document.querySelector("#footer")
-    const res = await fetchTimeSlots(date, user)
+    let res = await fetchTimeSlots(date, user)
     
     // initiales des 6 chauffeurs
     if(multi && !entites){
@@ -109,6 +109,8 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
         initiales.style.width = (150 / entites.length) + "px"
     }
     if (res.length > 0) {
+        res = await checkTimeSlots(res)
+        console.log(res)
         res.forEach(async timeslot => {
             let div
             if(multi){
@@ -118,11 +120,6 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
                 div = create("div", container, null, ['timeslot'], [`ts${timeslot.id}`])
             }
             div.addEventListener("click", () => toggleTask(footer, timeslot, div, user, multi))
-
-            create("div", div, "!", ["timeslot__error"])
-            if(!await isValideTimeSlot(timeslot.id)){
-                div.classList.add("error")
-            }
 
             if(possibleDrag(user_role, timeslot.name)){
                 div.setAttribute('draggable', true);
@@ -185,11 +182,46 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
             else{
                 create("div", div, timeslot.name.substr(0,1).toUpperCase(), ["multi-info"])
             }
+
+            // Gestion des erreurs
+            console.log("a", timeslot.errors)
+            if(timeslot.errors.length > 0){
+                create("div", div, "!", ["timeslot__error"]).onclick = e => {
+                    e.stopPropagation()
+                    openErrorModale(timeslot)
+                }
+            }
         })
-        creneauxMalPositionnes(res).forEach(id => {
-            let ts = container.querySelector(`#ts${id}`)
-            ts.classList.add("error")
-        })
+    }
+}
+
+
+const openErrorModale = (timeslot) => {
+    const app = document.querySelector("#app")
+    const overlay = create("div", app, null, ["overlay"])
+    const modale = create("div", overlay, null, ["validation"])
+    const back = create("div", modale, '<< Retour', ['return'])
+
+    // ajout des actions au clic
+    overlay.onclick = e => {
+        e.preventDefault()
+        e.stopPropagation()
+        e.target.remove()
+    }
+    modale.onclick = e => {
+        e.preventDefault()
+        e.stopPropagation()
+    }
+    back.onclick = () => {
+        modale.remove()
+        overlay.remove()
+    }
+
+    if(timeslot.errors.length > 0){
+        create("h2", modale, "Quelque chose cloche sur ce créneau...")
+        timeslot.errors.forEach(err => create("p", modale, "/!\\ " + err))
+    } else {
+        create("p", modale, "Rien à signaler pour ce créneau ci.")
     }
 }
 

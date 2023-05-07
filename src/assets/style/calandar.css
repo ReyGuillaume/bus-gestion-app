@@ -160,7 +160,9 @@
   position: relative;
 }
 .timeslot__error {
-  display: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   top: 0;
   right: 0;
@@ -172,13 +174,8 @@
   font-weight: bold;
   transition: .5s;
 }
-.timeslot.error .timeslot__error {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 .timeslot__error:hover {
-  transform: scale(1.75);
+  transform: scale(1.5);
 }
 .back-button{
   cursor: pointer;

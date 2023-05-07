@@ -12,71 +12,105 @@ const isFreeUser = async (id, beginning, end) => await isFreeEntity(`timeslots/t
 
 const isFreeBus = async (id, beginning, end) => await isFreeEntity(`timeslots/timeslots.php?function=timeslotbybus&bus=${id}&beginning=${beginning}&end=${end}`)
 
+// Renvoie un array de strings correspondant aux erreurs dues aux indisponibilité des participants à un créneau
 const areFreeEntities = async(beginning, end, elts, fun) => {
-    let res = true
-    let size = elts.length
-    let i = 0
+    let res = []
 
-    while (res === true && i < size ) {
-        res = await fun(elts[i].id, beginning, end)
-        i++
+    for (const elt of elts) {
+        if(await fun(elt.id, beginning, end))
+            res.push(`${elt.firstname} ${elt.name} n'est pas disponible à ce moment.`)
     }
+
     return res
 }
 
 // vérifie la validité des informations pour un créneau de conduite
 const conduite = async(beginning, end, users, buses, lines) => {
-    return users.length > 0 && buses.length > 0 && lines.length > 0 &&
-        lines[0].direction != "" &&
-        lines[0].number != "" &&
-        await areFreeEntities(beginning, end, users, isFreeUser) &&
-        await areFreeEntities(beginning, end, buses, isFreeBus)
+    let res = []
+
+    if(users.length === 0)
+        res.push("Il n'y a pas de conducteur affecté à ce créneau.")
+    if(buses.length === 0)
+        res.push("Il n'y a pas de bus affecté à ce créneau.") 
+    if(lines.length === 0){
+        res.push("Il n'y a pas de ligne affecté à ce créneau.")
+    } else {
+        if(lines[0].direction == "")
+            res.push("Aucune direction n'a été renseignée pour la ligne de ce créneau.")
+        if(lines[0].number == "")
+            res.push("Aucune numéro de ligne n'a été renseignée pour cette ligne.")
+    }
+    
+    res.concat(await areFreeEntities(beginning, end, users, isFreeUser))
+    res.concat(await areFreeEntities(beginning, end, buses, isFreeBus))
+
+    return res
 }
 // vérifie la validité des informations pour un créneau de réunion
-const reunion = async(beginning, end, users) => await areFreeEntities(beginning, end, users, isFreeUser)
+const reunion = async(beginning, end, users) => {
+    let res = []
 
-// vérifie la validité des informations pour un créneau d'indisponibilité
-const indispo = async(beginning, end, users) => await areFreeEntities(beginning, end, users, isFreeUser)
+    if(users.length === 0)
+        res.push("Il n'y a personne qui soit affecté à ce créneau.")
 
-const fetchTimeslotData = async id => {
-    let res
-    await axios
-    .get(`timeslots/timeslots.php?function=timeslot&id=${id}`)
-    .then(response => res = response.data)
+    res.concat(await areFreeEntities(beginning, end, users, isFreeUser))
     return res
 }
 
-const isValideTimeSlot = async(idTilmeSlot) => {
-    let data = await fetchTimeslotData(idTilmeSlot)
-    switch (data.id_time_slot_type) {
-        case "1": return await conduite(data.begining, data.end, data.users, data.buses, data.lines)
-        case "2": return await reunion(data.begining, data.end, data.users)
-        case "3": return await indispo(data.begining, data.end, data.users)
-        default: return false
+// vérifie la validité des informations pour un créneau d'indisponibilité
+const indispo = async(beginning, end, users) => {
+    let res = []
+
+    if(users.length === 0)
+        res.push("Il n'y a personne qui soit affecté à ce créneau.")
+
+    res.concat(await areFreeEntities(beginning, end, users, isFreeUser))
+    return res
+}
+
+
+// Renvoie un array de strings correspondant aux erreurs apparues sur le créneau en fonction de son type
+const errorsOfTimeSlot = async(timeslot) => {
+    switch (timeslot.id_time_slot_type) {
+        case "1": return await conduite(timeslot.begining, timeslot.end, timeslot.users, timeslot.buses, timeslot.lines)
+        case "2": return await reunion(timeslot.begining, timeslot.end, timeslot.users)
+        case "3": return await indispo(timeslot.begining, timeslot.end, timeslot.users)
+        default: return ["Le type de ce créneau est inconnu."]
     }
 }
 
-
+// Renvoie un booléen correspondant à si les deux créneaux passés en paramètres se chevauchent ou non
 const seChevauchent = (ts1, ts2) => {
-    return ((ts1.begining < ts2.begining) && (ts1.end > ts2.begining)) || ((ts1.end > ts2.end) && (ts1.begining < ts2.end))
+    return (
+        ((ts1.begining < ts2.begining) && (ts1.end > ts2.begining)) || 
+        ((ts1.end > ts2.end) && (ts1.begining < ts2.end)) ||
+        ((ts1.begining > ts2.begining) && (ts1.end < ts2.end))
+    )
 }
 
-// renvoie un array contenant les id des créneaux qui sont mal positionnés
-const creneauxMalPositionnes = (creneaux) => {
-    let nb = creneaux.length
-    let res = []
-    if(nb > 1) {
-        for (let i = 0; i < creneaux.length; i++) {
-            for (let j = 0; j < creneaux.length; j++) {
+
+// Renvoie la liste de créneaux passés en paramètre dans lequel on ajoute un champs errors (array)
+const checkTimeSlots = async creneaux => {
+    let res = [...creneaux]
+    res.forEach(elt => elt.errors = [])
+    
+    // On vérifie si des créneaux se chevauchent
+    if(res.length > 1) {
+        for (let i = 0; i < res.length; i++) {
+            for (let j = 0; j < res.length; j++) {
                 if (i != j) {
-                    if(seChevauchent(creneaux[i], creneaux[j]))
-                        res.push(creneaux[i].id)
+                    if(seChevauchent(res[i], res[j]))
+                        res[i].errors.push("Ce créneau en chevauche un autre.")
                 }
             }
         }
     }
+
+    for (const elt of res) {
+        elt.errors = elt.errors.concat(await errorsOfTimeSlot(elt))
+    }
+    
     return res
 }
 
-
-export { isValideTimeSlot, creneauxMalPositionnes }
+export { checkTimeSlots }
