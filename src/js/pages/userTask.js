@@ -5,7 +5,7 @@ import { toggleAgenda } from "./agenda";
 import axios from "axios";
 
 
-const removeContainerAndRemoveCacheClass = container => {
+export const removeContainerAndRemoveCacheClass = container => {
     container.remove()
     document.querySelector("#app").classList.remove("cache")
 }
@@ -194,10 +194,10 @@ const modifAstreinte = (container, props, user=null, multi=false) => {
 
         // Creation of each champ
         create("label", container, "Début :", ["form-info"]);
-        createChamp(container, "datetime-local", "StartDateTime").value = responseCreneau.data.begining;
+        create("label", container, responseCreneau.data.begining, ["StartDateTime"]);
 
         create("label", container, "Fin :", ["form-info"]);
-        createChamp(container, "datetime-local", "EndDateTime").value = responseCreneau.data.end;
+        create("label", container, responseCreneau.data.end, ["EndDateTime"]);
 
         //recup tous les bus
         var tabBus= [];

@@ -9,7 +9,7 @@ import { toggleMultiEntities } from "./day";
 import { createMenuElement } from "../components/menuItem";
 import { redirect, redirectUser, toggleAlertMessage } from "../utils/redirection";
 import axios from "axios";
-import {displayReserv} from "./espaceAbonne.js";
+import {displayReserv} from "./gestionAbonne.js";
 
 
 const toggleEspaceAdmin = () => {
