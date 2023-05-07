@@ -91,7 +91,6 @@ const afficheInitiales = (entite) => {
 
 // fonction qui affiche tous les créneaux horaires récupérés, affectés à l'utilisateur connecté
 const createTimeSlots = async (date, container, user=null, multi=false, entites=null, index=0) => {
-    const main = document.querySelector("#app")
     const sessionData = JSON.parse(sessionStorage.getItem("userData"))
     const user_role = sessionData["role"]
     const footer = document.querySelector("#footer")
@@ -111,6 +110,7 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
     }
     if (res.length > 0) {
         res = await checkTimeSlots(res)
+        console.log(res)
         res.forEach(async timeslot => {
             let div
             if(multi){
@@ -189,17 +189,15 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
             }
 
             // Gestion des erreurs
+            console.log("a", timeslot.errors)
             if(timeslot.errors.length > 0){
                 create("div", div, "!", ["timeslot__error"]).onclick = e => {
                     e.stopPropagation()
                     openErrorModale(timeslot)
                 }
             }
-        })        
+        })
     }
-    // erreur globale
-    if (main.querySelectorAll(".timeslot__error").length > 0)
-        create("div", main, "!", ["timeslot__error"]).title = "Certains créneaux ont des erreurs signalées"
 }
 
 
