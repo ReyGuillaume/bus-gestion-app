@@ -1,4 +1,5 @@
 import { create } from "../utils/domManipulation";
+import { redirect } from "../utils/redirection";
 
 const createNavBar = () => {
     const h = document.querySelector("#header")
@@ -43,7 +44,7 @@ const createHeader = () => {
     h.replaceChildren("")
 
     const container = create("div", h, null, ['container'])
-    create("img", container, null, ['logo'], null, "./src/assets/images/gobus-logo-color.png", "Gobus Logo")
+    create("img", container, null, ['logo'], "Gobus_Logo", "./src/assets/images/gobus-logo-color.png", "Gobus Logo").addEventListener("click", () => redirect("/"))
 
     // contains the informations of the user (if authentified)
     let user_infos = create("p", container, "", null, "infosUser");

@@ -1,5 +1,5 @@
-import { create, createChamp, createChampCheckbox, createChampRadio } from "../utils/domManipulation";
-import { fetchUrlRedirectAndAlert, valueFirstElementChecked } from "../utils/formGestion";
+import { create, createChamp, createChampCheckbox, createChampRadio, toggleError } from "../utils/domManipulation";
+import { fetchUrlRedirectAndAlert, valueFirstElementChecked, countElementChecked } from "../utils/formGestion";
 import { redirect } from "../utils/redirection";
 
 import axios from 'axios';
@@ -144,7 +144,6 @@ const toggleVerifCouvertureSemaine = () => {
     // Mise en place des titres
     create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Verification de couvertures des lignes")
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
     create("p", main, "Indiquez la semaine à vérifier :", ["presentation"])
 
     // Creation of the form
@@ -171,7 +170,6 @@ const toggleRemplissageAutoConduiteSemaine = () => {
     // Mise en place des titres
     create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
     create("h2", main, "Remplissage automatique de la semaine")
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
     create("p", main, "Indiquer la semaine à remplir, attention cela supprime les créneaux de conduite déjà ajoutés", ["presentation"])
 
     // Creation of the form
@@ -188,10 +186,194 @@ const toggleRemplissageAutoConduiteSemaine = () => {
     })
 }
 
+
+// TYPES DE LIGNES
+
+// fonction qui ajoute un formulaire de plage horaire
+const createPlageHoraire = (container) => {
+    const div = create("div", container, null, ["plage-horaire"])
+
+    create("label", div, "Heure de début :", ["label-info"])
+    createChamp(div, "time", "StartDateTime")
+
+    create("label", div, "Heure de fin :", ["label-info"])
+    createChamp(div, "time", "EndDateTime")
+}
+
+const toggleAddLineType = () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+    
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
+    create("h2", main, "Ajouter un type de ligne")
+    create("p", main, "Rentrez les informations suivantes :", ["presentation"])
+
+    // Creation of the form
+    const form = create("div", main, null, ["app-form"])
+
+    // Creation of the champ
+    const div_nom = create("div", form, null, ["form-div"])
+    create("label", div_nom, "Entrez le nom du type de ligne :", ["label-info"])
+    createChamp(div_nom, "integer", "nom")
+
+    const plages_horaires = create("div", form, null, ["form-div"])
+    const add_btn = create("div", plages_horaires, "Ajouter une plage horaire de conduite", ["addButton"])
+    add_btn.addEventListener("click", function(){
+        createPlageHoraire(plages_horaires)
+    })
+
+    const div_tps = create("div", form, null, ["form-div"])
+    create("label", div_tps, "Entrez l'intervalle de temps entre chaque conduite (en minutes) :", ["label-info"])
+    createChamp(div_tps, "integer", "intervalle")
+
+    // Creation of submit button
+    const bouton = create("div", form, "Envoyer", ["submitButton"])
+    bouton.addEventListener("click", function(){
+
+        var nom = document.querySelector("input[name='nom']").value
+        var intervalle = document.querySelector("input[name='intervalle']").value
+
+        if(nom && intervalle){
+            axios.get(`lines/lines.php?function=createtype&name=${nom}`).then(function(response){
+
+                if(response.data){
+                    const lst_plages = plages_horaires.querySelectorAll(".plage-horaire")
+
+                    for(let plage of lst_plages){
+                        let debut = plage.querySelector("input[name='StartDateTime']").value
+                        let fin = plage.querySelector("input[name='EndDateTime']").value
+                        if(debut && fin){
+                            fetchUrlRedirectAndAlert(`lines/lines.php?function=createcondition&name=${nom}&begin=${debut}&end=${fin}&intervalle=${intervalle}`, "/espace-admin", "Le type de ligne a bien été ajouté", "Certaines plages horaire entrent en collision")
+                        }
+                    }
+                }
+            })
+        }
+        else{
+            toggleError("ERREUR", "Veuillez renseigner toutes les informations")
+        }  
+    })
+}
+
+
+const toggleModifLineType = () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+    
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
+    create("h2", main, "Modifier un type de ligne")
+    create("p", main, "Quel type de ligne souhaitez-vous modifier ?", ["presentation"])
+
+    // Creation of the form
+    const form = create("div", main, null, ["app-form"])
+
+    axios.get(`lines/lines.php?function=typesline`).then(response => {
+        
+        for(var line of response.data){
+
+            var div_line = create("div", form, null, ["form-div-radio"])
+
+            create("div", div_line, line.name)
+            createChampRadio(div_line, line.id_type, "selectionType", line.id_type).addEventListener("click", function(){
+
+                // id du type de la ligne
+                var id_type = valueFirstElementChecked("input[name='selectionType']")
+                
+                axios.get(`lines/lines.php?function=type&id=${id_type}`).then(function(res_type){
+                    form.replaceChildren("")
+                    
+                    // récupérer l'intervalle du type de la ligne
+                    var intervalle = null
+
+                    if(res_type.data.length > 0){
+                        intervalle = res_type.data[0].intervalle
+                    }
+
+                    create("div", form, "Liste des plages horaires du type de ligne choisi :", ["form-div"])
+
+                    const plages_horaires = create("div", form, null, ["form-div"])
+
+                    for(let plage of res_type.data){
+                        let div_plage = create("div", plages_horaires, null, ["plage-horaire"])
+
+                        create("label", div_plage, "Heure de début :", ["label-info"])
+                        createChamp(div_plage, "time", "StartDateTime").value = plage.begin
+
+                        create("label", div_plage, "Heure de fin :", ["label-info"])
+                        createChamp(div_plage, "time", "EndDateTime").value = plage.end
+                    }
+
+                    // Creation of submit button
+                    const bouton = create("div", form, "Modifier", ["submitButton"])
+                    bouton.addEventListener("click", async function(){
+
+                        await axios.get(`lines/lines.php?function=deleteconditions&id=${id_type}`)
+                        
+                        const lst_plages = plages_horaires.querySelectorAll(".plage-horaire")
+
+                        for(let plage of lst_plages){
+                            let debut = plage.querySelector("input[name='StartDateTime']").value
+                            let fin = plage.querySelector("input[name='EndDateTime']").value
+                            fetchUrlRedirectAndAlert(`lines/lines.php?function=updatecondition&id=${id_type}&begin=${debut}&end=${fin}&intervalle=${intervalle}`, "/espace-admin", "Le type de ligne a bien été modifié", "Certaines plages horaire entrent en collision")
+                        }
+                    })
+                })
+            })
+        }
+   })
+}
+
+
+// delete the line types who are checked
+const deleteTypesChecked = () => {
+    for(var type of document.querySelectorAll("input[name='selectionType']")){
+        if (type.checked) {
+            let url = `lines/lines.php?function=deletetype&id=${type.value}`;
+            fetchUrlRedirectAndAlert(url, "/espace-admin", "Le type de ligne a bien été supprimé", "Le type de ligne n'a pas pu être supprimé")
+        }
+    }
+}
+
+const toggleSupprLineType = () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+    
+    create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
+    create("h2", main, "Supprimer un type de ligne")
+    create("p", main, "Quel(s) type(s) de ligne souhaitez-vous supprimer ?", ["presentation"])
+
+    // Creation of the form
+    const form = create("div", main, null, ["app-form"])
+
+    axios.get(`lines/lines.php?function=typesline`).then(response => {
+        
+        for(var line of response.data){
+
+            var div_line = create("div", form, null, ["form-div-radio"])
+
+            create("div", div_line, line.name + " ")
+            createChampCheckbox(div_line, line.id_type, "selectionType", line.id_type)
+        }
+        // Creation of submit button
+        const bouton = create("div", form, "Supprimer", ["submitButton"])
+        bouton.addEventListener("click", function(){
+            if(countElementChecked("selectionType") == 0){
+                toggleError("ERREUR", "Veuillez sélectionner au moins un type")
+            }
+            else{
+                deleteTypesChecked()
+            }
+        })
+    })
+}
+
 export {
     toggleAddLine,
     toggleSupprLine,
     toggleModifLine,
     toggleVerifCouvertureSemaine,
-    toggleRemplissageAutoConduiteSemaine
+    toggleRemplissageAutoConduiteSemaine,
+    toggleAddLineType,
+    toggleModifLineType,
+    toggleSupprLineType
 }

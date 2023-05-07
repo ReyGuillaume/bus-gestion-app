@@ -3,7 +3,7 @@ import { toggleAgenda } from "./agenda";
 import { toggleAddCreneau } from "../pages/gestionTimeslots";
 import { toggleAjoutUser, toggleSupprimeUser, toggleModifyUser } from "../pages/gestionUsers";
 import { DisponibilityBus, AjoutBus, SupprimerBus, ModifBus }from "../pages/gestionBuses";
-import { toggleAddLine, toggleSupprLine, toggleModifLine, toggleVerifCouvertureSemaine, toggleRemplissageAutoConduiteSemaine } from "./gestionLigne";
+import { toggleAddLine, toggleSupprLine, toggleModifLine, toggleVerifCouvertureSemaine, toggleRemplissageAutoConduiteSemaine, toggleAddLineType, toggleModifLineType, toggleSupprLineType } from "./gestionLigne";
 import { toggleDrivers, toggleResp, toggleBuses, toggleLines } from "./agendaUsers";
 import { toggleMultiEntities } from "./day";
 import { createMenuElement } from "../components/menuItem";
@@ -111,12 +111,22 @@ const toggleGestionLigne = () => {
 
     const nav = create("nav", main, null, ['liste_gestion'])
 
-    create("div", nav, "Ajouter une Ligne", ['gestion_lignes']).addEventListener("click", toggleAddLine)
-    create("div", nav, "Modifier une Ligne", ['gestion_lignes']).addEventListener("click", toggleModifLine)
-    create("div", nav, "Supprimer une Ligne", ['gestion_lignes']).addEventListener("click", toggleSupprLine)
+    const lignes = create("div", nav, null, ["sous_gestion"])
+    create("div", lignes, "Lignes", ["gestion_titre"])
+    create("div", lignes, "Ajouter une Ligne", ['gestion_lignes']).addEventListener("click", toggleAddLine)
+    create("div", lignes, "Modifier une Ligne", ['gestion_lignes']).addEventListener("click", toggleModifLine)
+    create("div", lignes, "Supprimer une Ligne", ['gestion_lignes']).addEventListener("click", toggleSupprLine)
 
-    create("div", nav, "Verifier la couverture d'une semaine", ['gestion_lignes']).addEventListener("click", toggleVerifCouvertureSemaine)
-    create("div", nav, "Remplissage automatique des conduite de la semaine", ['gestion_lignes']).addEventListener("click", toggleRemplissageAutoConduiteSemaine)
+    const couv = create("div", nav, null, ["sous_gestion"])
+    create("div", couv, "Couverture", ["gestion_titre"])
+    create("div", couv, "Verifier la couverture d'une semaine", ['gestion_lignes']).addEventListener("click", toggleVerifCouvertureSemaine)
+    create("div", couv, "Remplissage automatique des conduite de la semaine", ['gestion_lignes']).addEventListener("click", toggleRemplissageAutoConduiteSemaine)
+
+    const types = create("div", nav, null, ["sous_gestion"])
+    create("div", types, "Types de lignes", ["gestion_titre"])
+    create("div", types, "Ajouter un type de ligne", ['gestion_lignes']).addEventListener("click", toggleAddLineType)
+    create("div", types, "Modifier un type de ligne", ['gestion_lignes']).addEventListener("click", toggleModifLineType)
+    create("div", types, "Supprimer un type de ligne", ['gestion_lignes']).addEventListener("click", toggleSupprLineType)
 
     return main
 }

@@ -53,6 +53,16 @@ const createCheckBoxOfElements = (axiosRequet, axiosRequestFetchchElement, conta
     })
 }
 
+const countElementChecked = (nom_selection) => {
+    let nb = 0
+    for(var type of document.querySelectorAll("input[name="+nom_selection+"]")){
+        if(type.checked){
+            nb += 1
+        }
+    }
+    return nb
+}
+
 
 function addslashes(string) {
     return string.replace(/\\/g, '\\\\').
@@ -72,5 +82,6 @@ export {
     fetchUrlRedirectAndAlert,
     createCheckboxOfElement,
     createCheckBoxOfElements,
+    countElementChecked,
     addslashes
 }
