@@ -180,10 +180,8 @@
   height: 100%;
   font-size: 0.6em;
   margin: 5px;
-  display: flex;
-  align-items: center;
 }
-.timeslot__houres{
+.timeslot__houres, .timeslot__body, .timeslot__goto, .timeslot__color {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -211,6 +209,12 @@
 }
 .timeslot__error:hover {
   transform: scale(1.5);
+}
+#app > .timeslot__error {
+  top: 15vh;
+  right: 2vw;
+  scale: 1.5;
+  cursor: pointer;
 }
 .back-button{
   cursor: pointer;
