@@ -176,8 +176,41 @@
 .timeslot__houres_multi div{
   font-size: 50%;
 }
+.timeslot > * {
+  height: 100%;
+  font-size: 0.6em;
+  margin: 5px;
+  display: flex;
+  align-items: center;
+}
+.timeslot__houres{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 .timeslot__color, .div-color{
   width: 7px;
+}
+.timeslot__goto {
+  position: relative;
+}
+.timeslot__error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #d90000;
+  color: #fff;
+  font-weight: bold;
+  transition: .5s;
+}
+.timeslot__error:hover {
+  transform: scale(1.5);
 }
 .back-button{
   cursor: pointer;
