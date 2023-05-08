@@ -133,8 +133,16 @@ function toggleAddReservation(){
     create("label", date, "Entrez la date et l'horaire de départ :", ["label-info"]);
     createChamp(date, "datetime-local", "horaireDepart");
 
-    
-    // Creation of submit button
+
+    const bouton = create("div", form, "Ajouter", ["submitButton"])
+    bouton.addEventListener("click", function(){
+        let dateDepart = document.querySelector("input[name='horaireDepart']").value;
+        let arretDepart = document.querySelector("input[name='arretDepart']").value;
+        let arretArrive = document.querySelector("input[name='arretArrivee']").value;
+        const idClient = JSON.parse(sessionStorage.getItem("userData"))["id"];
+
+        fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=create_reservation&arretDepart=`+arretDepart+`&arretArrive=`+arretArrive+`&dateDepart=`+dateDepart+`&idClient=`+idClient, "/espace-abonne", "La réservation a bien été envoyée", "La réservation n'a pas pu être envoyée")
+    })
 
 
 
