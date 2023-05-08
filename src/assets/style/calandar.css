@@ -100,7 +100,11 @@
   z-index: 90;
   border: 1px solid #888;
 }
-.timeslot div{
+.timeslot .timeslot__color,
+.timeslot .timeslot__houres,
+.timeslot .timeslot__body,
+.timeslot .timeslot__goto,
+.timeslot .timeslot__error{
   font-size: 0.6em;
   margin: 5px;
 }
@@ -176,16 +180,6 @@
 .timeslot__houres_multi div{
   font-size: 50%;
 }
-.timeslot > * {
-  height: 100%;
-  font-size: 0.6em;
-  margin: 5px;
-}
-.timeslot__houres, .timeslot__body, .timeslot__goto, .timeslot__color {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
 .timeslot__color, .div-color{
   width: 7px;
 }
@@ -193,6 +187,7 @@
   position: relative;
 }
 .timeslot__error {
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
