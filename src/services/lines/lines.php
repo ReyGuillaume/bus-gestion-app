@@ -246,6 +246,8 @@ function creneau_couvert ($crenau,$jour, $id_line){
     $tous_trajets_query = bdd()->query($sql);
     $tous_trajets = $tous_trajets_query->fetchAll();
 
+    $intervalle = $crenau['intervalle'];
+
     if (!empty($tous_trajets)){
 
         // Vérification que le premier trajet commence bien à l'heure de début du créneau
@@ -260,7 +262,7 @@ function creneau_couvert ($crenau,$jour, $id_line){
         // Vérification que chaque trajet commence moins de 10 minutes après la fin du précédent
         for ($i = 1; $i < count($tous_trajets); $i++) {
             $diff = strtotime($tous_trajets[$i]['begining']) - strtotime($tous_trajets[$i-1]['begining']);
-            if ($diff > 600) {
+            if ($diff > ($intervalle*60)) {
                 //echo "Il y a plus de 10 minutes entre le trajet ".$i." et le précédent.";
                 return false;
             }
@@ -372,7 +374,8 @@ function couvre_a_line_for_a_day ($jour, $id_line){
     
 */
 function couvrire_creneau ($crenau, $jour, $id_line){
-
+    require_once '../users/users.php';
+    require_once '../buses/buses.php';
     // On recupere toutes les variables nécessaire 
     $temps_creneau = 60; //++++ A améliorer car pas très maniable 
     $heure_courante = $crenau['begin'];
@@ -383,7 +386,7 @@ function couvrire_creneau ($crenau, $jour, $id_line){
 
     while ($heure_courante <= $crenau['end'] ){
 
-        echo "{$heure_courante}";
+        //echo "{$heure_courante}";
         // creation des datetime de debut et de fin 
         $date_complete_debut = DateTime::createFromFormat('Y-m-d H:i:s', $jour . ' ' . $heure_courante);
         $date_complete_debut_str = $date_complete_debut->format('Y-m-d H:i:s');
@@ -405,14 +408,26 @@ function couvrire_creneau ($crenau, $jour, $id_line){
         // récupérer l'ID généré automatiquement pour le nouveau timeslot
         $id_timeslot = $bdd->lastInsertId();
         $liaison = $bdd->query("INSERT INTO `line_timeslot`(`num_line`, `id_time_slot`, `direction`) VALUES ('{$id_line}','{$id_timeslot}','aller')");
-
         
+     
+        // On y ajoute un bus si possible 
+        $bus_relie =  add_a_bus_to_timeslot($id_timeslot);
+        
+        // On y ajoute un conducteur si possible
+        $driver_relie =  add_a_driver_to_timeslot($id_timeslot);
+
+        if (($bus_relie==false )||( $driver_relie==false )){
+            $res = false;
+        }
+
+
         // On avance 
         $datetime_courante = DateTime::createFromFormat('H:i:s', $heure_courante);
-        $datetime_courante->add(new DateInterval('PT10M'));
+        $datetime_courante->add(new DateInterval("PT{$intervalle}M"));
         $heure_courante =  $datetime_courante->format('H:i:s');
     } 
-    return $res; 
+    //echo("{$res}");
+    return $res ; 
 }
 
 switch ($_GET['function']) {
