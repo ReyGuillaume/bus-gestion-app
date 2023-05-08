@@ -141,6 +141,38 @@ function toggleAddReservation(){
     return main
 }
 
+const createReservationRadio = (form, container, reservation) => {
+    //Ajout d'un evenement au clic d'un radio
+    createChampRadio(container, reservation.id_reserv , "selectionReservation", reservation['id_reserv'])
+    .addEventListener('click', function(){
+        // Recuperation de la ligne a modifier
+        var numberReservationToModify = valueFirstElementChecked("input[name='selectionReservation']");
+        
+        axios.get(`timeslots/timeslots.php?function=fetch_by_id_reservation&idReservation=${numberReservationToModify}`).then((responseReservation) =>{
+           
+            console.log(responseReservation.data["arretArrive"])
+            // Creation du formulaire pré remplie de modif de la reservation
+            form.replaceChildren("")
+            
+            const div_depart = create("div", form, null, ["form-div"])
+            create("label", div_depart, "Entrez le nom de l'arret de départ :", ["label-info"]);
+            createChamp(div_depart, "text", "arretDepart").value = responseReservation.data["arretDepart"];
+
+            const div_arrivee = create("div", form, null, ["form-div"])
+            create("label", div_arrivee, "Entrez le nom de l'arret d'arrivée :", ["label-info"]);
+            createChamp(div_arrivee, "text", "arretArrivee").value = responseReservation.data["arretArrive"];
+
+            const date = create("div", form, null, ["form-div"])
+            create("label", date, "Entrez la date et l'horaire de départ :", ["label-info"]);
+            createChamp(date, "datetime-local", "horaireDepart").value = responseReservation.data["dateDepart"];
+            
+            // Creation of submit button
+            
+            // +++++
+        })
+    })
+    create("label", container, "Réservation : "+ reservation['id_reserv']+ " du "+ reservation['dateDepart']+ " depuis "+ reservation['arretDepart'], ["label-info"]).setAttribute('for', "r"+reservation['id_reserv']);
+}
 
 function toggleUpdateReservation(){
     const main = document.querySelector("#app")
@@ -151,7 +183,23 @@ function toggleUpdateReservation(){
 
     create("h2", main, "Gestion des réservations")
     create("h3", main, "Modifier une réservation")
+    create("p", main, "Choisir la reservation à modifier :", ["presentation"])
 
+    // Creation of the form
+    const form = create("div", main, null, ["app-form"])
+
+    // Creation de radio pour chaque reservation 
+    var divRadio = create("div", form, null, ["form-div-radio"]);
+    create("p", divRadio, "Choisissez la réservation à modifier : ");
+    const sessionData = JSON.parse(sessionStorage.getItem("userData"));
+
+    axios.get(`timeslots/timeslots.php?function=fetch_by_id_client&idClient=`+sessionData["id"]).then(response => {
+        for(var reservation of response.data){
+            var div_reservation = create("div", form, null, ["form-div-radio"])
+            createReservationRadio(form, div_reservation, reservation)
+        }
+    
+      });
 
 
 

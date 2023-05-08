@@ -407,7 +407,7 @@ function update_reservation ($idReservation, $arretDepart, $arretArrive, $dateDe
  */
 function fetch_by_id_reservation ($idReservation) {
     $result = bdd()->query("SELECT * FROM `reservation` WHERE `id_reserv` =  '{$idReservation}'");
-    return $result -> fetchAll();
+    return $result -> fetch();
 }
 
 /**
