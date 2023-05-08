@@ -198,6 +198,9 @@ const createPlageHoraire = (container) => {
 
     create("label", div, "Heure de fin :", ["label-info"])
     createChamp(div, "time", "EndDateTime")
+
+    create("label", div, "Intervalle entre chaque conduite :", ["label-info"])
+    createChamp(div, "integer", "intervalle")
 }
 
 const toggleAddLineType = () => {
@@ -222,18 +225,13 @@ const toggleAddLineType = () => {
         createPlageHoraire(plages_horaires)
     })
 
-    const div_tps = create("div", form, null, ["form-div"])
-    create("label", div_tps, "Entrez l'intervalle de temps entre chaque conduite (en minutes) :", ["label-info"])
-    createChamp(div_tps, "integer", "intervalle")
-
     // Creation of submit button
     const bouton = create("div", form, "Envoyer", ["submitButton"])
     bouton.addEventListener("click", function(){
 
         var nom = document.querySelector("input[name='nom']").value
-        var intervalle = document.querySelector("input[name='intervalle']").value
 
-        if(nom && intervalle){
+        if(nom){
             axios.get(`lines/lines.php?function=createtype&name=${nom}`).then(function(response){
 
                 if(response.data){
@@ -242,7 +240,8 @@ const toggleAddLineType = () => {
                     for(let plage of lst_plages){
                         let debut = plage.querySelector("input[name='StartDateTime']").value
                         let fin = plage.querySelector("input[name='EndDateTime']").value
-                        if(debut && fin){
+                        let intervalle = plage.querySelector("input[name='intervalle']").value
+                        if(debut && fin && intervalle){
                             fetchUrlRedirectAndAlert(`lines/lines.php?function=createcondition&name=${nom}&begin=${debut}&end=${fin}&intervalle=${intervalle}`, "/espace-admin", "Le type de ligne a bien été ajouté", "Certaines plages horaire entrent en collision")
                         }
                     }
@@ -250,7 +249,7 @@ const toggleAddLineType = () => {
             })
         }
         else{
-            toggleError("ERREUR", "Veuillez renseigner toutes les informations")
+            toggleError("ERREUR", "Veuillez renseigner un nom")
         }  
     })
 }
@@ -281,13 +280,6 @@ const toggleModifLineType = () => {
                 
                 axios.get(`lines/lines.php?function=type&id=${id_type}`).then(function(res_type){
                     form.replaceChildren("")
-                    
-                    // récupérer l'intervalle du type de la ligne
-                    var intervalle = null
-
-                    if(res_type.data.length > 0){
-                        intervalle = res_type.data[0].intervalle
-                    }
 
                     create("div", form, "Liste des plages horaires du type de ligne choisi :", ["form-div"])
 
@@ -301,6 +293,9 @@ const toggleModifLineType = () => {
 
                         create("label", div_plage, "Heure de fin :", ["label-info"])
                         createChamp(div_plage, "time", "EndDateTime").value = plage.end
+
+                        create("label", div_plage, "Intervalle entre chaque conduite :", ["label-info"])
+                        createChamp(div_plage, "integer", "intervalle").value = plage.intervalle
                     }
 
                     // Creation of submit button
@@ -314,6 +309,7 @@ const toggleModifLineType = () => {
                         for(let plage of lst_plages){
                             let debut = plage.querySelector("input[name='StartDateTime']").value
                             let fin = plage.querySelector("input[name='EndDateTime']").value
+                            let intervalle = plage.querySelector("input[name='intervalle']").value
                             fetchUrlRedirectAndAlert(`lines/lines.php?function=updatecondition&id=${id_type}&begin=${debut}&end=${fin}&intervalle=${intervalle}`, "/espace-admin", "Le type de ligne a bien été modifié", "Certaines plages horaire entrent en collision")
                         }
                     })
