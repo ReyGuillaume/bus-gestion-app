@@ -13,19 +13,22 @@ async function archiveNotif (id){
     await fetch("http://localhost/projetL2S4/src/services/notifications/notifications.php?function=archive&id="+id)
 }
 
-const createActionButton = (container, letter, action, id_notif) => {
-    create("div", container, letter).addEventListener("click", async function(e) {
+const createActionButton = (container, letter, title, action, id_notif) => {
+    const b = create("button", container, letter, ["unstyled-button"])
+    b.title = title
+    b.onkeydown = e => e.stopPropagation()
+    b.addEventListener("click", async function(e) {
         e.stopPropagation()
         await action(id_notif)
         toggleNotificationCenter()
     })
 }
 
-const createArchiveButton = (container, id_notif) => createActionButton(container, 'A', archiveNotif, id_notif)
+const createArchiveButton = (container, id_notif) => createActionButton(container, 'A', "Archiver", archiveNotif, id_notif)
 
-const createReadButton = (container, id_notif) => createActionButton(container, 'R', readNotif, id_notif)
+const createReadButton = (container, id_notif) => createActionButton(container, 'R', "Marquer comme lu", readNotif, id_notif)
 
-const createUnreadButton = (container, id_notif) => createActionButton(container, 'U', unreadNotif, id_notif)
+const createUnreadButton = (container, id_notif) => createActionButton(container, 'U', "Marquer comme non lu", unreadNotif, id_notif)
 
 
 const displayActionButtons = (mode, container, id_notif) => {
@@ -56,6 +59,7 @@ const displayActionButtons = (mode, container, id_notif) => {
 const displayNotifs = (container, data, mode) => {
     for(let notif of data){
         let divNotif = create("div", container, null, ['divNotif', notif.status]);
+        divNotif.setAttribute('tabindex', '0')
 
         let title = notif.title;
         let message = notif.message;
@@ -80,6 +84,13 @@ const displayNotifs = (container, data, mode) => {
             showNotification(notif, container)
             readNotif(id_notif);
         })
+        divNotif.addEventListener("keydown", e => {
+            if (e.code === "Enter") {
+                showNotification(notif, container)
+                readNotif(id_notif);
+            }
+        })
+        
     }
 }
 
@@ -110,24 +121,29 @@ function showNotification (notif, divAllNotif){
 
     const img = create("div", divAllNotif, null, ["notif_image"]);
     const id_notif = notif.id_notif;
-    create("div", img, 'Marquer comme non lu').addEventListener("click", function() {
+    const b1 = create("button", img, 'Marquer comme non lu')
+    b1.title = 'Marquer comme non lu'
+    b1.addEventListener("click", function() {
         unreadNotif(id_notif)
         toggleNotificationCenter()
     })
-    create("div", img, 'Archiver').addEventListener("click", function() {
+
+    const b2 = create("button", img, 'Archiver')
+    b2.title = 'Archiver'
+    b2.addEventListener("click", function() {
         archiveNotif(id_notif)
         toggleNotificationCenter()
     })
 }
    
 
-
 const toggleNotificationCenter = () => {
     const main = document.querySelector("#app");
     main.replaceChildren("");
     const id_user = JSON.parse(sessionStorage.getItem("userData")).id;
 
-    const back = create("div", main, "<< Retour", ["return"])
+    const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
+    back.title = "Retour en arrière"
     back.onclick = () => {
         redirectUser(
             () => redirect("/espace-admin"), 

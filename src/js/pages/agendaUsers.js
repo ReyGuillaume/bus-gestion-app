@@ -5,9 +5,10 @@ import { redirectUser, redirect } from "../utils/redirection";
 import axios from 'axios';
 
 const createListeItem = (ul, elem, itemText, color) => {
-    let li = create("li", ul, null, [color])
-    let div = create("div", li, itemText)
-    div.onclick = () => toggleAgenda(elem)
+    let li = create("button", ul, null, [color, "unstyled-button"])
+    li.title = itemText
+    li.onclick = () => toggleAgenda(elem)
+    create("li", li, itemText)
 }
 
 // afficher la liste des users de type idtype
@@ -15,7 +16,9 @@ const drawUsers = (idtype) => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
     
     if(idtype == 2){
         create("h2", main, "Agenda des responsables logistiques", ['mainTitle'])
@@ -33,7 +36,9 @@ const drawUsers = (idtype) => {
         users.forEach(user => createListeItem(ul, user, `${user.firstname} ${user.name.toUpperCase()}`, "liste_users_"+idtype))
 
         if(idtype == 3){
-            create("div", main, "Vision globale", ["submitButton"]).onclick = () => toggleAgenda(undefined, undefined, true)
+            const b = create("button", ul, "Vision globale", ["submitButton", "unstyled-button"])
+            b.onclick = () => toggleAgenda(undefined, undefined, true)
+            b.title = "Vision globale"
         }
     })
     
@@ -59,18 +64,22 @@ const toggleBuses = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Agenda des bus", ['mainTitle'])
     create("div", main, "Liste des bus :", ["presentation"])
     const ul = create("ul", main, null, ["navBar"])
 
     // on récupère tous les users de la base de données, du type renseigné
-    axios.get("buses/buses.php?function=buses").then(function(response){
+    axios.get("buses/buses.php?function=buses").then(async function(response){
 
         let buses = response.data;
+        buses.sort((b1, b2) => b1.id - b2.id)
         
         for(let bus of buses){
-            axios.get("buses/buses.php?function=bus&id="+bus.id).then(function(responseBus){
+            await axios.get("buses/buses.php?function=bus&id="+bus.id).then(function(responseBus){
 
                 let bus = responseBus.data
                 createListeItem(ul, bus, `Bus n°${bus.id} (${bus.nb_places} places)`, "liste_bus")
@@ -94,7 +103,9 @@ const toggleLines = () => {
         () => redirect("/")
     )
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
     create("h2", main, "Agenda des lignes de bus", ['mainTitle'])
     create("div", main, "Liste des lignes de bus :", ["presentation"])
     const ul = create("ul", main, null, ['navBar'])

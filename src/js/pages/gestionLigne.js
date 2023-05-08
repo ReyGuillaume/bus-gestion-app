@@ -12,7 +12,10 @@ const toggleAddLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Ajout d'une Ligne ")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
@@ -40,7 +43,8 @@ const toggleAddLine = () => {
     });
 
     // Creation of submit button
-    const bouton = create("div", form, "Envoyer", ["submitButton"])
+    const bouton = create("button", form, "Envoyer", ["submitButton"])
+    bouton.title = "Envoyer"
     bouton.addEventListener("click", function(){
         var id_type = valueFirstElementChecked("input[name='selectionTypeLine']");
         let number = document.querySelector("input[name='number']").value;
@@ -54,7 +58,10 @@ const toggleSupprLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Suppression d'une Ligne ")
     create("p", main, "Choisir la(les) ligne(s) à supprimer :", ["presentation"])
 
@@ -72,6 +79,7 @@ const toggleSupprLine = () => {
 
         // Creation of submit button
         const bouton = create("div", form, "Supprimer", ["submitButton"])
+        bouton.title = "Supprimer"
         bouton.addEventListener("click", function(){
             for(var line of document.querySelectorAll("input[name='selectionLigne']")){
                 if (line.checked) {
@@ -104,6 +112,7 @@ const createLineRadio = (form, container, line) => {
 
             // Creation of submit button
             const bouton = create("div", form, "Modifier", ["submitButton"])
+            bouton.title = "Modifier"
             bouton.addEventListener("click", function(){
                 let travel_time = document.querySelector("input[name='travel_time']").value;
                 let number = document.querySelector("input[name='number']").value;
@@ -119,7 +128,10 @@ const toggleModifLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Modification d'une Ligne ")
     create("p", main, "Choisir la ligne à modifier :", ["presentation"])
 
@@ -142,7 +154,10 @@ const toggleVerifCouvertureSemaine = () => {
     main.replaceChildren("")
     
     // Mise en place des titres
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Verification de couvertures des lignes")
     create("p", main, "Indiquez la semaine à vérifier :", ["presentation"])
 
@@ -154,6 +169,7 @@ const toggleVerifCouvertureSemaine = () => {
 
     // Creation of submit button
     const bouton = create("div", form, "Envoyer", ["submitButton"])
+    bouton.title = "Envoyer"
     bouton.addEventListener("click", function(){
         let semaine = document.querySelector("input[name='semaine']").value;
         fetchUrlRedirectAndAlert(`lines/lines.php?function=WeekCovered&week=${semaine}`, "/espace-admin", "Le semaine est bien couverte", "Il semblerait que tout ne soit pas bien rempli...")
@@ -168,7 +184,10 @@ const toggleRemplissageAutoConduiteSemaine = () => {
     main.replaceChildren("")
     
     // Mise en place des titres
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Remplissage automatique de la semaine")
     create("p", main, "Indiquer la semaine à remplir, attention cela supprime les créneaux de conduite déjà ajoutés", ["presentation"])
 
@@ -180,6 +199,7 @@ const toggleRemplissageAutoConduiteSemaine = () => {
 
     // Creation of submit button
     const bouton = create("div", form, "Envoyer", ["submitButton"])
+    bouton.title = "Envoyer"
     bouton.addEventListener("click", function(){
         let semaine = document.querySelector("input[name='semaine']").value;
         fetchUrlRedirectAndAlert(`lines/lines.php?function=coverWeek&week=${semaine}`, "/espace-admin", "Toutes les conduites de la semaine ont étées ajoutées", "Il semblerait que tout ne se soit pas passé comme prévu...")
@@ -207,7 +227,10 @@ const toggleAddLineType = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Ajouter un type de ligne")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
@@ -220,13 +243,15 @@ const toggleAddLineType = () => {
     createChamp(div_nom, "integer", "nom")
 
     const plages_horaires = create("div", form, null, ["form-div"])
-    const add_btn = create("div", plages_horaires, "Ajouter une plage horaire de conduite", ["addButton"])
+    const add_btn = create("button", plages_horaires, "Ajouter une plage horaire de conduite", ["addButton", "unstyled-button"])
+    add_btn.title = "Ajouter une plage horaire de conduite"
     add_btn.addEventListener("click", function(){
         createPlageHoraire(plages_horaires)
     })
 
     // Creation of submit button
-    const bouton = create("div", form, "Envoyer", ["submitButton"])
+    const bouton = create("button", form, "Envoyer", ["submitButton", "unstyled-button"])
+    bouton.title = "Envoyer"
     bouton.addEventListener("click", function(){
 
         var nom = document.querySelector("input[name='nom']").value
@@ -259,7 +284,10 @@ const toggleModifLineType = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Modifier un type de ligne")
     create("p", main, "Quel type de ligne souhaitez-vous modifier ?", ["presentation"])
 
@@ -299,7 +327,8 @@ const toggleModifLineType = () => {
                     }
 
                     // Creation of submit button
-                    const bouton = create("div", form, "Modifier", ["submitButton"])
+                    const bouton = create("button", form, "Modifier", ["submitButton", "unstyled-button"])
+                    bouton.title = "Modifier"
                     bouton.addEventListener("click", async function(){
 
                         await axios.get(`lines/lines.php?function=deleteconditions&id=${id_type}`)
@@ -334,7 +363,10 @@ const toggleSupprLineType = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Supprimer un type de ligne")
     create("p", main, "Quel(s) type(s) de ligne souhaitez-vous supprimer ?", ["presentation"])
 
@@ -352,6 +384,7 @@ const toggleSupprLineType = () => {
         }
         // Creation of submit button
         const bouton = create("div", form, "Supprimer", ["submitButton"])
+        bouton.title = "Supprimer"
         bouton.addEventListener("click", function(){
             if(countElementChecked("selectionType") == 0){
                 toggleError("ERREUR", "Veuillez sélectionner au moins un type")

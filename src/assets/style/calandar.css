@@ -208,7 +208,7 @@
 #app > .timeslot__error {
   top: 15vh;
   right: 2vw;
-  scale: 1.5;
+  transform: scale(1.5);
   cursor: pointer;
 }
 .back-button{

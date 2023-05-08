@@ -119,7 +119,12 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
             else{
                 div = create("div", container, null, ['timeslot'], [`ts${timeslot.id}`])
             }
+            div.setAttribute("tabindex", "0")
             div.addEventListener("click", () => toggleTask(footer, timeslot, div, user, multi))
+            div.addEventListener("keydown", e => {
+                if (e.code === "Enter") 
+                    toggleTask(footer, timeslot, div, user, multi)
+            })
 
             if(possibleDrag(user_role, timeslot.name)){
                 div.setAttribute('draggable', true);
@@ -190,16 +195,19 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
 
             // Gestion des erreurs
             if(timeslot.errors.length > 0){
-                create("div", div, "!", ["timeslot__error"]).onclick = e => {
+                const e = create("button", div, "!", ["timeslot__error", "unstyled-button"])
+                e.title = "Des erreurs ont été détectées"
+                e.onclick = e => {
                     e.stopPropagation()
                     openErrorModale(timeslot)
                 }
+                e.onkeydown = e => e.stopPropagation()
             }
         })
     }
     // erreur globale
     if (main.querySelectorAll(".timeslot__error").length > 0)
-        create("div", main, "!", ["timeslot__error"]).title = "Certains créneaux ont des erreurs signalées"
+        create("button", main, "!", ["timeslot__error", "unstyled-button"]).title = "Certains créneaux ont des erreurs signalées"
 }
 
 
@@ -207,7 +215,8 @@ const openErrorModale = (timeslot) => {
     const app = document.querySelector("#app")
     const overlay = create("div", app, null, ["overlay"])
     const modale = create("div", overlay, null, ["validation"])
-    const back = create("div", modale, '<< Retour', ['return'])
+    const back = create("button", modale, '<< Retour', ['return', "unstyled-button"])
+    back.title = "Retour en arrière"
 
     // ajout des actions au clic
     overlay.onclick = e => {
@@ -279,7 +288,10 @@ const toggleMultiEntities = async () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Agenda multiple")
     create("p", main, "Sélectionnez au maximum 4 agendas que vous souhaitez afficher", ["presentation"])
 
@@ -307,8 +319,8 @@ const toggleMultiEntities = async () => {
 
     for(let user of users){
         let div_user = create("div", div_users, null, ["selectMulti"])
-        createChampCheckbox(div_user, user.id, "selectionUser", user.id).onclick = async () => entites = await entitiesSelected()
-        create("div", div_user, " " + user.firstname + " " + user.name.toUpperCase())
+        createChampCheckbox(div_user, `u${user.id}`, "selectionUser", user.id).onclick = async () => entites = await entitiesSelected()
+        create("label", div_user, " " + user.firstname + " " + user.name.toUpperCase()).htmlFor = `u${user.id}`
     }
 
     // affichage des bus
@@ -317,8 +329,8 @@ const toggleMultiEntities = async () => {
 
     for(let bus of buses){
         let div_bus = create("div", div_buses, null, ["selectMulti"])
-        createChampCheckbox(div_bus, bus.id, "selectionBus", bus.id).onclick = async () => entites = await entitiesSelected()
-        create("div", div_bus, " Bus n°" + bus.id)
+        createChampCheckbox(div_bus, `b${bus.id}`, "selectionBus", bus.id).onclick = async () => entites = await entitiesSelected()
+        create("label", div_bus, " Bus n°" + bus.id).htmlFor = `b${bus.id}`
     }
 
     // affichage des lignes
@@ -327,11 +339,13 @@ const toggleMultiEntities = async () => {
 
     for(let line of lines){
         let div_line = create("div", div_lines, null, ["selectMulti"])
-        createChampCheckbox(div_line, line.number, "selectionLine", line.number).onclick = async () => entites = await entitiesSelected()
-        create("div", div_line, " Ligne " + line.number)
+        createChampCheckbox(div_line, `l${line.number}`, "selectionLine", line.number).onclick = async () => entites = await entitiesSelected()
+        create("label", div_line, " Ligne " + line.number).htmlFor = `l${line.number}`
     }
 
-    create("div", multi_form, "Afficher", ["choixButton"]).addEventListener("click", function(){
+    const b = create("button", multi_form, "Afficher", ["choixButton", "unstyled-button"])
+    b.title = "Afficher"
+    b.addEventListener("click", function(){
         if(entites.length > 4){
             toggleError("ERREUR", "Vous ne pouvez sélectionner que 4 entités")
         }

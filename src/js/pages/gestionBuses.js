@@ -11,7 +11,10 @@ const DisponibilityBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Disponibilité des bus")
     create("p", main, "Afficher les bus disponibles selon la plage horaire :", ["presentation"])
 
@@ -28,7 +31,8 @@ const DisponibilityBus = () => {
     create("label", div_fin, "Fin : ", ["label-info"])
     createChamp(div_fin, "datetime-local", "EndDateTime")
 
-    const btn = create("div", form, "Envoyer", ["submitButton"])
+    const btn = create("button", form, "Envoyer", ["submitButton", "unstyled-button"])
+    btn.title = "Envoyer"
     btn.addEventListener("click", function(){
 
         let start = document.querySelector("input[name='StartDateTime']").value;
@@ -59,7 +63,10 @@ const AjoutBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Ajout d'un bus ")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
@@ -72,7 +79,8 @@ const AjoutBus = () => {
     axios.get(`buses/buses.php?function=bustypes`).then(response => response.data.forEach(bustype => createCheckboxOfElement(divRadio, bustype, "typeBus")))
 
     // Creation of submit button
-    const bouton = create("div", form, "Envoyer", ["submitButton"])
+    const bouton = create("button", form, "Envoyer", ["submitButton", "unstyled-button"])
+    bouton.title = "Envoyer"
     bouton.addEventListener("click", function (){
         for(var type of document.querySelectorAll("input[name='typeBus']")){
             if (type.checked) {
@@ -86,7 +94,10 @@ const ModifBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Modification d'un bus ")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
@@ -104,7 +115,8 @@ const ModifBus = () => {
     axios.get(`buses/buses.php?function=bustypes`).then(response => response.data.forEach(bustype => createCheckboxOfElement(divRadioType, bustype, "typeBus")))
 
     // Creation of submit button
-    const bouton = create("div", form, "Modifier", ["submitButton"])
+    const bouton = create("button", form, "Modifier", ["submitButton", "unstyled-button"])
+    bouton.title = "Modifier"
     bouton.addEventListener("click", function (){
         let id = valueFirstElementChecked("input[name='idBus']");
         let type = valueFirstElementChecked("input[name='typeBus']");
@@ -117,7 +129,10 @@ const SupprimerBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Suppression d'un bus ")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
@@ -130,7 +145,8 @@ const SupprimerBus = () => {
     axios.get(`buses/buses.php?function=buses`).then(response => response.data.forEach(bus => createCheckboxOfElement(divCheckboxBus, bus, "idBus")))
 
     // Creation of submit button
-    const bouton = create("div", form, "Supprimer", ["submitButton"])
+    const bouton = create("button", form, "Supprimer", ["submitButton", "unstyled-button"])
+    bouton.title = "Supprimer"
     bouton.addEventListener("click", function (){
         for(var bus of document.querySelectorAll("input[name='idBus']")){
             let url = `buses/buses.php?function=delete&id=`;

@@ -44,7 +44,9 @@ const createHeader = () => {
     h.replaceChildren("")
 
     const container = create("div", h, null, ['container'])
-    create("img", container, null, ['logo'], "Gobus_Logo", "./src/assets/images/gobus-logo-color.png", "Gobus Logo").addEventListener("click", () => redirect("/"))
+    const logo = create("img", container, null, ['logo'], "Gobus_Logo", "./src/assets/images/gobus-logo-color.png", "Gobus Logo")
+    logo.addEventListener("click", () => redirect("/"))
+    logo.title = "Retour à l'accueil"
 
     // contains the informations of the user (if authentified)
     let user_infos = create("p", container, "", null, "infosUser");
@@ -56,7 +58,8 @@ const createHeader = () => {
         user_infos.textContent = `${prenom} ${nom.toUpperCase()}, ${role}`; // Display of user's session
     }
 
-    const toggle = create("div", container, null, ['toggleNav'])
+    const toggle = create("button", container, null, ['toggleNav', "unstyled-button"])
+    toggle.title = "Menu"
     toggle.addEventListener("click", toggleNavBar)
     create("i", toggle , null, ['fa-solid', 'fa-bars'])
     createNavBar()

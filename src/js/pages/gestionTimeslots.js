@@ -59,14 +59,15 @@ function toogleBusChoices(choicesDiv){
     // On cree chaque champs 
     axios.get(`buses/buses.php?function=buses`).then(response => {
         for(var bus of response.data){
-            createChampCheckbox(divCheckboxBus, bus.id , "selectionBus", bus.id);
+            createChampCheckbox(divCheckboxBus, `b${bus.id}` , "selectionBus", bus.id);
             var label = create("label", divCheckboxBus, bus.id);
-            label.setAttribute("for", bus.id);
+            label.setAttribute("for", `b${bus.id}`);
         }
     });
 
     // On cree le bouton qui permet de choisir si on veut afficher seulement les disponibles
     var boutonBus = create("button", divCheckboxBus, "Afficher seulement les bus disponibles");
+    boutonBus.title = "Afficher seulement les bus disponibles"
     boutonBus.addEventListener("click", function (event){
         event.preventDefault();
         toogleFreeBusChoices(choicesDiv);
@@ -99,6 +100,7 @@ function toogleFreeBusChoices(choicesDiv){
     
     // On cree le bouton permettant d'afficher tous les utilisateurs
     var bouton = create("button", divCheckboxBus, "Afficher tous les bus");
+    bouton.title = "Afficher tous les bus"
     bouton.addEventListener("click", function (event){
         event.preventDefault();
         toogleBusChoices(choicesDiv);
@@ -123,14 +125,15 @@ function toogleUserChoices(choicesDiv){
     // On cree chaque champs 
     axios.get(`users/users.php?function=users`).then((response)=>{
         for(var user of response.data){
-            createChampCheckbox(divCheckboxUsers, user.id , "selectionParticipant", user.id);
+            createChampCheckbox(divCheckboxUsers, `u${user.id}` , "selectionParticipant", user.id);
             var label = create("label", divCheckboxUsers, user.name + " "+ user.firstname);
-            label.setAttribute("for", user.id);
+            label.setAttribute("for", `u${user.id}`);
         }
     });
 
     // On cree le bouton qui permet de choisir si on veut afficher seulement les disponibles
     var boutonUser = create("button", divCheckboxUsers, "Afficher seulement les utilisateur disponibles");
+    boutonUser.title = "Afficher seulement les utilisateur disponibles"
     boutonUser.addEventListener("click", function (event){
         event.preventDefault();
         toogleFreeUserChoices(choicesDiv);
@@ -162,6 +165,7 @@ function toogleFreeUserChoices(choicesDiv){
     
     // On cree le bouton permettant d'afficher tous les utilisateurs
     var bouton = create("button", divCheckboxUsers, "Afficher tous les utilisateurs");
+    bouton.title = "Afficher tous les utilisateurs"
     bouton.addEventListener("click", function (event){
         event.preventDefault();
         toogleUserChoices(choicesDiv);
@@ -189,15 +193,16 @@ function toogleDriversChoices(choicesDiv){
     axios.get(`users/users.php?function=users`).then((response)=>{
         for(var user of response.data){
             if (user.id_user_type == 3) {
-                createChampCheckbox(divCheckboxDrivers, user.id , "selectionConducteurs", user.id);
+                createChampCheckbox(divCheckboxDrivers, `u${user.id}` , "selectionConducteurs", user.id);
                 var label = create("label", divCheckboxDrivers, user.name + " "+ user.firstname);
-                label.setAttribute("for", user.id);
+                label.setAttribute("for", `u${user.id}`);
             }
         }
     });
 
     // On cree le bouton qui permet de choisir si on veut afficher seulement les disponibles
     var boutonUser = create("button", divCheckboxDrivers, "Afficher seulement les conducteurs disponibles");
+    boutonUser.title = "Afficher seulement les conducteurs disponibles"
     boutonUser.addEventListener("click", function (event){
         event.preventDefault();
         toogleFreeDriverChoices(choicesDiv);
@@ -229,6 +234,7 @@ function toogleFreeDriverChoices(choicesDiv){
     
     // On cree le bouton permettant d'afficher tous les conducteurs
     var bouton = create("button", divCheckboxDrivers, "Afficher tous les conducteurs");
+    bouton.title = "Afficher tous les conducteurs"
     bouton.addEventListener("click", function (event){
         event.preventDefault();
         toogleDriversChoices(choicesDiv);
@@ -258,9 +264,9 @@ function toogleLineChoices(choicesDiv){
     create("label", divRadioLigne, "Choisissez une ligne :");
     axios.get(`lines/lines.php?function=lines`).then((response)=>{
     for(var line of response.data){
-         createChampRadio(divRadioLigne, line.number , "selectionLigne", line.number);
+         createChampRadio(divRadioLigne, `l${line.number}` , "selectionLigne", line.number);
         var label = create("label", divRadioLigne, "Ligne " + line.number);
-        label.setAttribute("for", line.number);
+        label.setAttribute("for", `l${line.number}`);
         }
     });
 }
@@ -318,7 +324,10 @@ const toggleAddCreneau = () => {
     const main = document.querySelector("#app");
     main.replaceChildren("");
     
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Ajout de crénaux");
     create("p", main, " Rentrez les informations suivantes : ", ["presentation"]);
 
@@ -379,7 +388,8 @@ const toggleAddCreneau = () => {
     const choicesDiv = create("div", form);
 
     // Creation of submit button
-    const bouton = create("div", form, "Envoyer", ["submitButton"])
+    const bouton = create("button", form, "Envoyer", ["submitButton", "unstyled-button"])
+    bouton.title = "Envoyer"
     bouton.addEventListener("click", function (){
         let url = axiosUrlSendWhenADD(typeTimeslot())
         fetchUrlRedirectAndAlert(url, "/espace-admin", "Le créneau a bien été ajouté", "Le créneau n'a pas pu être ajouté")

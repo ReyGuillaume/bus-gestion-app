@@ -55,7 +55,9 @@ export function toggleInfoAbonne(){
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
 
     // bouton de retour
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-abonne"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-abonne"))
+    back.title = "Retour en arrière"
 
     // les informations de l'abonné + les boutons pour mofier le profil et le mot de passe
     axios.get(`users/users.php?function=user&id=`+sessionData["id"]).then((response) => {
@@ -88,7 +90,9 @@ function changerInfoAbonne (){
     // recuperation des infos de l'utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => toggleInfoAbonne())
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => toggleInfoAbonne())
+    back.title = "Retour en arrière"
 
     //les informations de l'abonné à changer + le bouton pour valider
     axios.get(`users/users.php?function=user&id=`+sessionData["id"]).then((response) => {
@@ -141,7 +145,9 @@ function changerMdpAbonne (){
     // recuperation des infos de l'utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => toggleInfoAbonne())
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => toggleInfoAbonne())
+    back.title = "Retour en arrière"
 
     const div = create("div", main);
     create("h2", div, "Voici vos informations personnelles :");
