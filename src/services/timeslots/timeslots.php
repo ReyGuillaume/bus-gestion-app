@@ -69,7 +69,7 @@ Retourne tous les types de créneau existants.
 @return liste des types de créneaux (id : Int, name : String)
  */
 function fetch_time_slot_type() {
-    $res = bdd()->query("SELECT * FROM TimeSlotType WHERE `id` != 3");
+    $res = bdd()->query("SELECT * FROM TimeSlotType WHERE `id` != 4");
     return $res->fetchAll();
 }
 

@@ -306,9 +306,13 @@ function axiosUrlSendWhenADD(type){
                 requestSuccess = true
             }
             break;
-        case "5" :  // CONDUITE
-            if (![drivers, buses].includes("")){
-                url += `&users=${drivers}&buses=${buses}`;
+        case "5" :  // astreinte
+            if (drivers != "") {
+                url += `&users=${drivers}`;
+                requestSuccess = true
+            }
+            if (buses != "") {
+                url += `&buses=${buses}`;
                 requestSuccess = true
             }
             break;
