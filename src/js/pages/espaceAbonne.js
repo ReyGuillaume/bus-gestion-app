@@ -1,8 +1,9 @@
-import {create} from "../utils/domManipulation";
 import { createMenuElement} from "../components/menuItem";
 import {redirect, redirectUser, toggleAlertMessage} from "../utils/redirection";
 import axios from 'axios';
 import {displayReserv} from "./gestionAbonne.js";
+import { fetchUrlRedirectAndAlert, valueFirstElementChecked } from "../utils/formGestion";
+import { create, createChamp, createChampCheckbox, createChampRadio } from "../utils/domManipulation";
 
 
 export function toggleEspaceAbonne() {
@@ -114,6 +115,26 @@ function toggleAddReservation(){
     create("h2", main, "Gestion des réservations")
     create("h3", main, "Ajouter une réservation")
 
+    create("p", main, "Rentrez les informations suivantes :", ["presentation"])
+
+    // Creation of the form
+    const form = create("div", main, null, ["app-form"])
+
+    // Creation of the champ
+    const div_depart = create("div", form, null, ["form-div"])
+    create("label", div_depart, "Entrez le nom de l'arret de départ :", ["label-info"]);
+    createChamp(div_depart, "text", "arretDepart");
+
+    const div_arrivee = create("div", form, null, ["form-div"])
+    create("label", div_arrivee, "Entrez le nom de l'arret d'arrivée :", ["label-info"]);
+    createChamp(div_arrivee, "text", "arretArrivee");
+
+    const date = create("div", form, null, ["form-div"])
+    create("label", date, "Entrez la date et l'horaire de départ :", ["label-info"]);
+    createChamp(date, "datetime-local", "horaireDepart");
+
+    
+    // Creation of submit button
 
 
 
@@ -134,6 +155,8 @@ function toggleUpdateReservation(){
 
 
 
+
+
     return main
 }
 
@@ -148,7 +171,28 @@ function toggleDeleteReservation(){
     create("h2", main, "Gestion des réservations")
     create("h3", main, "Supprimer une réservation")
 
+    // Creation of the form
+    const form = create("div", main, null, ["app-form"])
 
+    // Creation de radio pour chaque reservation 
+    var divRadio = create("div", form, null, ["form-div-radio"]);
+    create("p", divRadio, "Choisissez la réservation à supprimer : ");
+    const sessionData = JSON.parse(sessionStorage.getItem("userData"));
+
+    axios.get(`timeslots/timeslots.php?function=fetch_by_id_client&idClient=`+sessionData["id"]).then(response => {
+        response.data.forEach(reservation => {
+          createChampRadio(divRadio, "r"+reservation['id_reserv']+" ", "idReservation", reservation['id_reserv']);
+          create("label", divRadio, "Réservation : "+ reservation['id_reserv']+ " du "+ reservation['dateDepart']+ " depuis "+ reservation['arretDepart'], ["label-info"]).setAttribute('for', "r"+reservation['id_reserv']);
+        });
+      });
+
+      // Creation of submit button
+    const bouton = create("div", form, "Supprimer", ["submitButton"])
+    bouton.addEventListener("click", function(){
+        var id_reserv = valueFirstElementChecked("input[name='idReservation']");
+        
+        fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=delete_reservation&idReservation=`+id_reserv, "/espace-abonne", "La réservation a bien été supprimée", "La réservation n'a pas pu être supprimée")
+    })
 
 
     return main

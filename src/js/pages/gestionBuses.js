@@ -1,4 +1,4 @@
-import { create, createChamp } from "../utils/domManipulation";
+import { create, createChamp, createChampCheckbox, createChampRadio } from "../utils/domManipulation";
 import { redirect } from "../utils/redirection";
 import { fetchUrlRedirectAndAlert, valueFirstElementChecked, createCheckboxOfElement } from "../utils/formGestion";
 
