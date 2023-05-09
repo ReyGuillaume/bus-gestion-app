@@ -524,6 +524,8 @@ const toggleTask = (container, props, bubble, user=null, multi=false) => {
             break;
         case "Astreinte": astreinte(task, props, bubble, role, user, multi)
             break;
+        case "Réservation": astreinte(task, props, bubble, role, user, multi)
+            break;
         default: create("h2", task, "Une erreur est survenue")
             break;
     }

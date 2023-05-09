@@ -322,6 +322,16 @@ function axiosUrlSendWhenADD(type){
                 requestSuccess = true
             }
             break;
+        case "6" :  // reservation
+            if (drivers != "") {
+                url += `&users=${drivers}`;
+                requestSuccess = true
+            }
+            if (buses != "") {
+                url += `&buses=${buses}`;
+                requestSuccess = true
+            }
+            break;
         default :   // ERREUR
             url = ``;
             break;
@@ -385,6 +395,10 @@ const toggleAddCreneau = () => {
                         toogleBusChoices(choicesDiv);
                         toogleDriversChoices(choicesDiv);
                         break;
+                    case '5' :  //reservation
+                        toogleBusChoices(choicesDiv);
+                        toogleDriversChoices(choicesDiv);
+                        break;
                     default :
                         toogleBusChoices(choicesDiv)
                         toogleUserChoices(choicesDiv)
@@ -422,6 +436,6 @@ export {
     toogleBusChoices,
     toogleFreeBusChoices,
     toogleUserChoices,
-    toogleFreeUserChoices
-
+    toogleFreeUserChoices,
+    toogleDriversChoices
 }

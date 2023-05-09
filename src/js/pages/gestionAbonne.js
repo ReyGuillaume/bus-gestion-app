@@ -1,9 +1,9 @@
 import {create, createChamp} from "../utils/domManipulation.js";
 import axios from "axios";
-import {fetchUrlRedirectAndAlert} from "../utils/formGestion.js";
+import {fetchUrlRedirectAndAlert, idOfAllElementChecked} from "../utils/formGestion.js";
 import {toggleInfoAbonne} from "./espaceAbonne.js";
 import {removeContainerAndRemoveCacheClass} from "./userTask.js";
-import {toogleBusChoices, toogleFreeBusChoices, toogleUserChoices, toogleFreeUserChoices }from "./gestionTimeslots.js";
+import {toogleBusChoices, toogleDriversChoices }from "./gestionTimeslots.js";
 function changerInfoAbonne (){
 
     const main = document.querySelector("#app");
@@ -151,7 +151,6 @@ const toggleValideReservation = (container, props, user = null, multi = false) =
     container.replaceChildren("")
 
     create("div", container, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(container)
-    console.log(props)
 
     // Creation of each champ
     //create("label", container, "Début : " + props.dateDepart, ["form-info"]);
@@ -165,12 +164,27 @@ const toggleValideReservation = (container, props, user = null, multi = false) =
     createChamp(container, "datetime-local", "EndDateTime").value = props.dateDepart;
 
     toogleBusChoices(container)
-    toogleUserChoices(container)
-    
+    toogleDriversChoices(container)
 
-   
+
+    // Creation of submit button
+
+    const bouton = create("div", container, "Valider", ["submitButton"])
+    bouton.addEventListener("click", function(){
+        // On recupere le debut et la fin du creneau
+        let startDateTime = props.dateDepart;
+        let endDateTime = document.querySelector("input[name='EndDateTime']").value;
+
+        // select the types of participants and return those who are checked in a string : 1,2,...
+        const selectedDrivers = () => idOfAllElementChecked("input[name='selectionConducteurs']")
+
+// select the types of buses and return those who are checked in a string : 1,2,...
+        const busesTimeslot = () => idOfAllElementChecked("input[name='selectionBus']")
+
+        fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=valide_reservation&idReservation=`+props.id_reserv+`&beginning=`+startDateTime+`&end=`+endDateTime+`&id_users=`+selectedDrivers()+`&id_buses=`+busesTimeslot(), "/espace-admin", "La réservation a bien été validée", "La réservation n'a pas pu être validée")
+    })
+
     return container;
-
 }
 
 export {
