@@ -21,6 +21,7 @@ const toggleAdminForm = () => {
 
     // Creation of the submit button
     const bouton = create("button", form, "Envoyer", null, "adminButton")
+    bouton.title = "Envoyer"
 
     // Action of the submit button
     bouton.addEventListener("click", function(){

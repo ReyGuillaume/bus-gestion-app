@@ -25,7 +25,8 @@ const drawAgenda = (user=null, date=null, multi=false, entites=null) => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    const back = create("div", main, "<< Retour", ["return"])
+    const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
+    back.title = "Retour en arrière"
     back.onclick = () => {
         redirectUser(
             () => redirect("/espace-admin"), 
