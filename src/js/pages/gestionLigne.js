@@ -209,8 +209,6 @@ const toggleRemplissageAutoConduiteSemaine = () => {
         fetchUrlRedirectAndAlert(`lines/lines.php?function=coverWeek&week=${semaine}`, "/espace-admin", "Toutes les conduites de la semaine ont étées ajoutées", "Il semblerait que tout ne se soit pas passé comme prévu...")
     })
 
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceAdmin)
-
 }
 
 
