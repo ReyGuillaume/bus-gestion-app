@@ -323,8 +323,8 @@ const toggleMultiEntities = async () => {
 
     for(let user of users){
         let div_user = create("div", div_users, null, ["selectMulti"])
-        createChampCheckbox(div_user, `u${user.id}`, "selectionUser", user.id).onclick = async () => entites = await entitiesSelected()
-        create("label", div_user, " " + user.firstname + " " + user.name.toUpperCase()).htmlFor = `u${user.id}`
+        createChampCheckbox(div_user, user.id, "selectionUser", user.id).onclick = async () => entites = await entitiesSelected()
+        create("label", div_user, " " + user.firstname + " " + user.name.toUpperCase())
     }
 
     // affichage des bus
@@ -333,8 +333,8 @@ const toggleMultiEntities = async () => {
 
     for(let bus of buses){
         let div_bus = create("div", div_buses, null, ["selectMulti"])
-        createChampCheckbox(div_bus, `b${bus.id}`, "selectionBus", bus.id).onclick = async () => entites = await entitiesSelected()
-        create("label", div_bus, " Bus n°" + bus.id).htmlFor = `b${bus.id}`
+        createChampCheckbox(div_bus, bus.id, "selectionBus", bus.id).onclick = async () => entites = await entitiesSelected()
+        create("label", div_bus, " Bus n°" + bus.id)
     }
 
     // affichage des lignes
@@ -343,8 +343,8 @@ const toggleMultiEntities = async () => {
 
     for(let line of lines){
         let div_line = create("div", div_lines, null, ["selectMulti"])
-        createChampCheckbox(div_line, `l${line.number}`, "selectionLine", line.number).onclick = async () => entites = await entitiesSelected()
-        create("label", div_line, " Ligne " + line.number).htmlFor = `l${line.number}`
+        createChampCheckbox(div_line, line.number, "selectionLine", line.number).onclick = async () => entites = await entitiesSelected()
+        create("label", div_line, " Ligne " + line.number)
     }
 
     const b = create("button", multi_form, "Afficher", ["choixButton", "unstyled-button"])
