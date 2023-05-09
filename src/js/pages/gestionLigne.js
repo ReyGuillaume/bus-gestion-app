@@ -13,7 +13,7 @@ const toggleAddLine = () => {
     main.replaceChildren("")
     
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.addEventListener("click", () => redirect("/lignes"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Ajout d'une Ligne ")
@@ -50,7 +50,7 @@ const toggleAddLine = () => {
         let number = document.querySelector("input[name='number']").value;
         let travel_time = document.querySelector("input[name='travel_time']").value;
 
-        fetchUrlRedirectAndAlert(`lines/lines.php?function=create&number=${number}&travel_time=${travel_time}&id_type=${id_type}`, "/espace-admin", "La ligne a bien été ajoutée", "La ligne n'a pas pu être ajoutée")
+        fetchUrlRedirectAndAlert(`lines/lines.php?function=create&number=${number}&travel_time=${travel_time}&id_type=${id_type}`, "/lignes", "La ligne a bien été ajoutée", "La ligne n'a pas pu être ajoutée")
     })
 }
 
@@ -59,7 +59,7 @@ const toggleSupprLine = () => {
     main.replaceChildren("")
     
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.addEventListener("click", () => redirect("/lignes"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Suppression d'une Ligne ")
@@ -83,7 +83,7 @@ const toggleSupprLine = () => {
         bouton.addEventListener("click", function(){
             for(var line of document.querySelectorAll("input[name='selectionLigne']")){
                 if (line.checked) {
-                    fetchUrlRedirectAndAlert(`lines/lines.php?function=delete&number=${line.value}`, "/espace-admin", "La ligne a bien été supprimée", "La ligne n'a pas pu être supprimée")
+                    fetchUrlRedirectAndAlert(`lines/lines.php?function=delete&number=${line.value}`, "/lignes", "La ligne a bien été supprimée", "La ligne n'a pas pu être supprimée")
                 }
             }
         })
@@ -116,7 +116,7 @@ const createLineRadio = (form, container, line) => {
             bouton.addEventListener("click", function(){
                 let travel_time = document.querySelector("input[name='travel_time']").value;
                 let number = document.querySelector("input[name='number']").value;
-                fetchUrlRedirectAndAlert(`lines/lines.php?function=updateline&number=${number}&travel_time=${travel_time}`, "/espace-admin", "La ligne a bien été modifiée", "La ligne n'a pas pu être modifiée")
+                fetchUrlRedirectAndAlert(`lines/lines.php?function=updateline&number=${number}&travel_time=${travel_time}`, "/lignes", "La ligne a bien été modifiée", "La ligne n'a pas pu être modifiée")
             })
         })
     })
@@ -129,7 +129,7 @@ const toggleModifLine = () => {
     main.replaceChildren("")
     
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.addEventListener("click", () => redirect("/lignes"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Modification d'une Ligne ")
@@ -155,7 +155,7 @@ const toggleVerifCouvertureSemaine = () => {
     
     // Mise en place des titres
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.addEventListener("click", () => redirect("/lignes"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Verification de couvertures des lignes")
@@ -172,7 +172,7 @@ const toggleVerifCouvertureSemaine = () => {
     bouton.title = "Envoyer"
     bouton.addEventListener("click", function(){
         let semaine = document.querySelector("input[name='semaine']").value;
-        fetchUrlRedirectAndAlert(`lines/lines.php?function=WeekCovered&week=${semaine}`, "/espace-admin", "Le semaine est bien couverte", "Il semblerait que tout ne soit pas bien rempli...")
+        fetchUrlRedirectAndAlert(`lines/lines.php?function=WeekCovered&week=${semaine}`, "/lignes", "Le semaine est bien couverte", "Il semblerait que tout ne soit pas bien rempli...")
     })
 }
 
@@ -184,7 +184,7 @@ const toggleRemplissageAutoConduiteSemaine = () => {
     
     // Mise en place des titres
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.addEventListener("click", () => redirect("/lignes"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Remplissage automatique de la semaine")
@@ -202,7 +202,7 @@ const toggleRemplissageAutoConduiteSemaine = () => {
     bouton.title = "Envoyer"
     bouton.addEventListener("click", function(){
         let semaine = document.querySelector("input[name='semaine']").value;
-        fetchUrlRedirectAndAlert(`lines/lines.php?function=coverWeek&week=${semaine}`, "/espace-admin", "Toutes les conduites de la semaine ont étées ajoutées", "Il semblerait que tout ne se soit pas passé comme prévu...")
+        fetchUrlRedirectAndAlert(`lines/lines.php?function=coverWeek&week=${semaine}`, "/lignes", "Toutes les conduites de la semaine ont étées ajoutées", "Il semblerait que tout ne se soit pas passé comme prévu...")
     })
 }
 
@@ -228,7 +228,7 @@ const toggleAddLineType = () => {
     main.replaceChildren("")
     
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.addEventListener("click", () => redirect("/lignes"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Ajouter un type de ligne")
@@ -267,7 +267,7 @@ const toggleAddLineType = () => {
                         let fin = plage.querySelector("input[name='EndDateTime']").value
                         let intervalle = plage.querySelector("input[name='intervalle']").value
                         if(debut && fin && intervalle){
-                            fetchUrlRedirectAndAlert(`lines/lines.php?function=createcondition&name=${nom}&begin=${debut}&end=${fin}&intervalle=${intervalle}`, "/espace-admin", "Le type de ligne a bien été ajouté", "Certaines plages horaire entrent en collision")
+                            fetchUrlRedirectAndAlert(`lines/lines.php?function=createcondition&name=${nom}&begin=${debut}&end=${fin}&intervalle=${intervalle}`, "/lignes", "Le type de ligne a bien été ajouté", "Certaines plages horaire entrent en collision")
                         }
                     }
                 }
@@ -285,7 +285,7 @@ const toggleModifLineType = () => {
     main.replaceChildren("")
     
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.addEventListener("click", () => redirect("/lignes"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Modifier un type de ligne")
@@ -339,7 +339,7 @@ const toggleModifLineType = () => {
                             let debut = plage.querySelector("input[name='StartDateTime']").value
                             let fin = plage.querySelector("input[name='EndDateTime']").value
                             let intervalle = plage.querySelector("input[name='intervalle']").value
-                            fetchUrlRedirectAndAlert(`lines/lines.php?function=updatecondition&id=${id_type}&begin=${debut}&end=${fin}&intervalle=${intervalle}`, "/espace-admin", "Le type de ligne a bien été modifié", "Certaines plages horaire entrent en collision")
+                            fetchUrlRedirectAndAlert(`lines/lines.php?function=updatecondition&id=${id_type}&begin=${debut}&end=${fin}&intervalle=${intervalle}`, "/lignes", "Le type de ligne a bien été modifié", "Certaines plages horaire entrent en collision")
                         }
                     })
                 })
@@ -354,7 +354,7 @@ const deleteTypesChecked = () => {
     for(var type of document.querySelectorAll("input[name='selectionType']")){
         if (type.checked) {
             let url = `lines/lines.php?function=deletetype&id=${type.value}`;
-            fetchUrlRedirectAndAlert(url, "/espace-admin", "Le type de ligne a bien été supprimé", "Le type de ligne n'a pas pu être supprimé")
+            fetchUrlRedirectAndAlert(url, "/lignes", "Le type de ligne a bien été supprimé", "Le type de ligne n'a pas pu être supprimé")
         }
     }
 }
@@ -364,7 +364,7 @@ const toggleSupprLineType = () => {
     main.replaceChildren("")
     
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.addEventListener("click", () => redirect("/lignes"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Supprimer un type de ligne")

@@ -14,7 +14,7 @@ const toggleAjoutUser = () => {
     main.replaceChildren("")
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.addEventListener("click", () => redirect("/utilisateurs"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Ajout d'Utilisateur")
@@ -80,7 +80,7 @@ const toggleModifyUser = () => {
     main.replaceChildren("")
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.addEventListener("click", () => redirect("/utilisateurs"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Modification d'Utilisateur")
@@ -160,7 +160,7 @@ const toggleSupprimeUser = () => {
     main.replaceChildren("")
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.addEventListener("click", () => redirect("/utilisateurs"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Suppression d'Utilisateur")

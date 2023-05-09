@@ -12,7 +12,7 @@ const DisponibilityBus = () => {
     main.replaceChildren("")
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.addEventListener("click", () => redirect("/bus"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Disponibilité des bus")
@@ -64,7 +64,7 @@ const AjoutBus = () => {
     main.replaceChildren("")
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.addEventListener("click", () => redirect("/bus"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Ajout d'un bus ")
@@ -84,7 +84,7 @@ const AjoutBus = () => {
     bouton.addEventListener("click", function (){
         for(var type of document.querySelectorAll("input[name='typeBus']")){
             if (type.checked) {
-                fetchUrlRedirectAndAlert(`buses/buses.php?function=create&type=${type.value}`, "/espace-admin", "Le bus a bien été ajouté", "Le bus n'a pas pu être ajouté")
+                fetchUrlRedirectAndAlert(`buses/buses.php?function=create&type=${type.value}`, "/bus", "Le bus a bien été ajouté", "Le bus n'a pas pu être ajouté")
             }
         }
     })
@@ -95,7 +95,7 @@ const ModifBus = () => {
     main.replaceChildren("")
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.addEventListener("click", () => redirect("/bus"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Modification d'un bus ")
@@ -121,7 +121,7 @@ const ModifBus = () => {
         let id = valueFirstElementChecked("input[name='idBus']");
         let type = valueFirstElementChecked("input[name='typeBus']");
         let url = `buses/buses.php?function=updatebus&id=${id}&type=${type}`
-        fetchUrlRedirectAndAlert(url, "/espace-admin", "Le bus a bien été modifié", "Le bus n'a pas pu être modifié")
+        fetchUrlRedirectAndAlert(url, "/bus", "Le bus a bien été modifié", "Le bus n'a pas pu être modifié")
     })
 }
 
@@ -130,7 +130,7 @@ const SupprimerBus = () => {
     main.replaceChildren("")
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.addEventListener("click", () => redirect("/bus"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Suppression d'un bus ")
@@ -152,7 +152,7 @@ const SupprimerBus = () => {
             let url = `buses/buses.php?function=delete&id=`;
             if (bus.checked) {
                 url += bus.value;
-                fetchUrlRedirectAndAlert(url, "/espace-admin", "Le bus a bien été supprimé", "Le bus n'a pas pu être supprimé")
+                fetchUrlRedirectAndAlert(url, "/bus", "Le bus a bien été supprimé", "Le bus n'a pas pu être supprimé")
             }
         }
     })
