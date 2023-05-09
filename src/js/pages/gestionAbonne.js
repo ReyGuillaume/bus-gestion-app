@@ -3,7 +3,7 @@ import axios from "axios";
 import {fetchUrlRedirectAndAlert} from "../utils/formGestion.js";
 import {toggleInfoAbonne} from "./espaceAbonne.js";
 import {removeContainerAndRemoveCacheClass} from "./userTask.js";
-
+import {toogleBusChoices, toogleFreeBusChoices, toogleUserChoices, toogleFreeUserChoices }from "./gestionTimeslots.js";
 function changerInfoAbonne (){
 
     const main = document.querySelector("#app");
@@ -154,18 +154,21 @@ const toggleValideReservation = (container, props, user = null, multi = false) =
     console.log(props)
 
     // Creation of each champ
-    create("label", container, "Début : " + props.dateDepart, ["form-info"]);
+    //create("label", container, "Début : " + props.dateDepart, ["form-info"]);
 
+    create("label", container, "Début :", ["form-info"]);
+    let champ =createChamp(container, "datetime-local", "StartDateTime");
+    champ.value = props.dateDepart
+    champ.disabled = true;
+    
     create("label", container, "Fin :", ["form-info"]);
     createChamp(container, "datetime-local", "EndDateTime").value = props.dateDepart;
 
+    toogleBusChoices(container)
+    toogleUserChoices(container)
+    
 
-
-    // Creation of submit button
-    const bouton = create("div", container, "Modifier", ["modifButton"])
-    bouton.addEventListener("click", function () {
-
-    })
+   
     return container;
 
 }

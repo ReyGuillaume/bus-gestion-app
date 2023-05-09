@@ -47,7 +47,7 @@ const createCheckBoxOfElements = (axiosRequet, axiosRequestFetchchElement, conta
                 let elt = res.data;
                 createChampCheckbox(container, letter+elt.id , checkBoxName, elt.id);
                 var label = create("label", container, labelTextFunction(elt));
-                label.setAttribute("for", lettre+elt.id);
+                label.setAttribute("for", letter+elt.id);
             })
         }
     })

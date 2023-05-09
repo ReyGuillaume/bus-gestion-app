@@ -408,5 +408,10 @@ export {
     typeTimeslot,
     lineDirectionTimeslot,
     lineTimeslot,
-    toggleAddCreneau
+    toggleAddCreneau,
+    toogleBusChoices,
+    toogleFreeBusChoices,
+    toogleUserChoices,
+    toogleFreeUserChoices
+
 }
