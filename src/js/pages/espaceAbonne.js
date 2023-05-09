@@ -133,24 +133,31 @@ function toggleAddReservation(){
     create("label", date, "Entrez la date et l'horaire de départ :", ["label-info"]);
     createChamp(date, "datetime-local", "horaireDepart");
 
-    
+
     // Creation of submit button
 
+    const bouton = create("div", form, "Ajouter", ["submitButton"])
+    bouton.addEventListener("click", function(){
+        let dateDepart = document.querySelector("input[name='horaireDepart']").value;
+        let arretDepart = document.querySelector("input[name='arretDepart']").value;
+        let arretArrive = document.querySelector("input[name='arretArrivee']").value;
+        const idClient = JSON.parse(sessionStorage.getItem("userData"))["id"];
 
+        fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=create_reservation&arretDepart=`+arretDepart+`&arretArrive=`+arretArrive+`&dateDepart=`+dateDepart+`&idClient=`+idClient, "/espace-abonne", "La réservation a bien été envoyée", "La réservation n'a pas pu être envoyée")
+    })
 
     return main
 }
 
 const createReservationRadio = (form, container, reservation) => {
     //Ajout d'un evenement au clic d'un radio
-    createChampRadio(container, reservation.id_reserv , "selectionReservation", reservation['id_reserv'])
+    createChampRadio(container, "r"+reservation.id_reserv , "selectionReservation", reservation['id_reserv'])
     .addEventListener('click', function(){
         // Recuperation de la ligne a modifier
         var numberReservationToModify = valueFirstElementChecked("input[name='selectionReservation']");
         
         axios.get(`timeslots/timeslots.php?function=fetch_by_id_reservation&idReservation=${numberReservationToModify}`).then((responseReservation) =>{
-           
-            console.log(responseReservation.data["arretArrive"])
+
             // Creation du formulaire pré remplie de modif de la reservation
             form.replaceChildren("")
             
@@ -165,13 +172,22 @@ const createReservationRadio = (form, container, reservation) => {
             const date = create("div", form, null, ["form-div"])
             create("label", date, "Entrez la date et l'horaire de départ :", ["label-info"]);
             createChamp(date, "datetime-local", "horaireDepart").value = responseReservation.data["dateDepart"];
-            
+
             // Creation of submit button
-            
-            // +++++
+            const bouton = create("div", form, "Modifier", ["submitButton"])
+            bouton.addEventListener("click", function(){
+                let dateDepart = document.querySelector("input[name='horaireDepart']").value;
+                let arretDepart = document.querySelector("input[name='arretDepart']").value;
+                let arretArrive = document.querySelector("input[name='arretArrivee']").value;
+                const idReserv = responseReservation.data["id_reserv"];
+
+
+                fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=update_reservation&arretDepart=`+arretDepart+`&arretArrive=`+arretArrive+`&dateDepart=`+dateDepart+`&idReservation=`+idReserv, "/espace-abonne", "La réservation a bien été modifiée", "La réservation n'a pas pu être modifiée")
+            })
         })
     })
-    create("label", container, "Réservation : "+ reservation['id_reserv']+ " du "+ reservation['dateDepart']+ " depuis "+ reservation['arretDepart'], ["label-info"]).setAttribute('for', "r"+reservation['id_reserv']);
+    const date = reservation['dateDepart'].substring(8,10)+"/"+reservation['dateDepart'].substring(5,7)+"/"+reservation['dateDepart'].substring(0,4)
+    create("label", container, "Réservation du "+ date+ " depuis "+ reservation['arretDepart']+ " vers "+ reservation['arretArrive'], ["label-info"]).setAttribute('for', "r"+reservation['id_reserv']);
 }
 
 function toggleUpdateReservation(){
