@@ -13,7 +13,10 @@ const toggleAjoutUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Ajout d'Utilisateur")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
@@ -53,7 +56,8 @@ const toggleAjoutUser = () => {
     });
 
 
-    const bouton = create("div", form, "Envoyer", ["submitButton"])
+    const bouton = create("button", form, "Envoyer", ["submitButton", "unstyled-button"])
+    bouton.title = "Envoyer"
     bouton.addEventListener("click", function (){
         // return the type of the user checked
         
@@ -75,7 +79,10 @@ const toggleModifyUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Modification d'Utilisateur")
     create("p", main, "Choisissez l'utilisateur à modifier :", ["presentation"])
 
@@ -97,7 +104,10 @@ const toggleModifyUser = () => {
                    
                 // Creation du formulaire pré remplie de modif de user
                 main.replaceChildren("")
-                create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
+                const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+                back.addEventListener("click", toggleEspaceAdmin)
+                back.title = "Retour en arrière"
+
                 const form = create("div", main, null, ["app-form"])
 
                 create("label", form, "Le prénom de l'utilisateur :", ["label-info"]);
@@ -115,7 +125,8 @@ const toggleModifyUser = () => {
                 create("label", form, "La date de naissance de l'utilisateur :", ["label-info"]);
                 createChamp(form, "date", "birthDate").value = responseUser.data.birth_date;
 
-                const bouton = create("div", form, "Modifier", ["submitButton"])
+                const bouton = create("button", form, "Modifier", ["submitButton", "unstyled-button"])
+                bouton.title = "Modifier"
                 bouton.addEventListener("click", function (){
                     
                     // selection the infos
@@ -148,7 +159,10 @@ const toggleSupprimeUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Suppression d'Utilisateur")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
@@ -166,7 +180,8 @@ const toggleSupprimeUser = () => {
             label.setAttribute("for", "u"+user.id);
         }
         // Creation of submit button
-        const bouton = create("div", form, "Supprimer", ["submitButton"])
+        const bouton = create("button", form, "Supprimer", ["submitButton", "unstyled-button"])
+        bouton.title = "Supprimer"
         bouton.onclick = () => deleteUsersChecked()
     });
 }

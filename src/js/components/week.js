@@ -12,7 +12,8 @@ const createWeek = (container, date, user=null, multi=false, entites=null) => {
     const mainDiv = create("div", container, null, ['calandar__header'])
 
     // flèche gauche
-    const leftDiv = create("div", mainDiv, null, ['left-button'])
+    const leftDiv = create("button", mainDiv, null, ['left-button', "unstyled-button"])
+    leftDiv.title = "Semaine précédente"
     create("i", leftDiv , null, ['fa-solid', 'fa-chevron-left'])
 
     // année
@@ -20,7 +21,8 @@ const createWeek = (container, date, user=null, multi=false, entites=null) => {
     create('h2', centerDiv, getMonthToString(date.getMonth()) + " " + date.getFullYear(), ['year'])
 
     // flèche droite
-    const rightDiv = create("div", mainDiv, null, ['right-button'])
+    const rightDiv = create("button", mainDiv, null, ['right-button', "unstyled-button"])
+    rightDiv.title = "Semaine suivante"
     create("i", rightDiv , null, ['fa-solid', 'fa-chevron-right'])
 
     leftDiv.addEventListener("click", () => drawCalandar(container, new Date(new Date(date).setDate(date.getDate() - 7)), user, multi, entites))
@@ -127,7 +129,8 @@ const toggleModifValidation = async (e, dateOfMonday, user, multi=false, entites
     // création des composants
     const overlay = create("div", app, null, ["overlay"])
     const modale = create("div", overlay, null, ['validation'])
-    const back = create("div", modale, '<< Retour', ['return'])
+    const back = create("button", modale, '<< Retour', ['return', "unstyled-button"])
+    back.title = "Retour en arrière"
     create("h1", modale, "Voulez vous effectuer cette action ?")
     const content = create("div", modale, null, ['content'])
     create("p", content, `Déplacer le créneau de type ${type.name} du :`)
@@ -136,7 +139,9 @@ const toggleModifValidation = async (e, dateOfMonday, user, multi=false, entites
     create("p", content, `${nouvjour} ${formatedHour(nouvnum)} ${nouvmois} ${nouvannee} à ${formatedHour(heure_arrondie)}h${formatedHour(minute_arrondie)}`, ['important'])
     const buttonDiv = create("div", modale, null, ["button-container"])
     const annuler = create("button", buttonDiv, "Annuler", ['second-button'])
+    annuler.title = "Annuler"
     const valider = create("button", buttonDiv, "Valider", ['primary-button'])
+    valider.title = "Valider"
     
     // ajout des actions au clic
     overlay.onclick = e => {

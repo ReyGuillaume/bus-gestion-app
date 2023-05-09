@@ -61,6 +61,18 @@ function fetch_line($number) {
 }
 
 /**
+    Récupère les données d'un type de ligne selon son id.
+
+    @param id : id du type de la ligne.
+
+    @return objet linetype (id_type : Int, begin : String, end : String, intervalle : Int).
+*/
+function fetch_linetype($id) {
+    $res = bdd()->query("SELECT * FROM `linetypeconditions` WHERE `id_type` = {$id}");
+    return $res->fetchAll();
+}
+
+/**
     Récupère les données de tous les créneaux d'une ligne de bus.
 
     @param number : numéro de la ligne que l'on souhaite séléctionner.
@@ -432,6 +444,111 @@ function couvrire_creneau ($crenau, $jour, $id_line){
     return $res ; 
 }
 
+/**
+  Fonction qui crée une nouvelle plage horaire pour un type de ligne
+  
+  @param name : nom du type de ligne
+  @param begin : heure de début d'une journée de conduite
+  @param end : heure de fin d'une journée de conduite
+  @param intervalle : intervalle de temps entre chaque conduite
+  
+  @return un booléen qui indique si tout s'est bien passé
+    
+*/
+function create_line_type_condition($name, $begin, $end, $intervalle){
+    $res = bdd()->query("SELECT * FROM `linetype` WHERE `name`='{$name}'")->fetch(PDO::FETCH_ASSOC);
+    $id_type = $res['id_type'];
+
+    $lst_conditions = bdd()->query("SELECT * FROM `linetypeconditions` WHERE `id_type`={$id_type}");
+
+    while($condition = $lst_conditions->fetch(PDO::FETCH_ASSOC)){
+        $begin_condition = $condition['begin'];
+        $end_condition = $condition['end'];
+
+        if(($begin < $begin_condition && $end > $end_condition) || ($begin > $begin_condition && $begin < $end_condition) || ($end > $begin_condition && $end < $end_condition)){
+            return false;
+        }
+    }
+    bdd()->query("INSERT INTO `linetypeconditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE ({$id_type}, '{$begin}', '{$end}', {$intervalle})");
+    return true;
+}
+
+
+/**
+  Fonction qui crée une nouvelle plage horaire pour un type de ligne
+  
+  @param name : nom du type de ligne
+  @param begin : heure de début d'une journée de conduite
+  @param end : heure de fin d'une journée de conduite
+  @param intervalle : intervalle de temps entre chaque conduite
+  
+  @return un booléen qui indique si tout s'est bien passé
+    
+*/
+function update_line_condition($id_type, $begin, $end, $intervalle){
+    $lst_conditions = bdd()->query("SELECT * FROM `linetypeconditions` WHERE `id_type`={$id_type}");
+
+    while($condition = $lst_conditions->fetch(PDO::FETCH_ASSOC)){
+        $begin_condition = $condition['begin'];
+        $end_condition = $condition['end'];
+
+        if(($begin < $begin_condition && $end > $end_condition) || ($begin > $begin_condition && $begin < $end_condition) || ($end > $begin_condition && $end < $end_condition)){
+            return false;
+        }
+    }
+    bdd()->query("INSERT INTO `linetypeconditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE ({$id_type}, '{$begin}', '{$end}', {$intervalle})");
+    return true;
+}
+
+/**
+  Fonction qui crée un nouveau type de ligne
+  
+  @param name : nom du type de ligne
+  
+  @return un booléen qui indique si tout s'est bien passé
+    
+*/
+function create_line_type($name){
+    if(!bdd()->query("SELECT * FROM `linetype` WHERE `name`='{$name}'")->fetch()){
+        bdd()->query("INSERT INTO `linetype` (`name`) VALUE ('{$name}')");
+        return true;
+    }
+    return false;
+}
+
+/**
+  Fonction qui supprimer les plages horaire d'un type de ligne
+  
+  @param id : id du type de ligne
+  
+  @return un booléen qui indique si tout s'est bien passé
+    
+*/
+function delete_type_conditions($id){
+    if(bdd()->query("SELECT * FROM `linetype` WHERE `id_type`={$id}")->fetch()){
+        bdd()->query("DELETE FROM `linetypeconditions` WHERE `id_type`={$id}");
+        return true;
+    }
+    return false;
+}
+
+/**
+  Fonction qui supprimer un type de ligne
+  
+  @param id : id du type de ligne
+  
+  @return un booléen qui indique si tout s'est bien passé
+    
+*/
+function delete_type_line($id){
+    if(bdd()->query("SELECT * FROM `linetype` WHERE `id_type`={$id}")->fetch()){
+        bdd()->query("DELETE FROM `linetypeconditions` WHERE `id_type`={$id}");
+        bdd()->query("DELETE FROM `linetype` WHERE `id_type`={$id}");
+        return true;
+    }
+    return false;
+}
+
 switch ($_GET['function']) {
     case 'create':      // number, temps de trajet
         $res = create_line($_GET['number'], $_GET['travel_time'],$_GET['id_type'] );
@@ -462,6 +579,24 @@ switch ($_GET['function']) {
         break;
     case 'typesline':
         $res =fetch_linetypes();
+        break;
+    case 'type':
+        $res = fetch_linetype($_GET['id']);
+        break;
+    case 'createtype':
+        $res = create_line_type($_GET['name']);
+        break;
+    case 'createcondition':
+        $res = create_line_type_condition($_GET['name'], $_GET['begin'], $_GET['end'], $_GET['intervalle']);
+        break;
+    case 'updatecondition':
+        $res = update_line_condition($_GET['id'], $_GET['begin'], $_GET['end'], $_GET['intervalle']);
+        break;
+    case 'deleteconditions':
+        $res = delete_type_conditions($_GET['id']);
+        break;
+    case 'deletetype':
+        $res = delete_type_line($_GET['id']);
         break;
     default:
         $res = "invalid function";

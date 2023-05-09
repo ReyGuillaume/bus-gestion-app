@@ -8,7 +8,10 @@ const toggleIndisponibilitiForm = () => {
     main.replaceChildren("")
 
     create("h2", main, "Ajout de créneaux d'indisponibilité")
-    create("div", main, "<< Retour", ["return"]).addEventListener("click", toggleEspaceUser)
+    const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
+    back.addEventListener("click", toggleEspaceUser)
+    back.title = "Retour en arrière"
+
     create("p", main, "Renseignez la plage horaire de votre indisponibilité :", ["presentation"])
 
     // Creation of the form
@@ -21,7 +24,8 @@ const toggleIndisponibilitiForm = () => {
     createChamp(form, "datetime-local", "EndDateTime");
 
     // Creation of submit button
-    const bouton = create("div", form, "Envoyer", ["submitButton"])
+    const bouton = create("button", form, "Envoyer", ["submitButton", "unstyled-button"])
+    bouton.title = "Envoyer"
     bouton.addEventListener("click", function(){
 
         let StartDateTime = document.querySelector("input[name='StartDateTime']").value;

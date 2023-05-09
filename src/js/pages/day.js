@@ -4,6 +4,7 @@ import { toggleTask } from "./userTask";
 import { getMonthToString , getDayToString, datePhp, formatedHour } from "../utils/dates";
 import { redirect } from "../utils/redirection";
 import axios from "axios";
+import { checkTimeSlots } from "../utils/isValideTimeSlot";
 
 // fonction qui crée tous les jours d'un mois
 const createDaysBar = (date, container, user=null) => {
@@ -90,10 +91,11 @@ const afficheInitiales = (entite) => {
 
 // fonction qui affiche tous les créneaux horaires récupérés, affectés à l'utilisateur connecté
 const createTimeSlots = async (date, container, user=null, multi=false, entites=null, index=0) => {
+    const main = document.querySelector("#app")
     const sessionData = JSON.parse(sessionStorage.getItem("userData"))
     const user_role = sessionData["role"]
     const footer = document.querySelector("#footer")
-    const res = await fetchTimeSlots(date, user)
+    let res = await fetchTimeSlots(date, user)
     
     // initiales des 6 chauffeurs
     if(multi && !entites){
@@ -108,17 +110,22 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
         initiales.style.width = (150 / entites.length) + "px"
     }
     if (res.length > 0) {
-        res.forEach(timeslot => {
+        res = await checkTimeSlots(res)
+        res.forEach(async timeslot => {
             let div
             if(multi){
-                div = create("div", container, null, ['timeslot_multi_'+timeslot.name], [`ts${timeslot.id}`])
+                div = create("div", container, null, ['timeslot','timeslot_multi_'+timeslot.name], [`ts${timeslot.id}`])
             }
             else{
                 div = create("div", container, null, ['timeslot'], [`ts${timeslot.id}`])
             }
+            div.setAttribute("tabindex", "0")
             div.addEventListener("click", () => toggleTask(footer, timeslot, div, user, multi))
+            div.addEventListener("keydown", e => {
+                if (e.code === "Enter") 
+                    toggleTask(footer, timeslot, div, user, multi)
+            })
 
-            
             if(possibleDrag(user_role, timeslot.name)){
                 div.setAttribute('draggable', true);
             }
@@ -154,7 +161,7 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
             if(div.getAttribute("draggable")){
                 div.ondragstart = handlerDragStart
             }
-
+            
             if(!multi){
                 const houres = create("div", div, null, ["timeslot__houres"])
                 create("h2", houres, formatedHour(heure_debut) + ":" + formatedHour(min_debut), ['beginning'])
@@ -169,6 +176,8 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
                     case "Indisponibilité": create("h3", body, "Indisponible")
                         break;
                     case "Astreinte": create("h3", body, "Astreinte")
+                        break;
+                    case "Réservation": create("h3", body, "Réservation")
                         break;
                     default: create("h3", body, "ERREUR")
                         break;
@@ -187,7 +196,52 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
             else{
                 create("div", div, timeslot.name, ["multi-info"])
             }
+
+            // Gestion des erreurs
+            if(timeslot.errors.length > 0){
+                const e = create("button", div, "!", ["timeslot__error", "unstyled-button"])
+                e.title = "Des erreurs ont été détectées"
+                e.onclick = e => {
+                    e.stopPropagation()
+                    openErrorModale(timeslot)
+                }
+                e.onkeydown = e => e.stopPropagation()
+            }
         })
+    }
+    // erreur globale
+    if (main.querySelectorAll(".timeslot__error").length > 0)
+        create("button", main, "!", ["timeslot__error", "unstyled-button"]).title = "Certains créneaux ont des erreurs signalées"
+}
+
+
+const openErrorModale = (timeslot) => {
+    const app = document.querySelector("#app")
+    const overlay = create("div", app, null, ["overlay"])
+    const modale = create("div", overlay, null, ["validation"])
+    const back = create("button", modale, '<< Retour', ['return', "unstyled-button"])
+    back.title = "Retour en arrière"
+
+    // ajout des actions au clic
+    overlay.onclick = e => {
+        e.preventDefault()
+        e.stopPropagation()
+        e.target.remove()
+    }
+    modale.onclick = e => {
+        e.preventDefault()
+        e.stopPropagation()
+    }
+    back.onclick = () => {
+        modale.remove()
+        overlay.remove()
+    }
+
+    if(timeslot.errors.length > 0){
+        create("h2", modale, "Quelque chose cloche sur ce créneau...")
+        timeslot.errors.forEach(err => create("p", modale, "/!\\ " + err))
+    } else {
+        create("p", modale, "Rien à signaler pour ce créneau ci.")
     }
 }
 
@@ -238,7 +292,10 @@ const toggleMultiEntities = async () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Agenda multiple")
     create("p", main, "Sélectionnez au maximum 4 agendas que vous souhaitez afficher", ["presentation"])
 
@@ -266,8 +323,8 @@ const toggleMultiEntities = async () => {
 
     for(let user of users){
         let div_user = create("div", div_users, null, ["selectMulti"])
-        createChampCheckbox(div_user, user.id, "selectionUser", user.id).onclick = async () => entites = await entitiesSelected()
-        create("div", div_user, " " + user.firstname + " " + user.name.toUpperCase())
+        createChampCheckbox(div_user, `u${user.id}`, "selectionUser", user.id).onclick = async () => entites = await entitiesSelected()
+        create("label", div_user, " " + user.firstname + " " + user.name.toUpperCase()).htmlFor = `u${user.id}`
     }
 
     // affichage des bus
@@ -276,8 +333,8 @@ const toggleMultiEntities = async () => {
 
     for(let bus of buses){
         let div_bus = create("div", div_buses, null, ["selectMulti"])
-        createChampCheckbox(div_bus, bus.id, "selectionBus", bus.id).onclick = async () => entites = await entitiesSelected()
-        create("div", div_bus, " Bus n°" + bus.id)
+        createChampCheckbox(div_bus, `b${bus.id}`, "selectionBus", bus.id).onclick = async () => entites = await entitiesSelected()
+        create("label", div_bus, " Bus n°" + bus.id).htmlFor = `b${bus.id}`
     }
 
     // affichage des lignes
@@ -286,11 +343,13 @@ const toggleMultiEntities = async () => {
 
     for(let line of lines){
         let div_line = create("div", div_lines, null, ["selectMulti"])
-        createChampCheckbox(div_line, line.number, "selectionLine", line.number).onclick = async () => entites = await entitiesSelected()
-        create("div", div_line, " Ligne " + line.number)
+        createChampCheckbox(div_line, `l${line.number}`, "selectionLine", line.number).onclick = async () => entites = await entitiesSelected()
+        create("label", div_line, " Ligne " + line.number).htmlFor = `l${line.number}`
     }
 
-    create("div", multi_form, "Afficher", ["choixButton"]).addEventListener("click", function(){
+    const b = create("button", multi_form, "Afficher", ["choixButton", "unstyled-button"])
+    b.title = "Afficher"
+    b.addEventListener("click", function(){
         if(entites.length > 4){
             toggleError("ERREUR", "Vous ne pouvez sélectionner que 4 entités")
         }

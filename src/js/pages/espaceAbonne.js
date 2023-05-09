@@ -28,7 +28,7 @@ export function toggleEspaceAbonne() {
     const nav = create("nav", main, null, ['navBar_User'])
 
     // informations de l'abonné
-    createMenuElement(nav, () => redirect("/espace-informations-abonne"), "jaune", "src/assets/images/nav_gens.png", "Afficher mes informations", "Afficher mes informations")
+    createMenuElement(nav, () => redirect("/espace-informations-abonne"), "jaune", "src/assets/images/nav_profil.png", "Afficher mes informations", "Afficher mes informations")
 
     // notif
     createMenuElement(nav, () => redirect("/notification-center"), "orange", "src/assets/images/nav_notif.png", "Afficher mes notifications", "Afficher mes notifications")
@@ -60,7 +60,9 @@ export function toggleInfoAbonne(){
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
 
     // bouton de retour
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-abonne"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-abonne"))
+    back.title = "Retour en arrière"
 
     // les informations de l'abonné + les boutons pour mofier le profil et le mot de passe
     axios.get(`users/users.php?function=user&id=`+sessionData["id"]).then((response) => {
@@ -94,7 +96,10 @@ function toogleReservAbonne (){
     create("h2", main, "Gestion des réservations")
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
-    const nav = create("nav", main, null, ['liste_gestion'])
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => toggleInfoAbonne())
+    back.title = "Retour en arrière"
+
 
     create("div", nav, 'Ajouter une réservation', ['gestion_users']).addEventListener("click", toggleAddReservation)
     create("div", nav, "Modifier une réservation", ['gestion_users']).addEventListener("click", toggleUpdateReservation)
@@ -209,6 +214,7 @@ function toggleUpdateReservation(){
     create("p", divRadio, "Choisissez la réservation à modifier : ");
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
 
+    
     axios.get(`timeslots/timeslots.php?function=fetch_by_id_client&idClient=`+sessionData["id"]).then(response => {
         for(var reservation of response.data){
             var div_reservation = create("div", form, null, ["form-div-radio"])
@@ -216,10 +222,6 @@ function toggleUpdateReservation(){
         }
     
       });
-
-
-
-
 
     return main
 }

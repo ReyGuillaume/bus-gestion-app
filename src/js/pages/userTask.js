@@ -94,7 +94,9 @@ const modifConduite = (container, props, user=null, multi=false) => {
         // Creation du formulaire pré remplie de modif de ligne 
         container.replaceChildren("")
 
-        create("div", container, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(container)
+        const back = create("button", container, '<< Retour', ['return', "unstyled-button"])
+        back.onclick = () => removeContainerAndRemoveCacheClass(container)
+        back.title = "Retour en arrière"
 
         // Creation of each champ
         create("label", container, "Début :", ["form-info"]);
@@ -159,7 +161,8 @@ const modifConduite = (container, props, user=null, multi=false) => {
         tabDirAller ? champAller.checked = true : champRetour.checked = true
 
         // Creation of submit button
-        const bouton = create("div", container, "Modifier", ["modifButton"])
+        const bouton = create("button", container, "Modifier", ["modifButton", "unstyled-button"])
+        bouton.title = "Modifier"
         bouton.addEventListener("click", function (){
             // selection of the start and end time
             let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
@@ -256,7 +259,9 @@ const modifReunion = (container, props, user=null, multi=false) => {
         // Creation du formulaire pré remplie de modif de ligne 
         container.replaceChildren("")
 
-        create("div", container, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(container)
+        const back = create("button", container, '<< Retour', ['return', "unstyled-button"])
+        back.onclick = () => removeContainerAndRemoveCacheClass(container)
+        back.title = "Retour en arrière"
 
         // Creation of each champ
         create("label", container, "Début :", ["form-info"]);
@@ -277,7 +282,8 @@ const modifReunion = (container, props, user=null, multi=false) => {
         afficheUsers(divCheckboxUsers, tabUser)
         
         // Creation of submit button
-        const bouton = create("div", container, "Modifier", ["modifButton"])
+        const bouton = create("button", container, "Modifier", ["modifButton", "unstyled-button"])
+        bouton.title = "Modifier"
         bouton.addEventListener("click", function (){
             // selection of the start and end time
             let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
@@ -302,7 +308,9 @@ const modifIndispo = (container, props, user=null, multi=false) => {
         // Creation du formulaire pré remplie de modif de ligne 
         container.replaceChildren("")
 
-        create("div", container, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(container)
+        const back = create("button", container, '<< Retour', ['return', "unstyled-button"])
+        back.onclick = () => removeContainerAndRemoveCacheClass(container)
+        back.title = "Retour en arrière"
 
         // Creation of each champ
         create("label", container, "Début :", ["form-info"]);
@@ -318,7 +326,8 @@ const modifIndispo = (container, props, user=null, multi=false) => {
         }
 
         // Creation of submit button
-        const bouton = create("div", container, "Modifier", ["modifButton"])
+        const bouton = create("button", container, "Modifier", ["modifButton", "unstyled-button"])
+        bouton.title = "Modifier"
         bouton.addEventListener("click", function (){
             // selection of the start and end time
             let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
@@ -355,8 +364,13 @@ const reunion = (container, props, bubble, user_role, user=null, multi=false) =>
     if(user_role == "Directeur"){
         const btns = create("div", container, null, ["btn-task"])
 
-        create("div", btns, "Modifier", ["modifButton"]).onclick = () => modifReunion(container, props, user, multi)
-        create("div", btns, "Supprimer", ["delButton"]).onclick = () => supprimeCreneau(container, props, bubble)
+        const b1 = create("button", btns, "Modifier", ["modifButton", "unstyled-button"])
+        b1.onclick = () => modifReunion(container, props, user, multi)
+        b1.title = "Modifier"
+
+        const b2 = create("button", btns, "Supprimer", ["delButton", "unstyled-button"])
+        b2.onclick = () => supprimeCreneau(container, props, bubble)
+        b2.title = "Supprimer"
     }
 
     return container
@@ -397,8 +411,13 @@ const conduite = (container, props, bubble, user_role, user=null, multi=false) =
     if(["Responsable Logistique", "Directeur"].includes(user_role)){
         const btns = create("div", container, null, ["btn-task"])
         
-        create("div", btns, "Modifier", ["modifButton"]).onclick = () => modifConduite(container, props, user, multi)
-        create("div", btns, "Supprimer", ["delButton"]).onclick = () => supprimeCreneau(container, props, bubble)
+        const b1 = create("button", btns, "Modifier", ["modifButton", "unstyled-button"])
+        b1.onclick = () => modifConduite(container, props, user, multi)
+        b1.title = "Modifier"
+
+        const b2 = create("button", btns, "Supprimer", ["delButton", "unstyled-button"])
+        b2.onclick = () => supprimeCreneau(container, props, bubble)
+        b2.title = "Supprimer"
     }
 
     return container
@@ -425,8 +444,13 @@ const indispo = (container, props, bubble, user_role, user=null, multi=false) =>
     if(user_role == "Conducteur"){
         const btns = create("div", container, null, ["btn-task"])
         
-        create("div", btns, "Modifier", ["modifButton"]).onclick = () => modifIndispo(container, props, user, multi)
-        create("div", btns, "Supprimer", ["delButton"]).onclick = () => supprimeCreneau(container, props, bubble)
+        const b1 = create("button", btns, "Modifier", ["modifButton", "unstyled-button"])
+        b1.onclick = () => modifIndispo(container, props, user, multi)
+        b1.title = "Modifier"
+
+        const b2 = create("button", btns, "Supprimer", ["delButton", "unstyled-button"])
+        b2.onclick = () => supprimeCreneau(container, props, bubble)
+        b2.title = "Supprimer"
     }
 
     return container
@@ -487,7 +511,9 @@ const toggleTask = (container, props, bubble, user=null, multi=false) => {
 
     const task = create("div", container, null, null, "task")
 
-    create("div", task, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(task)
+    const back = create("button", task, '<< Retour', ['return', "unstyled-button"])
+    back.onclick = () => removeContainerAndRemoveCacheClass(task)
+    back.title = "Retour en arrière"
 
     switch (props.name) {
         case "Conduite": conduite(task, props, bubble, role, user, multi)
@@ -497,6 +523,8 @@ const toggleTask = (container, props, bubble, user=null, multi=false) => {
         case "Indisponibilité": indispo(task, props, bubble, role, user, multi)
             break;
         case "Astreinte": astreinte(task, props, bubble, role, user, multi)
+            break;
+        case "Réservation": astreinte(task, props, bubble, role, user, multi)
             break;
         default: create("h2", task, "Une erreur est survenue")
             break;
