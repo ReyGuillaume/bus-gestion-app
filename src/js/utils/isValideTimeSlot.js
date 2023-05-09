@@ -75,8 +75,8 @@ const errorsOfTimeSlot = async(timeslot) => {
         case "1": return await conduite(timeslot.begining, timeslot.end, timeslot.users, timeslot.buses, timeslot.lines)
         case "2": return await reunion(timeslot.begining, timeslot.end, timeslot.users)
         case "3": return await indispo(timeslot.begining, timeslot.end, timeslot.users)
-        case "4": return "";
-        case "5": return "";
+        case "4": return [];
+        case "5": return [];
         default: return ["Le type de ce créneau est inconnu."]
     }
 }

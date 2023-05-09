@@ -1,7 +1,7 @@
 import { createMenuElement} from "../components/menuItem";
 import {redirect, redirectUser, toggleAlertMessage} from "../utils/redirection";
 import axios from 'axios';
-import {displayReserv} from "./gestionAbonne.js";
+import {changerInfoAbonne, changerMdpAbonne, displayReserv} from "./gestionAbonne.js";
 import { fetchUrlRedirectAndAlert, valueFirstElementChecked } from "../utils/formGestion";
 import { create, createChamp, createChampCheckbox, createChampRadio } from "../utils/domManipulation";
 
@@ -92,14 +92,14 @@ function toogleReservAbonne (){
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-abonne"))
-    create("h2", main, "Gestion des réservations")
-    create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
-
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    back.addEventListener("click", () => toggleInfoAbonne())
+    back.addEventListener("click", () => redirect("/espace-abonne"))
     back.title = "Retour en arrière"
 
+    create("h2", main, "Gestion des réservations")
+    create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
+    
+    const nav = create("div", main)
 
     create("div", nav, 'Ajouter une réservation', ['gestion_users']).addEventListener("click", toggleAddReservation)
     create("div", nav, "Modifier une réservation", ['gestion_users']).addEventListener("click", toggleUpdateReservation)
