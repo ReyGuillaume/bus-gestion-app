@@ -4,6 +4,8 @@ import {fetchUrlRedirectAndAlert, idOfAllElementChecked} from "../utils/formGest
 import {toggleInfoAbonne} from "./espaceAbonne.js";
 import {removeContainerAndRemoveCacheClass} from "./userTask.js";
 import {toogleBusChoices, toogleDriversChoices }from "./gestionTimeslots.js";
+import { createHeader } from "../components/header.js";
+
 function changerInfoAbonne (){
 
     const main = document.querySelector("#app");
@@ -41,14 +43,22 @@ function changerInfoAbonne (){
         valider.addEventListener("click", function () {
 
             //selection des informations
-            let name = document.querySelector("input[name='nameAbo']").value;
-            let firstname = document.querySelector("input[name='firstnameAbo']").value;
+            let id = sessionData["id"]
+            let role = sessionData["role"]
+            let idrole = sessionData["idrole"]
+
+            let nom = document.querySelector("input[name='nameAbo']").value;
+            let prenom = document.querySelector("input[name='firstnameAbo']").value;
             let email = document.querySelector("input[name='emailAbo']").value;
             let login = document.querySelector("input[name='loginAbo']").value;
             let date = document.querySelector("input[name='dateAbo']").value;
 
             //création de l'url
-            let url = `users/users.php?function=update&id=${sessionData["id"]}&email=${email}&login=${login}&name=${name}&firstname=${firstname}&date=${date}`;
+            let url = `users/users.php?function=update&id=${id}&email=${email}&login=${login}&name=${nom}&firstname=${prenom}&date=${date}`;
+            const userData = { id, prenom, nom, role, idrole, email }
+            // console.log(userData)
+            sessionStorage.setItem("userData", JSON.stringify(userData))
+            createHeader()
             fetchUrlRedirectAndAlert(url, '/espace-informations-abonne', "Votre profil a bien été modifié.", "Votre profil n'a pas été modifié.")
         });
     })
