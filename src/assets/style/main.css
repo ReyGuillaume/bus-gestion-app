@@ -494,6 +494,19 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
   background: linear-gradient(to right, rgb(255, 216, 184), rgb(255, 205, 164));
 }
 
+.plage-horaire{
+  display: flex;
+  align-items: center;
+}
+.trash{
+  width: 30px;
+  height: 30px;
+  background-color: rgb(229, 88, 88);
+  border-radius: 20px;
+  padding: 3px;
+  cursor: pointer;
+}
+
 /* POP-UP */
 
 #fenetreAlerte{

@@ -209,8 +209,31 @@ const toggleRemplissageAutoConduiteSemaine = () => {
 
 // TYPES DE LIGNES
 
+// fonction qui renvoie un booléen indiquant si la plage horaire est vide
+const PlageHoraireVide = (container) => {
+    let debut = container.querySelector("input[name='StartDateTime']").value
+    let fin = container.querySelector("input[name='EndDateTime']").value
+    let intervalle = container.querySelector("input[name='intervalle']").value
+
+    if(!debut || !fin || !intervalle){
+        return true
+    }
+    else{
+        return false
+    }
+}
+
+const ToutesPlagesVides = (lst_plages) => {
+    for(let plage of lst_plages){
+        if(!PlageHoraireVide(plage)){
+            return false
+        }
+    }
+    return true
+}
+
 // fonction qui ajoute un formulaire de plage horaire
-const createPlageHoraire = (container) => {
+const createPlageHoraire = (container, supprimable=null) => {
     const div = create("div", container, null, ["plage-horaire"])
 
     create("label", div, "Heure de début :", ["label-info"])
@@ -219,8 +242,14 @@ const createPlageHoraire = (container) => {
     create("label", div, "Heure de fin :", ["label-info"])
     createChamp(div, "time", "EndDateTime")
 
-    create("label", div, "Intervalle entre chaque conduite :", ["label-info"])
+    create("label", div, "Intervalle :", ["label-info"])
     createChamp(div, "integer", "intervalle")
+
+    if(supprimable){
+        const img = create("img", div, null, ["trash"])
+        img.src = "src/assets/images/delete.png"
+        img.addEventListener("click", () => div.remove())
+    }
 }
 
 const toggleAddLineType = () => {
@@ -243,39 +272,48 @@ const toggleAddLineType = () => {
     createChamp(div_nom, "integer", "nom")
 
     const plages_horaires = create("div", form, null, ["form-div"])
+
+    // ajouter une plage horaire
     const add_btn = create("button", plages_horaires, "Ajouter une plage horaire de conduite", ["addButton", "unstyled-button"])
     add_btn.title = "Ajouter une plage horaire de conduite"
     add_btn.addEventListener("click", function(){
-        createPlageHoraire(plages_horaires)
+        createPlageHoraire(plages_horaires, true)
     })
+
+    createPlageHoraire(plages_horaires)
 
     // Creation of submit button
     const bouton = create("button", form, "Envoyer", ["submitButton", "unstyled-button"])
     bouton.title = "Envoyer"
     bouton.addEventListener("click", function(){
 
+        const lst_plages = plages_horaires.querySelectorAll(".plage-horaire")
         var nom = document.querySelector("input[name='nom']").value
 
-        if(nom){
-            axios.get(`lines/lines.php?function=createtype&name=${nom}`).then(function(response){
-
-                if(response.data){
-                    const lst_plages = plages_horaires.querySelectorAll(".plage-horaire")
-
-                    for(let plage of lst_plages){
-                        let debut = plage.querySelector("input[name='StartDateTime']").value
-                        let fin = plage.querySelector("input[name='EndDateTime']").value
-                        let intervalle = plage.querySelector("input[name='intervalle']").value
-                        if(debut && fin && intervalle){
-                            fetchUrlRedirectAndAlert(`lines/lines.php?function=createcondition&name=${nom}&begin=${debut}&end=${fin}&intervalle=${intervalle}`, "/lignes", "Le type de ligne a bien été ajouté", "Certaines plages horaire entrent en collision")
-                        }
-                    }
-                }
-            })
+        if(ToutesPlagesVides(lst_plages)){
+            toggleError("ERREUR", "Veuillez saisir des plages horaires")
         }
         else{
-            toggleError("ERREUR", "Veuillez renseigner un nom")
-        }  
+            if(nom){
+                axios.get(`lines/lines.php?function=createtype&name=${nom}`).then(function(response){
+
+                    if(response.data){
+
+                        for(let plage of lst_plages){
+                            let debut = plage.querySelector("input[name='StartDateTime']").value
+                            let fin = plage.querySelector("input[name='EndDateTime']").value
+                            let intervalle = plage.querySelector("input[name='intervalle']").value
+                            if(debut && fin && intervalle){
+                                fetchUrlRedirectAndAlert(`lines/lines.php?function=createcondition&name=${nom}&begin=${debut}&end=${fin}&intervalle=${intervalle}`, "/lignes", "Le type de ligne a bien été ajouté", "Certaines plages horaire entrent en collision")
+                            }
+                        }
+                    }
+                })
+            }
+            else{
+                toggleError("ERREUR", "Veuillez renseigner un nom")
+            }  
+        }
     })
 }
 
@@ -322,9 +360,16 @@ const toggleModifLineType = () => {
                         create("label", div_plage, "Heure de fin :", ["label-info"])
                         createChamp(div_plage, "time", "EndDateTime").value = plage.end
 
-                        create("label", div_plage, "Intervalle entre chaque conduite :", ["label-info"])
+                        create("label", div_plage, "Intervalle :", ["label-info"])
                         createChamp(div_plage, "integer", "intervalle").value = plage.intervalle
+
+                        const img = create("img", div_plage, null, ["trash"])
+                        img.src = "src/assets/images/delete.png"
+                        img.addEventListener("click", () => div_plage.remove())
                     }
+
+                    let prem_plage = plages_horaires.querySelector(".plage-horaire")
+                    prem_plage.querySelector(".trash").remove()
 
                     // Creation of submit button
                     const bouton = create("button", form, "Modifier", ["submitButton", "unstyled-button"])
