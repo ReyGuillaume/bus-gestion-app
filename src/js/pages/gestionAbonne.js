@@ -177,7 +177,7 @@ const toggleValideReservation = (container, props, user = null, multi = false) =
 
         // select the types of participants and return those who are checked in a string : 1,2,...
         const selectedDrivers = () => idOfAllElementChecked("input[name='selectionConducteurs']")
-
+        console.log(selectedDrivers())
 // select the types of buses and return those who are checked in a string : 1,2,...
         const busesTimeslot = () => idOfAllElementChecked("input[name='selectionBus']")
 
