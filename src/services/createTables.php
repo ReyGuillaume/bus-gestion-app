@@ -336,14 +336,14 @@ foreach ($line_lineType as $id_line => $id_type) {
 }
 // ==================== Remplissage des creneau de couverture des types de ligne de base ====================
 
-$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (1, '06:30:00', '20:30:00', 10)";
+$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (1, '06:30:00', '20:30:00', 60)";
 bdd()->query($sql);
 
-$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '07:00:00', '09:00:00', 10)";
+$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '07:00:00', '09:00:00', 60)";
 bdd()->query($sql);
 
-$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '11:00:00', '13:30:00', 10)";
+$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '11:00:00', '13:30:00', 60)";
 bdd()->query($sql);
 
-$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '17:00:00', '18:45:00', 10)";
+$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '17:00:00', '18:45:00', 60)";
 bdd()->query($sql);
