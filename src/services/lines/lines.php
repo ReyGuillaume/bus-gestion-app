@@ -2,6 +2,9 @@
 // accès à une fonction bdd() qui renvoie une instance de PDO
 include_once "../connexion.php";
 
+include_once "buses_free.php";
+include_once "users_free.php";
+
 // ======================== Line ========================
 
 /**
@@ -374,8 +377,7 @@ function couvre_a_line_for_a_day ($jour, $id_line){
     
 */
 function couvrire_creneau ($crenau, $jour, $id_line){
-    require_once '../users/users.php';
-    require_once '../buses/buses.php';
+    
     // On recupere toutes les variables nécessaire 
     $temps_creneau = 60; //++++ A améliorer car pas très maniable 
     $heure_courante = $crenau['begin'];
