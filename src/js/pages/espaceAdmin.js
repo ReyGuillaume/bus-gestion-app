@@ -1,7 +1,4 @@
 import { create } from "../utils/domManipulation";
-import { toggleAgenda } from "./agenda";
-import { toggleDrivers, toggleResp, toggleBuses, toggleLines } from "./agendaUsers";
-import { toggleMultiEntities } from "./day";
 import { createMenuElement } from "../components/menuItem";
 import { redirect, redirectUser, toggleAlertMessage } from "../utils/redirection";
 import axios from "axios";
@@ -29,22 +26,22 @@ const toggleEspaceAdmin = () => {
     const nav = create("nav", main, null, ['navBar_Admin'])
 
     // agenda
-    createMenuElement(nav, toggleAgenda, "rose", "src/assets/images/nav_agenda.png", "Voir mon agenda", "Voir mon agenda")
+    createMenuElement(nav, () => redirect("/agenda"), "rose", "src/assets/images/nav_agenda.png", "Voir mon agenda", "Voir mon agenda")
 
     // agenda chauffeurs
-    createMenuElement(nav, toggleDrivers, "jaune", "src/assets/images/nav_gens.png", "Voir l'agenda des chauffeurs", "Voir l'agenda des chauffeurs")
+    createMenuElement(nav, () => redirect("/agenda-chauffeurs"), "jaune", "src/assets/images/nav_gens.png", "Voir l'agenda des chauffeurs", "Voir l'agenda des chauffeurs")
 
 
     // agenda responsables
     if(sessionData["role"] == "Directeur"){
-        createMenuElement(nav, toggleResp, "orange", "src/assets/images/nav_gens.png", "Voir l'agenda des responsables logistiques", "Voir l'agenda des responsables logistiques")
-        createMenuElement(nav, toggleMultiEntities, "vert", "src/assets/images/nav_agenda.png", "Croiser plusieurs agendas", "Croiser plusieurs agendas")
+        createMenuElement(nav, () => redirect("/agenda-responsables"), "orange", "src/assets/images/nav_gens.png", "Voir l'agenda des responsables logistiques", "Voir l'agenda des responsables logistiques")
+        createMenuElement(nav, () => redirect("/agenda-multiple"), "vert", "src/assets/images/nav_agenda.png", "Croiser plusieurs agendas", "Croiser plusieurs agendas")
     }
     // agenda bus
-    createMenuElement(nav, toggleBuses, "rouge", "src/assets/images/nav_bus.png", "Voir l'agenda des bus", "Voir l'agenda des bus")
+    createMenuElement(nav, () => redirect("/agenda-bus"), "rouge", "src/assets/images/nav_bus.png", "Voir l'agenda des bus", "Voir l'agenda des bus")
 
     // agenda lignes de bus
-    createMenuElement(nav, toggleLines, "bleu", "src/assets/images/nav_ligne.png", "Voir l'agenda des lignes de bus", "Voir l'agenda des lignes de bus")
+    createMenuElement(nav, () => redirect("/agenda-lignes"), "bleu", "src/assets/images/nav_ligne.png", "Voir l'agenda des lignes de bus", "Voir l'agenda des lignes de bus")
 
     // créneaux
     createMenuElement(nav, () => redirect("/creneau"), "gris", "src/assets/images/nav_creneau.png", "Ajouter un créneaux", "Ajouter un créneaux")

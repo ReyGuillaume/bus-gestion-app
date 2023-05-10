@@ -282,8 +282,6 @@ function toggleSeeReservation(){
 
     const nav = create("nav", main, null, ['liste_gestion'])
 
-
-
     create("div", nav, "Voir les réservations en attente", ['gestion_users']).addEventListener("click", () => toggleSeeModeReservation(idClient, "attente"))
     create("div", nav, "Voir les réservations validées", ['gestion_users']).addEventListener("click", () => toggleSeeModeReservation(idClient, "valide"))
     create("div", nav, "Voir les réservations refusées", ['gestion_users']).addEventListener("click", () => toggleSeeModeReservation(idClient, "refuse"))

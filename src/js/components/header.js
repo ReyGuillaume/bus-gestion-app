@@ -5,30 +5,48 @@ const createNavBar = () => {
     const h = document.querySelector("#header")
     const nav = create("nav", h, null, ['navBar', 'hide'])
 
-    create("a", nav, 'Accueil', ['navBar__item', 'focus']).href = "/"
+    const l1 = create("button", nav, 'Accueil', ['navBar__item', 'focus', "unstyled-button"])
+    l1.onclick = () => redirect("/")
+    l1.title = "Retour à l'acceuil"
 
     // Récupérer la session utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
     if (sessionData) {
         // si l'utilisateur est un responsable logistique ou le gérant
         if(["Responsable Logistique", "Directeur"].includes(sessionData["role"])){
-            create("a", nav, 'Espace administrateur', ['navBar__item']).href = "/espace-admin"
+            const l2 = create("button", nav, 'Espace administrateur', ['navBar__item', "unstyled-button"])
+            l2.onclick = () => redirect("/espace-admin")
+            l2.title = "Espace administrateur"
         }
         // si l'utilisateur est un abonné
         else {
             if (["Abonné"].includes(sessionData["role"])) {
-                create("a", nav, 'Espace utilisateur', ['navBar__item']).href = "/espace-abonne"
+                const l3 = create("button", nav, 'Espace utilisateur', ['navBar__item', "unstyled-button"])
+                l3.onclick = () => redirect("/espace-abonne")
+                l3.title = 'Espace utilisateur'
             } else {
                 // si l'utilisateur est un chauffeur
-                create("a", nav, 'Espace utilisateur', ['navBar__item']).href = "/espace-utilisateur"
+                const l4 = create("button", nav, 'Espace utilisateur', ['navBar__item', "unstyled-button"])
+                l4.onclick = () => redirect("/espace-utilisateur")
+                l4.title = 'Espace utilisateur'
             }
         }
-        create("a", nav, 'Se déconnecter', ['navBar__item']).href = "/disconnect"
+        const l5 = create("button", nav, 'Se déconnecter', ['navBar__item', "unstyled-button"])
+        l5.onclick = () => redirect("/disconnect")
+        l5.title = 'Se déconnecter'
     }
     else{
-        create("a", nav, 'Se connecter', ['navBar__item']).href = "/connexion"
-        create("a", nav, "S'inscrire", ['navBar__item']).href = "/inscription"
+
+        const l6 = create("button", nav, 'Se connecter', ['navBar__item', "unstyled-button"])
+        l6.onclick = () => redirect("/connexion")
+        l6.title = 'Se connecter'
+
+        const l7 = create("button", nav, "S'inscrire", ['navBar__item', "unstyled-button"])
+        l7.onclick = () => redirect("/inscription")
+        l7.title = "S'inscrire"
     }
+
+    nav.onclick = toggleNavBar
 
     return nav
 }
