@@ -121,6 +121,9 @@ function displayReserv (container, data) {
     // recuperation des infos de l'utilisateur
     const roleUser = JSON.parse(sessionStorage.getItem("userData")).role;
 
+    if(data.length === 0)
+        create("h3", container, "Il n'y a aucune demande de réservation")
+
     for(let reserv of data){
         let divReserv = create("div", container);
 

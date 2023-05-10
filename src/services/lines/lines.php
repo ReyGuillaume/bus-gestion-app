@@ -423,7 +423,7 @@ function couvrire_creneau ($crenau, $jour, $id_line){
         $id_timeslot = $bdd->lastInsertId();
         $liaison = $bdd->query("INSERT INTO `line_timeslot`(`num_line`, `id_time_slot`, `direction`) VALUES ('{$id_line}','{$id_timeslot}','aller')");
         
-     
+     /*
         // On y ajoute un bus si possible 
         $bus_relie =  add_a_bus_to_timeslot($id_timeslot);
         
@@ -434,7 +434,7 @@ function couvrire_creneau ($crenau, $jour, $id_line){
             $res = false;
         }
 
-
+     */
         // On avance 
         $datetime_courante = DateTime::createFromFormat('H:i:s', $heure_courante);
         $datetime_courante->add(new DateInterval("PT{$intervalle}M"));

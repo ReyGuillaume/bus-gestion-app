@@ -44,7 +44,7 @@ const createHeader = () => {
     h.replaceChildren("")
 
     const container = create("div", h, null, ['container'])
-    const logo = create("img", container, null, ['logo'], "Gobus_Logo", "./src/assets/images/gobus-logo-color.png", "Gobus Logo")
+    const logo = create("img", container, null, ['logo'], "Gobus_Logo", "/src/assets/images/gobus-logo-color.png", "Gobus Logo")
     logo.addEventListener("click", () => redirect("/"))
     logo.title = "Retour à l'accueil"
 
