@@ -9,7 +9,6 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
 }
 
 *,
@@ -19,6 +18,10 @@
   padding: 0;
   box-sizing: border-box;
 }
+.unstyled-button {
+  border: none;
+  background: none;
+}
 
 body {
   height: 100vh;
@@ -26,6 +29,11 @@ body {
   flex-direction: column;
 }
 
+/* BARRE DE NAVIGATION + HEADER */
+
+#Gobus_Logo{
+  cursor: pointer;
+}
 #header {
   position: fixed;
   width: 100vw;
@@ -85,9 +93,54 @@ body {
   font-weight: bold;
   color: rgb(49, 88, 188);
 }
-#app .navBar__item:hover{
+.form-info, .ul-info{
+  color: rgb(177, 96, 96);
+  font-weight: bold;
+}
+.ul-info li{
+  list-style-type: none;
+  color: black;
+  font-weight: normal;
+  text-align: center;
+}
+.ul-info li:hover{
+  color: #3D7C98;
+  cursor: pointer;
+}
+.return{
+  color: rgb(133, 130, 130);
+  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
   transition: 0.5s;
-  color: rgb(197, 196, 196);
+  width: max-content;
+}
+.return:hover{
+  letter-spacing: 3px;
+  color: rgb(184, 182, 182);
+}
+#app .navBar__item:hover{
+  color: #3D7C98;
+  cursor: pointer;
+  width: max-content;
+}
+#app .navBar{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+#app .navBar .navBar__item{
+  padding: 10px;
+  list-style-type: none;
+}
+#app form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+#app form > :not(.submitButton){
+  padding: 10px;
 }
 #app .navBar_User{
   display: grid;
@@ -129,18 +182,21 @@ body {
   transition: 0.5s;
   padding: 8px;
 }
-.rose, .jaune, .rouge, .orange, .bleu, .bleu_clair, .gris, .violet, .vert{
+.rose, .jaune, .jaune_clair, .rouge, .orange, .bleu, .bleu_clair, .gris, .violet, .vert, .vert_clair{
   transition: 0.5s;
   border-radius: 35px;
 }
-.rose:hover, .jaune:hover, .rouge:hover, .orange:hover, .bleu:hover, .bleu_clair:hover, .gris:hover, .violet:hover, .vert:hover{
+.rose:hover, .jaune:hover, .jaune_clair:hover, .rouge:hover, .orange:hover, .bleu:hover, .bleu_clair:hover, .gris:hover, .violet:hover, .vert:hover, .vert_clair:hover{
   border-radius: 20px;
 }
 .rose{
   background-color: #E2A9FD;
 }
 .jaune{
-  background-color: #F1E1A8;
+  background-color: #fde385;
+}
+.jaune_clair{
+  background-color: #fff79e;
 }
 .rouge{
   background-color: #F2A1A1;
@@ -161,8 +217,48 @@ body {
   background-color: #a68bff;
 }
 .vert{
-  background-color: #A1F2A9;
+  background-color: #79fb86;
 }
+.vert_clair{
+  background-color: #baf8bf;
+}
+
+.liste_users_2, .liste_users_3, .liste_bus, .liste_lignes{
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+  list-style-type: none;
+  cursor: pointer;
+  transition: 0.5s;
+  box-shadow: 0px 0px 4px gray;
+}
+
+.liste_users_2 div, .liste_users_3 div, .liste_bus div, .liste_lignes div{
+  color: white;
+}
+
+.liste_users_2{
+  background: linear-gradient(to right, rgb(255, 212, 126), rgb(236, 191, 101));
+}
+
+.liste_users_3{
+  background: linear-gradient(to right, rgb(255, 192, 239), rgb(250, 173, 230));
+}
+
+.liste_bus{
+  background: linear-gradient(to right, rgb(255, 141, 141), rgb(253, 102, 102));
+}
+
+.liste_lignes{
+  background: linear-gradient(to right, rgb(184, 209, 255), rgb(164, 196, 255));
+}
+
+.liste_users_2:hover, .liste_users_3:hover, .liste_bus:hover, .liste_lignes:hover{
+  background: linear-gradient(to right, rgb(64, 64, 64), black);
+}
+
+/* FOOTER */
+
 #footer {
   display: flex;
   align-items: center;
@@ -175,23 +271,47 @@ body {
   align-items: center;
 }
 
+/* FORMULAIRE D'AUTHENTIFICATION */
+
+.submitButton{
+  cursor: pointer;
+  transition: 0.5s;
+  border: solid 2px #3D7C98;
+  background-color: #3D7C98;
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  padding: 8px 20px;
+  color: white;
+  border-radius: 15px;
+}
+.submitButton:hover{
+  border: solid 2px #3D7C98;
+  background-color: white;
+  color: #3D7C98;
+}
 #adminFormulaire{
+  display: flex;
+  flex-direction: column;
   width: min-content;
   margin: 0 auto;
-  padding: 10px 105px 25px 105px;
+  padding: 20px 60px;
   background-color: white;
   border-radius: 15px;
   box-shadow: 0px 0px 5px gray;
+  align-items: center;
 }
-
 #adminFormulaire input{
-  padding: 15px 50px 15px 60px;
-  margin: 5px 0px 5px 0px;
+  padding: 10px;
+  margin: 5px;
   border-radius: 30px;
   border: 0px;
   background-color: #e7e7e7;
 }
-
+#adminFormulaire #adminButton{
+  margin: 5px;
+}
 #adminFormulaire label{
   display: block;
   text-align: center;
@@ -219,6 +339,56 @@ body {
   background-color: #222630;
   transition: 0.5s ease;
 }
+
+/* AUTRES FORMULAIRES */
+
+.app-form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px;
+  border-radius: 15px;
+  box-shadow: 0px 0px 5px gray;
+}
+
+.label-info{
+  color: rgb(177, 96, 96);
+}
+
+input[type="datetime-local"], input[type="week"], input[type="time"], input[type="date"]{
+  border: 2px solid #ccc;
+  padding: 5px;
+  border-radius: 15px;
+}
+
+.app-form .form-div, .app-form .form-div-radio{
+  margin: 5px;
+  display: flex;
+}
+
+.app-form .form-div{
+  flex-direction: column;
+  align-items: center;
+}
+
+.addButton{
+  cursor: pointer;
+  border: solid 2px grey;
+  border-radius: 15px;
+  padding: 5px;
+  background-color: rgb(228, 225, 225);
+  transition: 0.5s;
+}
+
+.addButton:hover{
+  color: white;
+  border: solid 2px white;
+}
+
+/* PAGE D'ACCUEIL */
 
 #titreAccueil{
   color: rgb(51, 51, 173);
@@ -276,6 +446,69 @@ body {
   transition: 0.5s;
 }
 
+/* PAGES DE GESTION */
+
+.liste_gestion{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+.sous_gestion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+}
+.gestion_titre{
+  font-weight: bold;
+  text-shadow: 2px 2px rgb(111, 199, 111);
+}
+.gestion_users, .gestion_bus, .gestion_lignes, .gestion_infos{
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+  list-style-type: none;
+  cursor: pointer;
+  transition: 0.5s;
+  color: white;
+}
+
+.gestion_users:hover, .gestion_bus:hover, .gestion_lignes:hover, .gestion_infos:hover{
+  background: linear-gradient(to right, rgb(64, 64, 64), black);
+}
+
+.gestion_users{
+  background: linear-gradient(to right, rgb(238, 137, 251), rgb(234, 110, 250));
+}
+
+.gestion_bus{
+  background: linear-gradient(to right, rgb(132, 237, 106), rgb(83, 213, 50));
+}
+
+.gestion_lignes{
+  background: linear-gradient(to right, rgb(184, 209, 255), rgb(154, 187, 250));
+}
+
+.gestion_infos{
+  background: linear-gradient(to right, rgb(255, 216, 184), rgb(255, 205, 164));
+}
+
+.plage-horaire{
+  display: flex;
+  align-items: center;
+}
+.trash{
+  width: 30px;
+  height: 30px;
+  background-color: rgb(229, 88, 88);
+  border-radius: 20px;
+  padding: 3px;
+  cursor: pointer;
+}
+
+/* POP-UP */
+
 #fenetreAlerte{
   position: fixed;
   top: 0;
@@ -330,4 +563,73 @@ body {
   height: 20px;
 }
 
+/* NOTIFICATIONS */
+
+#app .navNotif {
+  display: table;
+  list-style: none;
+  overflow: hidden;
+  background: #e7e7e7;
+  border: 2px solid #4aa04a;
+  border-radius: 5px;
+  padding: 0;
+  margin: 0;
+}
+
+#app .navNotif_item {
+  display: table-cell;
+  width: 1%;
+
+}
+
+#app .navNotif_item:not(:first-child) {
+  border-left: 2px solid #4aa04a;
+}
+
+#app .navNotif_name{
+  display: block;
+  color: #4aa04a;
+  text-align: center;
+  line-height: 36px;
+  padding: 0 10px;
+}
+
+#app .navNotif_name:hover {
+  color: #ecf0f1;
+  background: #4AA04AFF;
+}
+
+
+#app .divNotif, .divTitresNotif, .notif_image{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+#app .divTitresNotif{
+  padding: 10px 0;
+  margin: 0 20px;
+}
+
+#app .divNotif{
+  background-color: #f4f4f4;
+  margin-bottom: 1px;
+  padding: 3px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2274509804));
+}
+
+#app .item_notif_archive{
+  padding: 10px;
+}
+
+#app .unread .divInfoNotif {
+  font-weight: bolder;
+}
+
+#app .read {
+  background-color: #f3faf3;
+}
+
+#app .archive .divInfoNotif {
+  font-style: italic;
+}
 /*# sourceMappingURL=main.css.map */

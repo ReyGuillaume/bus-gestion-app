@@ -198,6 +198,57 @@ function create_table_creneau_couverture(){
     $stm = bdd()->query($sql);
 }
 
+/**
+ * Execute la requête SQL qui crée la table de notification
+ * recipient = l'id du destinataire
+ * date = la date d'envoi
+ */
+function create_table_notification() {
+    $sql = "CREATE TABLE IF NOT EXISTS Notification (
+        `id_notif` INT NOT NULL AUTO_INCREMENT,
+        `title` VARCHAR(200) NOT NULL,
+        `message` VARCHAR(500) NOT NULL,
+        `date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+        `recipient` INT NOT NULL,
+        `status` ENUM('read','unread', 'archive'),
+        CONSTRAINT pk_notification PRIMARY KEY (id_notif),
+        CONSTRAINT fk_notification_user FOREIGN KEY (recipient) REFERENCES `User` (`id`)
+    )";
+    $stm = bdd()->query($sql);
+}
+
+/**
+ * Execute la requête SQL qui crée la table de reservation
+ */
+function create_table_reservation() {
+    $sql = "CREATE TABLE IF NOT EXISTS reservation (
+        `id_reserv` INT NOT NULL AUTO_INCREMENT,
+        `arretDepart` VARCHAR(200) NOT NULL,
+        `arretArrive` VARCHAR(500) NOT NULL,
+        `dateDepart` DATETIME NOT NULL,
+        `id_client` INT NOT NULL,
+        `etat` ENUM('attente','valide', 'refuse') DEFAULT 'attente',
+        CONSTRAINT pk_reservation PRIMARY KEY (id_reserv),
+        CONSTRAINT fk_reservation_user FOREIGN KEY (id_client) REFERENCES `user` (`id`)
+    )";
+    $stm = bdd()->query($sql);
+}
+
+/**
+ * Execute la requête SQL qui crée la table reservation_timeslot
+ */
+function create_table_reservation_timeslot() {
+    $sql = "CREATE TABLE IF NOT EXISTS reservation_timeslot (
+        `id_reservation` INT NOT NULL,
+        `id_timeslot` INT NOT NULL,
+        CONSTRAINT pk_reservation_timeslot PRIMARY KEY (id_reservation, id_timeslot),
+        CONSTRAINT fk_reservationtimesolt_reservation FOREIGN KEY (id_reservation) REFERENCES `reservation` (`id_reserv`),
+        CONSTRAINT fk_reservationtimesolt_timeslot FOREIGN KEY (id_timeslot) REFERENCES `timeslot` (`id`)
+    )";
+    $stm = bdd()->query($sql);
+}
+
+
 // ==================== Création des tables de la base ====================
 create_table_bus_type();
 create_table_bus();
@@ -213,8 +264,11 @@ create_table_line_time_slot();
 create_table_line_type();
 create_table_lineType_line();
 create_table_creneau_couverture();
+create_table_notification();
+create_table_reservation();
+create_table_reservation_timeslot();
 // ==================== Instanciation des types de créneaux ====================
-$timeSlotTypes = array('Conduite', 'Réunion', 'Indisponibilité');
+$timeSlotTypes = array('Conduite', 'Réunion', 'Indisponibilité', 'Réservation', 'Astreinte');
 
 foreach ($timeSlotTypes as $type) {
     $sql = "INSERT INTO TimeSlotType (`name`) VALUE ('{$type}')";
@@ -223,7 +277,7 @@ foreach ($timeSlotTypes as $type) {
 
 
 // ==================== Instanciation des types d'utilisateurs ====================
-$userTypes = array('Directeur', 'Responsable Logistique', 'Conducteur');
+$userTypes = array('Directeur', 'Responsable Logistique', 'Conducteur', 'Abonné');
 
 foreach ($userTypes as $type) {
     $sql = "INSERT INTO UserType (`name`) VALUE ('{$type}')";
@@ -282,14 +336,14 @@ foreach ($line_lineType as $id_line => $id_type) {
 }
 // ==================== Remplissage des creneau de couverture des types de ligne de base ====================
 
-$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (1, '06:30:00', '20:30:00', 10)";
+$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (1, '06:30:00', '20:30:00', 60)";
 bdd()->query($sql);
 
-$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '07:00:00', '09:00:00', 10)";
+$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '07:00:00', '09:00:00', 60)";
 bdd()->query($sql);
 
-$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '11:00:00', '13:30:00', 10)";
+$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '11:00:00', '13:30:00', 60)";
 bdd()->query($sql);
 
-$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '17:00:00', '18:45:00', 10)";
+$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '17:00:00', '18:45:00', 60)";
 bdd()->query($sql);

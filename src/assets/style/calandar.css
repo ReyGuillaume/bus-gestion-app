@@ -3,6 +3,8 @@
 }
 
 
+/* CALENDRIER */
+
 .calandar {
   display: flex;
   flex-direction: column;
@@ -61,6 +63,9 @@
   border-radius: 0.25rem;
   font-size: 1.2rem;
 }
+
+/* JOURS DU CALENDRIER */
+
 .days__day{
   display: flex;
   justify-content: center;
@@ -77,6 +82,9 @@
   border-radius: 0.25rem;
   font-size: 1.5rem;
 }
+
+/* CRÉNEAUX */
+
 .timeslots{
   display: flex;
   justify-content: space-around;
@@ -88,32 +96,21 @@
   width: 150px;
   align-items: center;
 }
-.timeslot{
-  position: absolute;
-  display: flex;
-  align-items: center;
-  background-color: #eae9e9;
-  border-radius: 8px;
-  cursor: pointer;
+.timeslot:hover, .timeslot_multi_Conduite:hover, .timeslot_multi_Réunion:hover, .timeslot_multi_Indisponibilité:hover{
+  z-index: 90;
+  border: 1px solid #888;
 }
-.timeslot div{
+.timeslot .timeslot__color,
+.timeslot .timeslot__houres,
+.timeslot .timeslot__body,
+.timeslot .timeslot__goto,
+.timeslot .timeslot__error{
   font-size: 0.6em;
   margin: 5px;
 }
 .timeslot__houres{
   display: flex;
   flex-direction: column;
-}
-.timeslot__color, .div-color{
-  width: 5px;
-  height: 40px;
-}
-.back-button{
-  cursor: pointer;
-}
-.task-name{
-  color: rgb(99, 99, 220);
-  font-weight: bold;
 }
 .Conduite .div-color{
   background-color: rgb(190, 243, 255);
@@ -124,32 +121,179 @@
 .Indisponibilité .div-color{
   background-color: rgb(251, 225, 159);
 }
+
+/* CRÉNEAUX DE L'AGENDA MULTIPLE */
+
+.timeslots__day_multi{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+  align-items:first baseline;
+}
+.timeslot, .timeslot_multi_Conduite, .timeslot_multi_Réunion, .timeslot_multi_Indisponibilité{
+  position: absolute;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #eae9e9;
+}
+.initiales{
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  background-color: rgb(212, 212, 212);
+  border: solid 1px black;
+  font-size: 50%;
+  margin-top: -25px;
+}
+.timeslot_multi_Conduite, .timeslot_multi_Réunion, .timeslot_multi_Indisponibilité{
+  justify-content: space-around;
+  overflow: hidden;
+}
+.timeslot_multi_Conduite .timeslot__houres_multi{
+  background-color: rgb(190, 243, 255);
+}
+.timeslot_multi_Réunion .timeslot__houres_multi{
+  background-color: rgb(255, 190, 239);
+}
+.timeslot_multi_Indisponibilité .timeslot__houres_multi{
+  background-color: rgb(251, 225, 159);
+}
+.multi-info{
+  font-weight: bold;
+  writing-mode: vertical-rl;
+  font-size: 50%;
+}
+.beginning_multi, .end_multi{
+  writing-mode: vertical-rl;
+  font-weight: bold;
+  color: black;
+}
+.timeslot__houres_multi{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-around;
+}
+.timeslot__houres_multi div{
+  font-size: 50%;
+}
+.timeslot__color, .div-color{
+  width: 7px;
+}
+.timeslot__goto {
+  position: relative;
+}
+.timeslot__error {
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #d90000;
+  color: #fff;
+  font-weight: bold;
+  transition: .5s;
+}
+.timeslot__error:hover {
+  transform: scale(1.5);
+}
+#app > .timeslot__error {
+  top: 15vh;
+  right: 2vw;
+  transform: scale(1.5);
+  cursor: pointer;
+}
+.back-button{
+  cursor: pointer;
+}
+
+/* POP-UP */
+
+.task-name{
+  color: rgb(99, 99, 220);
+  font-weight: bold;
+}
 .btn-task{
   display: flex;
 }
 .btn-task div{
   margin: 3px;
 }
-.modifButton{
-  color: white;
-  background-color: rgb(99, 120, 225);
-  width: max-content;
-  padding: 3px;
+
+/* AGENDA PAR 4 */
+
+.multi-form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.multi-choix{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20px;
+}
+.choix{
+  padding: 10px;
+  margin: 10px;
   border-radius: 10px;
-  margin: 0 auto;
+  box-shadow: 0px 0px 10px black;
+}
+.choix-titre{
+  color: white;
+  font-weight: bold;
+  text-shadow: 2px 2px black;
+}
+.choix_users{
+  border: solid 3px #2f6734;
+  background: linear-gradient(180deg, rgb(187, 246, 187), rgb(144, 229, 144));
+}
+.choix_bus{
+  border: solid 3px #542d2d;
+  background: linear-gradient(180deg, rgb(246, 187, 187), rgb(229, 144, 144));
+}
+.choix_lignes{
+  border: solid 3px #2b565f;
+  background: linear-gradient(180deg, rgb(187, 238, 246), rgb(144, 198, 229));
+}
+.choixButton{
+  background-color: #3D7C98;
+  color: white;
+  padding: 10px;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: 0.5s;
+}
+.choixButton:hover{
+  background-color: white;
+  color: #3D7C98;
+  border: solid 2px #3D7C98;
+}
+.modifButton{
+  background-color: rgb(99, 120, 225);
 }
 .delButton{
-  color: white;
   background-color: rgb(225, 99, 99);
+}
+.modifButton, .delButton{
+  color: white;
   width: max-content;
   padding: 3px;
   border-radius: 10px;
   margin: 0 auto;
+  transition: 0.5s;
 }
 .modifButton:hover, .delButton:hover{
   background-color: black;
   cursor: pointer;
-  transition: 0.5s;
 }
 .calandar__body .numbers {
   display: flex;
@@ -188,13 +332,15 @@
 .calandar__body .numbers__num:hover {
   border: 2px solid #3D7C98;
 }
-
+.selectMulti{
+  display: flex;
+}
 .cache{
   opacity: 0.4;
   z-index: -1;
 }
 #task {
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   background-color: white;
@@ -259,6 +405,8 @@
   background-color: #0000003c;
 }
 .validation {
+  display: flex;
+  flex-direction: column;
   height: 50vh;
   width: 50vw;
   background-color: #f4f4f4;
@@ -267,6 +415,59 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  padding: 1.5rem;
+}
+.validation .important {
+  font-weight: bold;
+}
+.validation .content {
+  flex-grow: 1;
+}
+.validation .button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+}
+.second-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  border-radius: 5rem;
+  padding: 1.5rem;
+  width: 8.5rem;
+  height: 2rem;
+  border: #3D7C98 2px solid;
+  color: #3D7C98;
+  background-color: #ffffff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: .3s;
+}
+.second-button:hover {
+  color: #ffffff;
+  background-color: #3D7C98;
+}
+.primary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  border-radius: 5rem;
+  padding: 1.5rem;
+  width: 8.5rem;
+  height: 2rem;
+  border: #3D7C98 2px solid;
+  color: #ffffff;
+  background-color: #3D7C98;
+  font-weight: bold;
+  cursor: pointer;
+  transition: .3s;
+}
+.primary-button:hover {
+  color: #3D7C98;
+  background-color: #ffffff;
 }
 
 /*# sourceMappingURL=calandar.css.map */

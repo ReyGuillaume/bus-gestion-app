@@ -69,7 +69,7 @@ Retourne tous les types de créneau existants.
 @return liste des types de créneaux (id : Int, name : String)
  */
 function fetch_time_slot_type() {
-    $res = bdd()->query("SELECT * FROM TimeSlotType");
+    $res = bdd()->query("SELECT * FROM TimeSlotType WHERE `id` != 4");
     return $res->fetchAll();
 }
 
@@ -317,9 +317,149 @@ function delete_time_slot($id_time_slot) { // délétion des lignes dans User_Ti
     bdd()->query("DELETE FROM User_TimeSlot WHERE id_time_slot = {$id_time_slot}");
     bdd()->query("DELETE FROM Bus_TimeSlot WHERE id_time_slot = {$id_time_slot}");
     bdd()->query("DELETE FROM Line_TimeSlot WHERE id_time_slot = {$id_time_slot}");
+    bdd()->query("DELETE FROM reservation_timeslot WHERE id_timeslot = {$id_time_slot}");
     $res = bdd()->query("DELETE FROM TimeSlot WHERE id = {$id_time_slot}");
     return $res == true;
 }
+
+
+/**
+ * Fonction qui créer une réservation en attente
+ * @param $arretDepart  string  l'arret de départ
+ * @param $arretArrive string  l'arret d'arrivé
+ * @param $dateDepart string  la date et heure de depart
+ * @param $idClient int  l'id du client
+ * @return bool revoie si la réservation a été ajouté ou non
+ */
+function create_reservation ($arretDepart, $arretArrive, $dateDepart, $idClient){
+    $res = bdd()->query(
+        "INSERT INTO `reservation` (`arretDepart`, `arretArrive`, `dateDepart`, `id_client`, `etat`) 
+        VALUES ('{$arretDepart}', '{$arretArrive}', '{$dateDepart}', '{$idClient}', 'attente')");
+    return $res == true;
+}
+
+/**
+ * Fonction qui refuse une réservation en attente
+ * @param $idReservation int  l'id de la réservation
+ * @return bool revoie si la réservation a été refusé ou non
+ */
+function refuse_reservation ($idReservation){
+    $res = bdd()->query(
+        "UPDATE `reservation` SET `etat` = 'refuse' WHERE `id_reserv` ='{$idReservation}'");
+    return $res == true;
+}
+
+
+/**
+ * Fonction qui valide une réservation en attente
+ * @param $idReservation int l'id de la réservation
+ * @param $beginning string l'heure et la date du départ
+ * @param $end string l'heure et la date de l'arrivé
+ * @param $id_users l'id des conducteurs
+ * @param $id_buses l'id de bus
+ * @return bool renvoie si le créneau a été ajouté ou non
+ */
+function valide_reservation ($idReservation, $beginning, $end, $id_users, $id_buses){
+    bdd()->query("UPDATE `reservation` SET `etat` = 'valide' WHERE `id_reserv` = '{$idReservation}'");
+    create_time_slot($beginning, $end, 4, $id_users, $id_buses, "","" );
+    $id_time_slot = bdd()->query("SELECT id FROM `timeslot` ORDER BY id DESC LIMIT 1")->fetch();
+    $id_time_slot = $id_time_slot['id'];
+
+    $res = bdd()->query("INSERT INTO `reservation_timeslot` (`id_reservation`, `id_timeslot`) VALUES ('{$idReservation}', '{$id_time_slot}')");
+    return $res == true;
+}
+
+
+/**
+ * Fonction qui supprime une réservation
+ * @param $idReservation int  l'id de la réservation
+ * @return bool renvoie si la réservation a été supprimé ou non
+ */
+function delete_reservation ($idReservation){
+    $id_time_slot = bdd()->query("SELECT id_timeslot FROM `reservation_timeslot` WHERE id_reservation = '{$idReservation}'")->fetch();
+    $id_time_slot = $id_time_slot['id_timeslot'];
+    delete_time_slot($id_time_slot);
+    $res = bdd()->query(
+        "DELETE FROM `reservation` WHERE `id_reserv` ='{$idReservation}'");
+    return $res == true;
+}
+
+/**
+ * Fonction qui permet de modifier une réservation en attente
+ * @param $idReservation int l'id de la réservation
+ * @param $arretDepart  string  l'arret de départ
+ * @param $arretArrive string  l'arret d'arrivé
+ * @param $dateDepart string  la date et heure de depart
+ * @return bool renvoie si la réservation a été modifié ou non
+ */
+function update_reservation ($idReservation, $arretDepart, $arretArrive, $dateDepart){
+    $res = bdd()->query(
+        "UPDATE `reservation` 
+        SET `arretDepart` = '$arretDepart', `arretArrive` = '{$arretArrive}', `dateDepart` = '{$dateDepart}' 
+        WHERE `reservation`.`id_reserv` = '{$idReservation}'");
+    return $res == true;
+}
+
+/**
+ * Fonction qui renvoie toutes les informations sur une réservation
+ * @param $idReservation int l'id de la réservation
+ * @return array|false un tableau des informations ou faux
+ */
+function fetch_by_id_reservation ($idReservation) {
+    $result = bdd()->query("SELECT * FROM `reservation` WHERE `id_reserv` =  '{$idReservation}'");
+    return $result -> fetch();
+}
+
+/**
+ * Fonction qui renvoie toutes les réservations d'un client en fonction de son id
+ * @param $idClient int l'id du client
+ * @return array|false un tableau des réservations ou faux
+ */
+function fetch_by_id_client ($idClient) {
+    $result = bdd()->query("SELECT * FROM `reservation` WHERE `id_client` =  '{$idClient}'");
+    return $result -> fetchAll();
+}
+
+
+/**
+ * Fonction qui renvoie toutes les réservations en attente
+ * @return array|false un tableau des réservations ou faux
+ */
+function fetch_all_reservation_attente (){
+    $result = bdd()->query("SELECT * FROM `reservation` WHERE `etat` =  'attente'");
+    return $result -> fetchAll();
+}
+
+/**
+ * Fonction qui renvoie toutes les réservations validées
+ * @return array|false un tableau des réservations ou faux
+ */
+function fetch_all_reservation_valide (){
+    $result = bdd()->query("SELECT * FROM `reservation` WHERE `etat` =  'valide'");
+    return $result -> fetchAll();
+}
+
+/**
+ * Fonction qui renvoie toutes les réservations refusées
+ * @return array|false un tableau des réservations ou faux
+ */
+function fetch_all_reservation_refuse (){
+    $result = bdd()->query("SELECT * FROM `reservation` WHERE `etat` =  'refuse'");
+    return $result -> fetchAll();
+}
+
+
+/**
+ * Fonction qui renvoie, selon l'id du client et de l'état des réservations, les réservations
+ * @param $idClient int l'id du client
+ * @param $etat string l'état des notifications demandées
+ * @return array|false un tableau des réservations ou faux
+ */
+function fetch_by_id_client_and_etat ($idClient, $etat) {
+    $result = bdd()->query("SELECT * FROM `reservation` WHERE `id_client` =  '{$idClient}' AND `etat` = '{$etat}'");
+    return $result -> fetchAll();
+}
+
 
 
 
@@ -368,6 +508,39 @@ switch ($_GET['function']) {
         break;
     case 'delete':       // id
         $res = delete_time_slot($_GET['id']);
+        break;
+    case 'create_reservation' :     // arretDepart, arretArrive, dateDepart, idClient
+        $res = create_reservation ($_GET['arretDepart'], $_GET['arretArrive'], $_GET['dateDepart'], $_GET['idClient']);
+        break;
+    case 'refuse_reservation' :     // idReservation
+        $res = refuse_reservation ($_GET['idReservation']);
+        break;
+    case 'valide_reservation' :     // idReservation, beginning, end, id_users, id_buses
+        $res = valide_reservation ($_GET['idReservation'], $_GET['beginning'], $_GET['end'], $_GET['id_users'], $_GET['id_buses']);
+        break;
+    case 'delete_reservation' :     // idReservation
+        $res =delete_reservation ($_GET['idReservation']);
+        break;
+    case 'update_reservation' :     // idReservation, arretDepart, arretArrive, dateDepart
+        $res = update_reservation ($_GET['idReservation'], $_GET['arretDepart'], $_GET['arretArrive'], $_GET['dateDepart']);
+        break;
+    case 'fetch_by_id_reservation' :     // idReservation
+        $res = fetch_by_id_reservation ($_GET['idReservation']);
+        break;
+    case 'fetch_by_id_client' :     // idClient
+        $res = fetch_by_id_client ($_GET['idClient']);
+        break;
+    case 'fetch_all_reservation_attente' :
+        $res = fetch_all_reservation_attente ();
+        break;
+    case 'fetch_all_reservation_valide' :
+        $res = fetch_all_reservation_valide ();
+        break;
+    case 'fetch_all_reservation_refuse' :
+        $res = fetch_all_reservation_refuse ();
+        break;
+    case 'fetch_by_id_client_and_etat' : // idClient, etat
+        $res = fetch_by_id_client_and_etat ($_GET['idClient'], $_GET['etat']);
         break;
     default:
         $res = "invalid function";
