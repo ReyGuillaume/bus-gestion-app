@@ -160,21 +160,94 @@ const toggleValideReservation = (container, props, user = null, multi = false) =
     main.classList.add("cache")
     container.classList.remove("cache")
 
-    // Creation du formulaire pré remplie de modif de ligne
+    // Creation du formulaire pré remplie de validation de reservation
     container.replaceChildren("")
 
     create("div", container, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(container)
 
+    create("p", container, "Cette reservation demande le trajet : "+props.arretDepart +" - "+ props.arretArrive)
+    create("label", container, "Combien de minutes le trajet va durer :", ["form-info"]);
+    createChamp(container, "integer", "temps_trajet");
+
+    const bouton = create("div", container, "Valider", ["submitButton"])
+    bouton.addEventListener("click", function(){
+        // On recupere le temps du trajet
+        let temps_trajet = document.querySelector("input[name='temps_trajet']").value;
+        formValidationReservation (container, props, user, multi, temps_trajet);
+        
+
+    })
+    return container;
+}
+
+const formValidationReservation = (container, props, user = null, multi = false, temps_trajet) => {
+    container.replaceChildren("");
+    
+    // Creation d'un affichage pour indiquer si la reservation est acceptable 
+
+    var acceptable_bus = create("div", container, "");
+
+    // Requête axios pour vérifier la disponibilité des bus
+
+   
+    let depart = new Date(props.dateDepart.replace(' ', 'T'));
+    let fin = new Date(depart.getTime() + temps_trajet * 60000);
+
+    fin.setMinutes(depart.getMinutes()+ temps_trajet);
+
+    let axiosUrl_bus = `buses/buses.php?function=freeBuses&beginning=${depart}&end=${fin}`;
+
+    axios.get(axiosUrl_bus)
+    .then(function (response) {
+        // Vérification si la réponse contient des données
+        if (response.data.length > 0) {
+        acceptable_bus.textContent = "Un bus est disponible ";
+        } else {
+        acceptable_bus.textContent = "Pas de bus disponible";
+        }
+    })
+
+    // Creation d'un affichage pour indiquer si la reservation est acceptable 
+
+    var acceptable_driver = create("div", container, "");
+
+    // Requête axios pour vérifier la disponibilité des bus
+
+
+    let axiosUrl = `users/users.php?function=freeDrivers&beginning=${depart}&end=${fin}`;
+
+    axios.get(axiosUrl)
+    .then(function (response) {
+        // Vérification si la réponse contient des données
+        if (response.data.length > 0) {
+        acceptable_driver.textContent = "Un conducteur est disponible ";
+        } else {
+        acceptable_driver.textContent = "Pas de conducteur disponible";
+        }
+    })
+
+
     // Creation of each champ
     //create("label", container, "Début : " + props.dateDepart, ["form-info"]);
-
+    
     create("label", container, "Début :", ["form-info"]);
     let champ =createChamp(container, "datetime-local", "StartDateTime");
-    champ.value = props.dateDepart
+    champ.value = props.dateDepart;
     champ.disabled = true;
     
     create("label", container, "Fin :", ["form-info"]);
-    createChamp(container, "datetime-local", "EndDateTime").value = props.dateDepart;
+    console.log(fin);
+    console.log(depart);
+
+   
+
+    const timeZoneOffset = new Date().getTimezoneOffset() * 60000; 
+    const finAdjusted = new Date(fin.getTime() - timeZoneOffset);
+    const endDateTimeInput = createChamp(container, "datetime-local", "EndDateTime");
+
+    console.log(finAdjusted);
+    endDateTimeInput.value = finAdjusted.toISOString().slice(0, 16);
+    endDateTimeInput.disabled = true;
 
     toogleBusChoices(container)
     toogleDriversChoices(container)
@@ -196,8 +269,6 @@ const toggleValideReservation = (container, props, user = null, multi = false) =
 
         fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=valide_reservation&idReservation=`+props.id_reserv+`&beginning=`+startDateTime+`&end=`+endDateTime+`&id_users=`+selectedDrivers()+`&id_buses=`+busesTimeslot(), "/espace-admin", "La réservation a bien été validée", "La réservation n'a pas pu être validée")
     })
-
-    return container;
 }
 
 export {

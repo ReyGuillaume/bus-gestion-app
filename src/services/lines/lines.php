@@ -423,18 +423,18 @@ function couvrire_creneau ($crenau, $jour, $id_line){
         $id_timeslot = $bdd->lastInsertId();
         $liaison = $bdd->query("INSERT INTO `line_timeslot`(`num_line`, `id_time_slot`, `direction`) VALUES ('{$id_line}','{$id_timeslot}','aller')");
         
-     /*
+     
         // On y ajoute un bus si possible 
         $bus_relie =  add_a_bus_to_timeslot($id_timeslot);
         
         // On y ajoute un conducteur si possible
         $driver_relie =  add_a_driver_to_timeslot($id_timeslot);
 
-        if (($bus_relie==false )||( $driver_relie==false )){
+        /*if (($bus_relie==false )||( $driver_relie==false )){
             $res = false;
-        }
+        }*/
 
-     */
+     
         // On avance 
         $datetime_courante = DateTime::createFromFormat('H:i:s', $heure_courante);
         $datetime_courante->add(new DateInterval("PT{$intervalle}M"));
@@ -576,6 +576,9 @@ switch ($_GET['function']) {
         break;
     case 'coverWeek': // week
         $res = cover_a_week ($_GET['week']);
+        break;
+    case 'coverLineWeek': //week line
+        $res = cover_a_line_for_a_week ($_GET['week'], $_GET['idline']);
         break;
     case 'typesline':
         $res =fetch_linetypes();

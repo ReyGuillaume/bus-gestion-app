@@ -1,5 +1,5 @@
 import { create, createChamp, createChampCheckbox, createChampRadio, toggleError } from "../utils/domManipulation";
-import { fetchUrlRedirectAndAlert, valueFirstElementChecked, countElementChecked } from "../utils/formGestion";
+import { fetchUrlRedirectAndAlert,fetchUrlWithLoading, valueFirstElementChecked, countElementChecked } from "../utils/formGestion";
 import { redirect } from "../utils/redirection";
 
 import axios from 'axios';
@@ -198,12 +198,17 @@ const toggleRemplissageAutoConduiteSemaine = () => {
     createChamp(form, "week", "semaine");
 
     // Creation of submit button
-    const bouton = create("div", form, "Envoyer", ["submitButton"])
+    const bouton = create("div", form, "Envoyer", ["submitButton"]);
+    const chargement = create("p", form, "Attente",null,'loading');
     bouton.title = "Envoyer"
+    
     bouton.addEventListener("click", function(){
         let semaine = document.querySelector("input[name='semaine']").value;
-        fetchUrlRedirectAndAlert(`lines/lines.php?function=coverWeek&week=${semaine}`, "/lignes", "Toutes les conduites de la semaine ont étées ajoutées", "Il semblerait que tout ne se soit pas passé comme prévu...")
+        fetchUrlWithLoading(`lines/lines.php?function=coverWeek&week=${semaine}`, "/lignes", "Toutes les conduites de la semaine ont étées ajoutées", "Il semblerait que tout ne se soit pas passé comme prévu...")
     })
+
+    
+      
 }
 
 

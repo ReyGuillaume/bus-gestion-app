@@ -1,5 +1,7 @@
 <?php
 
+include_once '../timeslots/function_timeslots.php';
+
 /**
     Indique si un bus est libre sur une periode de temps.
 
@@ -63,7 +65,6 @@ function add_a_bus_to_timeslot($idCreneau){
     $res = false; 
     
     // On recupere le timeslot en question
-    require_once '../timeslots/timeslots.php';
     $creneau = fetch_time_slot($idCreneau);
 
     // On regarde si un bus est libre pour ce timeslot 

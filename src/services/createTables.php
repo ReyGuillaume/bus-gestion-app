@@ -248,6 +248,18 @@ function create_table_reservation_timeslot() {
     $stm = bdd()->query($sql);
 }
 
+/**
+ * Execute la requête SQL qui crée la table arrets
+ */
+
+ function create_table_arret() {
+    $sql = "CREATE TABLE IF NOT EXISTS arret (
+        `id` INT NOT NULL AUTO_INCREMENT,
+        `name` VARCHAR(200) NOT NULL UNIQUE,
+        CONSTRAINT pk_arret PRIMARY KEY (id)
+    )";
+    $stm = bdd()->query($sql);
+}
 
 // ==================== Création des tables de la base ====================
 create_table_bus_type();
@@ -267,6 +279,7 @@ create_table_creneau_couverture();
 create_table_notification();
 create_table_reservation();
 create_table_reservation_timeslot();
+create_table_arret();
 // ==================== Instanciation des types de créneaux ====================
 $timeSlotTypes = array('Conduite', 'Réunion', 'Indisponibilité', 'Réservation', 'Astreinte');
 
