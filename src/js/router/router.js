@@ -1,10 +1,10 @@
 import Navigo from 'navigo'
 
 import { toggleAccueil } from '../pages/accueil'
-import { toggleAdminForm } from '../pages/adminForm'
+import { toggleAdminForm, toggleInscriptionForm } from '../pages/adminForm'
 import { disconnectUser } from '../pages/disconnect'
 import { toggle404 } from '../pages/404'
-import { toggleEspaceAdmin, toggleGestionBus, toggleGestionLigne, toggleGestionUsers, toggleReservation } from '../pages/espaceAdmin'
+import { toggleEspaceAdmin, toggleGestionBus, toggleGestionLigne, toggleGestionUsers, toggleReservation, toggleInscriptions } from '../pages/espaceAdmin'
 import { toggleEspaceUser } from '../pages/espaceUser'
 import { toggleEspaceAbonne, toggleInfoAbonne } from '../pages/espaceAbonne'
 import { toggleNotificationCenter } from '../pages/notificationCenter'
@@ -26,6 +26,7 @@ router.on('/espace-utilisateur', toggleEspaceUser)
 router.on('/espace-abonne', toggleEspaceAbonne)
 router.on('/espace-informations-abonne', toggleInfoAbonne)
 router.on('/connexion', toggleAdminForm)
+router.on('/inscription', toggleInscriptionForm)
 router.on('/disconnect', disconnectUser)
 router.on('/notification-center', toggleNotificationCenter)
 
@@ -61,6 +62,7 @@ router.on('/lignes/suppression-type', toggleSupprLine)
 
 router.on('/reservation', toggleReservation)
 
+router.on('/inscriptions', toggleInscriptions)
 router.on('*', toggle404)
 // router.resolve()
 
