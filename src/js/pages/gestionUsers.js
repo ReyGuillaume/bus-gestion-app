@@ -1,252 +1,194 @@
-import { create, createChamp, createChampCheckbox, createChampRadio, toggleAlert, toggleError } from "../main";
+import { create, createChamp, createChampCheckbox, createChampRadio } from "../utils/domManipulation";
+import { fetchUrlRedirectAndAlert, valueFirstElementChecked } from "../utils/formGestion";
 import { toggleEspaceAdmin } from "./espaceAdmin";
+import { redirect } from "../utils/redirection";
 
 import axios from 'axios';
+
 //------------------------------------------------------- */
 //   Gestion Utilisateurs
 //------------------------------------------------------- */
 
-export const toggleAjoutUser = () => {
+const toggleAjoutUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/utilisateurs"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Ajout d'Utilisateur")
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
-    const form = create("form", main)
-    create("br", form);
+    const form = create("div", main, null, ["app-form"])
 
-    create("label", form, "Entrez le prénom de l'utilisateur :");
-    createChamp(form, "text", "nameUser");
-    create("br", form);
+    const div_prenom = create("div", form, null, ["form-div"])
+    create("label", div_prenom, "Entrez le prénom de l'utilisateur :", ["label-info"]);
+    createChamp(div_prenom, "text", "nameUser");
 
-    create("label", form, "Entrez le nom de l'utilisateur :");
-    createChamp(form, "text", "lastNameUser");
-    create("br", form);
+    const div_nom = create("div", form, null, ["form-div"])
+    create("label", div_nom, "Entrez le nom de l'utilisateur :", ["label-info"]);
+    createChamp(div_nom, "text", "lastNameUser");
 
-    create("label", form, "Entrez le login de l'utilisateur :");
-    createChamp(form, "text", "loginUser");
-    create("br", form);
+    const div_login = create("div", form, null, ["form-div"])
+    create("label", div_login, "Entrez le login de l'utilisateur :", ["label-info"]);
+    createChamp(div_login, "text", "loginUser");
 
-    create("label", form, "Entrez son email :");
-    createChamp(form, "email", "mailUser");
-    create("br", form);
+    const div_email = create("div", form, null, ["form-div"])
+    create("label", div_email, "Entrez son email :", ["label-info"]);
+    createChamp(div_email, "email", "mailUser");
 
-    create("label", form, "Entrez la date de naissance de l'utilisateur :");
-    createChamp(form, "date", "birthDate");
-    create("br", form);
+    const div_naiss = create("div", form, null, ["form-div"])
+    create("label", div_naiss, "Entrez la date de naissance de l'utilisateur :", ["label-info"]);
+    createChamp(div_naiss, "date", "birthDate");
 
     // creation of a radio to choose the role of the user created
     var divRadio = create("div", form);
-    create("label", divRadio, "Choisissez le type de l'utilisateur :");
+    create("label", divRadio, "Choisissez le type de l'utilisateur :", ["label-info"]);
     axios.get(`users/users.php?function=usertypes`).then((response)=>{
-        console.log(response);
         for(var type of response.data){
             create("br", divRadio);
-            createChampRadio(divRadio, type.id , "typeUser", type.id);
+            createChampRadio(divRadio, "ut"+type.id , "typeUser", type.id);
             var label = create("label", divRadio, type.name );
-            label.setAttribute("for", type.id);
+            label.setAttribute("for", "ut"+type.id);
           }
     });
 
 
-    const bouton = create("div", form, "Envoyer", ["submitButton"])
-    bouton.addEventListener("click", function (event){
+    const bouton = create("button", form, "Envoyer", ["submitButton", "unstyled-button"])
+    bouton.title = "Envoyer"
+    bouton.addEventListener("click", function (){
         // return the type of the user checked
-        function typeUser () {
-            let res = null;
-            for(var type of document.querySelectorAll("input[name='typeUser']")){
-                if (type.checked) {
-                    res = type.value;
-                }
-            }return res;
-        }
+        
         // selection the infos
         let login = document.querySelector("input[name='loginUser']").value;
         let date = document.querySelector("input[name='birthDate']").value;
         let name = document.querySelector("input[name='lastNameUser']").value;
         let firstname = document.querySelector("input[name='nameUser']").value;
         let email = document.querySelector("input[name='mailUser']").value;
-        let type = typeUser();
+        let type = valueFirstElementChecked("input[name='typeUser']");
 
         //creation of the url
         let url = `users/users.php?function=create&login=${login}&password=gobus123&confirm=gobus123&date=${date}&name=${name}&firstname=${firstname}&email=${email}&type=${type}`
-
-        axios.get(url).then(function(response){
-            toggleEspaceAdmin()
-            if(response.data){
-                toggleAlert("BRAVO", "L'utilisateur a bien été ajouté")
-            }
-            else{
-                toggleError("ERREUR", "L'utilisateur n'a pas pu être ajouté")
-            }
-        })
-
+        fetchUrlRedirectAndAlert(url, "/espace-admin", "L'utilisateur a bien été ajouté", "L'utilisateur n'a pas pu être ajouté")
     })
-    form.appendChild(bouton);
-
-    return main
-   
-
 }
 
-export const toggleModifyUser = () => {
+const toggleModifyUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/utilisateurs"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Modification d'Utilisateur")
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
     create("p", main, "Choisissez l'utilisateur à modifier :", ["presentation"])
 
     // Creation of the form
-    const form = create("form", main)
-
-    // Creation of the radio to select the user to modify
-    var divRadioUser = create("div", form);
+    const form = create("div", main, null, ["app-form"])
 
     // Recuperation de tous les utilisateurs
-    axios.get(`users/users.php?function=users`).then((response)=>{
+    axios.get(`users/users.php?function=users`).then(response => {
 
         for(var user of response.data){
-            create("br", divRadioUser);
+            var div_user = create("div", form, null, ["form-div-radio"])
 
             //Ajout d'un evenement au clic d'un radio
-           createChampRadio(divRadioUser, user.id , "selectionUser", user.id).addEventListener('click', function(){
-                
-                // Fonction de recuperation de l'user selectionnée
-                function userSelected () {
-                    for(var user of document.querySelectorAll("input[name='selectionUser']")){
-                        if (user.checked) {
-                            return user.value;
-                        }
-                    }
-                }
-
+            createChampRadio(div_user, "u"+user.id , "selectionUser", user.id).addEventListener('click', function(){
 
             // Recuperation de l'utilisateur a modifier
-            var idUserToModify = userSelected ();
+            var idUserToModify = valueFirstElementChecked("input[name='selectionUser']");
             axios.get(`users/users.php?function=user&id=${idUserToModify}`).then((responseUser) =>{
                    
                 // Creation du formulaire pré remplie de modif de user
                 main.replaceChildren("")
-                const form = create("form", main)
-                create("br", form);
+                const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+                back.addEventListener("click", toggleEspaceAdmin)
+                back.title = "Retour en arrière"
 
-                create("label", form, "Le prénom de l'utilisateur :");
+                const form = create("div", main, null, ["app-form"])
+
+                create("label", form, "Le prénom de l'utilisateur :", ["label-info"]);
                 createChamp(form, "text", "nameUser").value = responseUser.data.firstname;
-                create("br", form);
 
-                create("label", form, "Le nom de l'utilisateur :");
+                create("label", form, "Le nom de l'utilisateur :", ["label-info"]);
                 createChamp(form, "text", "lastNameUser").value = responseUser.data.name;
-                create("br", form);
 
-                create("label", form, "Le login de l'utilisateur :");
+                create("label", form, "Le login de l'utilisateur :", ["label-info"]);
                 createChamp(form, "text", "loginUser").value = responseUser.data.login;
-                create("br", form);
 
-                create("label", form, "L'email de l'utilisateur :");
+                create("label", form, "L'email de l'utilisateur :", ["label-info"]);
                 createChamp(form, "email", "mailUser").value = responseUser.data.email;
-                create("br", form);
 
-                create("label", form, "La date de naissance de l'utilisateur :");
+                create("label", form, "La date de naissance de l'utilisateur :", ["label-info"]);
                 createChamp(form, "date", "birthDate").value = responseUser.data.birth_date;
-                create("br", form);
 
-                const bouton = create("div", form, "Modifier", ["submitButton"])
-                bouton.addEventListener("click", function (event){
-                    // return the type of the user checked
-                    function typeUser () {
-                        let res = null;
-                        for(var type of document.querySelectorAll("input[name='typeUser']")){
-                            if (type.checked) {
-                                res = type.value;
-                            }
-                        }return res;
-                    }
+                const bouton = create("button", form, "Modifier", ["submitButton", "unstyled-button"])
+                bouton.title = "Modifier"
+                bouton.addEventListener("click", function (){
+                    
                     // selection the infos
                     let login = document.querySelector("input[name='loginUser']").value;
-                    let date = document.querySelector("input[name='birthDate']").value;
-                    let name = document.querySelector("input[name='lastNameUser']").value;
-                    let firstname = document.querySelector("input[name='nameUser']").value;
                     let email = document.querySelector("input[name='mailUser']").value;
-                    let type = typeUser();
 
                     //creation of the url
-                    let url = `users/users.php?function=update&id=${idUserToModify}&email=${email}&login=${login}`;
-                    axios.get(url).then(function(response){
-                        toggleEspaceAdmin()
-                        if(response.data){
-                            toggleAlert("BRAVO", "L'utilisateur a bien été ajouté")
-                        }
-                        else{
-                            toggleError("ERREUR", "L'utilisateur n'a pas pu être ajouté")
-                        }
-                    })
-
+                    let url = `users/users.php?function=update&id=${idUserToModify}&email=${email}&login=${login}`
+                    fetchUrlRedirectAndAlert(url, "/espace-admin", "L'utilisateur a bien été modifié", "L'utilisateur n'a pas pu être modifié")
                 })
-                form.appendChild(bouton);
-
             });
         });
 
-            var label = create("label", divRadioUser, user.name + " "+ user.firstname);
-            label.setAttribute("for", user.id);
-          }
-    });
-
-    // Creation of submit button
-    return main
+        var label = create("label", div_user, user.name + " "+ user.firstname);
+        label.setAttribute("for", "u"+user.id);
+    }})
 }
 
-export const toggleSupprimeUser = () => {
+// delete the user who are checked
+const deleteUsersChecked = () => {
+    for(var user of document.querySelectorAll("input[name='selectionUSer']")){
+        if (user.checked) {
+            let url = `users/users.php?function=delete&id=${user.value}`;
+            fetchUrlRedirectAndAlert(url, "/espace-admin", "L'utilisateur a bien été supprimé", "L'utilisateur n'a pas pu être supprimé")
+        }
+    }
+}
+
+const toggleSupprimeUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/utilisateurs"))
+    back.title = "Retour en arrière"
+
     create("h2", main, "Suppression d'Utilisateur")
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleEspaceAdmin)
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
 
     // Creation of the form
-    const form = create("form", main)
+    const form = create("div", main, null, ["app-form"])
 
     // Creation of the checkbox to define the user to delete
-    var divCheckboxUsers = create("div", form);
-    create("label", divCheckboxUsers, "Choisissez le(s) utilisateur(s) à supprimer :");
+    create("label", form, "Choisissez le(s) utilisateur(s) à supprimer :", ["label-info"]);
     axios.get(`users/users.php?function=users`).then((response)=>{
-        console.log(response);
         for(var user of response.data){
-            create("br", divCheckboxUsers);
-            createChampCheckbox(divCheckboxUsers, user.id , "selectionUSer", user.id);
-            var label = create("label", divCheckboxUsers, user.name + " "+ user.firstname);
-            label.setAttribute("for", user.id);
-          }
-    });
-
-    // Creation of submit button
-    const bouton = create("div", form, "Supprimer", ["submitButton"])
-    bouton.addEventListener("click", function (event){
-
-        // delete the user who are checked
-        for(var user of document.querySelectorAll("input[name='selectionUSer']")){
-            let url = `users/users.php?function=delete&id=`;
-            if (user.checked) {
-                url += user.value;
-                axios.get(url).then(function(response){
-                    toggleEspaceAdmin()
-                    if(response.data){
-                        toggleAlert("BRAVO", "L'utilisateur a bien été supprimé")
-                    }
-                    else{
-                        toggleError("ERREUR", "L'utilisateur n'a pas pu être supprimé")
-                    }
-                })
-            }
+            var div_user = create("div", form, null, ["form-div-radio"])
+            create("br", div_user);
+            createChampCheckbox(div_user, "u"+user.id , "selectionUSer", user.id);
+            var label = create("label", div_user, user.name + " "+ user.firstname);
+            label.setAttribute("for", "u"+user.id);
         }
-    })
-    form.appendChild(bouton);
+        // Creation of submit button
+        const bouton = create("button", form, "Supprimer", ["submitButton", "unstyled-button"])
+        bouton.title = "Supprimer"
+        bouton.onclick = () => deleteUsersChecked()
+    });
+}
 
-    return main
 
+export {
+    toggleAjoutUser,
+    toggleModifyUser,
+    toggleSupprimeUser
 }

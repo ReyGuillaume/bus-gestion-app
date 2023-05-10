@@ -1,6 +1,6 @@
-import { create, toggleAlert } from "../main";
+import { create } from "../utils/domManipulation";
 
-export const toggleAccueil = () => {
+const toggleAccueil = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -38,7 +38,7 @@ export const toggleAccueil = () => {
         create("a", paragraphe2, "Voir votre espace utilisateur").href = "/"
     }
     else{
-        create("a", paragraphe2, "Voir votre espace utilisateur").href = "/espaceUser"
+        create("a", paragraphe2, "Voir votre espace utilisateur").href = "/espace-utilisateur"
     }
 
     // Présentation du responsable logistique
@@ -56,7 +56,7 @@ export const toggleAccueil = () => {
         create("a", paragraphe3, "Voir votre espace administrateur").href = "/"
     }
     else{
-        create("a", paragraphe3, "Voir votre espace administrateur").href = "/espaceAdmin"
+        create("a", paragraphe3, "Voir votre espace administrateur").href = "/espace-admin"
     }
 
     // Présentation du gérant
@@ -78,7 +78,28 @@ export const toggleAccueil = () => {
         create("a", paragraphe4, "Voir votre espace administrateur").href = "/"
     }
     else{
-        create("a", paragraphe4, "Voir votre espace administrateur").href = "/espaceAdmin"
+        create("a", paragraphe4, "Voir votre espace administrateur").href = "/espace-admin"
+    }
+
+    const paragraphe7 = create("div", main, null, ["paragraphe"])
+    create("h3", paragraphe7, "Vous êtes un abonné qui veut réserver un bus ?", ["phrasePres"])
+    const p7 = create("p", paragraphe7, null, ["sous_paragraphe"])
+    create("span", p7, "Visualisez", ["GoBus_role"])
+    p7.innerHTML += " et "
+    create("span", p7, "prenez", ["GoBus_role"])
+    p7.innerHTML +=  " des réservations de bus, "
+    create("span", p7, "gérez", ["GoBus_role"])
+    p7.innerHTML +=  " et "
+    create("span", p7, "visualisez", ["GoBus_role"])
+    p7.innerHTML += " vos données personnelles !"
+    if(!sessionData){
+        create("a", paragraphe7, "Voir votre espace d'abonné").href = "/connexion"
+    }
+    else if(sessionData["role"] != "Abonné"){
+        create("a", paragraphe7, "Voir votre espace d'abonné").href = "/"
+    }
+    else{
+        create("a", paragraphe7, "Voir votre espace d'abonné").href = "/espace-abonne"
     }
 
     // Présentation des fonctionnalités
@@ -101,3 +122,5 @@ export const toggleAccueil = () => {
 
     return main
 }
+
+export { toggleAccueil }

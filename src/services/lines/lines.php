@@ -22,6 +22,7 @@ function create_line($number, $travel_time, $id_type_line) {
     else{
         $res = false;
     }
+    return $res;
 }
 
 /**
@@ -54,6 +55,18 @@ function fetch_linetypes() {
 function fetch_line($number) {
     $res = bdd()->query("SELECT * FROM `Line` WHERE `number` = {$number}");
     return $res->fetch();
+}
+
+/**
+    Récupère les données d'un type de ligne selon son id.
+
+    @param id : id du type de la ligne.
+
+    @return objet linetype (id_type : Int, begin : String, end : String, intervalle : Int).
+*/
+function fetch_linetype($id) {
+    $res = bdd()->query("SELECT * FROM `linetypeconditions` WHERE `id_type` = {$id}");
+    return $res->fetchAll();
 }
 
 /**
@@ -245,6 +258,8 @@ function creneau_couvert ($crenau,$jour, $id_line){
     $tous_trajets_query = bdd()->query($sql);
     $tous_trajets = $tous_trajets_query->fetchAll();
 
+    $intervalle = $crenau['intervalle'];
+
     if (!empty($tous_trajets)){
 
         // Vérification que le premier trajet commence bien à l'heure de début du créneau
@@ -259,7 +274,7 @@ function creneau_couvert ($crenau,$jour, $id_line){
         // Vérification que chaque trajet commence moins de 10 minutes après la fin du précédent
         for ($i = 1; $i < count($tous_trajets); $i++) {
             $diff = strtotime($tous_trajets[$i]['begining']) - strtotime($tous_trajets[$i-1]['begining']);
-            if ($diff > 600) {
+            if ($diff > ($intervalle*60)) {
                 //echo "Il y a plus de 10 minutes entre le trajet ".$i." et le précédent.";
                 return false;
             }
@@ -371,7 +386,8 @@ function couvre_a_line_for_a_day ($jour, $id_line){
     
 */
 function couvrire_creneau ($crenau, $jour, $id_line){
-
+    require_once '../users/users.php';
+    require_once '../buses/buses.php';
     // On recupere toutes les variables nécessaire 
     $temps_creneau = 60; //++++ A améliorer car pas très maniable 
     $heure_courante = $crenau['begin'];
@@ -382,7 +398,7 @@ function couvrire_creneau ($crenau, $jour, $id_line){
 
     while ($heure_courante <= $crenau['end'] ){
 
-        echo "{$heure_courante}";
+        //echo "{$heure_courante}";
         // creation des datetime de debut et de fin 
         $date_complete_debut = DateTime::createFromFormat('Y-m-d H:i:s', $jour . ' ' . $heure_courante);
         $date_complete_debut_str = $date_complete_debut->format('Y-m-d H:i:s');
@@ -404,14 +420,131 @@ function couvrire_creneau ($crenau, $jour, $id_line){
         // récupérer l'ID généré automatiquement pour le nouveau timeslot
         $id_timeslot = $bdd->lastInsertId();
         $liaison = $bdd->query("INSERT INTO `line_timeslot`(`num_line`, `id_time_slot`, `direction`) VALUES ('{$id_line}','{$id_timeslot}','aller')");
-
         
+     
+        // On y ajoute un bus si possible 
+        $bus_relie =  add_a_bus_to_timeslot($id_timeslot);
+        
+        // On y ajoute un conducteur si possible
+        $driver_relie =  add_a_driver_to_timeslot($id_timeslot);
+
+        if (($bus_relie==false )||( $driver_relie==false )){
+            $res = false;
+        }
+
+
         // On avance 
         $datetime_courante = DateTime::createFromFormat('H:i:s', $heure_courante);
-        $datetime_courante->add(new DateInterval('PT10M'));
+        $datetime_courante->add(new DateInterval("PT{$intervalle}M"));
         $heure_courante =  $datetime_courante->format('H:i:s');
     } 
-    return $res; 
+    //echo("{$res}");
+    return $res ; 
+}
+
+/**
+  Fonction qui crée une nouvelle plage horaire pour un type de ligne
+  
+  @param name : nom du type de ligne
+  @param begin : heure de début d'une journée de conduite
+  @param end : heure de fin d'une journée de conduite
+  @param intervalle : intervalle de temps entre chaque conduite
+  
+  @return un booléen qui indique si tout s'est bien passé
+    
+*/
+function create_line_type_condition($name, $begin, $end, $intervalle){
+    $res = bdd()->query("SELECT * FROM `linetype` WHERE `name`='{$name}'")->fetch(PDO::FETCH_ASSOC);
+    $id_type = $res['id_type'];
+
+    $lst_conditions = bdd()->query("SELECT * FROM `linetypeconditions` WHERE `id_type`={$id_type}");
+
+    while($condition = $lst_conditions->fetch(PDO::FETCH_ASSOC)){
+        $begin_condition = $condition['begin'];
+        $end_condition = $condition['end'];
+
+        if(($begin < $begin_condition && $end > $end_condition) || ($begin > $begin_condition && $begin < $end_condition) || ($end > $begin_condition && $end < $end_condition)){
+            return false;
+        }
+    }
+    bdd()->query("INSERT INTO `linetypeconditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE ({$id_type}, '{$begin}', '{$end}', {$intervalle})");
+    return true;
+}
+
+
+/**
+  Fonction qui crée une nouvelle plage horaire pour un type de ligne
+  
+  @param name : nom du type de ligne
+  @param begin : heure de début d'une journée de conduite
+  @param end : heure de fin d'une journée de conduite
+  @param intervalle : intervalle de temps entre chaque conduite
+  
+  @return un booléen qui indique si tout s'est bien passé
+    
+*/
+function update_line_condition($id_type, $begin, $end, $intervalle){
+    $lst_conditions = bdd()->query("SELECT * FROM `linetypeconditions` WHERE `id_type`={$id_type}");
+
+    while($condition = $lst_conditions->fetch(PDO::FETCH_ASSOC)){
+        $begin_condition = $condition['begin'];
+        $end_condition = $condition['end'];
+
+        if(($begin < $begin_condition && $end > $end_condition) || ($begin > $begin_condition && $begin < $end_condition) || ($end > $begin_condition && $end < $end_condition)){
+            return false;
+        }
+    }
+    bdd()->query("INSERT INTO `linetypeconditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE ({$id_type}, '{$begin}', '{$end}', {$intervalle})");
+    return true;
+}
+
+/**
+  Fonction qui crée un nouveau type de ligne
+  
+  @param name : nom du type de ligne
+  
+  @return un booléen qui indique si tout s'est bien passé
+    
+*/
+function create_line_type($name){
+    if(!bdd()->query("SELECT * FROM `linetype` WHERE `name`='{$name}'")->fetch()){
+        bdd()->query("INSERT INTO `linetype` (`name`) VALUE ('{$name}')");
+        return true;
+    }
+    return false;
+}
+
+/**
+  Fonction qui supprimer les plages horaire d'un type de ligne
+  
+  @param id : id du type de ligne
+  
+  @return un booléen qui indique si tout s'est bien passé
+    
+*/
+function delete_type_conditions($id){
+    if(bdd()->query("SELECT * FROM `linetype` WHERE `id_type`={$id}")->fetch()){
+        bdd()->query("DELETE FROM `linetypeconditions` WHERE `id_type`={$id}");
+        return true;
+    }
+    return false;
+}
+
+/**
+  Fonction qui supprimer un type de ligne
+  
+  @param id : id du type de ligne
+  
+  @return un booléen qui indique si tout s'est bien passé
+    
+*/
+function delete_type_line($id){
+    if(bdd()->query("SELECT * FROM `linetype` WHERE `id_type`={$id}")->fetch()){
+        bdd()->query("DELETE FROM `linetypeconditions` WHERE `id_type`={$id}");
+        bdd()->query("DELETE FROM `linetype` WHERE `id_type`={$id}");
+        return true;
+    }
+    return false;
 }
 
 switch ($_GET['function']) {
@@ -444,6 +577,24 @@ switch ($_GET['function']) {
         break;
     case 'typesline':
         $res =fetch_linetypes();
+        break;
+    case 'type':
+        $res = fetch_linetype($_GET['id']);
+        break;
+    case 'createtype':
+        $res = create_line_type($_GET['name']);
+        break;
+    case 'createcondition':
+        $res = create_line_type_condition($_GET['name'], $_GET['begin'], $_GET['end'], $_GET['intervalle']);
+        break;
+    case 'updatecondition':
+        $res = update_line_condition($_GET['id'], $_GET['begin'], $_GET['end'], $_GET['intervalle']);
+        break;
+    case 'deleteconditions':
+        $res = delete_type_conditions($_GET['id']);
+        break;
+    case 'deletetype':
+        $res = delete_type_line($_GET['id']);
         break;
     default:
         $res = "invalid function";

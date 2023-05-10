@@ -1,4 +1,5 @@
-import { create } from "../main";
+import { create } from "../utils/domManipulation";
+import { redirect } from "../utils/redirection";
 
 const createNavBar = () => {
     const h = document.querySelector("#header")
@@ -10,14 +11,18 @@ const createNavBar = () => {
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
     if (sessionData) {
         // si l'utilisateur est un responsable logistique ou le gérant
-        if(sessionData["role"] == "Responsable Logistique" || sessionData["role"] == "Directeur"){
-            create("a", nav, 'Espace administrateur', ['navBar__item']).href = "/espaceAdmin"
+        if(["Responsable Logistique", "Directeur"].includes(sessionData["role"])){
+            create("a", nav, 'Espace administrateur', ['navBar__item']).href = "/espace-admin"
         }
-        // si l'utilisateur est un chauffeur
-        else{
-            create("a", nav, 'Espace utilisateur', ['navBar__item']).href = "/espaceUser"
+        // si l'utilisateur est un abonné
+        else {
+            if (["Abonné"].includes(sessionData["role"])) {
+                create("a", nav, 'Espace utilisateur', ['navBar__item']).href = "/espace-abonne"
+            } else {
+                // si l'utilisateur est un chauffeur
+                create("a", nav, 'Espace utilisateur', ['navBar__item']).href = "/espace-utilisateur"
+            }
         }
-
         create("a", nav, 'Se déconnecter', ['navBar__item']).href = "/disconnect"
     }
     else{
@@ -27,7 +32,6 @@ const createNavBar = () => {
     return nav
 }
 
-
 const toggleNavBar = () => {
     document.querySelector("#header .navBar").classList.toggle('hide')
     const i = document.querySelector("#header .toggleNav i")
@@ -35,13 +39,14 @@ const toggleNavBar = () => {
     i.classList.toggle('fa-close')
 }
 
-
-export const createHeader = () => {
+const createHeader = () => {
     const h = document.querySelector("#header")
     h.replaceChildren("")
 
     const container = create("div", h, null, ['container'])
-    create("img", container, null, ['logo'], null, "./src/assets/images/gobus-logo-color.png", "Gobus Logo")
+    const logo = create("img", container, null, ['logo'], "Gobus_Logo", "/src/assets/images/gobus-logo-color.png", "Gobus Logo")
+    logo.addEventListener("click", () => redirect("/"))
+    logo.title = "Retour à l'accueil"
 
     // contains the informations of the user (if authentified)
     let user_infos = create("p", container, "", null, "infosUser");
@@ -53,10 +58,15 @@ export const createHeader = () => {
         user_infos.textContent = `${prenom} ${nom.toUpperCase()}, ${role}`; // Display of user's session
     }
 
-    const toggle = create("div", container, null, ['toggleNav'])
+    const toggle = create("button", container, null, ['toggleNav', "unstyled-button"])
+    toggle.title = "Menu"
     toggle.addEventListener("click", toggleNavBar)
     create("i", toggle , null, ['fa-solid', 'fa-bars'])
     createNavBar()
 
     return h;
+}
+
+export {
+    createHeader
 }

@@ -1,8 +1,11 @@
 import { createHeader } from "../components/header";
+import { redirect } from "../utils/redirection";
 
-export const disconnectUser = () => {
+const disconnectUser = () => {
     // Delete the session variables "id", "prenom", "nom", "role", and "idrole"
     sessionStorage.removeItem("userData");
     createHeader();
-    window.location.href = "/";
+    redirect("/")
 }
+
+export { disconnectUser }
