@@ -284,6 +284,13 @@ foreach ($userTypes as $type) {
     bdd()->query($sql);
 }
 
+// ==================== Instanciation du compte directeur ====================
+$pwd = hash("sha256", "01goBus!");
+$sql = "INSERT INTO `Code`(`login`, `password`) VALUES ('WaintalD', '{$pwd}')";
+bdd()->query($sql);
+
+$sql = "INSERT INTO `User`(`name`, `firstname`, `birth_date`, `email`, `id_user_type`, `login`) VALUES ('David', 'Waintal', '1980-01-01', 'gerant@gmail.com', 1, 'WaintalD')";
+bdd()->query($sql);
 
 // ==================== Instanciation des types de bus ====================
 $busTypes = array(
