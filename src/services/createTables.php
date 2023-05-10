@@ -248,6 +248,24 @@ function create_table_reservation_timeslot() {
     $stm = bdd()->query($sql);
 }
 
+/**
+ * Execute la requête SQL qui crée la table inscription
+ */
+function create_table_inscription() {
+    $sql = "CREATE TABLE IF NOT EXISTS inscription (
+        `id` INT NOT NULL AUTO_INCREMENT,
+        `name` VARCHAR(50) NOT NULL,
+        `firstname` VARCHAR(50) NOT NULL,
+        `birth_date` DATE,
+        `email` VARCHAR(255) NOT NULL,
+        `login` VARCHAR(50) NOT NULL,
+        `password` VARCHAR(64) NOT NULL,
+        CONSTRAINT pk_inscr PRIMARY KEY (id)
+    )";
+    $stm = bdd()->query($sql);
+}
+
+
 
 // ==================== Création des tables de la base ====================
 create_table_bus_type();
@@ -267,6 +285,7 @@ create_table_creneau_couverture();
 create_table_notification();
 create_table_reservation();
 create_table_reservation_timeslot();
+create_table_inscription();
 // ==================== Instanciation des types de créneaux ====================
 $timeSlotTypes = array('Conduite', 'Réunion', 'Indisponibilité', 'Réservation', 'Astreinte');
 

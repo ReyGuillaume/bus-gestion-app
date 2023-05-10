@@ -6,10 +6,10 @@ import axios from 'axios'
 
 import Navigo from 'navigo'
 import { toggleAccueil } from './js/pages/accueil'
-import { toggleAdminForm } from './js/pages/adminForm'
+import { toggleAdminForm, toggleInscriptionForm } from './js/pages/adminForm'
 import { disconnectUser } from './js/pages/disconnect'
 import { toggle404 } from './js/pages/404'
-import { toggleEspaceAdmin, toggleGestionBus, toggleGestionLigne, toggleGestionUsers, toggleReservation } from './js/pages/espaceAdmin'
+import { toggleEspaceAdmin, toggleGestionBus, toggleGestionLigne, toggleGestionUsers, toggleReservation, toggleInscriptions } from './js/pages/espaceAdmin'
 import { toggleEspaceUser } from './js/pages/espaceUser'
 import {toggleEspaceAbonne, toggleInfoAbonne} from './js/pages/espaceAbonne'
 import { toggleNotificationCenter } from './js/pages/notificationCenter'
@@ -35,6 +35,7 @@ router.on('/espace-utilisateur', toggleEspaceUser)
 router.on('/espace-abonne', toggleEspaceAbonne)
 router.on('/espace-informations-abonne', toggleInfoAbonne)
 router.on('/connexion', toggleAdminForm)
+router.on('/inscription', toggleInscriptionForm)
 router.on('/disconnect', disconnectUser)
 router.on('/notification-center', toggleNotificationCenter)
 router.on('/creneau', toggleAddCreneau)
@@ -61,6 +62,7 @@ router.on('/lignes/modification-type', toggleModifLineType)
 router.on('/lignes/suppression-type', toggleSupprLine)
 
 router.on('/reservation', toggleReservation)
+router.on('/inscriptions', toggleInscriptions)
 
 router.on('*', toggle404)
 router.resolve()

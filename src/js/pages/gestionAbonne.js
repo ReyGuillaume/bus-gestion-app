@@ -1,4 +1,4 @@
-import {create, createChamp} from "../utils/domManipulation.js";
+import {create, createChamp, toggleAlert} from "../utils/domManipulation.js";
 import axios from "axios";
 import {fetchUrlRedirectAndAlert, idOfAllElementChecked} from "../utils/formGestion.js";
 import {toggleInfoAbonne} from "./espaceAbonne.js";
@@ -146,6 +146,40 @@ function displayReserv (container, data) {
     }
 }
 
+
+const displayInscr = (container, lst_inscriptions) => {
+    for(let inscription of lst_inscriptions){
+        let div = create("div", container, null, ["inscription"])
+
+        let identite = create("div", div, null, ["inscription-identité"])
+        create("div", identite, inscription.firstname)
+        create("div", identite, inscription.name)
+
+        create("div", div, inscription.birth_date)
+
+        create("div", div, inscription.email)
+
+        let btns = create("div", div, null, ["inscription-btns"])
+        create("div", btns, "Valider", ["valideButton"]).addEventListener("click", () => valideInscription(inscription.id, div))
+        create("div", btns, "Refuser", ["refuseButton"]).addEventListener("click", () => refuseInscription(inscription.id, div))
+    }
+}
+
+
+const valideInscription = (id_inscription, container) => {
+    axios.get(`users/users.php?function=valide_inscription&id=${id_inscription}`).then(function(){
+        toggleAlert("BRAVO", "Inscription validée")
+        container.remove()
+    })
+}
+
+const refuseInscription = (id_inscription, container) => {
+    axios.get(`users/users.php?function=refuse_inscription&id=${id_inscription}`).then(function(){
+        toggleAlert("BRAVO", "Inscription refusée")
+        container.remove()
+    })
+}
+
 const toggleRefuseReservation = (idReservation,container, data) => {
     axios.get("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=refuse_reservation&idReservation="+idReservation).then( () => {
         container.replaceChildren("")
@@ -204,6 +238,7 @@ export {
     changerInfoAbonne,
     changerMdpAbonne,
     displayReserv,
+    displayInscr,
     toggleRefuseReservation,
     toggleValideReservation
 }

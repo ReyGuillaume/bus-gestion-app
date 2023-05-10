@@ -1,6 +1,7 @@
 import { create, createChamp, toggleError } from "../utils/domManipulation";
 import { createHeader } from "../components/header";
 import { redirectUser, redirect } from "../utils/redirection";
+import { fetchUrlRedirectAndAlert } from "../utils/formGestion";
 import axios from 'axios';
 
 const toggleAdminForm = () => {
@@ -65,4 +66,56 @@ const toggleAdminForm = () => {
     })
 }
 
-export { toggleAdminForm }
+
+const toggleInscriptionForm = () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+
+    create("h2", main, "Formulaire d'inscription")
+
+    // Creation of the form
+    const form = create("div", main, null, null, "adminFormulaire")
+
+    // Creation of each champ
+    const prenom = create("div", form)
+    create("label", prenom, "Prénom :")
+    createChamp(prenom, "text", "prenom")
+
+    const nom = create("div", form)
+    create("label", nom, "Nom :")
+    createChamp(nom, "text", "nom")
+
+    const email = create("div", form)
+    create("label", email, "Email :")
+    createChamp(email, "text", "email")
+
+    const birth_date = create("div", form)
+    create("label", birth_date, "Date de naissance :")
+    createChamp(birth_date, "date", "birth_date")
+
+    const login = create("div", form)
+    create("label", login, "Login :")
+    createChamp(login, "text", "login")
+
+    const password = create("div", form)
+    create("label", password, "Mot de passe :")
+    createChamp(password, "password", "password")
+
+    // Creation of the submit button
+    const bouton = create("button", form, "Envoyer", null, "adminButton")
+    bouton.title = "Envoyer"
+
+    bouton.addEventListener("click", function(){
+        let prenom = document.querySelector("input[name='prenom']").value
+        let nom = document.querySelector("input[name='nom']").value
+        let email = document.querySelector("input[name='email']").value
+        let birth_date = document.querySelector("input[name='birth_date']").value
+        let login = document.querySelector("input[name='login']").value
+        let password = document.querySelector("input[name='password']").value
+
+        let url = `users/users.php?function=inscription&prenom=${prenom}&nom=${nom}&email=${email}&birth_date=${birth_date}&login=${login}&password=${password}` 
+        fetchUrlRedirectAndAlert(url, "/", "Demande d'inscription envoyée", "Demande d'inscription erronnée")
+    })
+}
+
+export { toggleAdminForm, toggleInscriptionForm }

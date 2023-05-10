@@ -27,6 +27,7 @@ const createNavBar = () => {
     }
     else{
         create("a", nav, 'Se connecter', ['navBar__item']).href = "/connexion"
+        create("a", nav, "S'inscrire", ['navBar__item']).href = "/inscription"
     }
 
     return nav
