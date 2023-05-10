@@ -85,6 +85,9 @@
 
 /* CRÉNEAUX */
 
+.timeslot{
+  overflow: hidden;
+}
 .timeslots{
   display: flex;
   justify-content: space-around;
@@ -108,9 +111,25 @@
   font-size: 0.6em;
   margin: 5px;
 }
+.timeslot__body{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 60px;
+  overflow: hidden;
+}
+.timeslot__body_title{
+  font-weight: bold;
+  font-size: 90%;
+}
 .timeslot__houres{
   display: flex;
   flex-direction: column;
+}
+.timeslot__body_subtitle{
+  color: grey;
+  font-style: italic;
+  font-size: 80%;
 }
 .Conduite .div-color{
   background-color: rgb(190, 243, 255);

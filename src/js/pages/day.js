@@ -89,6 +89,70 @@ const afficheInitiales = (entite) => {
     }
 }
 
+// affiche les bus et conducteurs dans l'agenda des lignes
+const conduiteLigneInfos = (timeslot, container) => {
+    let buses = create("h3", container, "", ["timeslot__body_title"])
+    
+    if(timeslot.buses.length < 1){
+        buses.innerText = "Aucun bus"
+    }
+    else{
+        buses.innerText = "Bus n°"
+        timeslot.buses.forEach(bus => {
+            buses.innerText += bus.id + "-"
+        })
+        buses.innerText = buses.innerText.slice(0,-1)
+    }
+
+    timeslot.users.forEach(element => {
+        create("div", container, element.firstname.substr(0,1) + "." + element.name.toUpperCase(), ["timeslot__body_subtitle"])
+    })
+}
+
+// affiche la ligne et les conducteurs dans l'agenda des bus
+const conduiteBusInfos = (timeslot, container) => {
+    let line = create("div", container, "", ["timeslot__body_title"])
+    
+    if(timeslot.lines.length < 1){
+        line.innerText = "Aucune ligne"
+    }
+    else{
+        timeslot.lines.forEach(element => {
+            line.innerText = `Ligne ${element.number}`
+        })
+    }
+
+    timeslot.users.forEach(element => {
+        create("div", container, element.firstname.substr(0,1) + "." + element.name.toUpperCase(), ["timeslot__body_subtitle"])
+    })
+}
+
+// affiche la ligne et les conducteurs dans l'agenda des bus
+const conduiteChauffeurInfos = (timeslot, container) => {
+    let line = create("div", container, "", ["timeslot__body_title"])
+    let buses = create("div", container, "", ["timeslot__body_subtitle"])
+    
+    if(timeslot.lines.length < 1){
+        line.innerText = "Aucune ligne"
+    }
+    else{
+        timeslot.lines.forEach(element => {
+            line.innerText = `Ligne ${element.number}`
+        })
+    }
+
+    if(timeslot.buses.length < 1){
+        buses.innerText = "Aucun bus"
+    }
+    else{
+        buses.innerText = "Bus n°"
+        timeslot.buses.forEach(element => {
+            buses.innerText += element.id + "-"
+        })
+        buses.innerText = buses.innerText.slice(0,-1)
+    }
+}
+
 // fonction qui affiche tous les créneaux horaires récupérés, affectés à l'utilisateur connecté
 const createTimeSlots = async (date, container, user=null, multi=false, entites=null, index=0) => {
     const main = document.querySelector("#app")
@@ -169,11 +233,20 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
                 const body = create("div", div, null, ["timeslot__body"])
             
                 switch(timeslot.name){
-                    case "Conduite": create("h3", body, "Conduite")
+                    case "Conduite":
+                        if(user.number){
+                            conduiteLigneInfos(timeslot, body)
+                        }
+                        else if(user.nb_places){
+                            conduiteBusInfos(timeslot, body)
+                        }
+                        else{
+                            conduiteChauffeurInfos(timeslot, body)
+                        }
                         break;
                     case "Réunion": create("h3", body, "Réunion")
                         break;
-                    case "Indisponibilité": create("h3", body, "Indisponible")
+                    case "Indisponibilité": create("div", body, "Indisponible", ["timeslot__body_title"])
                         break;
                     case "Astreinte": create("h3", body, "Astreinte")
                         break;

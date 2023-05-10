@@ -72,6 +72,8 @@ const afficheBuses = (container, tabBus) => afficheEntites(container, tabBus, `b
 
 const afficheUsers = (container, tabUser) => afficheEntites(container, tabUser, `users/users.php?function=users`, "selectionParticipant")
 
+const afficheDrivers = (container, tabUser) => afficheEntites(container, tabUser, `users/users.php?function=bytype&type=3`, "selectionParticipant")
+
 const afficheLines = (container, tabLine) => afficheEntites(container, tabLine, `lines/lines.php?function=lines`, "selectionLigne")
 
 const executeAction = (container, url, startDateTime, user, successMessage, errorMessage, multi) => {
@@ -124,8 +126,8 @@ const modifConduite = (container, props, user=null, multi=false) => {
 
         // Creation of the checkbox to define the users involved in the timeslot
         var divCheckboxUsers = create("div", container);
-        create("div", divCheckboxUsers, "Participants :", ["form-info"]);
-        afficheUsers(divCheckboxUsers, tabUser)
+        create("div", divCheckboxUsers, "Chauffeurs :", ["form-info"]);
+        afficheDrivers(divCheckboxUsers, tabUser)
 
         //recup ligne 
         var tabLine= [];
