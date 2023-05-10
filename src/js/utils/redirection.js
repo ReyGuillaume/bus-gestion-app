@@ -1,8 +1,10 @@
 import { toggleAlert, toggleError } from "./domManipulation"
+import { router } from "../router/router"
 
 const redirect = (path) => {
-    window.location = path
+    router.navigate(path)
 }
+
 
 const redirectWithAlert = (route, type, message) => {
     // stocke le message d'alerte
