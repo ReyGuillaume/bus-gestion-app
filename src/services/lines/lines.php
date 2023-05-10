@@ -2,8 +2,8 @@
 // accès à une fonction bdd() qui renvoie une instance de PDO
 include_once "../connexion.php";
 
-include_once "buses_free.php";
-include_once "users_free.php";
+include_once "../buses/buses_free.php";
+include_once "../users/users_free.php";
 
 // ======================== Line ========================
 
