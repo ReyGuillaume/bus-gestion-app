@@ -1,5 +1,8 @@
 <?php
 
+include_once "../timeslots/timeslots.php";
+
+
 /**
     Indique si un bus est libre sur une periode de temps.
 
@@ -39,8 +42,7 @@ function find_buses_free($begining, $end){
     $free_buses = array(); 
 
     //array with all the id of the buses
-    $all_buses = bdd()->
-    query("SELECT id FROM `bus`");
+    $all_buses = bdd()-> query("SELECT id FROM `bus`");
 
     // for each bus we check if he is if free on the periode 
     // if yes we add it to the free buses array 
@@ -60,15 +62,20 @@ function find_buses_free($begining, $end){
     @return un booléen indiquant si l'opération s'est bien passée. 
 */
 function add_a_bus_to_timeslot($idCreneau){
-    $res = false; 
-    
+    $res = false;
+    echo($idCreneau) ;
+    $idCreneau = $idCreneau +1;
+    echo($idCreneau) ;
     // On recupere le timeslot en question
-    require_once '../timeslots/timeslots.php';
-    $creneau = fetch_time_slot($idCreneau);
+    $creneau_query = bdd()->query("SELECT * FROM `timeslot` WHERE id = '{$idCreneau}'");
+    $creneau = $creneau_query->fetch();
+
+    echo json_encode($creneau);
 
     // On regarde si un bus est libre pour ce timeslot 
-    $free_buses = find_buses_free($creneau['begining'], $creneau['end']);
-    
+    $free_buses = find_buses_free($creneau["begining"], $creneau["end"]);
+    //$free_buses = $free_buses->fetchAll();
+    echo json_encode($free_buses);
     // On regarde si un bus est libre et si oui on le relie
     if (count($free_buses) > 0) {
         $random_index = rand(0, count($free_buses) - 1);
