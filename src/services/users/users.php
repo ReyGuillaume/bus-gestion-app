@@ -84,7 +84,7 @@ function user_log_in($login, $password) {
 */
 function user_infos($login, $password) {
     $pwd = hash("sha256", $password);
-    $sql = "SELECT u.id, u.name AS lastname, u.firstname, ut.name, u.email, ut.id AS idrole FROM Code c JOIN User u ON c.login = u.login JOIN Usertype ut ON u.id_user_type = ut.id WHERE c.login = '$login' AND c.password = '$pwd'";
+    $sql = "SELECT u.id, u.name AS lastname, u.firstname, ut.name, u.email, ut.id AS idrole FROM Code c JOIN User u ON c.login = u.login JOIN UserType ut ON u.id_user_type = ut.id WHERE c.login = '{$login}' AND c.password = '{$pwd}'";
     $res = bdd()->query($sql);
     if($res){
         return $res->fetch();

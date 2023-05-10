@@ -12,7 +12,7 @@ const redirectWithAlert = (route, type, message) => {
     sessionStorage.setItem("alerte", JSON.stringify(alerte))
 
     // Effectue la redirection vers la route spécifiée
-    window.location = route
+    redirect(route)
 }
 
 const toggleAlertMessage = () => {
@@ -54,7 +54,7 @@ const redirectUser = (redirectGerant=()=>null, redirectReponsable=()=>null, redi
         }
         
     } else {        // utilisateur non connecté
-        window.location = "/connexion"
+        redirect("/connexion")
     }
 }
 
