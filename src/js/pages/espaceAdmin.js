@@ -2,7 +2,7 @@ import { create } from "../utils/domManipulation";
 import { createMenuElement } from "../components/menuItem";
 import { redirect, redirectUser, toggleAlertMessage } from "../utils/redirection";
 import axios from "axios";
-import {displayReserv} from "./gestionAbonne.js";
+import { displayReserv, displayInscr } from "./gestionAbonne.js";
 
 
 const toggleEspaceAdmin = () => {
@@ -60,6 +60,9 @@ const toggleEspaceAdmin = () => {
 
     // reservation
     createMenuElement(nav, () => redirect("/reservation"), "rouge", "src/assets/images/nav_reservation.png", "Voir les réservations", "Voir les réservations")
+
+    // inscriptions
+    createMenuElement(nav, () => redirect("/inscriptions"), "bleu", "src/assets/images/nav_profil.png", "Voir les inscriptions", "Voir les inscriptions")
     return main
 }
 
@@ -196,10 +199,29 @@ const toggleReservation = () => {
     return main
 }
 
+const toggleInscriptions = () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+
+    // bouton de retour
+    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+
+    create("h2", main, "Voir les demandes d'inscription")
+
+    let divAllInscr = create("div", main)
+
+    axios.get(`users/users.php?function=fetch_inscriptions`).then((response)=>{
+        displayInscr(divAllInscr, response.data)
+    })
+
+    return main
+}
+
 export {
     toggleEspaceAdmin,
     toggleGestionUsers,
     toggleGestionBus,
     toggleGestionLigne,
-    toggleReservation
+    toggleReservation,
+    toggleInscriptions
 }

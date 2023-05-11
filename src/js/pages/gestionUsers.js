@@ -105,7 +105,7 @@ const toggleModifyUser = () => {
                 // Creation du formulaire pré remplie de modif de user
                 main.replaceChildren("")
                 const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
-                back.addEventListener("click", toggleEspaceAdmin)
+                back.addEventListener("click", () => redirect("/utilisateurs"))
                 back.title = "Retour en arrière"
 
                 const form = create("div", main, null, ["app-form"])

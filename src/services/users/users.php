@@ -326,6 +326,74 @@ function add_a_driver_to_timeslot($idCreneau){
     
 }
 
+/**
+    Fonction qui ajoute une demande d'inscription d'abonné.
+
+    @param prenom : prénom de l'abonné.
+    @param nom : nom de l'abonné.
+    @param email : email de l'abonné.
+    @param birth_date : birth_date de l'abonné.
+    @param login : login de l'abonné.
+    @param password : mot de passe de l'abonné.
+
+    @return un booléen indiquant si l'opération s'est bien passée. 
+*/
+function abonne_inscription($prenom, $nom, $email, $birth_date, $login, $password){
+    if(!bdd()->query("SELECT * FROM `Code` WHERE `login`='{$login}'")->fetch()){
+        bdd()->query("INSERT INTO `inscription` (`name`, `firstname`, `birth_date`, `email`, `login`, `password`) VALUE('{$nom}', '{$prenom}', '{$birth_date}', '{$email}', '{$login}', '{$password}')");
+        return true;
+    }
+    return false;
+}
+
+/**
+    Fonction qui affiche toutes les demandes d'inscription.
+
+    @return la liste des users qui demandent une inscription en tant qu'abonné.
+*/
+function fetch_inscriptions(){
+    $res = bdd()->query("SELECT * FROM `inscription`");
+    return $res->fetchAll();
+}
+
+/**
+    Fonction qui valide une demande d'inscription.
+
+    @param id : id de l'abonné.
+
+    @return un booléen indiquant si tout s'est bien passé.
+*/
+function valide_inscription($id){
+    $res = bdd()->query("SELECT * FROM `inscription` WHERE `id`={$id}");
+    
+    $infos = $res->fetch();
+    if($infos){
+        $prenom = $infos['firstname'];
+        $nom = $infos['name'];
+        $birth_date = $infos['birth_date'];
+        $email = $infos['email'];
+        $login = $infos['login'];
+        $password = $infos['password'];
+        user_registration($login, $password, $password, $birth_date, $nom, $prenom, $email, 4);
+        supprime_inscription($id);
+        return true;
+    }
+    return false;
+}
+
+/**
+    Fonction qui supprime une demande d'inscription.
+
+    @param id : id de l'abonné.
+
+    @return un booléen indiquant si tout s'est bien passé.
+*/
+function supprime_inscription($id){
+    if(bdd()->query("DELETE FROM `inscription` WHERE `id`={$id}")){
+        return true;
+    }
+    return false;
+}
 
 switch ($_GET['function']) {
     case 'create':      // login, password, confirm, date, name, firstname, email, type
@@ -369,6 +437,18 @@ switch ($_GET['function']) {
         break;
     case 'freeUsers':
         $res = find_users_free($_GET['beginning'], $_GET['end']);
+        break;
+    case 'inscription':
+        $res = abonne_inscription($_GET['prenom'], $_GET['nom'], $_GET['email'], $_GET['birth_date'], $_GET['login'], $_GET['password']);
+        break;
+    case 'fetch_inscriptions':
+        $res = fetch_inscriptions();
+        break;
+    case 'valide_inscription':
+        $res = valide_inscription($_GET['id']);
+        break;
+    case 'refuse_inscription':
+        $res = supprime_inscription($_GET['id']);
         break;
     default:
         $res = "invalid function";

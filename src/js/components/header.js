@@ -36,9 +36,14 @@ const createNavBar = () => {
         l5.title = 'Se déconnecter'
     }
     else{
+
         const l6 = create("button", nav, 'Se connecter', ['navBar__item', "unstyled-button"])
         l6.onclick = () => redirect("/connexion")
         l6.title = 'Se connecter'
+
+        const l7 = create("button", nav, "S'inscrire", ['navBar__item', "unstyled-button"])
+        l7.onclick = () => redirect("/inscription")
+        l7.title = "S'inscrire"
     }
 
     nav.onclick = toggleNavBar
