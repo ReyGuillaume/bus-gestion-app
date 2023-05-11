@@ -28,14 +28,14 @@ function toggleEspaceAbonne() {
     const nav = create("nav", main, null, ['navBar_User'])
 
     // informations de l'abonné
-    createMenuElement(nav, () => redirect("/espace-informations-abonne"), "jaune", "/src/assets/images/nav_profil.png", "Afficher mes informations", "Afficher mes informations")
+    createMenuElement(nav, () => redirect("/espace-informations-abonne"), "jaune", "src/assets/images/nav_profil.png", "Afficher mes informations", "Afficher mes informations")
 
     // notif
-    createMenuElement(nav, () => redirect("/notification-center"), "orange", "/src/assets/images/nav_notif.png", "Afficher mes notifications", "Afficher mes notifications")
+    createMenuElement(nav, () => redirect("/notification-center"), "orange", "src/assets/images/nav_notif.png", "Afficher mes notifications", "Afficher mes notifications")
 
 
     // reservation
-    createMenuElement(nav, () => redirect("/reservations"), "rouge", "/src/assets/images/nav_reservation.png", "Gérer mes réservations", "Gérer mes réservations")
+    createMenuElement(nav, () => redirect("/reservations"), "rouge", "src/assets/images/nav_reservation.png", "Gérer mes réservations", "Gérer mes réservations")
 
     return main
 }
