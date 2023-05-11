@@ -7,10 +7,17 @@ const toggleAccueil = () => {
     const sessionData = JSON.parse(sessionStorage.getItem("userData"))
 
     create("h2", main, "Bienvenue sur GoBus, la solution collaborative pour la gestion de vos trajets en bus !", null, "titreAccueil")
+
     
+    // image
+    let img_container = create("div", main, null, ["img-container"])
+    create("img", img_container).src = "src/assets/images/newphoto.png"
+    let overlay = create("div", img_container, null, ["overlay"])
+    let square = create("div", overlay, null, ["square"])
+      
     // Présentation du site
-    const paragraphe1 = create("div", main, null, ["paragraphe"])
-    const p1 = create("h3", paragraphe1)
+    const p = create("h3", square, null, ["textobonito"])
+    const p1 = create("h3", p)
     create("span", p1, "GoBus", ["GoBus_titre"])
     p1.innerHTML += " permet au "
     create("span", p1, "seul", ["GoBus_role"])
@@ -18,10 +25,7 @@ const toggleAccueil = () => {
     create("span", p1, "2", ["GoBus_role"])
     p1.innerHTML += " responsables logistiques ainsi qu'aux "
     create("span", p1, "6", ["GoBus_role"])
-    p1.innerHTML += " chauffeurs de bus de planifier leur emploi du temps de manière optimale, collaborative et en temps réel."
-    
-    // image
-    create("img", paragraphe1, null, null, "imgPres").src = "src/assets/images/bus.png"
+    p1.innerHTML += " chauffeurs de bus de planifier leur emploi du temps de manière optimale, collaborative et en temps réel." 
 
     // Présentation du chauffeur de bus
     const paragraphe2 = create("div", main, null, ["paragraphe"])

@@ -105,7 +105,7 @@ function create_table_user() {
         `name` VARCHAR(50) NOT NULL,
         `firstname` VARCHAR(50) NOT NULL,
         `birth_date` DATE,
-        `email` VARCHAR(MAX) NOT NULL,
+        `email` VARCHAR(50) NOT NULL,
         `id_user_type` INT NOT NULL,
         `login` VARCHAR(50) NOT NULL,
         CONSTRAINT pk_user PRIMARY KEY (id),

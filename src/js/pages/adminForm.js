@@ -7,10 +7,13 @@ const toggleAdminForm = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    create("h2", main, "Formulaire d'authentification")
+    create("h2", main, "Formulaire d'authentification",["titleonplace"])
 
     // Creation of the form
     const form = create("div", main, null, null, "adminFormulaire")
+
+    create("img", form, null, ["usericon"], null, "src/assets/images/icon _users_.png", "image")
+
 
     // Creation of each champ
     create("label", form, "Login :");

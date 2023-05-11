@@ -26,7 +26,8 @@ const toggleEspaceAdmin = () => {
     // affiche le potentiel message d'alerte en stock
     toggleAlertMessage()
         
-    create("h2", main, "Bienvenue sur votre espace Admin")
+    create("h2", main, "Bienvenue sur votre espace Admin", ["espace_admin_title"])
+    
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
         
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
@@ -78,7 +79,9 @@ const toggleGestionUsers = () => {
     back.addEventListener("click", () => redirect("/espace-admin"))
     back.title = "Retour en arrière"
     
-    create("h2", main, "Gestion des utilisateurs")
+    create("h2", main, "Gestion des utilisateurs", ["gestion_users_tite"])
+    createMenuElement(main, () => null,  "violet", "src/assets/images/nav_user.png")
+
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
     const nav = create("nav", main, null, ['liste_gestion'])
@@ -138,17 +141,25 @@ const toggleGestionLigne = () => {
     back.addEventListener("click", () => redirect("/espace-admin"))
     back.title = "Retour en arrière"
 
-    create("h2", main, "Gestion des Lignes")
+    create("h2", main, "Gestion des Lignes", ["lignes_alinees"])
+   // create("img",lignes_alinees , null, ["arrow"], null, "src/assets/images/nav gestion.png", "image")
+   // create("nav",lignes_alinees,"Gestion des Lignes")
+
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
     const nav = create("nav", main, null, ['liste_gestion'])
 
     const lignes = create("div", nav, null, ["sous_gestion"])
-    create("div", lignes, "Lignes", ["gestion_titre"])
+    
+    const title_lignes = create("div", lignes, null, ["gestion_titre"])
+    create("img", title_lignes, null, ["arrow"], null, "src/assets/images/Polygon 1.png", "image")
+    create("span",title_lignes,"Lignes")
+    
 
     const b1 = create("button", lignes, "Ajouter une Ligne", ['gestion_lignes', "unstyled-button"])
     b1.addEventListener("click", () => redirect("/lignes/ajout"))
     b1.title = "Ajouter une Ligne"
+    
 
     const b2 = create("button", lignes, "Modifier une Ligne", ['gestion_lignes', "unstyled-button"])
     b2.addEventListener("click", () => redirect("/lignes/modification"))
@@ -159,7 +170,10 @@ const toggleGestionLigne = () => {
     b3.title = "Supprimer une Ligne"
 
     const couv = create("div", nav, null, ["sous_gestion"])
-    create("div", couv, "Couverture", ["gestion_titre"])
+
+    const title_couv = create("div", couv, null, ["gestion_titre"])
+    create("img", title_couv, null, ["arrow"], null, "src/assets/images/Polygon 2.png", "image")
+    create("span",title_couv, "Couverture")
 
     const b4 = create("button", couv, "Verifier la couverture d'une semaine", ['gestion_lignes', "unstyled-button"])
     b4.addEventListener("click", () => redirect("/lignes/couverture-verification"))
@@ -170,7 +184,11 @@ const toggleGestionLigne = () => {
     b5.tile = "Remplissage automatique des conduite de la semaine"
 
     const types = create("div", nav, null, ["sous_gestion"])
-    create("div", types, "Types de lignes", ["gestion_titre"])
+
+    const title_types = create("div", types, null, ["gestion_titre"])
+    create("img", title_types, null, ["arrow"], null, "src/assets/images/Polygon 3.png", "image")
+    create("span",title_types, "Types de lignes")
+
 
     const b6 = create("button", types, "Ajouter un type de ligne", ['gestion_lignes', "unstyled-button"])
     b6.addEventListener("click", () => redirect("/lignes/ajout-type"))

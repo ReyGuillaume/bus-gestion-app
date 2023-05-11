@@ -9,6 +9,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  padding-left: 3px;
+  padding-top: 5px;
 }
 
 *,
@@ -38,7 +40,7 @@ body {
   position: fixed;
   width: 100vw;
   background-color: #f9f9f9;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2509803922);
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.1);
   z-index: 999;
 }
 #header .container {
@@ -303,14 +305,14 @@ body {
   align-items: center;
 }
 #adminFormulaire input{
-  padding: 10px;
-  margin: 5px;
-  border-radius: 30px;
+  padding: 20px;
+  margin: 15px;
+  border-radius: 20px;
   border: 0px;
-  background-color: #e7e7e7;
+  background-color: #24d5301f;
 }
 #adminFormulaire #adminButton{
-  margin: 5px;
+  margin: 4px;
 }
 #adminFormulaire label{
   display: block;
@@ -324,12 +326,12 @@ body {
 
   display: block;
 
-  padding: 15px 85px 15px 75px;
+  padding: 12px 55px 12px 55px;
   border-radius: 30px;
   border: 0px;
 
   color: white;
-  background-color: #58b847;
+  background-color: #34cc43cf;
 
   margin: 0 auto;
 }
@@ -393,7 +395,11 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
 #titreAccueil{
   color: rgb(51, 51, 173);
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  text-align: center;
+padding-top: 25px;
 }
+
+
 
 .GoBus_titre{
   color: rgb(74, 160, 74);
@@ -410,30 +416,34 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
 }
 
 .paragraphe_info{
-  background-color: rgb(51, 48, 48);
+  background-color: rgba(28, 52, 24, 0.895);
   color: white;
   border-radius: 10px;
-  padding: 10px;
+  padding: 15px;
   width: max-content;
+  padding-left: 20px ;
 }
 
 .sous_paragraphe{
-  padding-left: 15px;
+  padding-left: 23px;
+
 }
 
 #imgPres{
   display: block;
-  width: 50%;
+  width: 100%;
   margin: 0 auto;
 }
 
 .phrasePres{
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   color: rgb(49, 88, 188);
+  margin-left: 20px;
+  margin-bottom: 10px;
 }
 
 .paragraphe a{
-  background-color: rgb(121, 199, 116);
+  background-color: rgba(70, 182, 62, 0.837);
   text-decoration: none;
   color: white;
   border-radius: 10px;
@@ -442,11 +452,30 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
 }
 
 .paragraphe a:hover{
-  background-color: rgb(68, 68, 68);
+  margin-left: 10px;
+  background-color: rgb(14, 83, 27);
   transition: 0.5s;
+
 }
 
 /* PAGES DE GESTION */
+.espace_admin_title{
+padding-left: 50px;
+padding-top: 15px;
+
+}
+
+.titleonplace{
+
+padding-left: 50px;
+padding-top: 25px;
+
+}
+.lignes_alinees{
+
+  padding-left: 50px;
+  padding-top: 25px;
+}
 
 .liste_gestion{
   display: flex;
@@ -462,7 +491,10 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
 }
 .gestion_titre{
   font-weight: bold;
-  text-shadow: 2px 2px rgb(111, 199, 111);
+  color:rgb(64, 64, 64);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .gestion_users, .gestion_bus, .gestion_lignes, .gestion_infos{
   border-radius: 10px;
@@ -474,8 +506,27 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
   color: white;
 }
 
+.arrow{
+  width: 35px;
+  height: 35px;
+padding-right: 7px;
+}
+
+.usericon{
+width: 60px;
+height: 70px;
+padding-top: 10px;
+padding-bottom: 10px;
+
+}
+
+
+.gestion_users_title{
+  text-align: center ;
+}
+
 .gestion_users:hover, .gestion_bus:hover, .gestion_lignes:hover, .gestion_infos:hover{
-  background: linear-gradient(to right, rgb(64, 64, 64), black);
+  background: linear-gradient(to right, rgba(99, 98, 98, 0.595), rgba(0, 0, 0, 0.584));
 }
 
 .gestion_users{
@@ -487,7 +538,7 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
 }
 
 .gestion_lignes{
-  background: linear-gradient(to right, rgb(184, 209, 255), rgb(154, 187, 250));
+  background: linear-gradient(to right, rgb(153, 174, 213), rgb(154, 187, 250));
 }
 
 .gestion_infos{
@@ -632,4 +683,50 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
 #app .archive .divInfoNotif {
   font-style: italic;
 }
+
+.img-container {
+  position: relative;
+  display: inline-block;
+  margin-top: 20px;
+}
+
+.img-container img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.img-container .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  text-align: center;
+  padding: 20px;
+  z-index: 0;
+}
+
+.img-container .overlay p {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0;
+}
+
+.square{
+
+  background-color: rgba(255,255,255, 0.9);
+  width: 470px;
+  margin-left: 1250px;
+  margin-top: 80px;
+  border-radius: 7px;
+}
+
+.textobonito{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /*# sourceMappingURL=main.css.map */
