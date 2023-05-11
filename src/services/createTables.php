@@ -124,8 +124,8 @@ function create_table_bus_time_slot() {
         `id_bus` INT NOT NULL,
         `id_time_slot` INT NOT NULL,
         CONSTRAINT pk_bustimeslot PRIMARY KEY (id_bus, id_time_slot),
-        CONSTRAINT fk_bustimeslot_bus FOREIGN KEY (id_bus) REFERENCES Bus (id),
-        CONSTRAINT fk_bustimeslot_timeslot FOREIGN KEY (id_time_slot) REFERENCES TimeSlot (id)
+        CONSTRAINT fk_bustimeslot_bus FOREIGN KEY (id_bus) REFERENCES bus (id),
+        CONSTRAINT fk_bustimeslot_timeslot FOREIGN KEY (id_time_slot) REFERENCES timeSlot (id)
     )";
     $stm = bdd()->query($sql);
 }
