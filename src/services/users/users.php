@@ -339,7 +339,7 @@ function add_a_driver_to_timeslot($idCreneau){
     @return un booléen indiquant si l'opération s'est bien passée. 
 */
 function abonne_inscription($prenom, $nom, $email, $birth_date, $login, $password){
-    if(!bdd()->query("SELECT * FROM `Code` WHERE `login`='{$login}'")->fetch()){
+    if(!bdd()->query("SELECT * FROM `code` WHERE `login`='{$login}'")->fetch()){
         bdd()->query("INSERT INTO `inscription` (`name`, `firstname`, `birth_date`, `email`, `login`, `password`) VALUE('{$nom}', '{$prenom}', '{$birth_date}', '{$email}', '{$login}', '{$password}')");
         return true;
     }
