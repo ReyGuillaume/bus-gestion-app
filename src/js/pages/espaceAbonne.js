@@ -110,6 +110,25 @@ function toogleReservAbonne (){
 }
 
 
+  
+async function  showSuggestions(input) {
+    let inputValue = input.value.toLowerCase().trim(); 
+
+    if (inputValue.length < 2) {
+      return; // ne rien faire si l'utilisateur n'a saisi que 1 caractère ou moins
+    }
+
+    return await axios.get("arrets/arrets.php?function=all_arret").then((response)=>{
+        let arrets = response.data;
+
+        let filteredArrets = arrets.filter(arret => arret.name.toLowerCase().startsWith(inputValue));
+
+        return filteredArrets;
+    });
+  }
+  
+
+
 function toggleAddReservation(){
     const main = document.querySelector("#app")
     main.replaceChildren("")
@@ -128,11 +147,76 @@ function toggleAddReservation(){
     // Creation of the champ
     const div_depart = create("div", form, null, ["form-div"])
     create("label", div_depart, "Entrez le nom de l'arret de départ :", ["label-info"]);
-    createChamp(div_depart, "text", "arretDepart");
+    //createChamp(div_depart, "text", "arretDepart");
 
+
+    // Filtrage 
+
+    let input_depart = createChamp(div_depart, "text", "arretDepart");
+    let arretList_depart = create("select", div_depart, ["arret-list"]);
+    
+    
+    input_depart.addEventListener("input", async function() {
+        
+        let filteredArrets = await showSuggestions(input_depart);
+       
+        if (filteredArrets) {
+        // supprimer les options précédentes
+        arretList_depart.innerHTML = ""; 
+        arretList_depart.size = filteredArrets.length;
+        
+        // remplir automatiquement le champ de saisie
+        filteredArrets.forEach(arret => {
+            let option = document.createElement("option");
+            option.textContent = arret.name;
+            arretList_depart.appendChild(option);
+        });
+
+        arretList_depart.addEventListener("click", () => {
+            if (arretList_depart.selectedIndex != -1){
+            let selectedOption = arretList_depart.options[arretList_depart.selectedIndex];
+            input_depart.value = selectedOption.value;
+            arretList_depart.replaceChildren(""); 
+            arretList_depart.size = 0;
+            }
+
+        });
+    }
+    });
     const div_arrivee = create("div", form, null, ["form-div"])
     create("label", div_arrivee, "Entrez le nom de l'arret d'arrivée :", ["label-info"]);
-    createChamp(div_arrivee, "text", "arretArrivee");
+    //createChamp(div_arrivee, "text", "arretArrivee");
+
+    let input_arrive = createChamp(div_arrivee, "text", "arretArrivee");
+    let arretList_arrive = create("select", div_arrivee, ["arret-list"]);
+    
+    
+    input_arrive.addEventListener("input", async function() {
+
+        let filteredArretsArrive =  await showSuggestions(input_arrive);
+
+        if (filteredArretsArrive) {
+        // supprimer les options précédentes
+        arretList_arrive.innerHTML = ""; 
+        arretList_arrive.size = filteredArretsArrive.length;
+
+        // remplir automatiquement le champ de saisie
+        filteredArretsArrive.forEach(arret => {
+            let option = document.createElement("option");
+            option.textContent = arret.name;
+            arretList_arrive.appendChild(option);
+        });
+
+        arretList_arrive.addEventListener("click", () => {
+            if (arretList_arrive.selectedIndex != -1){
+            let selectedOption2 = arretList_arrive.options[arretList_arrive.selectedIndex];
+            input_arrive.value = selectedOption2.value;
+            arretList_arrive.replaceChildren(""); 
+            arretList_arrive.size = 0;
+            }
+        });
+    }
+    });
 
     const date = create("div", form, null, ["form-div"])
     create("label", date, "Entrez la date et l'horaire de départ :", ["label-info"]);

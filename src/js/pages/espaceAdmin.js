@@ -67,6 +67,10 @@ const toggleEspaceAdmin = () => {
 
     // reservation
     createMenuElement(nav, () => redirect("/reservation"), "rouge", "src/assets/images/nav_reservation.png", "Voir les réservations", "Voir les réservations")
+    
+    // arrets
+    createMenuElement(nav, () => redirect("/arrets"), "rose", "src/assets/images/nav_bus.png", 'Gérer les arrets', 'Gérer les arrets')
+
     return main
 }
 
