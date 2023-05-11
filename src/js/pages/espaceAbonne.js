@@ -3,10 +3,10 @@ import {redirect, redirectUser, toggleAlertMessage} from "../utils/redirection";
 import axios from 'axios';
 import {changerInfoAbonne, changerMdpAbonne, displayReserv} from "./gestionAbonne.js";
 import { fetchUrlRedirectAndAlert, valueFirstElementChecked } from "../utils/formGestion";
-import { create, createChamp, createChampCheckbox, createChampRadio } from "../utils/domManipulation";
+import { create, createChamp, createChampRadio } from "../utils/domManipulation";
 
 
-export function toggleEspaceAbonne() {
+function toggleEspaceAbonne() {
     const main = document.querySelector("#app");
     main.replaceChildren("");
 
@@ -28,20 +28,20 @@ export function toggleEspaceAbonne() {
     const nav = create("nav", main, null, ['navBar_User'])
 
     // informations de l'abonné
-    createMenuElement(nav, () => redirect("/espace-informations-abonne"), "jaune", "src/assets/images/nav_profil.png", "Afficher mes informations", "Afficher mes informations")
+    createMenuElement(nav, () => redirect("/espace-informations-abonne"), "jaune", "/src/assets/images/nav_profil.png", "Afficher mes informations", "Afficher mes informations")
 
     // notif
-    createMenuElement(nav, () => redirect("/notification-center"), "orange", "src/assets/images/nav_notif.png", "Afficher mes notifications", "Afficher mes notifications")
+    createMenuElement(nav, () => redirect("/notification-center"), "orange", "/src/assets/images/nav_notif.png", "Afficher mes notifications", "Afficher mes notifications")
 
 
     // reservation
-    createMenuElement(nav, toogleReservAbonne, "rouge", "src/assets/images/nav_reservation.png", "Gérer mes réservations", "Gérer mes réservations")
+    createMenuElement(nav, () => redirect("/reservations"), "rouge", "/src/assets/images/nav_reservation.png", "Gérer mes réservations", "Gérer mes réservations")
 
     return main
 }
 
 
-export function toggleInfoAbonne(){
+function toggleInfoAbonne(){
     const main = document.querySelector("#app");
     main.replaceChildren("");
 
@@ -74,15 +74,16 @@ export function toggleInfoAbonne(){
         create("p", div, "Votre date de naissance : "+ response.data["birth_date"]);
         create("p", div, "Votre adresse mail : "+ response.data["email"]);
         create("p", div, "Votre nom d'utilisateur : "+ response.data["login"]);
-        create("p", div, "Votre mot de passe : **********");
 
         // bouton pour changer les infos de l'abonné
-        const changerInfo = create("div", div, "Changer mes informations", ['gestion_infos'] )
-        changerInfo.addEventListener("click", changerInfoAbonne);
+        const changerInfo = create("button", div, "Changer mes informations", ['gestion_infos', "unstyled-button"] )
+        changerInfo.addEventListener("click", () => redirect("/espace-informations-abonne/informations"));
+        changerInfo.title = "Changer mes informations"
 
         // bouton pour changer le mot de passe de l'abonné
-        const changerMdp = create("div", div, "Changer mon mot de passe", ['gestion_infos'] )
-        changerMdp.addEventListener("click", changerMdpAbonne);
+        const changerMdp = create("button", div, "Changer mon mot de passe", ['gestion_infos', "unstyled-button"] )
+        changerMdp.addEventListener("click", () => redirect("/espace-informations-abonne/mot-de-passe"));
+        changerMdp.title = "Changer mon mot de passe"
     })
     return main
 }
@@ -101,10 +102,21 @@ function toogleReservAbonne (){
     
     const nav = create("div", main)
 
-    create("div", nav, 'Ajouter une réservation', ['gestion_users']).addEventListener("click", toggleAddReservation)
-    create("div", nav, "Modifier une réservation", ['gestion_users']).addEventListener("click", toggleUpdateReservation)
-    create("div", nav, "Supprimer une réservation", ['gestion_users']).addEventListener("click", toggleDeleteReservation)
-    create("div", nav, "Voir les réservations", ['gestion_users']).addEventListener("click", toggleSeeReservation)
+    let b = create("button", nav, 'Ajouter une réservation', ['gestion_users', "unstyled-button"])
+    b.addEventListener("click", () => redirect('/reservations/ajout'))
+    b.title = 'Ajouter une réservation'
+
+    b = create("button", nav, "Modifier une réservation", ['gestion_users', "unstyled-button"])
+    b.addEventListener("click", () => redirect('/reservations/modification'))
+    b.title = "Modifier une réservation"
+
+    b = create("button", nav, "Supprimer une réservation", ['gestion_users', "unstyled-button"])
+    b.addEventListener("click", () => redirect('/reservations/suppression'))
+    b.title = "Supprimer une réservation"
+
+    b = create("button", nav, "Voir les réservations", ['gestion_users', "unstyled-button"])
+    b.addEventListener("click", () => redirect('/reservations/liste'))
+    b.title = "Voir les réservations"
 
     return main
 }
@@ -134,7 +146,9 @@ function toggleAddReservation(){
     main.replaceChildren("")
 
     // bouton de retour
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toogleReservAbonne)
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/reservations"))
+    back.title = "Retour en arrière"
 
     create("h2", main, "Gestion des réservations")
     create("h3", main, "Ajouter une réservation")
@@ -225,7 +239,8 @@ function toggleAddReservation(){
 
     // Creation of submit button
 
-    const bouton = create("div", form, "Ajouter", ["submitButton"])
+    const bouton = create("button", form, "Ajouter", ["submitButton", "unstyled-button"])
+    bouton.title = "Ajouter"
     bouton.addEventListener("click", function(){
         let dateDepart = document.querySelector("input[name='horaireDepart']").value;
         let arretDepart = document.querySelector("input[name='arretDepart']").value;
@@ -284,7 +299,9 @@ function toggleUpdateReservation(){
     main.replaceChildren("")
 
     // bouton de retour
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toogleReservAbonne)
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/reservations"))
+    back.title = "Retour en arrière"
 
     create("h2", main, "Gestion des réservations")
     create("h3", main, "Modifier une réservation")
@@ -316,7 +333,9 @@ function toggleDeleteReservation(){
     main.replaceChildren("")
 
     // bouton de retour
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toogleReservAbonne)
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/reservations"))
+    back.title = "Retour en arrière"
 
     create("h2", main, "Gestion des réservations")
     create("h3", main, "Supprimer une réservation")
@@ -337,7 +356,8 @@ function toggleDeleteReservation(){
       });
 
       // Creation of submit button
-    const bouton = create("div", form, "Supprimer", ["submitButton"])
+    const bouton = create("button", form, "Supprimer", ["submitButton", "unstyled-button"])
+    bouton.title = "Supprimer"
     bouton.addEventListener("click", function(){
         var id_reserv = valueFirstElementChecked("input[name='idReservation']");
         
@@ -358,7 +378,9 @@ function toggleSeeReservation(){
     const idClient = JSON.parse(sessionStorage.getItem("userData")).id;
 
     // bouton de retour
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toogleReservAbonne)
+    let b = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    b.addEventListener("click", () => redirect("/reservations"))
+    b.title = "Retour en arrière"
 
     create("h2", main, "Gestion des réservations")
     create("h3", main, "Voir les réservations")
@@ -366,13 +388,17 @@ function toggleSeeReservation(){
 
     const nav = create("nav", main, null, ['liste_gestion'])
 
+    b = create("button", nav, "Voir les réservations en attente", ['gestion_users', "unstyled-button"])
+    b.addEventListener("click", () => toggleSeeModeReservation(idClient, "attente"))
+    b.title ="Voir les réservations en attente"
 
+    b = create("button", nav, "Voir les réservations validées", ['gestion_users', "unstyled-button"])
+    b.addEventListener("click", () => toggleSeeModeReservation(idClient, "valide"))
+    b.title = "Voir les réservations validées"
 
-    create("div", nav, "Voir les réservations en attente", ['gestion_users']).addEventListener("click", () => toggleSeeModeReservation(idClient, "attente"))
-    create("div", nav, "Voir les réservations validées", ['gestion_users']).addEventListener("click", () => toggleSeeModeReservation(idClient, "valide"))
-    create("div", nav, "Voir les réservations refusées", ['gestion_users']).addEventListener("click", () => toggleSeeModeReservation(idClient, "refuse"))
-
-    return main
+    b = create("button", nav, "Voir les réservations refusées", ['gestion_users', "unstyled-button"])
+    b.addEventListener("click", () => toggleSeeModeReservation(idClient, "refuse"))
+    b.title ="Voir les réservations refusées"
 }
 
 
@@ -382,7 +408,9 @@ function toggleSeeModeReservation(idClient, etat){
     main.replaceChildren("")
 
     // bouton de retour
-    create("div", main, '<< Retour', ['return']).addEventListener("click", toggleSeeReservation)
+    let b = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    b.addEventListener("click", () => redirect("/reservations"))
+    b.title = "Retour en arrière"
 
     create("h2", main, "Gestion des réservations")
     create("h3", main, "Voir les réservations")
@@ -395,4 +423,14 @@ function toggleSeeModeReservation(idClient, etat){
 
 
     return main
+}
+
+export {
+    toggleEspaceAbonne,
+    toggleInfoAbonne,
+    toogleReservAbonne,
+    toggleAddReservation,
+    toggleUpdateReservation,
+    toggleDeleteReservation,
+    toggleSeeReservation
 }

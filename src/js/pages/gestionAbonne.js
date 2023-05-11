@@ -1,10 +1,10 @@
-import {create, createChamp} from "../utils/domManipulation.js";
+import {create, createChamp, toggleAlert} from "../utils/domManipulation.js";
 import axios from "axios";
 import {fetchUrlRedirectAndAlert, idOfAllElementChecked} from "../utils/formGestion.js";
-import {toggleInfoAbonne} from "./espaceAbonne.js";
 import {removeContainerAndRemoveCacheClass} from "./userTask.js";
 import {toogleBusChoices, toogleDriversChoices }from "./gestionTimeslots.js";
 import { createHeader } from "../components/header.js";
+import { redirect } from "../utils/redirection.js";
 
 function changerInfoAbonne (){
 
@@ -14,7 +14,9 @@ function changerInfoAbonne (){
     // recuperation des infos de l'utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => toggleInfoAbonne())
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-informations-abonne"))
+    back.title = "Retour en arrière"
 
     //les informations de l'abonné à changer + le bouton pour valider
     axios.get(`users/users.php?function=user&id=`+sessionData["id"]).then((response) => {
@@ -36,10 +38,8 @@ function changerInfoAbonne (){
         create("label", div, "Votre nom d'utilisateur :",);
         createChamp(div, "text", "loginAbo").value = response.data["login"];
 
-        create("p", div, "Votre mot de passe : **********");
-
-
-        const valider = create("div", div, "Valider le changement", ['gestion_infos'])
+        const valider = create("button", div, "Valider le changement", ['gestion_infos', "unstyled-button"])
+        valider.title = "Valider"
         valider.addEventListener("click", function () {
 
             //selection des informations
@@ -75,7 +75,9 @@ function changerMdpAbonne (){
     // recuperation des infos de l'utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => toggleInfoAbonne())
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-informations-abonne"))
+    back.title = "Retour en arrière"
 
     const div = create("div", main);
     create("h2", div, "Voici vos informations personnelles :");
@@ -98,7 +100,8 @@ function changerMdpAbonne (){
         createChamp(div, "password", "confNewPwdAbo");
 
 
-        const valider = create("div", div, "Valider le changement", ['gestion_infos'])
+        const valider = create("button", div, "Valider le changement", ['gestion_infos', "unstyled-button"])
+        valider.title = "Valider"
         valider.addEventListener("click", function () {
 
             //selection des informations
@@ -139,11 +142,55 @@ function displayReserv (container, data) {
             let divResp = create("div", divInfoReserv);
             let footer = document.querySelector("#footer")
             let task = create("div", footer, null, null, "task")
-            create("div", divResp, "Valider", ['gestion_users']).addEventListener("click", () => toggleValideReservation(task, reserv))
-            create("div", divResp, "Refuser", ['gestion_users']).addEventListener("click", () => toggleRefuseReservation(reserv.id_reserv, container, data))
-
+            
+            let btn = create("div", divResp, "Valider", ['gestion_users'])
+            btn.addEventListener("click", () => toggleValideReservation(task, reserv))
+            btn.title = "Valider"
+            btn = create("div", divResp, "Refuser", ['gestion_users'])
+            btn.addEventListener("click", () => toggleRefuseReservation(reserv.id_reserv, container, data))
+            btn.title = "Refuser"
         }
     }
+}
+
+
+const displayInscr = (container, lst_inscriptions) => {
+    for(let inscription of lst_inscriptions){
+        let div = create("div", container, null, ["inscription"])
+
+        let identite = create("div", div, null, ["inscription-identité"])
+        create("div", identite, inscription.firstname)
+        create("div", identite, inscription.name)
+
+        create("div", div, inscription.birth_date)
+
+        create("div", div, inscription.email)
+
+        let btns = create("div", div, null, ["inscription-btns"])
+
+        let btn = create("button", btns, "Valider", ["valideButton", "unstyled-button"])
+        btn.addEventListener("click", () => valideInscription(inscription.id, div))
+        btn.title = "Valider"
+
+        btn = create("button", btns, "Refuser", ["refuseButton", "unstyled-button"])
+        btn.addEventListener("click", () => refuseInscription(inscription.id, div))
+        btn.title = "Refuser"
+    }
+}
+
+
+const valideInscription = (id_inscription, container) => {
+    axios.get(`users/users.php?function=valide_inscription&id=${id_inscription}`).then(function(){
+        toggleAlert("BRAVO", "Inscription validée")
+        container.remove()
+    })
+}
+
+const refuseInscription = (id_inscription, container) => {
+    axios.get(`users/users.php?function=refuse_inscription&id=${id_inscription}`).then(function(){
+        toggleAlert("BRAVO", "Inscription refusée")
+        container.remove()
+    })
 }
 
 const toggleRefuseReservation = (idReservation,container, data) => {
@@ -255,7 +302,7 @@ const formValidationReservation = (container, props, user = null, multi = false,
 
     // Creation of submit button
 
-    const bouton = create("div", container, "Valider", ["submitButton"])
+    const bouton = create("button", container, "Valider", ["submitButton", "unstyled-button"])
     bouton.addEventListener("click", function(){
         // On recupere le debut et la fin du creneau
         let startDateTime = props.dateDepart;
@@ -275,6 +322,7 @@ export {
     changerInfoAbonne,
     changerMdpAbonne,
     displayReserv,
+    displayInscr,
     toggleRefuseReservation,
     toggleValideReservation
 }
