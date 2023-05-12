@@ -148,6 +148,10 @@ function displayReserv (container, data) {
 
 
 const displayInscr = (container, lst_inscriptions) => {
+
+    if(lst_inscriptions.length === 0)
+        create("h3", container, "Il n'y a aucune demande d'inscription")
+
     for(let inscription of lst_inscriptions){
         let div = create("div", container, null, ["inscription"])
 

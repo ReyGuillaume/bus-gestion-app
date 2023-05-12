@@ -46,6 +46,7 @@ const getIdOfDay = day => {
 // renvoie une date JS sous forme 2023-02-16 00:00:00
 const datePhp = date => date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
 
+const formatedDatePhp = date => date.getFullYear() + '-' + (formatedHour(date.getMonth() + 1)) + '-' + formatedHour(date.getDate()) + ' ' + formatedHour(date.getHours()) + ':' + formatedHour(date.getMinutes()) + ':' + formatedHour(date.getSeconds())
 
 // rajoute un "0" si l'horaire est inférieur à 10 (8 => 08)
 const formatedHour = (horaire) => horaire < 10 ? "0" + horaire : horaire
@@ -108,6 +109,7 @@ export {
     getMonthToString,
     getIdOfDay,
     datePhp,
+    formatedDatePhp,
     formatedHour,
     getFirstMonday,
     getNearestHour,
