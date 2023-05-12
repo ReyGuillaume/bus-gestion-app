@@ -1,7 +1,7 @@
 import Navigo from 'navigo'
 
 import { toggleAccueil } from '../pages/accueil'
-import { toggleAdminForm, toggleInscriptionForm } from '../pages/adminForm'
+import { toggleConnexion, toggleInscriptionForm } from '../pages/connect'
 import { disconnectUser } from '../pages/disconnect'
 import { toggle404 } from '../pages/404'
 import { toggleEspaceAdmin, toggleGestionBus, toggleGestionLigne, toggleGestionUsers, toggleReservation, toggleInscriptions } from '../pages/espaceAdmin'
@@ -26,7 +26,7 @@ router.on('/', toggleAccueil)
 router.on('/espace-admin', toggleEspaceAdmin)
 router.on('/espace-utilisateur', toggleEspaceUser)
 router.on('/espace-abonne', toggleEspaceAbonne)
-router.on('/connexion', toggleAdminForm)
+router.on('/connexion', toggleConnexion)
 router.on('/inscription', toggleInscriptionForm)
 router.on('/disconnect', disconnectUser)
 router.on('/notification-center', toggleNotificationCenter)
