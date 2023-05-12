@@ -1,10 +1,10 @@
 import { createMenuElement} from "../components/menuItem";
 import {redirect, redirectUser, toggleAlertMessage} from "../utils/redirection";
-import axios from 'axios';
-import {changerInfoAbonne, changerMdpAbonne, displayReserv} from "./gestionAbonne.js";
+import { displayReserv} from "./gestionAbonne.js";
 import { fetchUrlRedirectAndAlert, valueFirstElementChecked } from "../utils/formGestion";
 import { create, createChamp, createChampRadio } from "../utils/domManipulation";
 
+import axios from 'axios';
 
 function toggleEspaceAbonne() {
     const main = document.querySelector("#app");
