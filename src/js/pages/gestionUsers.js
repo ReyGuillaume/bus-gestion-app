@@ -135,7 +135,7 @@ const toggleModifyUser = () => {
 
                     //creation of the url
                     let url = `users/users.php?function=update&id=${idUserToModify}&email=${email}&login=${login}`
-                    fetchUrlRedirectAndAlert(url, "/espace-admin", "L'utilisateur a bien été modifié", "L'utilisateur n'a pas pu être modifié")
+                    fetchUrlRedirectAndAlert(url, "/utilisateurs", "L'utilisateur a bien été modifié", "L'utilisateur n'a pas pu être modifié")
                 })
             });
         });

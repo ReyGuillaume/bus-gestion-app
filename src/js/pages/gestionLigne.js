@@ -246,8 +246,9 @@ const createPlageHoraire = (container, supprimable=null) => {
     createChamp(div, "integer", "intervalle")
 
     if(supprimable){
-        const img = create("img", div, null, ["trash"])
-        img.src = "src/assets/images/delete.png"
+        const img = create("button", div, null, ["unstyled-button"])
+        img.title = "Supprimer"
+        create("img", img, null, ["trash"], null, "/src/assets/images/delete.png", "supprimer")
         img.addEventListener("click", () => div.remove())
     }
 }
@@ -363,8 +364,9 @@ const toggleModifLineType = () => {
                         create("label", div_plage, "Intervalle :", ["label-info"])
                         createChamp(div_plage, "integer", "intervalle").value = plage.intervalle
 
-                        const img = create("img", div_plage, null, ["trash"])
-                        img.src = "src/assets/images/delete.png"
+                        const img = create("button", div_plage, null, ["unstyled-button"])
+                        img.title = "Supprimer"
+                        create("img", img, null, ["trash"], null, "/src/assets/images/delete.png", "supprimer")
                         img.addEventListener("click", () => div_plage.remove())
                     }
 

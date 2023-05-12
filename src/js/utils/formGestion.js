@@ -33,10 +33,10 @@ const fetchUrlRedirectAndAlert = (url, route, successMessage, failurMessage) => 
 }
 
 
-const createCheckboxOfElement = (container, elt, checkboxName, letter) => {
-    createChampCheckbox(container, letter+elt.id , checkboxName, elt.id);
-    var label = create("label", container, elt.id );
-    label.setAttribute("for", letter+elt.id);
+const createCheckboxOfElement = (container, text, value, checkboxName, letter) => {
+    createChampCheckbox(container, letter+text , checkboxName, value);
+    var label = create("label", container, text );
+    label.setAttribute("for", letter+text);
 }
 
 

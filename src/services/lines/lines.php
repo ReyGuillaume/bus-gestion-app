@@ -13,8 +13,8 @@ include_once "../connexion.php";
     @return boolean si l'ajout est un succès.
 */
 function create_line($number, $travel_time, $id_type_line) {
-    if(!bdd()->query("SELECT * FROM `Line`  WHERE `number` = '{$number}'")->fetch()){
-        bdd()->query("INSERT INTO `Line` (`number`, `travel_time`) VALUE ('{$number}', '{$travel_time}')");
+    if(!bdd()->query("SELECT * FROM `line`  WHERE `number` = '{$number}'")->fetch()){
+        bdd()->query("INSERT INTO `line` (`number`, `travel_time`) VALUE ('{$number}', '{$travel_time}')");
         bdd()->query("INSERT INTO `linetype_line`(`id_type`, `num_line`) VALUE ('{$id_type_line}', '{$number}')");
         $res = true;  
         
@@ -31,7 +31,7 @@ function create_line($number, $travel_time, $id_type_line) {
     @return liste des lignes (number : Int, travel_time : Int).
 */
 function fetch_lines() {
-    $res = bdd()->query("SELECT * FROM `Line`");
+    $res = bdd()->query("SELECT * FROM `line`");
     return $res->fetchAll();
 }
 
@@ -53,7 +53,7 @@ function fetch_linetypes() {
     @return objet line (number : Int, travel_time : Int).
 */
 function fetch_line($number) {
-    $res = bdd()->query("SELECT * FROM `Line` WHERE `number` = {$number}");
+    $res = bdd()->query("SELECT * FROM `line` WHERE `number` = {$number}");
     return $res->fetch();
 }
 
@@ -77,7 +77,7 @@ function fetch_linetype($id) {
     @return liste des créneaux (num_line : Int, id_time_slot : Int, direction : String)
 */
 function fetch_timeslots_of_line($number) {
-    $res = bdd()->query("SELECT * FROM Line_TimeSlot WHERE num_line = {$number}");
+    $res = bdd()->query("SELECT * FROM line_timeslot WHERE num_line = {$number}");
     return $res->fetchAll();
 }
 
@@ -90,8 +90,8 @@ function fetch_timeslots_of_line($number) {
     @return boolean si la modification est un succès.
  */
 function modify_traveltime_line($number, $travel_time) {
-    if(bdd()->query("SELECT * FROM `Line`  WHERE `number` = {$number}")->fetch()) {
-        bdd()->query("UPDATE `Line` SET `travel_time`={$travel_time} WHERE `number` = {$number}");
+    if(bdd()->query("SELECT * FROM `line`  WHERE `number` = {$number}")->fetch()) {
+        bdd()->query("UPDATE `line` SET `travel_time`={$travel_time} WHERE `number` = {$number}");
         return true;
     }
     return false;
@@ -106,15 +106,15 @@ function modify_traveltime_line($number, $travel_time) {
     @return boolean si la modification est un succès.
  */
 function modify_line_direction($number, $id_creneau) {
-    $res = bdd()->query("SELECT * FROM `Line_TimeSlot` WHERE `num_line` = {$number} AND `id_time_slot` = {$id_creneau}");
+    $res = bdd()->query("SELECT * FROM `line_timeslot` WHERE `num_line` = {$number} AND `id_time_slot` = {$id_creneau}");
     $row = $res->fetch(PDO::FETCH_ASSOC);
     if($row != null) {
         $direction = $row['direction'];
         if($direction == "aller"){
-            bdd()->query("UPDATE `Line_TimeSlot` SET `direction` = 'retour' WHERE `num_line` = {$number} AND `id_time_slot` = {$id_creneau}");
+            bdd()->query("UPDATE `line_timeslot` SET `direction` = 'retour' WHERE `num_line` = {$number} AND `id_time_slot` = {$id_creneau}");
         }
         else{
-            bdd()->query("UPDATE `Line_TimeSlot` SET `direction` = 'aller' WHERE `num_line` = {$number} AND `id_time_slot` = {$id_creneau}");
+            bdd()->query("UPDATE `line_timeslot` SET `direction` = 'aller' WHERE `num_line` = {$number} AND `id_time_slot` = {$id_creneau}");
         }
         return true;
     } else {
@@ -130,9 +130,9 @@ function modify_line_direction($number, $id_creneau) {
     @return boolean si la délétion est un succès.
 */
 function delete_line($number) {  //supprimer également tous les créneaux qui sont dépendants de ce bus
-    if(bdd()->query("SELECT * FROM `Line` WHERE `number` = {$number}")->fetch()) {
-        bdd()->query("DELETE FROM `Line_TimeSlot` WHERE num_line = {$number}");
-        bdd()->query("DELETE FROM `Line` WHERE `number` = {$number}");
+    if(bdd()->query("SELECT * FROM `line` WHERE `number` = {$number}")->fetch()) {
+        bdd()->query("DELETE FROM `line_timeslot` WHERE num_line = {$number}");
+        bdd()->query("DELETE FROM `line` WHERE `number` = {$number}");
         return true;
     }
     return false;
@@ -147,7 +147,7 @@ function delete_line($number) {  //supprimer également tous les créneaux qui s
    
 */
 function semaine_lignes_couvertes ($semaine) { 
-    $toute_ligne = bdd()->query("SELECT `number` FROM `Line`");
+    $toute_ligne = bdd()->query("SELECT `number` FROM `line`");
     // Boucle pour parcourir tous les numéros de ligne et les afficher
     $res= true; 
     
@@ -308,7 +308,7 @@ function creneau_couvert ($crenau,$jour, $id_line){
 */
 function  cover_a_week($week){
     // Recupere toutes les lignes 
-    $toute_ligne = bdd()->query("SELECT `number` FROM `Line`");
+    $toute_ligne = bdd()->query("SELECT `number` FROM `line`");
     
     // Pour chaque ligne verifie qu'elle est bien couverte pour la semaine 
     $res = true;
