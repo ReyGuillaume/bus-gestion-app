@@ -186,7 +186,9 @@ const toggleReservation = () => {
     main.replaceChildren("")
 
     // bouton de retour
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
 
     create("h2", main, "Voir les réservations")
 

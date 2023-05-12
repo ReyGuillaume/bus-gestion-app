@@ -140,13 +140,11 @@ function displayReserv (container, data) {
 
         if(roleUser != "Abonné"){
             let divResp = create("div", divInfoReserv);
-            let footer = document.querySelector("#footer")
-            let task = create("div", footer, null, null, "task")
             
-            let btn = create("div", divResp, "Valider", ['gestion_users'])
-            btn.addEventListener("click", () => toggleValideReservation(task, reserv))
+            let btn = create("button", divResp, "Valider", ['gestion_users', "unstyled-button"])
+            btn.addEventListener("click", () => toggleValideReservation(reserv))
             btn.title = "Valider"
-            btn = create("div", divResp, "Refuser", ['gestion_users'])
+            btn = create("button", divResp, "Refuser", ['gestion_users', "unstyled-button"])
             btn.addEventListener("click", () => toggleRefuseReservation(reserv.id_reserv, container, data))
             btn.title = "Refuser"
         }
@@ -202,49 +200,55 @@ const toggleRefuseReservation = (idReservation,container, data) => {
     })
 }
 
-const toggleValideReservation = (container, props, user = null, multi = false) => {
-    const main = document.querySelector("#app")
-    main.classList.add("cache")
-    container.classList.remove("cache")
+const toggleValideReservation = (props) => {
+    const app = document.querySelector("#app")
+    const overlay = create("div", app, null, ["overlay"])
+    const modale = create("div", overlay, null, ["validation"])
+    const back = create("button", modale, '<< Retour', ['return', "unstyled-button"])
+    back.title = "Retour en arrière"
 
-    // Creation du formulaire pré remplie de modif de ligne
-    container.replaceChildren("")
+    // ajout des actions au clic
+    overlay.onclick = e => {
+        e.stopPropagation()
+        e.target.remove()
+    }
+    modale.onclick = e => {
+        e.stopPropagation()
+    }
+    back.onclick = () => {
+        modale.remove()
+        overlay.remove()
+    }
 
-    create("div", container, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(container)
-
-    // Creation of each champ
-    //create("label", container, "Début : " + props.dateDepart, ["form-info"]);
-
-    create("label", container, "Début :", ["form-info"]);
-    let champ =createChamp(container, "datetime-local", "StartDateTime");
-    champ.value = props.dateDepart
-    champ.disabled = true;
+    create("label", modale, "Début :", ["form-info"]);
+    const champ1 = createChamp(modale, "datetime-local", "StartDateTime");
+    champ1.value = props.dateDepart
+    champ1.disabled = true;
     
-    create("label", container, "Fin :", ["form-info"]);
-    createChamp(container, "datetime-local", "EndDateTime").value = props.dateDepart;
+    create("label", modale, "Fin :", ["form-info"]);
+    const champ2 = createChamp(modale, "datetime-local", "EndDateTime")
+    champ2.value = props.dateDepart;
 
-    toogleBusChoices(container)
-    toogleDriversChoices(container)
-
+    toogleBusChoices(modale)
+    toogleDriversChoices(modale)
 
     // Creation of submit button
 
-    const bouton = create("button", container, "Valider", ["submitButton", "unstyled-button"])
+    const bouton = create("button", modale, "Valider", ["submitButton", "unstyled-button"])
+    bouton.title = "Valider"
     bouton.addEventListener("click", function(){
         // On recupere le debut et la fin du creneau
         let startDateTime = props.dateDepart;
-        let endDateTime = document.querySelector("input[name='EndDateTime']").value;
+        let endDateTime = champ2.value;
 
         // select the types of participants and return those who are checked in a string : 1,2,...
         const selectedDrivers = () => idOfAllElementChecked("input[name='selectionConducteurs']")
-        console.log(selectedDrivers())
-// select the types of buses and return those who are checked in a string : 1,2,...
+
+        // select the types of buses and return those who are checked in a string : 1,2,...
         const busesTimeslot = () => idOfAllElementChecked("input[name='selectionBus']")
 
         fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=valide_reservation&idReservation=`+props.id_reserv+`&beginning=`+startDateTime+`&end=`+endDateTime+`&id_users=`+selectedDrivers()+`&id_buses=`+busesTimeslot(), "/espace-admin", "La réservation a bien été validée", "La réservation n'a pas pu être validée")
     })
-
-    return container;
 }
 
 export {
@@ -252,6 +256,5 @@ export {
     changerMdpAbonne,
     displayReserv,
     displayInscr,
-    toggleRefuseReservation,
-    toggleValideReservation
+    toggleRefuseReservation
 }
