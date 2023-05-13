@@ -6,7 +6,13 @@ import { disconnectUser } from '../pages/disconnect'
 import { toggle404 } from '../pages/404'
 import { toggleEspaceAdmin, toggleGestionBus, toggleGestionLigne, toggleGestionUsers, toggleReservation, toggleInscriptions } from '../pages/espaceAdmin'
 import { toggleEspaceUser } from '../pages/espaceUser'
-import { toggleEspaceAbonne, toggleInfoAbonne } from '../pages/espaceAbonne'
+import {
+    toggleAddReservation,
+    toggleEspaceAbonne,
+    toggleInfoAbonne,
+    toggleSeeReservation,
+    toogleReservAbonne
+} from '../pages/espaceAbonne'
 import { toggleNotificationCenter } from '../pages/notificationCenter'
 import { toggleAddCreneau } from '../pages/gestionTimeslots'
 import { toggleAjoutUser, toggleModifyUser, toggleSupprimeUser } from '../pages/gestionUsers'
@@ -61,6 +67,10 @@ router.on('/lignes/modification-type', toggleModifLineType)
 router.on('/lignes/suppression-type', toggleSupprLine)
 
 router.on('/reservation', toggleReservation)
+
+router.on('/reservation-abonne', toogleReservAbonne)
+router.on('/reservation-abonne/ajout', toggleAddReservation)
+router.on('/reservation-abonne/visualisation', toggleSeeReservation)
 
 router.on('/inscriptions', toggleInscriptions)
 router.on('*', toggle404)

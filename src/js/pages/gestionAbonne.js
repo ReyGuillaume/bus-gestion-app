@@ -1,10 +1,12 @@
 import {create, createChamp, toggleAlert} from "../utils/domManipulation.js";
 import axios from "axios";
 import {fetchUrlRedirectAndAlert, idOfAllElementChecked} from "../utils/formGestion.js";
-import {toggleInfoAbonne} from "./espaceAbonne.js";
+import {createReservationRadio, toggleInfoAbonne} from "./espaceAbonne.js";
 import {removeContainerAndRemoveCacheClass} from "./userTask.js";
 import {toogleBusChoices, toogleDriversChoices }from "./gestionTimeslots.js";
 import { createHeader } from "../components/header.js";
+import {createMenuElement} from "../components/menuItem.js";
+import {redirect} from "../utils/redirection.js";
 
 function changerInfoAbonne (){
 
@@ -56,7 +58,6 @@ function changerInfoAbonne (){
             //création de l'url
             let url = `users/users.php?function=update&id=${id}&email=${email}&login=${login}&name=${nom}&firstname=${prenom}&date=${date}`;
             const userData = { id, prenom, nom, role, idrole, email }
-            // console.log(userData)
             sessionStorage.setItem("userData", JSON.stringify(userData))
             createHeader()
             fetchUrlRedirectAndAlert(url, '/espace-informations-abonne', "Votre profil a bien été modifié.", "Votre profil n'a pas été modifié.")
@@ -117,31 +118,52 @@ function changerMdpAbonne (){
 
 
 function displayReserv (container, data) {
-
     // recuperation des infos de l'utilisateur
     const roleUser = JSON.parse(sessionStorage.getItem("userData")).role;
-
     if(data.length === 0)
-        create("h3", container, "Il n'y a aucune demande de réservation")
+        create("h3", container, "Il n'y a aucune réservation")
 
     for(let reserv of data){
-        let divReserv = create("div", container);
-
         let title = reserv.arretDepart + "  -  "+ reserv.arretArrive;
         let message = reserv.dateDepart;
 
-        let divInfoReserv = create("div", divReserv, null, ["divNotif"]);
-        let div = create("div", divInfoReserv);
+        let divInfoReserv = create("div", container, null, ["divNotif"]);
+        let div = create("div", divInfoReserv, null, ["divInfoReserv"]);
         create("h3", div, title);
         create("p", div, message);
 
-        if(roleUser != "Abonné"){
-            let divResp = create("div", divInfoReserv);
-            let footer = document.querySelector("#footer")
-            let task = create("div", footer, null, null, "task")
-            create("div", divResp, "Valider", ['gestion_users']).addEventListener("click", () => toggleValideReservation(task, reserv))
-            create("div", divResp, "Refuser", ['gestion_users']).addEventListener("click", () => toggleRefuseReservation(reserv.id_reserv, container, data))
+        let divResp = create("div", divInfoReserv, null, ["divBoutonsReserv"]);
+        let footer = document.querySelector("#footer")
 
+        if(roleUser != "Abonné"){
+            const b1 = create("button", divResp, "Valider", ['gestion_users'])
+            b1.onclick = () => toggleValideReservation(footer, reserv)
+            b1.title = "Valider"
+            const b2 = create("button", divResp, "Refuser", ['gestion_users'])
+            b2.onclick = () => toggleRefuseReservation(reserv.id_reserv, container, data)
+            b2.title = "Refuser"
+        }
+        else{
+            switch (reserv.etat){
+                case "attente" :
+                    // Creation of the form
+                    const form = create("div", footer, null, null, "task")
+                    var div_reservation = create("div", container, null, ["form-div-radio"])
+                    createMenuElement(divResp, () => createReservationRadio(form, div_reservation, reserv, "/reservation-abonne"), "rouge", "../src/assets/images/edit.png", "modifier", ""  )
+                    createMenuElement(divResp, () =>
+                        fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=delete_reservation&idReservation=`+reserv.id_reserv, "/reservation-abonne", "La réservation a bien été supprimée", "La réservation n'a pas pu être supprimée")
+                        , "rouge", "../src/assets/images/croix.png", "supprimer", ""  )
+                    break;
+                case "valide":
+                    break;
+                case "refuse":
+                    createMenuElement(divResp, () =>
+                            fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=delete_reservation&idReservation=`+reserv.id_reserv, "/reservation-abonne", "La réservation a bien été supprimée", "La réservation n'a pas pu être supprimée")
+                        , "rouge", "../src/assets/images/croix.png", "supprimer", ""  )
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
@@ -191,44 +213,48 @@ const toggleRefuseReservation = (idReservation,container, data) => {
 
 const toggleValideReservation = (container, props, user = null, multi = false) => {
     const main = document.querySelector("#app")
-    main.classList.add("cache")
-    container.classList.remove("cache")
 
-    // Creation du formulaire pré remplie de modif de ligne
-    container.replaceChildren("")
+    const ancienne_task = document.querySelector("#task")
 
-    create("div", container, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(container)
+    if(ancienne_task){
+        ancienne_task.remove()
+    }
+
+    const task = create("div", container, null, null, "task")
+
+    const back = create("button", task, '<< Retour', ['return', "unstyled-button"])
+    back.onclick = () => removeContainerAndRemoveCacheClass(task)
+    back.title = "Retour en arrière"
 
     // Creation of each champ
     //create("label", container, "Début : " + props.dateDepart, ["form-info"]);
 
-    create("label", container, "Début :", ["form-info"]);
-    let champ =createChamp(container, "datetime-local", "StartDateTime");
+    create("label", task, "Début :", ["form-info"]);
+    let champ =createChamp(task, "datetime-local", "StartDateTime");
     champ.value = props.dateDepart
     champ.disabled = true;
     
-    create("label", container, "Fin :", ["form-info"]);
-    createChamp(container, "datetime-local", "EndDateTime").value = props.dateDepart;
+    create("label", task, "Fin :", ["form-info"]);
+    createChamp(task, "datetime-local", "EndDateTime").value = props.dateDepart;
 
-    toogleBusChoices(container)
-    toogleDriversChoices(container)
+    toogleBusChoices(task)
+    toogleDriversChoices(task)
 
 
     // Creation of submit button
 
-    const bouton = create("div", container, "Valider", ["submitButton"])
+    const bouton = create("div", task, "Valider", ["submitButton"])
     bouton.addEventListener("click", function(){
         // On recupere le debut et la fin du creneau
         let startDateTime = props.dateDepart;
         let endDateTime = document.querySelector("input[name='EndDateTime']").value;
 
         // select the types of participants and return those who are checked in a string : 1,2,...
-        const selectedDrivers = () => idOfAllElementChecked("input[name='selectionConducteurs']")
-        console.log(selectedDrivers())
-// select the types of buses and return those who are checked in a string : 1,2,...
-        const busesTimeslot = () => idOfAllElementChecked("input[name='selectionBus']")
-
-        fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=valide_reservation&idReservation=`+props.id_reserv+`&beginning=`+startDateTime+`&end=`+endDateTime+`&id_users=`+selectedDrivers()+`&id_buses=`+busesTimeslot(), "/espace-admin", "La réservation a bien été validée", "La réservation n'a pas pu être validée")
+        const selectedDrivers = idOfAllElementChecked("input[name='selectionConducteurs']")
+        // select the types of buses and return those who are checked in a string : 1,2,...
+        const busesTimeslot = idOfAllElementChecked("input[name='selectionBus']")
+        removeContainerAndRemoveCacheClass(task)
+        fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=valide_reservation&idReservation=`+props.id_reserv+`&beginning=`+startDateTime+`&end=`+endDateTime+`&id_users=`+selectedDrivers+`&id_buses=`+busesTimeslot, "/espace-admin", "La réservation a bien été validée", "La réservation n'a pas pu être validée")
     })
 
     return container;

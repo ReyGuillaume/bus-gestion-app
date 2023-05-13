@@ -3,6 +3,7 @@ import { createMenuElement } from "../components/menuItem";
 import { redirect, redirectUser, toggleAlertMessage } from "../utils/redirection";
 import axios from "axios";
 import { displayReserv, displayInscr } from "./gestionAbonne.js";
+import {removeContainerAndRemoveCacheClass} from "./userTask.js";
 
 
 const toggleEspaceAdmin = () => {
@@ -182,15 +183,20 @@ const toggleGestionLigne = () => {
 }
 
 const toggleReservation = () => {
+    // affiche le potentiel message d'alerte en stock
+    toggleAlertMessage()
+
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
     // bouton de retour
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.onclick = () => redirect("/espace-admin")
+    back.title = "Retour en arrière"
 
     create("h2", main, "Voir les réservations")
 
-    let divAllReserv = create("div", main);
+    let divAllReserv = create("div", main, null, ["divAllReserv"]);
 
     axios.get(`timeslots/timeslots.php?function=fetch_all_reservation_attente`).then((response)=>{
         displayReserv (divAllReserv, response.data);
