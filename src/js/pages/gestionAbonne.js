@@ -8,6 +8,7 @@ import { createHeader } from "../components/header.js";
 import {createMenuElement} from "../components/menuItem.js";
 import {redirect} from "../utils/redirection.js";
 
+
 function changerInfoAbonne (){
 
     const main = document.querySelector("#app");
@@ -16,7 +17,9 @@ function changerInfoAbonne (){
     // recuperation des infos de l'utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => toggleInfoAbonne())
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-informations-abonne"))
+    back.title = "Retour en arrière"
 
     //les informations de l'abonné à changer + le bouton pour valider
     axios.get(`users/users.php?function=user&id=`+sessionData["id"]).then((response) => {
@@ -38,10 +41,8 @@ function changerInfoAbonne (){
         create("label", div, "Votre nom d'utilisateur :",);
         createChamp(div, "text", "loginAbo").value = response.data["login"];
 
-        create("p", div, "Votre mot de passe : **********");
-
-
-        const valider = create("div", div, "Valider le changement", ['gestion_infos'])
+        const valider = create("button", div, "Valider le changement", ['gestion_infos', "unstyled-button"])
+        valider.title = "Valider"
         valider.addEventListener("click", function () {
 
             //selection des informations
@@ -76,7 +77,9 @@ function changerMdpAbonne (){
     // recuperation des infos de l'utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => toggleInfoAbonne())
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-informations-abonne"))
+    back.title = "Retour en arrière"
 
     const div = create("div", main);
     create("h2", div, "Voici vos informations personnelles :");
@@ -99,7 +102,8 @@ function changerMdpAbonne (){
         createChamp(div, "password", "confNewPwdAbo");
 
 
-        const valider = create("div", div, "Valider le changement", ['gestion_infos'])
+        const valider = create("button", div, "Valider le changement", ['gestion_infos', "unstyled-button"])
+        valider.title = "Valider"
         valider.addEventListener("click", function () {
 
             //selection des informations
@@ -170,6 +174,10 @@ function displayReserv (container, data) {
 
 
 const displayInscr = (container, lst_inscriptions) => {
+
+    if(lst_inscriptions.length === 0)
+        create("h3", container, "Il n'y a aucune demande d'inscription")
+
     for(let inscription of lst_inscriptions){
         let div = create("div", container, null, ["inscription"])
 
@@ -182,8 +190,14 @@ const displayInscr = (container, lst_inscriptions) => {
         create("div", div, inscription.email)
 
         let btns = create("div", div, null, ["inscription-btns"])
-        create("div", btns, "Valider", ["valideButton"]).addEventListener("click", () => valideInscription(inscription.id, div))
-        create("div", btns, "Refuser", ["refuseButton"]).addEventListener("click", () => refuseInscription(inscription.id, div))
+
+        let btn = create("button", btns, "Valider", ["valideButton", "unstyled-button"])
+        btn.addEventListener("click", () => valideInscription(inscription.id, div))
+        btn.title = "Valider"
+
+        btn = create("button", btns, "Refuser", ["refuseButton", "unstyled-button"])
+        btn.addEventListener("click", () => refuseInscription(inscription.id, div))
+        btn.title = "Refuser"
     }
 }
 
@@ -211,53 +225,61 @@ const toggleRefuseReservation = (idReservation,container, data) => {
     })
 }
 
+
+
 const toggleValideReservation = (container, props, user = null, multi = false) => {
-    const main = document.querySelector("#app")
 
-    const ancienne_task = document.querySelector("#task")
-
-    if(ancienne_task){
-        ancienne_task.remove()
-    }
-
-    const task = create("div", container, null, null, "task")
-
-    const back = create("button", task, '<< Retour', ['return', "unstyled-button"])
-    back.onclick = () => removeContainerAndRemoveCacheClass(task)
+    const app = document.querySelector("#app")
+    const overlay = create("div", app, null, ["overlay"])
+    const modale = create("div", overlay, null, ["validation"])
+    const back = create("button", modale, '<< Retour', ['return', "unstyled-button"])
     back.title = "Retour en arrière"
+
+    // ajout des actions au clic
+    overlay.onclick = e => {
+        e.stopPropagation()
+        e.target.remove()
+    }
+    modale.onclick = e => {
+        e.stopPropagation()
+    }
+    back.onclick = () => {
+        modale.remove()
+        overlay.remove()
+    }
 
     // Creation of each champ
     //create("label", container, "Début : " + props.dateDepart, ["form-info"]);
 
-    create("label", task, "Début :", ["form-info"]);
-    let champ =createChamp(task, "datetime-local", "StartDateTime");
-    champ.value = props.dateDepart
-    champ.disabled = true;
-    
-    create("label", task, "Fin :", ["form-info"]);
-    createChamp(task, "datetime-local", "EndDateTime").value = props.dateDepart;
+    create("label", modale, "Début :", ["form-info"]);
+    const champ1 = createChamp(modale, "datetime-local", "StartDateTime");
+    champ1.value = props.dateDepart
+    champ1.disabled = true;
 
-    toogleBusChoices(task)
-    toogleDriversChoices(task)
+    create("label", modale, "Fin :", ["form-info"]);
+    const champ2 = createChamp(modale, "datetime-local", "EndDateTime")
+    champ2.value = props.dateDepart;
 
+    toogleBusChoices(modale)
+    toogleDriversChoices(modale)
 
     // Creation of submit button
-
-    const bouton = create("div", task, "Valider", ["submitButton"])
+    const bouton = create("button", modale, "Valider", ["submitButton", "unstyled-button"])
+    bouton.title = "Valider"
     bouton.addEventListener("click", function(){
+
         // On recupere le debut et la fin du creneau
         let startDateTime = props.dateDepart;
-        let endDateTime = document.querySelector("input[name='EndDateTime']").value;
+        let endDateTime = champ2.value;
 
         // select the types of participants and return those who are checked in a string : 1,2,...
-        const selectedDrivers = idOfAllElementChecked("input[name='selectionConducteurs']")
+        const selectedDrivers = idOfAllElementChecked("input[name='selectionConducteurs']");
         // select the types of buses and return those who are checked in a string : 1,2,...
-        const busesTimeslot = idOfAllElementChecked("input[name='selectionBus']")
-        removeContainerAndRemoveCacheClass(task)
+        const busesTimeslot = idOfAllElementChecked("input[name='selectionBus']");
+        removeContainerAndRemoveCacheClass(modale)
+        console.log(selectedDrivers)
         fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=valide_reservation&idReservation=`+props.id_reserv+`&beginning=`+startDateTime+`&end=`+endDateTime+`&id_users=`+selectedDrivers+`&id_buses=`+busesTimeslot, "/espace-admin", "La réservation a bien été validée", "La réservation n'a pas pu être validée")
     })
-
-    return container;
 }
 
 export {
@@ -265,6 +287,5 @@ export {
     changerMdpAbonne,
     displayReserv,
     displayInscr,
-    toggleRefuseReservation,
-    toggleValideReservation
+    toggleRefuseReservation
 }

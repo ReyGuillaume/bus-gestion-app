@@ -63,6 +63,42 @@
   border-radius: 0.25rem;
   font-size: 1.2rem;
 }
+.actionsTimeslot{
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+.actionsTimeslot img{
+  padding: 5px;
+  width: 40px;
+  height: 40px;
+  border-radius: 25px;
+  cursor: pointer;
+}
+.addTimeslot{
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  background-color: lightgreen;
+}
+.actionReunion{
+  position: fixed;
+  bottom: 55px;
+  right: 55px;
+  background-color: pink;
+}
+.actionConduite{
+  position: fixed;
+  bottom: 5px;
+  right: 55px;
+  background-color: lightblue;
+}
+.actionIndispo{
+  position: fixed;
+  bottom: 55px;
+  right: 5px;
+  background-color: rgb(221, 54, 221);
+}
 
 /* JOURS DU CALENDRIER */
 
@@ -245,6 +281,21 @@
 }
 .btn-task div{
   margin: 3px;
+}
+
+.pageCreateTimeslot{
+  position: fixed;
+  top: 55%;
+  left: 50%;
+  background-color: white;
+  width: 270px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -50%);
+}
+.div-radio{
+  display: flex;
 }
 
 /* AGENDA PAR 4 */
@@ -487,6 +538,14 @@
 .primary-button:hover {
   color: #3D7C98;
   background-color: #ffffff;
+}
+
+/* RESPONSIVE DESIGN */
+
+@media only screen and (max-width: 480px) {
+  .calandar__body{
+    overflow-x: scroll;
+  }
 }
 
 /*# sourceMappingURL=calandar.css.map */

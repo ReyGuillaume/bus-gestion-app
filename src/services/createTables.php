@@ -6,7 +6,7 @@ include "./connexion.php";
  * Execute la requête SQL qui crée la table BusType
  */
 function create_table_bus_type() {
-    $sql = "CREATE TABLE IF NOT EXISTS BusType (
+    $sql = "CREATE TABLE IF NOT EXISTS bustype (
         `id` INT NOT NULL AUTO_INCREMENT,
         `name` VARCHAR(50),
         `nb_places` int NOT NULL,
@@ -20,11 +20,11 @@ function create_table_bus_type() {
  * Execute la requête SQL qui crée la table Bus
  */
 function create_table_bus() {
-    $sql = "CREATE TABLE IF NOT EXISTS Bus (
+    $sql = "CREATE TABLE IF NOT EXISTS bus (
         `id` INT NOT NULL AUTO_INCREMENT,
         `id_bus_type` INT NOT NULL, 
         CONSTRAINT pk_bus PRIMARY KEY (id),
-        CONSTRAINT fk_bus_typ FOREIGN KEY (id_bus_type) REFERENCES BusType (id)
+        CONSTRAINT fk_bus_typ FOREIGN KEY (id_bus_type) REFERENCES bustype (id)
     )";
     $stm = bdd()->query($sql);
 }
@@ -33,7 +33,7 @@ function create_table_bus() {
  * Execute la requête SQL qui crée la table Line
  */
 function create_table_line() {
-    $sql = "CREATE TABLE IF NOT EXISTS `Line` (
+    $sql = "CREATE TABLE IF NOT EXISTS `line` (
         `number` INT NOT NULL,
         `travel_time` INT NOT NULL,
         CONSTRAINT pk_line PRIMARY KEY (`number`),
@@ -46,7 +46,7 @@ function create_table_line() {
  * Execute la requête SQL qui crée la table TimeSlotType
  */
 function create_table_time_slot_type() {
-    $sql = "CREATE TABLE IF NOT EXISTS TimeSlotType (
+    $sql = "CREATE TABLE IF NOT EXISTS timeslottype (
         `id` INT NOT NULL AUTO_INCREMENT,
         `name` VARCHAR(50) NOT NULL,
         CONSTRAINT pk_timeslottype PRIMARY KEY (id),
@@ -59,13 +59,13 @@ function create_table_time_slot_type() {
  * Execute la requête SQL qui crée la table TimeSlot
  */
 function create_table_time_slot() {
-    $sql = "CREATE TABLE IF NOT EXISTS TimeSlot (
+    $sql = "CREATE TABLE IF NOT EXISTS timeslot (
         `id` INT NOT NULL AUTO_INCREMENT,
         `begining` DATETIME NOT NULL,
         `end` DATETIME NOT NULL,
         `id_time_slot_type` INT NOT NULL,
         CONSTRAINT pk_timeslot PRIMARY KEY (id),
-        CONSTRAINT fk_timeslot FOREIGN KEY (id_time_slot_type) REFERENCES TimeSlotType (id)
+        CONSTRAINT fk_timeslot FOREIGN KEY (id_time_slot_type) REFERENCES timeslottype (id)
     )";
     $stm = bdd()->query($sql);
 }
@@ -74,7 +74,7 @@ function create_table_time_slot() {
  * Execute la requête SQL qui crée la table UserType
  */
 function create_table_user_type() {
-    $sql = "CREATE TABLE IF NOT EXISTS UserType (
+    $sql = "CREATE TABLE IF NOT EXISTS usertype (
         `id` INT NOT NULL AUTO_INCREMENT,
         `name` VARCHAR(50) NOT NULL,
         CONSTRAINT pk_usertype PRIMARY KEY (id),
@@ -87,7 +87,7 @@ function create_table_user_type() {
  * Execute la requête SQL qui crée la table Code
  */
 function create_table_code() {
-    $sql = "CREATE TABLE IF NOT EXISTS Code (
+    $sql = "CREATE TABLE IF NOT EXISTS code (
         `login` VARCHAR(50) NOT NULL,
         `password` VARCHAR(64) NOT NULL,
         CONSTRAINT pk_code PRIMARY KEY (login),
@@ -100,7 +100,7 @@ function create_table_code() {
  * Execute la requête SQL qui crée la table User
  */
 function create_table_user() {
-    $sql = "CREATE TABLE IF NOT EXISTS `User` (
+    $sql = "CREATE TABLE IF NOT EXISTS `user` (
         `id` INT NOT NULL AUTO_INCREMENT,
         `name` VARCHAR(50) NOT NULL,
         `firstname` VARCHAR(50) NOT NULL,
@@ -109,8 +109,8 @@ function create_table_user() {
         `id_user_type` INT NOT NULL,
         `login` VARCHAR(50) NOT NULL,
         CONSTRAINT pk_user PRIMARY KEY (id),
-        CONSTRAINT fk_user_usertype FOREIGN KEY (id_user_type) REFERENCES UserType (id),
-        CONSTRAINT fk_user_log FOREIGN KEY (login) REFERENCES Code (login),
+        CONSTRAINT fk_user_usertype FOREIGN KEY (id_user_type) REFERENCES usertype (id),
+        CONSTRAINT fk_user_log FOREIGN KEY (login) REFERENCES code (login),
         CONSTRAINT uq_user_email UNIQUE (email)
     )";
     $stm = bdd()->query($sql);
@@ -120,12 +120,12 @@ function create_table_user() {
  * Execute la requête SQL qui crée la table Bus_TimeSlot
  */
 function create_table_bus_time_slot() {
-    $sql = "CREATE TABLE IF NOT EXISTS Bus_TimeSlot (
+    $sql = "CREATE TABLE IF NOT EXISTS bus_timeslot (
         `id_bus` INT NOT NULL,
         `id_time_slot` INT NOT NULL,
         CONSTRAINT pk_bustimeslot PRIMARY KEY (id_bus, id_time_slot),
-        CONSTRAINT fk_bustimeslot_bus FOREIGN KEY (id_bus) REFERENCES Bus (id),
-        CONSTRAINT fk_bustimeslot_timeslot FOREIGN KEY (id_time_slot) REFERENCES TimeSlot (id)
+        CONSTRAINT fk_bustimeslot_bus FOREIGN KEY (id_bus) REFERENCES bus (id),
+        CONSTRAINT fk_bustimeslot_timeslot FOREIGN KEY (id_time_slot) REFERENCES timeslot (id)
     )";
     $stm = bdd()->query($sql);
 }
@@ -134,12 +134,12 @@ function create_table_bus_time_slot() {
  * Execute la requête SQL qui crée la table User_TimeSlot
  */
 function create_table_user_time_slot() {
-    $sql = "CREATE TABLE IF NOT EXISTS User_TimeSlot (
+    $sql = "CREATE TABLE IF NOT EXISTS user_timeslot (
         `id_user` INT NOT NULL,
         `id_time_slot` INT NOT NULL,
         CONSTRAINT pk_usertimeslot PRIMARY KEY (id_user, id_time_slot),
-        CONSTRAINT fk_usertimeslot_user FOREIGN KEY (id_user) REFERENCES User (id),
-        CONSTRAINT fk_usertimeslot_timeslot FOREIGN KEY (id_time_slot) REFERENCES TimeSlot (id)
+        CONSTRAINT fk_usertimeslot_user FOREIGN KEY (id_user) REFERENCES user (id),
+        CONSTRAINT fk_usertimeslot_timeslot FOREIGN KEY (id_time_slot) REFERENCES timeslot (id)
     )";
     $stm = bdd()->query($sql);
 }
@@ -149,13 +149,13 @@ function create_table_user_time_slot() {
  * Execute la requête SQL qui crée la table Line_TimeSlot
  */
 function create_table_line_time_slot() {
-    $sql = "CREATE TABLE IF NOT EXISTS Line_TimeSlot (
+    $sql = "CREATE TABLE IF NOT EXISTS line_timeslot (
         `num_line` INT NOT NULL,
         `id_time_slot` INT NOT NULL,
         `direction` ENUM('aller','retour'),
         CONSTRAINT pk_linetimeslot PRIMARY KEY (num_line, id_time_slot),
-        CONSTRAINT fk_linetimeslot_numline FOREIGN KEY (num_line) REFERENCES `Line` (`number`),
-        CONSTRAINT fk_linetimeslot_timeslot FOREIGN KEY (id_time_slot) REFERENCES TimeSlot (id)
+        CONSTRAINT fk_linetimeslot_numline FOREIGN KEY (num_line) REFERENCES `line` (`number`),
+        CONSTRAINT fk_linetimeslot_timeslot FOREIGN KEY (id_time_slot) REFERENCES timeslot (id)
     )";
     $stm = bdd()->query($sql);
 }
@@ -164,7 +164,7 @@ function create_table_line_time_slot() {
  * Execute la requête SQL qui crée la table LineType
  */
 function create_table_line_type() {
-    $sql = "CREATE TABLE IF NOT EXISTS LineType (
+    $sql = "CREATE TABLE IF NOT EXISTS linetype (
         `id_type` INT NOT NULL AUTO_INCREMENT,
         `name` VARCHAR(50) NOT NULL UNIQUE,
         CONSTRAINT pk_lineType PRIMARY KEY (id_type)
@@ -176,24 +176,24 @@ function create_table_line_type() {
  * Execute la requête SQL qui crée la table LineType_Line
  */
 function create_table_lineType_line() {
-    $sql = "CREATE TABLE IF NOT EXISTS LineType_Line (
+    $sql = "CREATE TABLE IF NOT EXISTS linetype_line (
         `id_type` INT NOT NULL,
         `num_line` INT NOT NULL,
         CONSTRAINT pk_lineType PRIMARY KEY (num_line),
-        CONSTRAINT fk_linetypeline_numline FOREIGN KEY (num_line) REFERENCES `Line` (`number`),
-        CONSTRAINT fk_linetypeline_idtype FOREIGN KEY (id_type) REFERENCES `LineType` (`id_type`)
+        CONSTRAINT fk_linetypeline_numline FOREIGN KEY (num_line) REFERENCES `line` (`number`),
+        CONSTRAINT fk_linetypeline_idtype FOREIGN KEY (id_type) REFERENCES `linetype` (`id_type`)
     )";
     $stm = bdd()->query($sql);
 }
 
 function create_table_creneau_couverture(){
-    $sql = "CREATE TABLE IF NOT EXISTS LineTypeConditions (
+    $sql = "CREATE TABLE IF NOT EXISTS linetypeconditions (
         `id_type` INT NOT NULL,
         `begin` TIME NOT NULL,
         `end` TIME NOT NULL,
         `intervalle` INT NOT NULL,
         CONSTRAINT pk_LineTypeConditions PRIMARY KEY (id_type, begin, end ),
-        CONSTRAINT fk_LineTypeConditions_idtype FOREIGN KEY (id_type) REFERENCES `LineType` (`id_type`)
+        CONSTRAINT fk_LineTypeConditions_idtype FOREIGN KEY (id_type) REFERENCES `linetype` (`id_type`)
     )";
     $stm = bdd()->query($sql);
 }
@@ -204,7 +204,7 @@ function create_table_creneau_couverture(){
  * date = la date d'envoi
  */
 function create_table_notification() {
-    $sql = "CREATE TABLE IF NOT EXISTS Notification (
+    $sql = "CREATE TABLE IF NOT EXISTS notification (
         `id_notif` INT NOT NULL AUTO_INCREMENT,
         `title` VARCHAR(200) NOT NULL,
         `message` VARCHAR(500) NOT NULL,
@@ -212,7 +212,7 @@ function create_table_notification() {
         `recipient` INT NOT NULL,
         `status` ENUM('read','unread', 'archive'),
         CONSTRAINT pk_notification PRIMARY KEY (id_notif),
-        CONSTRAINT fk_notification_user FOREIGN KEY (recipient) REFERENCES `User` (`id`)
+        CONSTRAINT fk_notification_user FOREIGN KEY (recipient) REFERENCES `user` (`id`)
     )";
     $stm = bdd()->query($sql);
 }
@@ -290,7 +290,7 @@ create_table_inscription();
 $timeSlotTypes = array('Conduite', 'Réunion', 'Indisponibilité', 'Réservation', 'Astreinte');
 
 foreach ($timeSlotTypes as $type) {
-    $sql = "INSERT INTO TimeSlotType (`name`) VALUE ('{$type}')";
+    $sql = "INSERT INTO timeslottype (`name`) VALUE ('{$type}')";
     bdd()->query($sql);
 }
 
@@ -299,16 +299,16 @@ foreach ($timeSlotTypes as $type) {
 $userTypes = array('Directeur', 'Responsable Logistique', 'Conducteur', 'Abonné');
 
 foreach ($userTypes as $type) {
-    $sql = "INSERT INTO UserType (`name`) VALUE ('{$type}')";
+    $sql = "INSERT INTO usertype (`name`) VALUE ('{$type}')";
     bdd()->query($sql);
 }
 
 // ==================== Instanciation du compte directeur ====================
-$pwd = hash("sha256", "01goBus!");
-$sql = "INSERT INTO `Code`(`login`, `password`) VALUES ('WaintalD', '{$pwd}')";
+
+$sql = "INSERT INTO `code`(`login`, `password`) VALUES ('WayntalD', '2b4ed7b6dabf53260dc7ea0efdb75d4d575fe279c77b0f895a8715965ede1628')";
 bdd()->query($sql);
 
-$sql = "INSERT INTO `User`(`name`, `firstname`, `birth_date`, `email`, `id_user_type`, `login`) VALUES ('David', 'Waintal', '1980-01-01', 'gerant@gmail.com', 1, 'WaintalD')";
+$sql = "INSERT INTO `user`(`name`, `firstname`, `birth_date`, `email`, `id_user_type`, `login`) VALUES ('David', 'Wayntal', '1980-01-01', 'gerant@gmail.com', 1, 'WayntalD')";
 bdd()->query($sql);
 
 // ==================== Instanciation des types de bus ====================
@@ -318,7 +318,7 @@ $busTypes = array(
 );
 
 foreach ($busTypes as $name => $nbPlaces) {
-    $sql = "INSERT INTO BusType (`name`, `nb_places`) VALUE ('{$name}', {$nbPlaces})";
+    $sql = "INSERT INTO bustype (`name`, `nb_places`) VALUE ('{$name}', {$nbPlaces})";
     bdd()->query($sql);
 }
 
@@ -331,7 +331,7 @@ $busLines = array(
 );
 
 foreach ($busLines as $num => $time) {
-    $sql = "INSERT INTO `Line` (`number`, `travel_time`) VALUE ({$num}, {$time})";
+    $sql = "INSERT INTO `line` (`number`, `travel_time`) VALUE ({$num}, {$time})";
     bdd()->query($sql);
 }
 
@@ -343,7 +343,7 @@ $lineType = array(
 );
 
 foreach ($lineType as $id => $name) {
-    $sql = "INSERT INTO `LineType` (`id_type`, `name`) VALUE ({$id}, '{$name}')";
+    $sql = "INSERT INTO `linetype` (`id_type`, `name`) VALUE ({$id}, '{$name}')";
     bdd()->query($sql);
 }
 
@@ -357,19 +357,19 @@ $line_lineType = array(
 );
 
 foreach ($line_lineType as $id_line => $id_type) {
-    $sql = "INSERT INTO `LineType_line` (`id_type`, `num_line`) VALUE ({$id_type}, {$id_line})";
+    $sql = "INSERT INTO `linetype_line` (`id_type`, `num_line`) VALUE ({$id_type}, {$id_line})";
     bdd()->query($sql);
 }
 // ==================== Remplissage des creneau de couverture des types de ligne de base ====================
 
-$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (1, '06:30:00', '20:30:00', 60)";
+$sql = "INSERT INTO `linetypeconditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (1, '06:30:00', '20:30:00', 60)";
 bdd()->query($sql);
 
-$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '07:00:00', '09:00:00', 60)";
+$sql = "INSERT INTO `linetypeconditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '07:00:00', '09:00:00', 60)";
 bdd()->query($sql);
 
-$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '11:00:00', '13:30:00', 60)";
+$sql = "INSERT INTO `linetypeconditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '11:00:00', '13:30:00', 60)";
 bdd()->query($sql);
 
-$sql = "INSERT INTO `LineTypeConditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '17:00:00', '18:45:00', 60)";
+$sql = "INSERT INTO `linetypeconditions` (`id_type`, `begin`, `end`, `intervalle`) VALUE (2, '17:00:00', '18:45:00', 60)";
 bdd()->query($sql);
