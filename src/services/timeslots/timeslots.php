@@ -4,19 +4,20 @@ include_once "../connexion.php";
 
 // ======================== timeslot ========================
 
+
 /**
-    Crée un créneau si $beginning est inférieur à $end et sont tous les deux suppérieur à la date courante.
+ *Crée un créneau si $beginning est inférieur à $end et sont tous les deux suppérieur à la date courante.
 
-    @param beginning : date de début du créneau au format yyyy-MM-dd hh:mm:ss.
-    @param end : date de fin du créneau au format yyyy-MM-dd hh:mm:ss.
-    @param id_time_slot_type : id du type de créneau.
-    @param id_users : chaine de caractère avec "," comme séparateur correspondant à la liste des id des utilisateur qui interviennent lors de ce créneau. 
-    @param id_buses : chaine de caractère avec "," comme séparateur correspondant à la liste des id des bus qui sont affectés au créneau.
-    @param num_lines : chaine de caractère avec "," comme séparateur correspondant à la liste des numéros de lignes qui sont affectés au créneau.
-    @param directions : chaine de caractère avec "," comme séparateur correspondant à la liste des directions des lignes de bus affectées au créneau.
+ *@param $beginning : date de début du créneau au format yyyy-MM-dd hh:mm:ss.
+ *@param $end : date de fin du créneau au format yyyy-MM-dd hh:mm:ss.
+ *@param $id_time_slot_type : id du type de créneau.
+ *@param $id_users : chaine de caractère avec "," comme séparateur correspondant à la liste des id des utilisateur qui interviennent lors de ce créneau.
+ *@param $id_buses : chaine de caractère avec "," comme séparateur correspondant à la liste des id des bus qui sont affectés au créneau.
+ *@param $num_lines : chaine de caractère avec "," comme séparateur correspondant à la liste des numéros de lignes qui sont affectés au créneau.
+ *@param $directions : chaine de caractère avec "," comme séparateur correspondant à la liste des directions des lignes de bus affectées au créneau.
 
-    @return boolean si l'ajout est un succès.
-*/
+ *@return boolean si l'ajout est un succès.
+ */
 function create_time_slot($beginning, $end, $id_time_slot_type, $id_users, $id_buses, $num_lines, $directions) { // ajout des lignes dans user_timeslot et dans bus_timeslot
     $tz = timezone_open('Europe/Paris');
     $d1 = date_create($beginning, $tz);

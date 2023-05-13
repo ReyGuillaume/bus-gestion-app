@@ -230,7 +230,7 @@ function toogleFreeDriverChoices(choicesDiv){
     create("label", divCheckboxDrivers, "Choisissez les conducteurs parmis ceux disponibles :");
 
     let axiosUrl = `users/users.php?function=freeDrivers&beginning=${StartDateTime}&end=${EndDateTime}`
-    createCheckBoxOfElements(axiosUrl, "users/users.php?function=user&id=", divCheckboxDrivers, "selectionParticipant", (elt => `${elt.name} ${elt.firstname}`), "cd")
+    createCheckBoxOfElements(axiosUrl, "users/users.php?function=user&id=", divCheckboxDrivers, "selectionConducteurs", (elt => `${elt.name} ${elt.firstname}`), "cd")
     
     // On cree le bouton permettant d'afficher tous les conducteurs
     var bouton = create("button", divCheckboxDrivers, "Afficher tous les conducteurs");

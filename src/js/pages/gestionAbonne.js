@@ -276,8 +276,8 @@ const toggleValideReservation = (container, props, user = null, multi = false) =
         const selectedDrivers = idOfAllElementChecked("input[name='selectionConducteurs']");
         // select the types of buses and return those who are checked in a string : 1,2,...
         const busesTimeslot = idOfAllElementChecked("input[name='selectionBus']");
+
         removeContainerAndRemoveCacheClass(modale)
-        console.log(selectedDrivers)
         fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=valide_reservation&idReservation=`+props.id_reserv+`&beginning=`+startDateTime+`&end=`+endDateTime+`&id_users=`+selectedDrivers+`&id_buses=`+busesTimeslot, "/espace-admin", "La réservation a bien été validée", "La réservation n'a pas pu être validée")
     })
 }
