@@ -176,6 +176,12 @@
 .Indisponibilité .div-color{
   background-color: rgb(251, 225, 159);
 }
+.Astreinte .div-color{
+  background-color: rgb(192, 255, 190);
+}
+.Réservation .div-color{
+  background-color: rgb(255, 149, 149);
+}
 
 /* CRÉNEAUX DE L'AGENDA MULTIPLE */
 
