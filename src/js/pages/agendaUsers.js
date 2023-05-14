@@ -32,6 +32,7 @@ const drawUsers = (idtype) => {
     // on récupère tous les users de la base de données, du type renseigné
     axios.get("users/users.php?function=bytype&type="+idtype).then(function(response){
         let users = response.data;
+        console.log(idtype)
 
         users.forEach(user => createListeItem(ul, user, `${user.firstname} ${user.name.toUpperCase()}`, "liste_users_"+idtype))
 
