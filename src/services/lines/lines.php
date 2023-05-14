@@ -141,6 +141,11 @@ function delete_line($number) {  //supprimer également tous les créneaux qui s
     return false;
 }
 
+/* ---------------------------------------------------------------
+                        Verification de couverture  
+ ------------------------------------------------------------------ */
+
+
 /**
   Fonction qui indique si toutes les lignes sont bien couvertes pendant la semaine donée
   
@@ -301,7 +306,9 @@ function creneau_couvert ($crenau,$jour, $id_line){
     return true;
 }
 
-
+/* ---------------------------------------------------------------
+                        Auto remplissage Couverture 
+ ------------------------------------------------------------------ */
 
 /**
   Fonction qui creer tout les crénaux de conduite nécessaires pour que la semaine donnée soit bien couverte 
@@ -463,25 +470,27 @@ function couvrire_creneau_sql ($crenau, $jour, $id_line, $free_bus){
     
 */
 function cover_a_line_for_a_week($week, $id_line){
-    // On isole l'année et le numéro de la semaine
-      $year = substr($week, 0, 4);
-      $weekNumber = substr($week, 6, 2);
-    
-      // On creer le jour de depart ( 1 pour lundi )
-      $startDate = new DateTime();
-      $startDate->setISODate($year, $weekNumber, 1);
-    
-      // On parcours chaque jour de la semaine et on le couvre
-      $res = true;
-      for ($i = 0; $i < 7; $i++) {
-        $date = $startDate->format('Y-m-d');
-        if (!couvre_a_line_for_a_day ($date, $id_line)){
-            $res=false;
-        }
-        $startDate->add(new DateInterval('P1D'));
-      }
-        return $res;
+// On isole l'année et le numéro de la semaine
+  $year = substr($week, 0, 4);
+  $weekNumber = substr($week, 6, 2);
+
+  // On creer le jour de depart ( 1 pour lundi )
+  $startDate = new DateTime();
+  $startDate->setISODate($year, $weekNumber, 1);
+
+  // On parcours chaque jour de la semaine et on le couvre
+  $res = true;
+  for ($i = 0; $i < 7; $i++) {
+    $date = $startDate->format('Y-m-d');
+    // On couvre la ligne pour ce jour la
+    if (!couvre_a_line_for_a_day ($date, $id_line)){
+        $res=false;
     }
+    // On passe au jour suivant 
+    $startDate->add(new DateInterval('P1D'));
+  }
+    return $res;
+}
 
 /**
   Fonction qui creer tout les crénaux de conduite nécessaires pour qu'une ligne soit bien couverte pour un jour donné 
@@ -493,6 +502,7 @@ function cover_a_line_for_a_week($week, $id_line){
     
 */
 function couvre_a_line_for_a_day ($jour, $id_line){
+    echo("ok");
     // On récupère tous les créneaux à couvrir pour cette ligne la en fonction de son type 
     $id_type_query= bdd()->query("SELECT `id_type` FROM `linetype_line` WHERE `num_line`={$id_line}");
     $id_type = $id_type_query->fetch();
@@ -520,14 +530,14 @@ function couvre_a_line_for_a_day ($jour, $id_line){
     
 */
 function couvrire_creneau ($crenau, $jour, $id_line){
-    
+    echo("hey");
     // On recupere toutes les variables nécessaire 
     $temps_creneau = 60; //++++ A améliorer car pas très maniable 
     $heure_courante = $crenau['begin'];
     $intervalle = $crenau['intervalle'];
     $res = true;
 
-    $bdd = bdd();
+    
 
     while ($heure_courante <= $crenau['end'] ){
 
@@ -545,16 +555,16 @@ function couvrire_creneau ($crenau, $jour, $id_line){
 
       
         // On entre un creneau dans la base de donnée
-        $nv = $bdd->query("INSERT INTO `timeslot`(`begining`, `end`, `id_time_slot_type`) VALUES ('{$date_complete_debut_str}', '{$date_complete_fin_str}', 1)");
+        $nv = bdd()->query("INSERT INTO `timeslot`(`begining`, `end`, `id_time_slot_type`) VALUES ('{$date_complete_debut_str}', '{$date_complete_fin_str}', 1)");
         if ($nv===false){
             $res = false;
         }
 
         // récupérer l'ID généré automatiquement pour le nouveau timeslot
-        $id_timeslot = $bdd->lastInsertId();
-        $liaison = $bdd->query("INSERT INTO `line_timeslot`(`num_line`, `id_time_slot`, `direction`) VALUES ('{$id_line}','{$id_timeslot}','aller')");
+        $id_timeslot = bdd()->lastInsertId();
+        $liaison = bdd()->query("INSERT INTO `line_timeslot`(`num_line`, `id_time_slot`, `direction`) VALUES ('{$id_line}','{$id_timeslot}','aller')");
         
-     
+     /*
         // On y ajoute un bus si possible 
         $bus_relie =  add_a_bus_to_timeslot($id_timeslot);
         
@@ -574,6 +584,10 @@ function couvrire_creneau ($crenau, $jour, $id_line){
     //echo("{$res}");
     return $res ; 
 }
+
+/* ---------------------------------------------------------------
+                        Gestion Line conditions 
+ ------------------------------------------------------------------ */
 
 /**
   Fonction qui crée une nouvelle plage horaire pour un type de ligne
@@ -707,6 +721,9 @@ switch ($_GET['function']) {
         break;
     case 'coverWeek': // week
         $res = cover_a_week ($_GET['week']);
+        break;
+    case 'coverLineWeek': //week idline
+        $res = cover_a_line_for_a_week($_GET['week'], $_GET['idline']);
         break;
     case 'coverLineWeek': //week line
         $res = cover_a_line_for_a_week ($_GET['week'], $_GET['idline']);
