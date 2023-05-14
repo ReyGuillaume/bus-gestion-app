@@ -34,9 +34,6 @@ const toggleIndisponibilitiForm = () => {
         if (![StartDateTime, EndDateTime].includes("")) {
             let url = `timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}&type=3&users=${user}`
             fetchUrlRedirectAndAlert(url, "espace-utilisateur", "Votre indisponibilité a bien été ajoutée", "Votre indisponibilité n'a pas pu être ajoutée")
-
-            let message = `Votre créneau d'indisponibilité du ${StartDateTime} au ${EndDateTime} a bien été ajouté.`
-            axios.get(`notifications/notifications.php?function=create&title=Attention&message=${addslashes(message)}&recipient=`+JSON.parse(sessionStorage.getItem("userData")).id)
         } else {
             toggleError("ERREUR", "L'un des champs du formulaire n'a pas été renseigné")
         }

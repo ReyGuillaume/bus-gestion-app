@@ -1,12 +1,13 @@
 import {create, createChamp, toggleAlert} from "../utils/domManipulation.js";
 import axios from "axios";
-import {fetchUrlRedirectAndAlert, idOfAllElementChecked} from "../utils/formGestion.js";
+import {addslashes, fetchUrlRedirectAndAlert, idOfAllElementChecked} from "../utils/formGestion.js";
 import {createReservationRadio, toggleInfoAbonne} from "./espaceAbonne.js";
 import {removeContainerAndRemoveCacheClass} from "./userTask.js";
 import {toogleBusChoices, toogleDriversChoices }from "./gestionTimeslots.js";
 import { createHeader } from "../components/header.js";
 import {createMenuElement} from "../components/menuItem.js";
 import {redirect} from "../utils/redirection.js";
+import {formatedHour} from "../utils/dates.js";
 
 
 function changerInfoAbonne (){
@@ -228,7 +229,7 @@ const toggleRefuseReservation = (idReservation,container, data) => {
 
 
 const toggleValideReservation = (container, props, user = null, multi = false) => {
-
+    console.log(props)
     const app = document.querySelector("#app")
     const overlay = create("div", app, null, ["overlay"])
     const modale = create("div", overlay, null, ["validation"])
@@ -266,7 +267,7 @@ const toggleValideReservation = (container, props, user = null, multi = false) =
     // Creation of submit button
     const bouton = create("button", modale, "Valider", ["submitButton", "unstyled-button"])
     bouton.title = "Valider"
-    bouton.addEventListener("click", function(){
+    bouton.addEventListener("click", async function () {
 
         // On recupere le debut et la fin du creneau
         let startDateTime = props.dateDepart;
@@ -277,8 +278,43 @@ const toggleValideReservation = (container, props, user = null, multi = false) =
         // select the types of buses and return those who are checked in a string : 1,2,...
         const busesTimeslot = idOfAllElementChecked("input[name='selectionBus']");
 
+        //notification au client
+        let client = await axios.get(`users/users.php?function=user&id=` + props.id_client)
+        client = client.data
+
+        let arret = await axios.get("timeslots/timeslots.php?function=fetch_by_id_reservation&idReservation="+props.id_reserv)
+        arret = arret.data
+
+        let heure_debut = formatedHour(new Date(startDateTime).getHours())
+        let min_debut = formatedHour(new Date(startDateTime).getMinutes())
+        let heure_fin = formatedHour(new Date(endDateTime).getHours())
+        let min_fin = formatedHour(new Date(endDateTime).getMinutes())
+
+        let debut_jour = formatedHour(new Date(startDateTime).getDate())
+        let debut_annee = formatedHour(new Date(startDateTime).getFullYear())
+        let debut_mois = formatedHour(new Date(startDateTime).getMonth())
+        let fin_jour = formatedHour(new Date(endDateTime).getDate())
+        let fin_annee = formatedHour(new Date(endDateTime).getFullYear())
+        let fin_mois = formatedHour(new Date(endDateTime).getMonth())
+
+        let debut = heure_debut+":"+min_debut
+        let fin = heure_fin+":"+min_fin
+        let debutDate = debut_jour+"/"+debut_mois+"/"+debut_annee
+        let finDate = fin_jour+"/"+fin_mois+"/"+fin_annee
+
+        let titre = "Confirmation de votre réservation de bus pour " + arret.arretDepart + " - " + arret.arretArrive;
+        let message = "Bonjour " + client.firstname +", "+"<br>"+"<br>"
+        message += "Je suis ravi de vous informer que votre réservation de bus a été <strong>validée</strong> avec succès. Votre bus partira de l'arrêt <strong>"
+        +arret.arretDepart+"</strong> à <strong>"+debut+"</strong> le <strong>"+debutDate+"</strong> et arrivera à l'arrêt <strong>"+arret.arretArrive+"</strong> à <strong>"+fin+"</strong> le <strong>"+finDate+"</strong><br>"+"<br>"
+        message+="Nous avons affecté un chauffeur <strong>expérimenté</strong> à votre bus pour vous assurer un voyage <strong>sûr et agréable</strong>. Notre équipe de conducteurs est formée pour offrir un service de <strong>qualité</strong> et pour prendre <strong>soin de nos passagers</strong>."+"<br>"+"<br>"+
+            "Veuillez vous assurer <strong>d'arriver à l'arrêt de départ à l'heure</strong> pour éviter tout retard pour vous. Si vous avez des questions ou des préoccupations, n'hésitez pas à nous <strong>contacter</strong> et nous ferons tout notre possible pour vous aider."+"<br>"+"<br>"+
+            "Nous sommes impatients de vous accueillir à bord de notre bus et de vous offrir une expérience de voyage agréable et sans tracas."+"<br>"+"<br>"+
+            "Cordialement,"+"<br>"+"L'équipe de réservation de bus de <strong>GoBus</strong>."
+        console.log(message)
+        axios.get(`notifications/notifications.php?function=create&title=${addslashes(titre)}&message=${addslashes(message)}&recipient=` + client.id)
+
         removeContainerAndRemoveCacheClass(modale)
-        fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=valide_reservation&idReservation=`+props.id_reserv+`&beginning=`+startDateTime+`&end=`+endDateTime+`&id_users=`+selectedDrivers+`&id_buses=`+busesTimeslot, "/espace-admin", "La réservation a bien été validée", "La réservation n'a pas pu être validée")
+        fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=valide_reservation&idReservation=` + props.id_reserv + `&beginning=` + startDateTime + `&end=` + endDateTime + `&id_users=` + selectedDrivers + `&id_buses=` + busesTimeslot, "/espace-admin", "La réservation a bien été validée", "La réservation n'a pas pu être validée")
     })
 }
 
