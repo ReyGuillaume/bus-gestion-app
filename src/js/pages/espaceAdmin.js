@@ -3,6 +3,7 @@ import { createMenuElement } from "../components/menuItem";
 import { redirect, redirectUser, toggleAlertMessage } from "../utils/redirection";
 import axios from "axios";
 import { displayReserv, displayInscr } from "./gestionAbonne.js";
+import {removeContainerAndRemoveCacheClass} from "./userTask.js";
 
 
 const toggleEspaceAdmin = () => {
@@ -26,40 +27,40 @@ const toggleEspaceAdmin = () => {
     const nav = create("nav", main, null, ['navBar_Admin'])
 
     // agenda
-    createMenuElement(nav, () => redirect("/agenda"), "rose", "/src/assets/images/nav_agenda.png", "Voir mon agenda", "Voir mon agenda")
+    createMenuElement(nav, () => redirect("/agenda"), "rose", "src/assets/images/nav_agenda.png", "Voir mon agenda", "Voir mon agenda")
 
     // agenda chauffeurs
-    createMenuElement(nav, () => redirect("/agenda-chauffeurs"), "jaune", "/src/assets/images/nav_gens.png", "Voir l'agenda des chauffeurs", "Voir l'agenda des chauffeurs")
+    createMenuElement(nav, () => redirect("/agenda-chauffeurs"), "jaune", "src/assets/images/nav_gens.png", "Voir l'agenda des chauffeurs", "Voir l'agenda des chauffeurs")
 
 
     // agenda responsables
     if(sessionData["role"] == "Directeur"){
-        createMenuElement(nav, () => redirect("/agenda-responsables"), "orange", "/src/assets/images/nav_gens.png", "Voir l'agenda des responsables logistiques", "Voir l'agenda des responsables logistiques")
-        createMenuElement(nav, () => redirect("/agenda-multiple"), "vert", "/src/assets/images/nav_agenda.png", "Croiser plusieurs agendas", "Croiser plusieurs agendas")
+        createMenuElement(nav, () => redirect("/agenda-responsables"), "orange", "src/assets/images/nav_gens.png", "Voir l'agenda des responsables logistiques", "Voir l'agenda des responsables logistiques")
+        createMenuElement(nav, () => redirect("/agenda-multiple"), "vert", "src/assets/images/nav_agenda.png", "Croiser plusieurs agendas", "Croiser plusieurs agendas")
     }
     // agenda bus
-    createMenuElement(nav, () => redirect("/agenda-bus"), "rouge", "/src/assets/images/nav_bus.png", "Voir l'agenda des bus", "Voir l'agenda des bus")
+    createMenuElement(nav, () => redirect("/agenda-bus"), "rouge", "src/assets/images/nav_bus.png", "Voir l'agenda des bus", "Voir l'agenda des bus")
 
     // agenda lignes de bus
-    createMenuElement(nav, () => redirect("/agenda-lignes"), "bleu", "/src/assets/images/nav_ligne.png", "Voir l'agenda des lignes de bus", "Voir l'agenda des lignes de bus")
+    createMenuElement(nav, () => redirect("/agenda-lignes"), "bleu", "src/assets/images/nav_ligne.png", "Voir l'agenda des lignes de bus", "Voir l'agenda des lignes de bus")
 
     // créneaux
-    createMenuElement(nav, () => redirect("/creneau"), "gris", "/src/assets/images/nav_creneau.png", "Ajouter un créneaux", "Ajouter un créneaux")
+    createMenuElement(nav, () => redirect("/creneau"), "gris", "src/assets/images/nav_creneau.png", "Ajouter un créneaux", "Ajouter un créneaux")
 
     // utilisateurs
-    createMenuElement(nav, () => redirect("/utilisateurs"), "violet", "/src/assets/images/nav_user.png", 'Gérer les utilisateurs', 'Gérer les utilisateurs')
+    createMenuElement(nav, () => redirect("/utilisateurs"), "violet", "src/assets/images/nav_user.png", 'Gérer les utilisateurs', 'Gérer les utilisateurs')
 
     // bus
-    createMenuElement(nav, () => redirect("/bus"), "vert_clair", "/src/assets/images/nav_bus.png", 'Gérer les bus', 'Gérer les bus')
+    createMenuElement(nav, () => redirect("/bus"), "vert_clair", "src/assets/images/nav_bus.png", 'Gérer les bus', 'Gérer les bus')
 
     // lignes
-    createMenuElement(nav, () => redirect("/lignes"), "bleu_clair", "/src/assets/images/nav_gestion.png", 'Gérer les lignes', 'Gérer les lignes')
+    createMenuElement(nav, () => redirect("/lignes"), "bleu_clair", "src/assets/images/nav_gestion.png", 'Gérer les lignes', 'Gérer les lignes')
 
     // notif
-    createMenuElement(nav, () => redirect("/notification-center"), "orange", "/src/assets/images/nav_notif.png", 'Afficher les notifications', 'Afficher les notifications')
+    createMenuElement(nav, () => redirect("/notification-center"), "orange", "src/assets/images/nav_notif.png", 'Afficher les notifications', 'Afficher les notifications')
 
     // reservation
-    createMenuElement(nav, () => redirect("/reservation"), "rouge", "/src/assets/images/nav_reservation.png", "Voir les réservations", "Voir les réservations")
+    createMenuElement(nav, () => redirect("/reservation"), "rouge", "src/assets/images/nav_reservation.png", "Voir les réservations", "Voir les réservations")
 
     // inscriptions
     createMenuElement(nav, () => redirect("/inscriptions"), "bleu", "/src/assets/images/nav_profil.png", "Voir les inscriptions", "Voir les inscriptions")
@@ -186,15 +187,20 @@ const toggleGestionLigne = () => {
 }
 
 const toggleReservation = () => {
+    // affiche le potentiel message d'alerte en stock
+    toggleAlertMessage()
+
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
     // bouton de retour
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => redirect("/espace-admin"))
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
 
     create("h2", main, "Voir les réservations")
 
-    let divAllReserv = create("div", main);
+    let divAllReserv = create("div", main, null, ["divAllReserv"]);
 
     axios.get(`timeslots/timeslots.php?function=fetch_all_reservation_attente`).then((response)=>{
         displayReserv (divAllReserv, response.data);

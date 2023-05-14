@@ -4,7 +4,12 @@ import { redirectUser, redirect } from "../utils/redirection";
 import { fetchUrlRedirectAndAlert } from "../utils/formGestion";
 import axios from 'axios';
 
-const toggleAdminForm = () => {
+const toggleConnexion = () => {
+
+    // redirection si user est connecté
+    if(sessionStorage.getItem("userData"))
+        redirect("/")
+
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -118,4 +123,4 @@ const toggleInscriptionForm = () => {
     })
 }
 
-export { toggleAdminForm, toggleInscriptionForm }
+export { toggleConnexion, toggleInscriptionForm }

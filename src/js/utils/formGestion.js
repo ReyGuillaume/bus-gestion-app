@@ -92,8 +92,8 @@ const fetchUrlWithLoading = (url, route, successMessage, failureMessage) => {
     });
 }
 
-const createCheckboxOfElement = (container, text, checkboxName, letter) => {
-    createChampCheckbox(container, letter+text , checkboxName, text);
+const createCheckboxOfElement = (container, text, value, checkboxName, letter) => {
+    createChampCheckbox(container, letter+text , checkboxName, value);
     var label = create("label", container, text );
     label.setAttribute("for", letter+text);
 }

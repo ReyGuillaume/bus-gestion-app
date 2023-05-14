@@ -462,8 +462,9 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
   padding: 15px;
 }
 .gestion_titre{
+  color: #fde9ff;
   font-weight: bold;
-  text-shadow: 2px 2px rgb(111, 199, 111);
+  text-shadow: 1px 1px 0px purple, 3px 3px 1px #165bfb;
 }
 .gestion_users, .gestion_bus, .gestion_lignes, .gestion_infos{
   border-radius: 10px;
@@ -673,6 +674,23 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
 .refuseButton{
   background-color: white;
   color: #3D7C98;
+}
+
+/* RESPONSIVE DESIGN */
+
+@media only screen and (max-width: 480px) {
+  #app .navBar_User .navBar_container, #app .navBar_Admin .navBar_container{
+    width: 180px;
+  }
+
+  #app .navBar__item:hover{
+    width: auto;
+  }
+
+  .app-form{
+    width: 100%;
+    margin: 0;
+  }
 }
 
 /*# sourceMappingURL=main.css.map */

@@ -250,7 +250,7 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
                         break;
                     case "Astreinte": create("h3", body, "Astreinte")
                         break;
-                    case "Réservation": create("h3", body, "Réservation")
+                    case "Réservation": create("h3", body, "Réservation", ["timeslot__body_title"])
                         break;
                     default: create("h3", body, "ERREUR")
                         break;

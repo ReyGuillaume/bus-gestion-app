@@ -1,8 +1,9 @@
-import { create, toggleAlert, toggleError } from "../utils/domManipulation";
+import { create, createChamp, createChampCheckbox, createChampRadio, toggleAlert, toggleError } from "../utils/domManipulation";
 import { toggleDayOfWeek, toggleDrivers, toggleMultiAgenda } from "../pages/day";
-import { datePhp } from "../utils/dates";
+import { datePhp, formatedDatePhp } from "../utils/dates";
 import { toggleAgenda } from "../pages/agenda";
 import { getMonthToString, getIdOfDay, getDayToString, formatedHour, getFirstMonday, getNearestHour, getNearestMinute } from "../utils/dates"
+import { participantsTimeslot, busesTimeslot, lineDirectionTimeslot, lineTimeslot } from "../pages/gestionTimeslots";
 import axios from "axios"
 
 import '../../assets/style/calandar.css'
@@ -57,21 +58,176 @@ const drawHouresColumn = (container) => {
     return container
 }
 
-
+// fonction qui s'exécute dès qu'on bouge un objet draggable
 const handleDargEnter = e => {
     e.preventDefault()
     e.target.classList.toggle("dragover")
 }
 
+// fonction qui s'exécute à chaque milliseconde où l'objet est tenu par la souris
 const handleDargOver = e => e.preventDefault()
+// "e.preventDefault()" permet donc d'empêcher le déplacement de l'élément par le navigateur pendant le drag & drop, pour que le code JavaScript puisse gérer le déplacement de l'élément de manière personnalisée
 
+// fonction qui s'exécute à chaque fois que l'objet tenu pointe vers une nouvelle cible
 const handleDargLeave = e => e.target.classList.toggle("dragover")
 
+// fonction qui s'exécute dès qu'on lâche l'objet
 const handleDrop = (e, date, user, multi=false, entites=null) => {
     e.target.classList.toggle("dragover")
+
     if(e.dataTransfer.getData('text/plain').substring(0, 2) === "ts" && e.target.classList.contains("drop")){
         toggleModifValidation(e, date, user, multi, entites)    //création d'une modale de validation
     }
+    else if(e.dataTransfer.getData('text/plain') == "actionreunion" && e.target.classList.contains("drop")){
+        toggleNewTimeSlot("Réunion", e, date, user, multi, entites)
+    }
+    else if(e.dataTransfer.getData('text/plain') == "actionindispo" && e.target.classList.contains("drop")){
+        toggleNewTimeSlot("Indisponibilité", e, date, user, multi, entites)
+    }
+    else if(e.dataTransfer.getData('text/plain') == "actionconduite" && e.target.classList.contains("drop")){
+        toggleNewTimeSlot("Conduite", e, date, user, multi, entites)
+    }
+}
+
+// afficher une pop-up pour créer un créneau en drag & drop
+const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entites=null) => {
+    const main = document.querySelector("#app")
+    main.classList.add("cache")
+
+    const container = document.querySelector("#footer")
+
+    // la popup
+    const popup = create("div", container, null, ["pageCreateTimeslot"])
+
+    // retour en arrière
+    const back = create("button", popup, '<< Retour', ['return', "unstyled-button"])
+    back.onclick = () => {
+        popup.remove()
+        main.classList.remove("cache")
+    }
+    back.title = "Retour en arrière"
+
+    // titre
+    create("h3", popup, nom)
+
+    //obtention de l'heure en fonction du drop
+    let nbminutes =  Math.floor(((23 - 6) * 60) * e.offsetY / e.target.clientHeight)
+    let nouvh = Math.floor(nbminutes / 60) + 6
+    let nouvmin = Math.floor(nbminutes % 60)
+
+    let heure_arrondie = getNearestHour(nouvh, nouvmin)
+    let minute_arrondie = getNearestMinute(nouvmin)
+
+    // horaires
+    let date = new Date(dateOfMonday)
+    while (date.getDay() != getIdOfDay(e.target.id)) {
+        date = new Date(new Date(date).setDate(date.getDate() + 1))
+    }
+    date.setHours(heure_arrondie)
+    date.setMinutes(minute_arrondie)
+
+    let beginning = formatedDatePhp(date)
+
+    create("label", popup, "Début :", ["form-info"])
+    createChamp(popup, "datetime-local", "StartDateTime").value = beginning
+
+    create("label", popup, "Fin :", ["form-info"])
+    createChamp(popup, "datetime-local", "EndDateTime").value = beginning
+
+    var users = null
+    var buses = null
+    var lines = null
+    var type = 0
+
+    if(nom == "Conduite"){
+        type = 1
+        await axios.get(`users/users.php?function=bytype&type=3`).then((res) => users = res.data)
+        
+        await axios.get(`buses/buses.php?function=buses`).then((res) => buses = res.data)
+
+        await axios.get(`lines/lines.php?function=lines`).then((res) => lines = res.data)
+    }
+    else if(nom == "Réunion"){
+        type = 2
+        await axios.get(`users/users.php?function=users`).then((res) => users = res.data)
+    }
+    else{
+        type = 3
+        let user_indiso = createChampCheckbox(popup, user.id, "selectionParticipant", user.id)
+        user_indiso.checked = true
+        user_indiso.style.display = "none"
+    }
+    
+    if(users){
+        create("div", popup, "Participants :", ["form-info"])
+        for(let user_data of users){
+            let div_user = create("div", popup)
+            let c = createChampCheckbox(div_user, user_data.id, "selectionParticipant", user_data.id)
+            if(user.firstname && user.id == user_data.id) {c.checked = true}
+            create("label", div_user, user_data.firstname.substr(0,1) + "." + user_data.name.toUpperCase())
+        }
+    }
+
+    if(buses){
+        create("div", popup, "Bus :", ["form-info"])
+        for(let bus of buses){
+            let div_bus = create("div", popup)
+            let c = createChampCheckbox(div_bus, bus.id, "selectionBus", bus.id)
+            if(user.nb_places && user.id == bus.id) {c.checked = true}
+            create("label", div_bus, "Bus n°" + bus.id)
+        }
+    }
+
+    if(lines){
+        create("div", popup, "Ligne :", ["form-info"])
+        for(let line of lines){
+            let div_line = create("div", popup)
+            let c = createChampRadio(div_line, line.number, "selectionLigne", line.number)
+            if(user.number && user.number == line.number) {c.checked = true}
+            create("label", div_line, "Ligne " + line.number)
+        }
+
+        create("div", popup, "Direction :", ["form-info"])
+
+        let aller = create("div", popup, null, ["div-radio"])
+        createChampRadio(aller, "aller", "selectionDirection", "aller").checked = true
+        create("div", aller, "aller")
+
+        let retour = create("div", popup, null, ["div-radio"])
+        createChampRadio(retour, "retour", "selectionDirection", "retour")
+        create("div", retour, "retour")
+    }
+
+    const btn = create("div", popup, "Valider", ["modifButton"])
+    btn.addEventListener("click", function(){
+        let StartDateTime = document.querySelector("input[name='StartDateTime']").value
+        let EndDateTime = document.querySelector("input[name='EndDateTime']").value
+
+        let participants = participantsTimeslot()
+        let bus_affectes = busesTimeslot()
+        let ligne_affectee = lineTimeslot()
+        let direction_ligne = lineDirectionTimeslot()
+
+        let url = `timeslots/timeslots.php?function=create&beginning=${StartDateTime}&end=${EndDateTime}&type=${type}`
+
+        url += participants ?  `&users=${participants}` : `&users=`
+        url += bus_affectes ? `&buses=${bus_affectes}` : `&buses=`
+        url += ligne_affectee ? `&lines=${ligne_affectee}` : `&lines=`
+        url += ligne_affectee && direction_ligne ? `&directions=${direction_ligne}` : `&directions=`
+
+        axios.get(url).then(function(response){
+            if(response.data){
+                let newDate = new Date(StartDateTime)
+                toggleAgenda(user, newDate, multi)
+                toggleAlert("BRAVO", "Le créneau a bien été ajouté")
+            }
+            else{
+                toggleError("ERREUR", "Le créneau n'a pas pu être ajouté")
+            }
+            popup.remove()
+            main.classList.remove("cache")
+        })
+    })
 }
 
 
@@ -193,6 +349,7 @@ const addDragAndDrop = (div, date, user, multi=false, entites=null) => {
 const createCalandar = (container, date, user=null, multi=false, entites=null) => {
     const body = create("div", container, null, ['calandar__body'])
     const currentDate = new Date(Date.now())
+    const sessionData = JSON.parse(sessionStorage.getItem("userData"))
 
     let initDate = new Date(date)
     let firstDay = getFirstMonday(initDate)
@@ -242,7 +399,74 @@ const createCalandar = (container, date, user=null, multi=false, entites=null) =
         date_courante = new Date(new Date(date_courante).setDate(date_courante.getDate() + 1))
     }
 
+    if(!multi){
+        const actions = create("div", container, null, ["actionsTimeslot", "actionsClosed"])
+
+        const add = create("img", actions, null, ["addTimeslot"])
+        add.src = "src/assets/images/agenda/ajouter.png"
+        add.addEventListener("click", () => modifActions(actions, sessionData['idrole'], firstDay, user, multi, entites))
+        add.title = "Ajouter un créneau"
+    }
     return container
+}
+
+
+const modifActions = (action, id_role, firstDay, user, multi, entites) => {    
+    if(action.classList.contains("actionsClosed")){
+        toggleActionsMenu(action, id_role, firstDay, user, multi, entites)
+    }
+    else{
+        removeActionsMenu(action)
+    }
+}
+
+// fonction qui crée l'icône d'une action de drag & drop
+const createActionItem = (container, nom_action, titre_action, class_name, firstDay, user, multi, entites) => {
+    let action = create("img", container, null, [class_name])
+    action.src = `src/assets/images/agenda/${nom_action}.png`
+    action.title = titre_action
+    action.ondragstart = (e) => e.dataTransfer.setData('text/plain', "action" + nom_action)
+    addDragAndDrop(action, firstDay, user, multi, entites)
+}
+
+// afficher le menu des actions de drag & drop
+const toggleActionsMenu = (action_menu, id_role, firstDay, user, multi, entites) => {
+    action_menu.classList.remove("actionsClosed")
+    action_menu.classList.add("actionsOpened")
+
+    let add = action_menu.querySelector(".addTimeslot")
+    add.src = "src/assets/images/agenda/croix.png"
+
+    let role = parseInt(id_role)
+
+    if(role == 1 && user.firstname){
+        createActionItem(action_menu, "reunion", "Réunion", "actionReunion", firstDay, user, multi, entites)
+    }
+    
+    if(role == 1 || role == 2){
+        createActionItem(action_menu, "conduite", "Conduite", "actionConduite", firstDay, user, multi, entites)
+    }
+    if(role == 3){
+        createActionItem(action_menu, "indispo", "Indisponibilité", "actionIndispo", firstDay, user, multi, entites)
+    }
+}
+
+// enlever le menu des actions de drag & drop
+const removeActionsMenu = (action_menu) => {
+    action_menu.classList.add("actionsClosed")
+    action_menu.classList.remove("actionsOpened")
+
+    
+    let add = action_menu.querySelector(".addTimeslot")
+    add.src = "src/assets/images/agenda/ajouter.png"
+
+    let reunion = document.querySelector(".actionReunion")
+    let conduite = document.querySelector(".actionConduite")
+    let indispo = document.querySelector(".actionIndispo")
+
+    if(reunion){ reunion.remove() }
+    if(conduite){ conduite.remove() }
+    if(indispo){ indispo.remove() }
 }
 
 

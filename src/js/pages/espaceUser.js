@@ -22,13 +22,13 @@ const toggleEspaceUser = () => {
     const nav = create("nav", main, null, ['navBar_User'])
 
     // agenda
-    createMenuElement(nav, () => redirect("/agenda"), "rose", "/src/assets/images/nav_agenda.png", "Voir mon agenda", "Voir mon agenda")
+    createMenuElement(nav, () => redirect("/agenda"), "rose", "src/assets/images/nav_agenda.png", "Voir mon agenda", "Voir mon agenda")
 
     // signaler indispo
-    createMenuElement(nav, () => redirect("/indisponibilite"), "jaune", "/src/assets/images/nav_creneau.png", "Signaler un creneau d'indisponibilité", "Signaler un creneau d'indisponibilité")
+    createMenuElement(nav, () => redirect("/indisponibilite"), "jaune", "src/assets/images/nav_creneau.png", "Signaler un creneau d'indisponibilité", "Signaler un creneau d'indisponibilité")
 
     // notif
-    createMenuElement(nav, () => redirect("/notification-center"), "orange", "/src/assets/images/nav_notif.png", "Afficher les notifications", "Afficher les notifications")
+    createMenuElement(nav, () => redirect("/notification-center"), "orange", "src/assets/images/nav_notif.png", "Afficher les notifications", "Afficher les notifications")
     
     return main
 }
