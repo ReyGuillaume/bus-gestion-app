@@ -284,13 +284,15 @@ function find_users_free($begining, $end){
 
     //array with all the id of the users
     $all_users = bdd()->
-    query("SELECT id FROM `user`");
+    query("SELECT id, id_user_type FROM `user`");
 
     // for each user we check if he is if free on the periode 
     // if yes we add it to the free users array 
     foreach ($all_users as $user) {
-        if(is_free_user($user['id'], $begining, $end)){
-            $free_users[] = $user['id'];
+        if ($user['id_user_type']!= 4) {
+            if (is_free_user($user['id'], $begining, $end)) {
+                $free_users[] = $user['id'];
+            }
         }
     }
 

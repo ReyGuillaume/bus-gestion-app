@@ -412,6 +412,16 @@ function fetch_by_id_reservation ($idReservation) {
 }
 
 /**
+ * Fonction qui renvoie toutes les informations sur une réservation
+ * @param $idTimeslot int l'id du timeslot de la réservation
+ * @return array|false un tableau des informations ou faux
+ */
+function fetch_by_id_timeslot ($idTimeslot) {
+    $result = bdd()->query("SELECT * FROM `reservation` r JOIN reservation_timeslot rt ON r.id_reserv=rt.id_reservation  WHERE rt.`id_timeslot` =  '{$idTimeslot}'");
+    return $result -> fetch();
+}
+
+/**
  * Fonction qui renvoie toutes les réservations d'un client en fonction de son id
  * @param $idClient int l'id du client
  * @return array|false un tableau des réservations ou faux
@@ -527,6 +537,9 @@ switch ($_GET['function']) {
         break;
     case 'fetch_by_id_reservation' :     // idReservation
         $res = fetch_by_id_reservation ($_GET['idReservation']);
+        break;
+    case 'fetch_by_id_timeslot' :     // idTimeslot
+        $res = fetch_by_id_timeslot ($_GET['idTimeslot']);
         break;
     case 'fetch_by_id_client' :     // idClient
         $res = fetch_by_id_client ($_GET['idClient']);

@@ -125,9 +125,11 @@ function toogleUserChoices(choicesDiv){
     // On cree chaque champs 
     axios.get(`users/users.php?function=users`).then((response)=>{
         for(var user of response.data){
-            createChampCheckbox(divCheckboxUsers, `u${user.id}` , "selectionParticipant", user.id);
-            var label = create("label", divCheckboxUsers, user.name + " "+ user.firstname);
-            label.setAttribute("for", `u${user.id}`);
+            if (user.id_user_type != 4) {
+                createChampCheckbox(divCheckboxUsers, `u${user.id}`, "selectionParticipant", user.id);
+                var label = create("label", divCheckboxUsers, user.name + " " + user.firstname);
+                label.setAttribute("for", `u${user.id}`);
+            }
         }
     });
 
@@ -144,7 +146,7 @@ function toogleUserChoices(choicesDiv){
 // BUT with only the one that are free on the periode
 // @param choiceDiv la div dans lequel mettre ça 
 function toogleFreeUserChoices(choicesDiv){
-
+    console.log(choicesDiv)
     // On recupere la div de choix d'utilisateur
     var divCheckboxUsers = document.querySelector("#divCheckboxUsers");
     
@@ -161,6 +163,7 @@ function toogleFreeUserChoices(choicesDiv){
     create("label", divCheckboxUsers, "Choisissez les participants parmis ceux disponibles :");
 
     let axiosUrl = `users/users.php?function=freeUsers&beginning=${StartDateTime}&end=${EndDateTime}`
+
     createCheckBoxOfElements(axiosUrl, "users/users.php?function=user&id=", divCheckboxUsers, "selectionParticipant", (elt => `${elt.name} ${elt.firstname}`), "pd")
     
     // On cree le bouton permettant d'afficher tous les utilisateurs
