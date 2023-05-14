@@ -105,7 +105,7 @@ function create_table_user() {
         `name` VARCHAR(50) NOT NULL,
         `firstname` VARCHAR(50) NOT NULL,
         `birth_date` DATE,
-        `email` VARCHAR(255) NOT NULL,
+        `email` VARCHAR(50) NOT NULL,
         `id_user_type` INT NOT NULL,
         `login` VARCHAR(50) NOT NULL,
         CONSTRAINT pk_user PRIMARY KEY (id),
@@ -288,6 +288,7 @@ create_table_time_slot();
 create_table_user_type();
 create_table_code();
 create_table_user();
+create_table_arret();
 create_table_bus_time_slot();
 create_table_user_time_slot();
 create_table_line_time_slot();

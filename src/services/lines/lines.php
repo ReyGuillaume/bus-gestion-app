@@ -301,6 +301,8 @@ function creneau_couvert ($crenau,$jour, $id_line){
     return true;
 }
 
+
+
 /**
   Fonction qui creer tout les crénaux de conduite nécessaires pour que la semaine donnée soit bien couverte 
   
@@ -313,15 +315,142 @@ function  cover_a_week($week){
     // Recupere toutes les lignes 
     $toute_ligne = bdd()->query("SELECT `number` FROM `line`");
     
-    // Pour chaque ligne verifie qu'elle est bien couverte pour la semaine 
+    // Pour chaque ligne on la couvre pour la semaine 
     $res = true;
     while ($ligne = $toute_ligne->fetch(PDO::FETCH_ASSOC)) {
-        if (!cover_a_line_for_a_week($week, $ligne['number'])){
+        if (!cover_a_line_for_a_week_sql($week, $ligne['number'])){
             $res=false;
         }
     }
     return $res;
 }
+
+function cover_a_line_for_a_week_sql($week, $id_line){
+    // On isole l'année et le numéro de la semaine
+      $year = substr($week, 0, 4);
+      $weekNumber = substr($week, 6, 2);
+      $sql = "";
+      $res = false;
+
+      //On cherche un bus qui serait libre pour la semaine 
+      $free_bus_for_week = find_a_bus_id_free_for_the_week($week);
+      
+      
+      // On creer le jour de depart ( 1 pour lundi )
+      $startDate = new DateTime();
+      $startDate->setISODate($year, $weekNumber, 1);
+      
+      // On parcours chaque jour de la semaine et on le couvre
+      
+      for ($i = 0; $i < 7; $i++) {
+        $date = $startDate->format('Y-m-d');
+        $sql .= couvre_a_line_for_a_day_sql ($date, $id_line, $free_bus_for_week);
+        $startDate->add(new DateInterval('P1D'));
+      }
+
+      //echo($sql);
+      if (!bdd()->query($sql)){
+        $res = true;
+      }
+
+
+        return $res;
+}
+    
+
+
+function couvre_a_line_for_a_day_sql ($jour, $id_line, $free_bus){
+    $sql = "";
+    // On récupère tous les créneaux à couvrir pour cette ligne la en fonction de son type 
+    $id_type_query= bdd()->query("SELECT `id_type` FROM `linetype_line` WHERE `num_line`={$id_line};");
+    $id_type = $id_type_query->fetch();
+    $tous_creneaux = bdd()->query("SELECT * FROM `linetypeconditions` WHERE `id_type` = {$id_type['id_type']};");
+
+    //On cherche un bus qui serait libre pour le jour si on pas trouvé pour la semaine 
+    if($free_bus <0){
+        $free_bus = find_a_bus_id_free_for_the_day($jour);
+       
+    }
+    // On remplit chaque creneau de couverture obligatoire 
+    while ($crenau = $tous_creneaux->fetch(PDO::FETCH_ASSOC)) {
+        $sql .= couvrire_creneau_sql ($crenau,$jour, $id_line, $free_bus);
+        
+    }
+    return $sql;
+}
+
+
+/**
+  Fonction qui renvoit la requete sql pour creer tout les crénaux de conduite nécessaires pour qu'une ligne soit bien couverte pour un créneau de couverture obligatoire donné 
+  
+  @param creneau : Le créneau à couvrire
+  @param jour : Le jour à couvrir
+  @param id_line : la ligne à remplir 
+  
+  @return la requete sql 
+    
+*/
+function couvrire_creneau_sql ($crenau, $jour, $id_line, $free_bus){
+    
+    // On recupere toutes les variables nécessaire 
+    $temps_creneau = 60; //++++ A améliorer car pas très maniable 
+    $heure_courante = $crenau['begin'];
+    $intervalle = $crenau['intervalle'];
+    $sql = "";
+
+    $bdd = bdd();
+
+    while ($heure_courante <= $crenau['end'] ){
+
+        //echo "{$heure_courante}";
+
+        // creation des datetime de debut et de fin 
+        $date_complete_debut = DateTime::createFromFormat('Y-m-d H:i:s', $jour . ' ' . $heure_courante);
+        $date_complete_debut_str = $date_complete_debut->format('Y-m-d H:i:s');
+
+        $datetime_debut = DateTime::createFromFormat('H:i:s', $heure_courante);
+        $datetime_debut->add(new DateInterval('PT60M'));
+        $heure_fin_courante =  $datetime_debut->format('H:i:s');
+
+        $date_complete_fin = DateTime::createFromFormat('Y-m-d H:i:s', $jour . ' ' . $heure_fin_courante);
+        $date_complete_fin_str = $date_complete_fin->format('Y-m-d H:i:s');
+
+      
+        // On entre un creneau dans la base de donnée
+        $nv = $bdd->query("INSERT INTO `timeslot`(`begining`, `end`, `id_time_slot_type`) VALUES ('{$date_complete_debut_str}', '{$date_complete_fin_str}', 1);");
+        
+
+        // récupérer l'ID généré automatiquement pour le nouveau timeslot
+        $id_timeslot = $bdd->lastInsertId();
+        $sql .= "INSERT INTO `line_timeslot`(`num_line`, `id_time_slot`, `direction`) VALUES ('{$id_line}','{$id_timeslot}','aller');";
+        
+     
+        // On y ajoute un bus si possible 
+        if ($free_bus<0 ){
+            $sql .=  add_a_bus_to_timeslot_sql($id_timeslot);
+        }else{
+            $sql .= "INSERT INTO `bus_timeslot`(`id_bus`, `id_time_slot`) VALUES ({$free_bus}, {$id_timeslot});";
+      
+        }
+        // On y ajoute un conducteur si possible
+        //$sql .= add_a_driver_to_timeslot_sql($id_timeslot);
+
+        /*if (($bus_relie==false )||( $driver_relie==false )){
+            $res = false;
+        }*/
+
+     
+        // On avance 
+        $datetime_courante = DateTime::createFromFormat('H:i:s', $heure_courante);
+        $datetime_courante->add(new DateInterval("PT{$intervalle}M"));
+        $heure_courante =  $datetime_courante->format('H:i:s');
+    } 
+    //echo("{$res}");
+    return $sql ; 
+}
+
+
+
 
 /**
   Fonction qui creer tout les crénaux de conduite nécessaires pour qu'une ligne soit bien couverte pour une semaine donnée 
@@ -333,25 +462,25 @@ function  cover_a_week($week){
     
 */
 function cover_a_line_for_a_week($week, $id_line){
-// On isole l'année et le numéro de la semaine
-  $year = substr($week, 0, 4);
-  $weekNumber = substr($week, 6, 2);
-
-  // On creer le jour de depart ( 1 pour lundi )
-  $startDate = new DateTime();
-  $startDate->setISODate($year, $weekNumber, 1);
-
-  // On parcours chaque jour de la semaine et on le couvre
-  $res = true;
-  for ($i = 0; $i < 7; $i++) {
-    $date = $startDate->format('Y-m-d');
-    if (!couvre_a_line_for_a_day ($date, $id_line)){
-        $res=false;
+    // On isole l'année et le numéro de la semaine
+      $year = substr($week, 0, 4);
+      $weekNumber = substr($week, 6, 2);
+    
+      // On creer le jour de depart ( 1 pour lundi )
+      $startDate = new DateTime();
+      $startDate->setISODate($year, $weekNumber, 1);
+    
+      // On parcours chaque jour de la semaine et on le couvre
+      $res = true;
+      for ($i = 0; $i < 7; $i++) {
+        $date = $startDate->format('Y-m-d');
+        if (!couvre_a_line_for_a_day ($date, $id_line)){
+            $res=false;
+        }
+        $startDate->add(new DateInterval('P1D'));
+      }
+        return $res;
     }
-    $startDate->add(new DateInterval('P1D'));
-  }
-    return $res;
-}
 
 /**
   Fonction qui creer tout les crénaux de conduite nécessaires pour qu'une ligne soit bien couverte pour un jour donné 
@@ -377,6 +506,7 @@ function couvre_a_line_for_a_day ($jour, $id_line){
     }
     return $res;
 }
+
 
 /**
   Fonction qui creer tout les crénaux de conduite nécessaires pour qu'une ligne soit bien couverte pour un créneau de couverture obligatoire donné 

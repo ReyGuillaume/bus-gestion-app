@@ -223,11 +223,41 @@ const toggleInscriptions = () => {
     return main
 }
 
+const toggleGestionArrets= () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+
+    // bouton de retour
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
+    create("h2", main, "Gestion des arrêts")
+    create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
+
+    const nav = create("nav", main, null, ['liste_gestion'])
+
+    const b1 = create("button", nav, 'Ajouter un arrêts', ['gestion_arrets', "unstyled-button"])
+    b1.addEventListener("click", () => redirect("/arrets/ajout"))
+    b1.title = 'Ajouter un arrêts'
+
+    
+    const b2 = create("button", nav, "Modifier un arrêts", ['gestion_arrets', "unstyled-button"])
+    b2.addEventListener("click", () => redirect("/arrets/modification"))
+    b2.title = "Modifier un arrêts"
+/*
+    const b3 = create("button", nav, "Supprimer un arrêts", ['gestion_arrets', "unstyled-button"])
+    b3.addEventListener("click", () => redirect("/arrets/suppression"))
+    b3.title = "Supprimer un arrêts"
+*/
+    return main
+}
 export {
     toggleEspaceAdmin,
     toggleGestionUsers,
     toggleGestionBus,
     toggleGestionLigne,
     toggleReservation,
-    toggleInscriptions
+    toggleInscriptions,
+    toggleGestionArrets
 }

@@ -110,3 +110,23 @@ function add_a_driver_to_timeslot($idCreneau){
     return $res; 
     
 }
+
+
+function add_a_driver_to_timeslot_sql($idCreneau){
+    
+    // On recupere le timeslot en question
+    $creneau = fetch_time_slot($idCreneau);
+
+    // On regarde si un conducteur est libre pour ce timeslot 
+    $free_drivers = find_drivers_free($creneau['begining'], $creneau['end']);
+    
+    // On regarde si un conducteur est libre et si oui on le relie
+    if (count($free_drivers) > 0) {
+        $random_index = rand(0, count($free_drivers) - 1);
+        $res = "INSERT INTO `user_timeslot`(`id_user`, `id_time_slot`) VALUES({$free_drivers[$random_index]}, {$idCreneau});";
+        } 
+
+    //on indique si l'ajout c'est bien passé 
+    return $res; 
+    
+}
