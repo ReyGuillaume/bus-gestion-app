@@ -1,6 +1,7 @@
 <?php
 // accès à une fonction bdd() qui renvoie une instance de PDO
 include_once "../connexion.php";
+include_once "buses_free.php";
 
 // ======================== Bus ========================
 
