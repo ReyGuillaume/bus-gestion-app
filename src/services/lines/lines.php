@@ -322,6 +322,7 @@ function  cover_a_week($week){
             $res=false;
         }
     }
+    $res = true;
     return $res;
 }
 
