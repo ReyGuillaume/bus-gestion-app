@@ -87,6 +87,9 @@ const handleDrop = (e, date, user, multi=false, entites=null) => {
     else if(e.dataTransfer.getData('text/plain') == "actionconduite" && e.target.classList.contains("drop")){
         toggleNewTimeSlot("Conduite", e, date, user, multi, entites)
     }
+    else if(e.dataTransfer.getData('text/plain') == "actionastreinte" && e.target.classList.contains("drop")){
+        toggleNewTimeSlot("Astreinte", e, date, user, multi, entites)
+    }
 }
 
 // afficher une pop-up pour créer un créneau en drag & drop
@@ -151,12 +154,21 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entite
         type = 2
         await axios.get(`users/users.php?function=users`).then((res) => users = res.data)
     }
-    else{
+    else if(nom == "Indisponibilité"){
         type = 3
         let user_indiso = createChampCheckbox(popup, user.id, "selectionParticipant", user.id)
         user_indiso.checked = true
         user_indiso.style.display = "none"
     }
+    else{
+        type = 5
+        let div_user = create("div", popup)
+        createChampCheckbox(div_user, user.id, "selectionParticipant", user.id).checked = true
+        create("label", div_user, user.firstname.substr(0,1) + "." + user.name.toUpperCase())
+        await axios.get(`buses/buses.php?function=buses`).then((res) => buses = res.data)
+    }
+
+    console.log(type)
     
     if(users){
         create("div", popup, "Participants :", ["form-info"])
@@ -439,15 +451,21 @@ const toggleActionsMenu = (action_menu, id_role, firstDay, user, multi, entites)
 
     let role = parseInt(id_role)
 
-    if(role == 1 && user.firstname){
+    // Réunion : Directeur -> Utilisateur ou lui-même
+    if(role == 1 && (user.firstname || (!user.id && !user.number))){
         createActionItem(action_menu, "reunion", "Réunion", "actionReunion", firstDay, user, multi, entites)
     }
-    
-    if(role == 1 || role == 2){
+    // Conduite : Directeur - Resp Log -> Bus - Chauffeur - Ligne
+    if((role == 1 || role == 2) && (user.nb_places || user.id_user_type == 3 || user.number)){
         createActionItem(action_menu, "conduite", "Conduite", "actionConduite", firstDay, user, multi, entites)
     }
+    // Indispo : Chauffeur
     if(role == 3){
         createActionItem(action_menu, "indispo", "Indisponibilité", "actionIndispo", firstDay, user, multi, entites)
+    }
+    // Astreinte : Directeur - Resp Log -> Chauffeur
+    if((role == 1 || role == 2) && user.id_user_type == 3){
+        createActionItem(action_menu, "astreinte", "Astreinte", "actionAstreinte", firstDay, user, multi, entites)
     }
 }
 
@@ -463,10 +481,12 @@ const removeActionsMenu = (action_menu) => {
     let reunion = document.querySelector(".actionReunion")
     let conduite = document.querySelector(".actionConduite")
     let indispo = document.querySelector(".actionIndispo")
+    let astreinte = document.querySelector(".actionAstreinte")
 
     if(reunion){ reunion.remove() }
     if(conduite){ conduite.remove() }
     if(indispo){ indispo.remove() }
+    if(astreinte){ astreinte.remove() }
 }
 
 
