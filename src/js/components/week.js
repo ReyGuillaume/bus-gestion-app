@@ -450,11 +450,11 @@ const toggleActionsMenu = (action_menu, id_role, firstDay, user, multi, entites)
     let role = parseInt(id_role)
 
     // Réunion : Directeur -> Utilisateur ou lui-même
-    if(role == 1 && (user.firstname || (!user.id && !user.number))){
+    if(role == 1 && (!user || (user.firstname || (!user.id && !user.number)))){
         createActionItem(action_menu, "reunion", "Réunion", "actionReunion", firstDay, user, multi, entites)
     }
     // Conduite : Directeur - Resp Log -> Bus - Chauffeur - Ligne
-    if((role == 1 || role == 2) && (user.nb_places || user.id_user_type == 3 || user.number)){
+    if(((role == 1 || role == 2) && user) && (user.nb_places || user.id_user_type == 3 || user.number)){
         createActionItem(action_menu, "conduite", "Conduite", "actionConduite", firstDay, user, multi, entites)
     }
     // Indispo : Chauffeur
@@ -462,7 +462,7 @@ const toggleActionsMenu = (action_menu, id_role, firstDay, user, multi, entites)
         createActionItem(action_menu, "indispo", "Indisponibilité", "actionIndispo", firstDay, user, multi, entites)
     }
     // Astreinte : Directeur - Resp Log -> Chauffeur
-    if((role == 1 || role == 2) && user.id_user_type == 3){
+    if(((role == 1 || role == 2) && user) && user.id_user_type == 3){
         createActionItem(action_menu, "astreinte", "Astreinte", "actionAstreinte", firstDay, user, multi, entites)
     }
 }
