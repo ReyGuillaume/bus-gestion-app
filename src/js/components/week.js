@@ -163,20 +163,18 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entite
     else{
         type = 5
         let div_user = create("div", popup)
-        createChampCheckbox(div_user, user.id, "selectionParticipant", user.id).checked = true
-        create("label", div_user, user.firstname.substr(0,1) + "." + user.name.toUpperCase())
+        createChampCheckbox(div_user, `u${user.id}`, "selectionParticipant", user.id).checked = true
+        create("label", div_user, user.firstname.substr(0,1) + "." + user.name.toUpperCase()).setAttribute("for", `u${user.id}`)
         await axios.get(`buses/buses.php?function=buses`).then((res) => buses = res.data)
     }
-
-    console.log(type)
     
     if(users){
         create("div", popup, "Participants :", ["form-info"])
         for(let user_data of users){
             let div_user = create("div", popup)
-            let c = createChampCheckbox(div_user, user_data.id, "selectionParticipant", user_data.id)
+            let c = createChampCheckbox(div_user, `u${user_data.id}`, "selectionParticipant", user_data.id)
             if(user.firstname && user.id == user_data.id) {c.checked = true}
-            create("label", div_user, user_data.firstname.substr(0,1) + "." + user_data.name.toUpperCase())
+            create("label", div_user, user_data.firstname.substr(0,1) + "." + user_data.name.toUpperCase()).setAttribute("for", `u${user_data.id}`)
         }
     }
 
@@ -184,9 +182,9 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entite
         create("div", popup, "Bus :", ["form-info"])
         for(let bus of buses){
             let div_bus = create("div", popup)
-            let c = createChampCheckbox(div_bus, bus.id, "selectionBus", bus.id)
+            let c = createChampCheckbox(div_bus, `b${bus.id}`, "selectionBus", bus.id)
             if(user.nb_places && user.id == bus.id) {c.checked = true}
-            create("label", div_bus, "Bus n°" + bus.id)
+            create("label", div_bus, "Bus n°" + bus.id).setAttribute("for", `b${bus.id}`)
         }
     }
 
@@ -194,9 +192,9 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entite
         create("div", popup, "Ligne :", ["form-info"])
         for(let line of lines){
             let div_line = create("div", popup)
-            let c = createChampRadio(div_line, line.number, "selectionLigne", line.number)
+            let c = createChampRadio(div_line, `l${line.number}`, "selectionLigne", line.number)
             if(user.number && user.number == line.number) {c.checked = true}
-            create("label", div_line, "Ligne " + line.number)
+            create("label", div_line, "Ligne " + line.number).setAttribute("for", `l${line.number}`)
         }
 
         create("div", popup, "Direction :", ["form-info"])
@@ -447,7 +445,7 @@ const toggleActionsMenu = (action_menu, id_role, firstDay, user, multi, entites)
     action_menu.classList.add("actionsOpened")
 
     let add = action_menu.querySelector(".addTimeslot")
-    add.src = "src/assets/images/agenda/croix.png"
+    add.style.transform = 'rotate(45deg)'
 
     let role = parseInt(id_role)
 
@@ -476,7 +474,7 @@ const removeActionsMenu = (action_menu) => {
 
     
     let add = action_menu.querySelector(".addTimeslot")
-    add.src = "src/assets/images/agenda/ajouter.png"
+    add.style.transform = 'rotate(0deg)'
 
     let reunion = document.querySelector(".actionReunion")
     let conduite = document.querySelector(".actionConduite")

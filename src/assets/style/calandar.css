@@ -80,6 +80,7 @@
   bottom: 5px;
   right: 5px;
   background-color: lightgreen;
+  transition: 0.25s;
 }
 .actionReunion{
   position: fixed;
