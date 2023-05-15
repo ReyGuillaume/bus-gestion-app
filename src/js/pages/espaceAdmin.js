@@ -3,6 +3,7 @@ import { createMenuElement } from "../components/menuItem";
 import { redirect, redirectUser, toggleAlertMessage } from "../utils/redirection";
 import axios from "axios";
 import { displayReserv, displayInscr } from "./gestionAbonne.js";
+import {removeContainerAndRemoveCacheClass} from "./userTask.js";
 
 
 const toggleEspaceAdmin = () => {
@@ -62,7 +63,11 @@ const toggleEspaceAdmin = () => {
     createMenuElement(nav, () => redirect("/reservation"), "rouge", "src/assets/images/nav_reservation.png", "Voir les réservations", "Voir les réservations")
 
     // inscriptions
-    createMenuElement(nav, () => redirect("/inscriptions"), "bleu", "src/assets/images/nav_profil.png", "Voir les inscriptions", "Voir les inscriptions")
+    createMenuElement(nav, () => redirect("/inscriptions"), "bleu", "/src/assets/images/nav_profil.png", "Voir les inscriptions", "Voir les inscriptions")
+    
+    // arrets
+    createMenuElement(nav, () => redirect("/arrets"), "rose", "src/assets/images/nav_bus.png", 'Gérer les arrets', 'Gérer les arrets')
+
     return main
 }
 
@@ -182,6 +187,9 @@ const toggleGestionLigne = () => {
 }
 
 const toggleReservation = () => {
+    // affiche le potentiel message d'alerte en stock
+    toggleAlertMessage()
+
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -192,7 +200,7 @@ const toggleReservation = () => {
 
     create("h2", main, "Voir les réservations")
 
-    let divAllReserv = create("div", main);
+    let divAllReserv = create("div", main, null, ["divAllReserv"]);
 
     axios.get(`timeslots/timeslots.php?function=fetch_all_reservation_attente`).then((response)=>{
         displayReserv (divAllReserv, response.data);
@@ -221,11 +229,41 @@ const toggleInscriptions = () => {
     return main
 }
 
+const toggleGestionArrets= () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+
+    // bouton de retour
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/espace-admin"))
+    back.title = "Retour en arrière"
+
+    create("h2", main, "Gestion des arrêts")
+    create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
+
+    const nav = create("nav", main, null, ['liste_gestion'])
+
+    const b1 = create("button", nav, 'Ajouter un arrêts', ['gestion_arrets', "unstyled-button"])
+    b1.addEventListener("click", () => redirect("/arrets/ajout"))
+    b1.title = 'Ajouter un arrêts'
+
+    
+    const b2 = create("button", nav, "Modifier un arrêts", ['gestion_arrets', "unstyled-button"])
+    b2.addEventListener("click", () => redirect("/arrets/modification"))
+    b2.title = "Modifier un arrêts"
+/*
+    const b3 = create("button", nav, "Supprimer un arrêts", ['gestion_arrets', "unstyled-button"])
+    b3.addEventListener("click", () => redirect("/arrets/suppression"))
+    b3.title = "Supprimer un arrêts"
+*/
+    return main
+}
 export {
     toggleEspaceAdmin,
     toggleGestionUsers,
     toggleGestionBus,
     toggleGestionLigne,
     toggleReservation,
-    toggleInscriptions
+    toggleInscriptions,
+    toggleGestionArrets
 }

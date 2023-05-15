@@ -6,7 +6,10 @@ import { create, createChamp, createChampRadio } from "../utils/domManipulation"
 
 import axios from 'axios';
 
-function toggleEspaceAbonne() {
+export function toggleEspaceAbonne() {
+    // affiche le potentiel message d'alerte en stock
+    toggleAlertMessage()
+
     const main = document.querySelector("#app");
     main.replaceChildren("");
 
@@ -35,13 +38,16 @@ function toggleEspaceAbonne() {
 
 
     // reservation
-    createMenuElement(nav, () => redirect("/reservations"), "rouge", "src/assets/images/nav_reservation.png", "Gérer mes réservations", "Gérer mes réservations")
+    createMenuElement(nav, () => redirect("/reservation-abonne"), "rouge", "src/assets/images/nav_reservation.png", "Gérer mes réservations", "Gérer mes réservations")
 
     return main
 }
 
 
-function toggleInfoAbonne(){
+export function toggleInfoAbonne(){
+    // affiche le potentiel message d'alerte en stock
+    toggleAlertMessage()
+
     const main = document.querySelector("#app");
     main.replaceChildren("");
 
@@ -90,6 +96,9 @@ function toggleInfoAbonne(){
 
 
 function toogleReservAbonne (){
+    // affiche le potentiel message d'alerte en stock
+    toggleAlertMessage()
+
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -103,23 +112,34 @@ function toogleReservAbonne (){
     const nav = create("div", main)
 
     let b = create("button", nav, 'Ajouter une réservation', ['gestion_users', "unstyled-button"])
-    b.addEventListener("click", () => redirect('/reservations/ajout'))
+    b.addEventListener("click", () => redirect('/reservation-abonne/ajout'))
     b.title = 'Ajouter une réservation'
 
-    b = create("button", nav, "Modifier une réservation", ['gestion_users', "unstyled-button"])
-    b.addEventListener("click", () => redirect('/reservations/modification'))
-    b.title = "Modifier une réservation"
-
-    b = create("button", nav, "Supprimer une réservation", ['gestion_users', "unstyled-button"])
-    b.addEventListener("click", () => redirect('/reservations/suppression'))
-    b.title = "Supprimer une réservation"
-
     b = create("button", nav, "Voir les réservations", ['gestion_users', "unstyled-button"])
-    b.addEventListener("click", () => redirect('/reservations/liste'))
+    b.addEventListener("click", () => redirect('/reservation-abonne/visualisation'))
     b.title = "Voir les réservations"
 
     return main
 }
+
+
+  
+async function  showSuggestions(input) {
+    let inputValue = input.value.toLowerCase().trim(); 
+
+    if (inputValue.length < 2) {
+      return; // ne rien faire si l'utilisateur n'a saisi que 1 caractère ou moins
+    }
+
+    return await axios.get("arrets/arrets.php?function=all_arret").then((response)=>{
+        let arrets = response.data;
+
+        let filteredArrets = arrets.filter(arret => arret.name.toLowerCase().startsWith(inputValue));
+
+        return filteredArrets;
+    });
+  }
+  
 
 
 function toggleAddReservation(){
@@ -128,7 +148,7 @@ function toggleAddReservation(){
 
     // bouton de retour
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    back.addEventListener("click", () => redirect("/reservations"))
+    back.addEventListener("click", () => redirect("/reservation-abonne"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Gestion des réservations")
@@ -142,11 +162,76 @@ function toggleAddReservation(){
     // Creation of the champ
     const div_depart = create("div", form, null, ["form-div"])
     create("label", div_depart, "Entrez le nom de l'arret de départ :", ["label-info"]);
-    createChamp(div_depart, "text", "arretDepart");
+    //createChamp(div_depart, "text", "arretDepart");
 
+
+    // Filtrage 
+
+    let input_depart = createChamp(div_depart, "text", "arretDepart");
+    let arretList_depart = create("select", div_depart, ["arret-list"]);
+    
+    
+    input_depart.addEventListener("input", async function() {
+        
+        let filteredArrets = await showSuggestions(input_depart);
+       
+        if (filteredArrets) {
+        // supprimer les options précédentes
+        arretList_depart.innerHTML = ""; 
+        arretList_depart.size = filteredArrets.length;
+        
+        // remplir automatiquement le champ de saisie
+        filteredArrets.forEach(arret => {
+            let option = document.createElement("option");
+            option.textContent = arret.name;
+            arretList_depart.appendChild(option);
+        });
+
+        arretList_depart.addEventListener("click", () => {
+            if (arretList_depart.selectedIndex != -1){
+            let selectedOption = arretList_depart.options[arretList_depart.selectedIndex];
+            input_depart.value = selectedOption.value;
+            arretList_depart.replaceChildren(""); 
+            arretList_depart.size = 0;
+            }
+
+        });
+    }
+    });
     const div_arrivee = create("div", form, null, ["form-div"])
     create("label", div_arrivee, "Entrez le nom de l'arret d'arrivée :", ["label-info"]);
-    createChamp(div_arrivee, "text", "arretArrivee");
+    //createChamp(div_arrivee, "text", "arretArrivee");
+
+    let input_arrive = createChamp(div_arrivee, "text", "arretArrivee");
+    let arretList_arrive = create("select", div_arrivee, ["arret-list"]);
+    
+    
+    input_arrive.addEventListener("input", async function() {
+
+        let filteredArretsArrive =  await showSuggestions(input_arrive);
+
+        if (filteredArretsArrive) {
+        // supprimer les options précédentes
+        arretList_arrive.innerHTML = ""; 
+        arretList_arrive.size = filteredArretsArrive.length;
+
+        // remplir automatiquement le champ de saisie
+        filteredArretsArrive.forEach(arret => {
+            let option = document.createElement("option");
+            option.textContent = arret.name;
+            arretList_arrive.appendChild(option);
+        });
+
+        arretList_arrive.addEventListener("click", () => {
+            if (arretList_arrive.selectedIndex != -1){
+            let selectedOption2 = arretList_arrive.options[arretList_arrive.selectedIndex];
+            input_arrive.value = selectedOption2.value;
+            arretList_arrive.replaceChildren(""); 
+            arretList_arrive.size = 0;
+            }
+        });
+    }
+    });
 
     const date = create("div", form, null, ["form-div"])
     create("label", date, "Entrez la date et l'horaire de départ :", ["label-info"]);
@@ -163,23 +248,21 @@ function toggleAddReservation(){
         let arretArrive = document.querySelector("input[name='arretArrivee']").value;
         const idClient = JSON.parse(sessionStorage.getItem("userData"))["id"];
 
-        fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=create_reservation&arretDepart=`+arretDepart+`&arretArrive=`+arretArrive+`&dateDepart=`+dateDepart+`&idClient=`+idClient, "/espace-abonne", "La réservation a bien été envoyée", "La réservation n'a pas pu être envoyée")
+        fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=create_reservation&arretDepart=`+arretDepart+`&arretArrive=`+arretArrive+`&dateDepart=`+dateDepart+`&idClient=`+idClient, "/reservation-abonne", "La réservation a bien été envoyée", "La réservation n'a pas pu être envoyée")
     })
 
     return main
 }
 
-const createReservationRadio = (form, container, reservation) => {
-    //Ajout d'un evenement au clic d'un radio
-    createChampRadio(container, "r"+reservation.id_reserv , "selectionReservation", reservation['id_reserv'])
-    .addEventListener('click', function(){
-        // Recuperation de la ligne a modifier
-        var numberReservationToModify = valueFirstElementChecked("input[name='selectionReservation']");
-        
-        axios.get(`timeslots/timeslots.php?function=fetch_by_id_reservation&idReservation=${numberReservationToModify}`).then((responseReservation) =>{
+const createReservationRadio = (form, container, reservation, route) => {
+        axios.get(`timeslots/timeslots.php?function=fetch_by_id_reservation&idReservation=${reservation.id_reserv}`).then((responseReservation) =>{
 
             // Creation du formulaire pré remplie de modif de la reservation
             form.replaceChildren("")
+            // bouton de retour
+            const back = create("button", form, '<< Retour', ['return', "unstyled-button"])
+            back.onclick = () => form.replaceChildren("");
+            back.title = "Retour en arrière"
             
             const div_depart = create("div", form, null, ["form-div"])
             create("label", div_depart, "Entrez le nom de l'arret de départ :", ["label-info"]);
@@ -199,15 +282,12 @@ const createReservationRadio = (form, container, reservation) => {
                 let dateDepart = document.querySelector("input[name='horaireDepart']").value;
                 let arretDepart = document.querySelector("input[name='arretDepart']").value;
                 let arretArrive = document.querySelector("input[name='arretArrivee']").value;
-                const idReserv = responseReservation.data["id_reserv"];
+                const idClient = responseReservation.data["id_client"];
 
-
-                fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=update_reservation&arretDepart=`+arretDepart+`&arretArrive=`+arretArrive+`&dateDepart=`+dateDepart+`&idReservation=`+idReserv, "/espace-abonne", "La réservation a bien été modifiée", "La réservation n'a pas pu être modifiée")
+                form.replaceChildren("")
+                fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=create_reservation&arretDepart=`+arretDepart+`&arretArrive=`+arretArrive+`&dateDepart=`+dateDepart+`&idClient=`+idClient, route, "La réservation a bien été ajoutée", "La réservation n'a pas pu être ajoutée")
             })
         })
-    })
-    const date = reservation['dateDepart'].substring(8,10)+"/"+reservation['dateDepart'].substring(5,7)+"/"+reservation['dateDepart'].substring(0,4)
-    create("label", container, "Réservation du "+ date+ " depuis "+ reservation['arretDepart']+ " vers "+ reservation['arretArrive'], ["label-info"]).setAttribute('for', "r"+reservation['id_reserv']);
 }
 
 function toggleUpdateReservation(){
@@ -216,6 +296,7 @@ function toggleUpdateReservation(){
 
     // bouton de retour
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+
     back.addEventListener("click", () => redirect("/reservations"))
     back.title = "Retour en arrière"
 
@@ -277,8 +358,35 @@ function toggleDeleteReservation(){
     bouton.addEventListener("click", function(){
         var id_reserv = valueFirstElementChecked("input[name='idReservation']");
         
-        fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=delete_reservation&idReservation=`+id_reserv, "/espace-abonne", "La réservation a bien été supprimée", "La réservation n'a pas pu être supprimée")
+        fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=delete_reservation&idReservation=`+id_reserv, "/reservation-abonne", "La réservation a bien été supprimée", "La réservation n'a pas pu être supprimée")
     })
+
+
+    return main
+}
+
+function toggleSeeModeReservation(idClient, etat){
+
+    const main = document.querySelector("#app")
+
+    const old_divAllReserv = document.querySelector(".divAllReserv")
+
+    if(old_divAllReserv){
+        old_divAllReserv.remove()
+    }
+
+    let divAllReserv = create("div", main, null, ['divAllReserv']);
+
+    if (etat != "all"){
+        axios.get(`timeslots/timeslots.php?function=fetch_by_id_client_and_etat&idClient=`+idClient+`&etat=`+etat).then((response)=>{
+            displayReserv (divAllReserv, response.data);
+        })
+    } else {
+        axios.get(`timeslots/timeslots.php?function=fetch_by_id_client&idClient=` + idClient).then((response) => {
+            displayReserv(divAllReserv, response.data);
+        })
+    }
+
 
 
     return main
@@ -286,6 +394,8 @@ function toggleDeleteReservation(){
 
 
 function toggleSeeReservation(){
+    // affiche le potentiel message d'alerte en stock
+    toggleAlertMessage()
 
     const main = document.querySelector("#app")
     main.replaceChildren("")
@@ -294,59 +404,58 @@ function toggleSeeReservation(){
     const idClient = JSON.parse(sessionStorage.getItem("userData")).id;
 
     // bouton de retour
+
     let b = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    b.addEventListener("click", () => redirect("/reservations"))
+    b.addEventListener("click", () => redirect("/reservation-abonne"))
     b.title = "Retour en arrière"
 
-    create("h2", main, "Gestion des réservations")
-    create("h3", main, "Voir les réservations")
-    create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
+    const nav = create("ul", main, null, ['navNotif']);
+    let listeStatus = ["en attente", "validées", "refusées", "toutes"];
 
-    const nav = create("nav", main, null, ['liste_gestion'])
+    var divTitres = create("div", main, null, ['divTitresNotif']);
+    create("p", divTitres, "Réservation");
+    create("hr", divTitres);
+    create("p", divTitres, "Actions");
+    toggleSeeModeReservation(idClient, "all");
 
-    b = create("button", nav, "Voir les réservations en attente", ['gestion_users', "unstyled-button"])
-    b.addEventListener("click", () => toggleSeeModeReservation(idClient, "attente"))
-    b.title ="Voir les réservations en attente"
+    for(var status of listeStatus){
+        // Au clic du choix de type de créneau on affiche les autres infos à choisir
+        let li = create("li", nav, null, ['navNotif_item']);
+        var radio = createChampRadio(li, status , "selectionStatus", status);
+        radio.style.position = "fixed";
+        radio.style.opacity = 0;
 
-    b = create("button", nav, "Voir les réservations validées", ['gestion_users', "unstyled-button"])
-    b.addEventListener("click", () => toggleSeeModeReservation(idClient, "valide"))
-    b.title = "Voir les réservations validées"
+        radio.addEventListener('click', async function () {
+            // Recuperation du type de réservation sélectionné
+            var statusToHandle = valueFirstElementChecked("input[name='selectionStatus']");
 
-    b = create("button", nav, "Voir les réservations refusées", ['gestion_users', "unstyled-button"])
-    b.addEventListener("click", () => toggleSeeModeReservation(idClient, "refuse"))
-    b.title ="Voir les réservations refusées"
-}
+            switch (statusToHandle) {
+                case 'en attente' :
+                    toggleSeeModeReservation(idClient, "attente");
+                    break;
+                case 'validées' :
+                    toggleSeeModeReservation(idClient, "valide");
+                    break;
+                case 'refusées' :
+                    toggleSeeModeReservation(idClient, "refuse");
+                    break;
+                default :
+                    toggleSeeModeReservation(idClient, "all");
+                    break;
 
+            }
+        });
 
-function toggleSeeModeReservation(idClient, etat){
-
-    const main = document.querySelector("#app")
-    main.replaceChildren("")
-
-    // bouton de retour
-    let b = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    b.addEventListener("click", () => redirect("/reservations"))
-    b.title = "Retour en arrière"
-
-    create("h2", main, "Gestion des réservations")
-    create("h3", main, "Voir les réservations")
-
-    let divAllReserv = create("div", main);
-
-    axios.get(`timeslots/timeslots.php?function=fetch_by_id_client_and_etat&idClient=`+idClient+`&etat=`+etat).then((response)=>{
-        displayReserv (divAllReserv, response.data);
-    })
-
-
-    return main
+        var label = create("label", li, status, ["navNotif_name"]);
+        label.setAttribute("for", status);
+    }
 }
 
 export {
-    toggleEspaceAbonne,
-    toggleInfoAbonne,
     toogleReservAbonne,
     toggleAddReservation,
     toggleUpdateReservation,
+    createReservationRadio,
     toggleDeleteReservation,
     toggleSeeReservation
 }

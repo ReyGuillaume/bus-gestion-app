@@ -105,7 +105,7 @@ function create_table_user() {
         `name` VARCHAR(50) NOT NULL,
         `firstname` VARCHAR(50) NOT NULL,
         `birth_date` DATE,
-        `email` VARCHAR(255) NOT NULL,
+        `email` VARCHAR(50) NOT NULL,
         `id_user_type` INT NOT NULL,
         `login` VARCHAR(50) NOT NULL,
         CONSTRAINT pk_user PRIMARY KEY (id),
@@ -206,8 +206,8 @@ function create_table_creneau_couverture(){
 function create_table_notification() {
     $sql = "CREATE TABLE IF NOT EXISTS notification (
         `id_notif` INT NOT NULL AUTO_INCREMENT,
-        `title` VARCHAR(200) NOT NULL,
-        `message` VARCHAR(500) NOT NULL,
+        `title` TEXT NOT NULL,
+        `message` TEXT NOT NULL,
         `date` DATETIME DEFAULT CURRENT_TIMESTAMP,
         `recipient` INT NOT NULL,
         `status` ENUM('read','unread', 'archive'),
@@ -266,6 +266,18 @@ function create_table_inscription() {
 }
 
 
+/**
+ * Execute la requête SQL qui crée la table arrets
+ */
+
+ function create_table_arret() {
+    $sql = "CREATE TABLE IF NOT EXISTS arret (
+        `id` INT NOT NULL AUTO_INCREMENT,
+        `name` VARCHAR(200) NOT NULL UNIQUE,
+        CONSTRAINT pk_arret PRIMARY KEY (id)
+    )";
+    $stm = bdd()->query($sql);
+}
 
 // ==================== Création des tables de la base ====================
 create_table_bus_type();
@@ -276,6 +288,7 @@ create_table_time_slot();
 create_table_user_type();
 create_table_code();
 create_table_user();
+create_table_arret();
 create_table_bus_time_slot();
 create_table_user_time_slot();
 create_table_line_time_slot();
@@ -285,7 +298,6 @@ create_table_creneau_couverture();
 create_table_notification();
 create_table_reservation();
 create_table_reservation_timeslot();
-create_table_inscription();
 // ==================== Instanciation des types de créneaux ====================
 $timeSlotTypes = array('Conduite', 'Réunion', 'Indisponibilité', 'Réservation', 'Astreinte');
 

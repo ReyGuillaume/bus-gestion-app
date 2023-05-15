@@ -4,9 +4,10 @@ import { toggleAccueil } from '../pages/accueil'
 import { toggleConnexion, toggleInscriptionForm } from '../pages/connect'
 import { disconnectUser } from '../pages/disconnect'
 import { toggle404 } from '../pages/404'
-import { toggleEspaceAdmin, toggleGestionBus, toggleGestionLigne, toggleGestionUsers, toggleReservation, toggleInscriptions } from '../pages/espaceAdmin'
+import { toggleEspaceAdmin, toggleGestionBus, toggleGestionLigne,toggleGestionArrets, toggleGestionUsers, toggleReservation, toggleInscriptions } from '../pages/espaceAdmin'
 import { toggleEspaceUser } from '../pages/espaceUser'
 import { toggleAddReservation, toggleDeleteReservation, toggleEspaceAbonne, toggleInfoAbonne, toggleSeeReservation, toggleUpdateReservation, toogleReservAbonne } from '../pages/espaceAbonne'
+import {toggleAddArrets, toggleModifyArrets} from '../pages/gestionArrets'
 import { toggleNotificationCenter } from '../pages/notificationCenter'
 import { toggleAddCreneau } from '../pages/gestionTimeslots'
 import { toggleAjoutUser, toggleModifyUser, toggleSupprimeUser } from '../pages/gestionUsers'
@@ -73,6 +74,14 @@ router.on('/reservations/ajout', toggleAddReservation)
 router.on('/reservations/modification', toggleUpdateReservation)
 router.on('/reservations/suppression', toggleDeleteReservation)
 router.on('/reservations/liste', toggleSeeReservation)
+
+router.on('/reservation-abonne', toogleReservAbonne)
+router.on('/reservation-abonne/ajout', toggleAddReservation)
+router.on('/reservation-abonne/visualisation', toggleSeeReservation)
+
+router.on('/arrets', toggleGestionArrets)
+router.on('/arrets/ajout', toggleAddArrets)
+router.on('/arrets/modification', toggleModifyArrets)
 
 router.on('/inscriptions', toggleInscriptions)
 router.on('*', toggle404)

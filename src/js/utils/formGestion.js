@@ -32,6 +32,65 @@ const fetchUrlRedirectAndAlert = (url, route, successMessage, failurMessage) => 
     })
 }
 
+const showLoading = () => {
+    // Sélectionne l'élément qui contiendra le message de chargement
+    const loadingElement = document.getElementById('loading');
+
+    // Affiche le message de chargement
+    loadingElement.innerText = 'Chargement en cours...';
+    loadingElement.style.display = 'block';
+};
+
+
+const hideLoading = () => {
+    const loading = document.getElementById("loading");
+    if (loading) {
+        loading.style.display = "none";
+    }
+}
+  
+const fetchUrlWithLoading = (url, route, successMessage, failureMessage) => {
+    let isLoading = true;
+    showLoading(); // Affiche la loading
+
+    axios.get(url).then(response => {
+        isLoading = false;
+        hideLoading(); // Cache la loading
+        var type = "failure";
+        var alerte = { type, failureMessage }
+
+        if (response.data) {
+            var type = "success";
+            alerte = { type, successMessage }
+        }
+
+        sessionStorage.setItem("alerte", JSON.stringify(alerte))
+
+        var alerte_msg = JSON.parse(sessionStorage.getItem("alerte"))
+
+        if(alerte_msg){
+            const { type, message } = alerte_msg
+
+            if(type == "success"){
+                toggleAlert("BRAVO", message)
+            }
+            else{
+                toggleError("ERREUR", message)
+            }
+
+            sessionStorage.removeItem("alerte")
+        }
+
+
+
+    }).catch(error => {
+        isLoading = false;
+        hideLoading(); // Cache la loading
+
+        // Traitez l'erreur ici
+        console.error(error);
+    });
+}
 
 const createCheckboxOfElement = (container, text, value, checkboxName, letter) => {
     createChampCheckbox(container, letter+text , checkboxName, value);
@@ -83,5 +142,6 @@ export {
     createCheckboxOfElement,
     createCheckBoxOfElements,
     countElementChecked,
-    addslashes
+    addslashes,
+    fetchUrlWithLoading
 }
