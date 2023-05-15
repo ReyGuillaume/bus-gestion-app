@@ -87,6 +87,9 @@ const handleDrop = (e, date, user, multi=false, entites=null) => {
     else if(e.dataTransfer.getData('text/plain') == "actionconduite" && e.target.classList.contains("drop")){
         toggleNewTimeSlot("Conduite", e, date, user, multi, entites)
     }
+    else if(e.dataTransfer.getData('text/plain') == "actionastreinte" && e.target.classList.contains("drop")){
+        toggleNewTimeSlot("Astreinte", e, date, user, multi, entites)
+    }
 }
 
 // afficher une pop-up pour créer un créneau en drag & drop
@@ -151,11 +154,18 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entite
         type = 2
         await axios.get(`users/users.php?function=users`).then((res) => users = res.data)
     }
-    else{
+    else if(nom == "Indisponibilité"){
         type = 3
         let user_indiso = createChampCheckbox(popup, user.id, "selectionParticipant", user.id)
         user_indiso.checked = true
         user_indiso.style.display = "none"
+    }
+    else{
+        type = 5
+        let div_user = create("div", popup)
+        createChampCheckbox(div_user, `u${user.id}`, "selectionParticipant", user.id).checked = true
+        create("label", div_user, user.firstname.substr(0,1) + "." + user.name.toUpperCase()).setAttribute("for", `u${user.id}`)
+        await axios.get(`buses/buses.php?function=buses`).then((res) => buses = res.data)
     }
     
     if(users){
@@ -177,9 +187,9 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entite
         create("div", popup, "Bus :", ["form-info"])
         for(let bus of buses){
             let div_bus = create("div", popup)
-            let c = createChampCheckbox(div_bus, bus.id, "selectionBus", bus.id)
+            let c = createChampCheckbox(div_bus, `b${bus.id}`, "selectionBus", bus.id)
             if(user.nb_places && user.id == bus.id) {c.checked = true}
-            create("label", div_bus, "Bus n°" + bus.id)
+            create("label", div_bus, "Bus n°" + bus.id).setAttribute("for", `b${bus.id}`)
         }
     }
 
@@ -187,9 +197,9 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entite
         create("div", popup, "Ligne :", ["form-info"])
         for(let line of lines){
             let div_line = create("div", popup)
-            let c = createChampRadio(div_line, line.number, "selectionLigne", line.number)
+            let c = createChampRadio(div_line, `l${line.number}`, "selectionLigne", line.number)
             if(user.number && user.number == line.number) {c.checked = true}
-            create("label", div_line, "Ligne " + line.number)
+            create("label", div_line, "Ligne " + line.number).setAttribute("for", `l${line.number}`)
         }
 
         create("div", popup, "Direction :", ["form-info"])
@@ -440,19 +450,25 @@ const toggleActionsMenu = (action_menu, id_role, firstDay, user, multi, entites)
     action_menu.classList.add("actionsOpened")
 
     let add = action_menu.querySelector(".addTimeslot")
-    add.src = "src/assets/images/agenda/croix.png"
+    add.style.transform = 'rotate(45deg)'
 
     let role = parseInt(id_role)
 
-    if(role == 1 && user.firstname){
+    // Réunion : Directeur -> Utilisateur ou lui-même
+    if(role == 1 && (user.firstname || (!user.id && !user.number))){
         createActionItem(action_menu, "reunion", "Réunion", "actionReunion", firstDay, user, multi, entites)
     }
-    
-    if(role == 1 || role == 2){
+    // Conduite : Directeur - Resp Log -> Bus - Chauffeur - Ligne
+    if((role == 1 || role == 2) && (user.nb_places || user.id_user_type == 3 || user.number)){
         createActionItem(action_menu, "conduite", "Conduite", "actionConduite", firstDay, user, multi, entites)
     }
+    // Indispo : Chauffeur
     if(role == 3){
         createActionItem(action_menu, "indispo", "Indisponibilité", "actionIndispo", firstDay, user, multi, entites)
+    }
+    // Astreinte : Directeur - Resp Log -> Chauffeur
+    if((role == 1 || role == 2) && user.id_user_type == 3){
+        createActionItem(action_menu, "astreinte", "Astreinte", "actionAstreinte", firstDay, user, multi, entites)
     }
 }
 
@@ -463,15 +479,17 @@ const removeActionsMenu = (action_menu) => {
 
     
     let add = action_menu.querySelector(".addTimeslot")
-    add.src = "src/assets/images/agenda/ajouter.png"
+    add.style.transform = 'rotate(0deg)'
 
     let reunion = document.querySelector(".actionReunion")
     let conduite = document.querySelector(".actionConduite")
     let indispo = document.querySelector(".actionIndispo")
+    let astreinte = document.querySelector(".actionAstreinte")
 
     if(reunion){ reunion.remove() }
     if(conduite){ conduite.remove() }
     if(indispo){ indispo.remove() }
+    if(astreinte){ astreinte.remove() }
 }
 
 

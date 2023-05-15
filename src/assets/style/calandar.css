@@ -80,6 +80,7 @@
   bottom: 5px;
   right: 5px;
   background-color: lightgreen;
+  transition: 0.25s;
 }
 .actionReunion{
   position: fixed;
@@ -98,6 +99,12 @@
   bottom: 55px;
   right: 5px;
   background-color: rgb(221, 54, 221);
+}
+.actionAstreinte{
+  position: fixed;
+  bottom: 55px;
+  right: 5px;
+  background-color: rgb(135, 231, 135);
 }
 
 /* JOURS DU CALENDRIER */
@@ -192,7 +199,7 @@
   width: 150px;
   align-items:first baseline;
 }
-.timeslot, .timeslot_multi_Conduite, .timeslot_multi_Réunion, .timeslot_multi_Indisponibilité{
+.timeslot, .timeslot_multi_Conduite, .timeslot_multi_Réunion, .timeslot_multi_Indisponibilité, .timeslot_multi_Réservation, .timeslot_multi_Astreinte{
   position: absolute;
   display: flex;
   align-items: center;
@@ -209,7 +216,7 @@
   font-size: 50%;
   margin-top: -25px;
 }
-.timeslot_multi_Conduite, .timeslot_multi_Réunion, .timeslot_multi_Indisponibilité{
+.timeslot_multi_Conduite, .timeslot_multi_Réunion, .timeslot_multi_Indisponibilité, .timeslot_multi_Réservation, .timeslot_multi_Astreinte{
   justify-content: space-around;
   overflow: hidden;
 }
