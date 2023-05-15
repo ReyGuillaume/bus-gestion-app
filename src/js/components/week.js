@@ -161,10 +161,15 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entite
     if(users){
         create("div", popup, "Participants :", ["form-info"])
         for(let user_data of users){
-            let div_user = create("div", popup)
-            let c = createChampCheckbox(div_user, user_data.id, "selectionParticipant", user_data.id)
-            if(user.firstname && user.id == user_data.id) {c.checked = true}
-            create("label", div_user, user_data.firstname.substr(0,1) + "." + user_data.name.toUpperCase())
+            if(user_data.id_user_type != 4) {
+                let div_user = create("div", popup)
+                let c = createChampCheckbox(div_user, `u${user_data.id}`, "selectionParticipant", user_data.id)
+                if (user.firstname && user.id == user_data.id) {
+                    c.checked = true
+                }
+                var label = create("label", div_user, user_data.name + " " + user_data.firstname);
+                label.setAttribute("for", `u${user_data.id}`);
+                }
         }
     }
 
