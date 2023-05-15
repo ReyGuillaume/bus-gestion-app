@@ -220,35 +220,6 @@ function delete_user($id) { //supprime également les lignes de code et de user_
 
 
 /**
-    Fonction qui ajoute un conducteur au creneau donné.
-
-    @param idCreneau : L'id du créneau auquel on veut rajouter un conducteur.
-
-    @return un booléen indiquant si l'opération s'est bien passée. 
-*/
-function add_a_driver_to_timeslot($idCreneau){
-    //On initialise le res 
-    $res = false; 
-    
-    // On recupere le timeslot en question
-    require_once '../timeslots/timeslots.php';
-    $creneau = fetch_time_slot($idCreneau);
-
-    // On regarde si un conducteur est libre pour ce timeslot 
-    $free_drivers = find_drivers_free($creneau['begining'], $creneau['end']);
-    
-    // On regarde si un conducteur est libre et si oui on le relie
-    if (count($free_drivers) > 0) {
-        $random_index = rand(0, count($free_drivers) - 1);
-        $res = bdd()->query("INSERT INTO `user_timeslot`(`id_user`, `id_time_slot`) VALUES({$free_drivers[$random_index]}, {$idCreneau})");
-        } 
-
-    //on indique si l'ajout c'est bien passé 
-    return $res; 
-    
-}
-
-/**
     Fonction qui ajoute une demande d'inscription d'abonné.
 
     @param prenom : prénom de l'abonné.
@@ -350,6 +321,15 @@ switch ($_GET['function']) {
         break;
     case 'delete':     // id
         $res = delete_user($_GET['id']);
+        break;
+    case 'isFree':     //++++
+        $res = is_free_user($_GET['id'], $_GET['beginning'], $_GET['end']);
+        break;
+    case 'freeDrivers':
+        $res = find_drivers_free($_GET['beginning'], $_GET['end']);
+        break;
+    case 'freeUsers':
+        $res = find_users_free($_GET['beginning'], $_GET['end']);
         break;
     case 'inscription':
         $res = abonne_inscription($_GET['prenom'], $_GET['nom'], $_GET['email'], $_GET['birth_date'], $_GET['login'], $_GET['password']);

@@ -229,17 +229,12 @@ const toggleRefuseReservation = (idReservation,container, data) => {
 
 
 const toggleValideReservation = (container, props, user = null, multi = false) => {
-    console.log(props)
     const app = document.querySelector("#app")
     const overlay = create("div", app, null, ["overlay"])
     const modale = create("div", overlay, null, ["validation"])
     const back = create("button", modale, '<< Retour', ['return', "unstyled-button"])
     back.title = "Retour en arrière"
 
-    // Creation du formulaire pré remplie de validation de reservation
-    container.replaceChildren("")
-
-    create("div", container, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(container)
     // ajout des actions au clic
     overlay.onclick = e => {
         e.stopPropagation()
@@ -253,16 +248,16 @@ const toggleValideReservation = (container, props, user = null, multi = false) =
         overlay.remove()
     }
 
-    create("p", container, "Cette reservation demande le trajet : "+props.arretDepart +" - "+ props.arretArrive)
-    create("label", container, "Combien de minutes le trajet va durer :", ["form-info"]);
-    createChamp(container, "integer", "temps_trajet");
+    create("p", modale, "Cette reservation demande le trajet : "+props.arretDepart +" - "+ props.arretArrive)
+    create("label", modale, "Combien de minutes le trajet va durer :", ["form-info"]);
+    createChamp(modale, "integer", "temps_trajet");
 
-    const bouton = create("div", container, "Valider", ["submitButton"])
+    const bouton = create("div", modale, "Valider", ["submitButton"])
     bouton.addEventListener("click", function(){
         // On recupere le temps du trajet
         let temps_trajet = document.querySelector("input[name='temps_trajet']").value;
-        formValidationReservation (container, props, user, multi, temps_trajet);
-        
+        formValidationReservation (modale, props, user, multi, temps_trajet);
+
 
     })
     return container;
@@ -270,32 +265,28 @@ const toggleValideReservation = (container, props, user = null, multi = false) =
 
 const formValidationReservation = (container, props, user = null, multi = false, temps_trajet) => {
     container.replaceChildren("");
-    
-    // Creation d'un affichage pour indiquer si la reservation est acceptable 
+
+    // Creation d'un affichage pour indiquer si la reservation est acceptable
 
     var acceptable_bus = create("div", container, "");
 
-    // Requête axios pour vérifier la disponibilité des bus
-
-   
     let depart = new Date(props.dateDepart.replace(' ', 'T'));
     let fin = new Date(depart.getTime() + temps_trajet * 60000);
 
-    fin.setMinutes(depart.getMinutes()+ temps_trajet);
-
+    // Requête axios pour vérifier la disponibilité des bus
     let axiosUrl_bus = `buses/buses.php?function=freeBuses&beginning=${depart}&end=${fin}`;
 
     axios.get(axiosUrl_bus)
-    .then(function (response) {
-        // Vérification si la réponse contient des données
-        if (response.data.length > 0) {
-        acceptable_bus.textContent = "Un bus est disponible ";
-        } else {
-        acceptable_bus.textContent = "Pas de bus disponible";
-        }
-    })
+        .then(function (response) {
+            // Vérification si la réponse contient des données
+            if (response.data.length > 0) {
+                acceptable_bus.textContent = "Un bus est disponible ";
+            } else {
+                acceptable_bus.textContent = "Pas de bus disponible";
+            }
+        })
 
-    // Creation d'un affichage pour indiquer si la reservation est acceptable 
+    // Creation d'un affichage pour indiquer si la reservation est acceptable
 
     var acceptable_driver = create("div", container, "");
 
@@ -305,53 +296,47 @@ const formValidationReservation = (container, props, user = null, multi = false,
     let axiosUrl = `users/users.php?function=freeDrivers&beginning=${depart}&end=${fin}`;
 
     axios.get(axiosUrl)
-    .then(function (response) {
-        // Vérification si la réponse contient des données
-        if (response.data.length > 0) {
-        acceptable_driver.textContent = "Un conducteur est disponible ";
-        } else {
-        acceptable_driver.textContent = "Pas de conducteur disponible";
-        }
-    })
+        .then(function (response) {
+            // Vérification si la réponse contient des données
+            if (response.data.length > 0) {
+                acceptable_driver.textContent = "Un conducteur est disponible ";
+            } else {
+                acceptable_driver.textContent = "Pas de conducteur disponible";
+            }
+        })
 
 
     // Creation of each champ
     //create("label", container, "Début : " + props.dateDepart, ["form-info"]);
-    
+
+
     create("label", container, "Début :", ["form-info"]);
     let champ =createChamp(container, "datetime-local", "StartDateTime");
+    champ.value = props.dateDepart
     champ.value = props.dateDepart;
     champ.disabled = true;
-    
+
     create("label", container, "Fin :", ["form-info"]);
-    console.log(fin);
-    console.log(depart);
 
-   
 
-    const timeZoneOffset = new Date().getTimezoneOffset() * 60000; 
+    const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
     const finAdjusted = new Date(fin.getTime() - timeZoneOffset);
     const endDateTimeInput = createChamp(container, "datetime-local", "EndDateTime");
 
-    console.log(finAdjusted);
     endDateTimeInput.value = finAdjusted.toISOString().slice(0, 16);
     endDateTimeInput.disabled = true;
 
-    create("label", modale, "Fin :", ["form-info"]);
-    const champ2 = createChamp(modale, "datetime-local", "EndDateTime")
-    champ2.value = props.dateDepart;
-
-    toogleBusChoices(modale)
-    toogleDriversChoices(modale)
+    toogleBusChoices(container)
+    toogleDriversChoices(container)
 
     // Creation of submit button
-    const bouton = create("button", modale, "Valider", ["submitButton", "unstyled-button"])
+    const bouton = create("button", container, "Valider", ["submitButton", "unstyled-button"])
     bouton.title = "Valider"
     bouton.addEventListener("click", async function () {
 
         // On recupere le debut et la fin du creneau
         let startDateTime = props.dateDepart;
-        let endDateTime = champ2.value;
+        let endDateTime = document.querySelector("input[name='EndDateTime']").value;
 
         // select the types of participants and return those who are checked in a string : 1,2,...
         const selectedDrivers = idOfAllElementChecked("input[name='selectionConducteurs']");
@@ -385,15 +370,14 @@ const formValidationReservation = (container, props, user = null, multi = false,
         let titre = "Confirmation de votre réservation de bus pour " + arret.arretDepart + " - " + arret.arretArrive;
         let message = "Bonjour " + client.firstname +", "+"<br>"+"<br>"
         message += "Je suis ravi de vous informer que votre réservation de bus a été <strong>validée</strong> avec succès. Votre bus partira de l'arrêt <strong>"
-        +arret.arretDepart+"</strong> à <strong>"+debut+"</strong> le <strong>"+debutDate+"</strong> et arrivera à l'arrêt <strong>"+arret.arretArrive+"</strong> à <strong>"+fin+"</strong> le <strong>"+finDate+"</strong><br>"+"<br>"
+            +arret.arretDepart+"</strong> à <strong>"+debut+"</strong> le <strong>"+debutDate+"</strong> et arrivera à l'arrêt <strong>"+arret.arretArrive+"</strong> à <strong>"+fin+"</strong> le <strong>"+finDate+"</strong><br>"+"<br>"
         message+="Nous avons affecté un chauffeur <strong>expérimenté</strong> à votre bus pour vous assurer un voyage <strong>sûr et agréable</strong>. Notre équipe de conducteurs est formée pour offrir un service de <strong>qualité</strong> et pour prendre <strong>soin de nos passagers</strong>."+"<br>"+"<br>"+
             "Veuillez vous assurer <strong>d'arriver à l'arrêt de départ à l'heure</strong> pour éviter tout retard pour vous. Si vous avez des questions ou des préoccupations, n'hésitez pas à nous <strong>contacter</strong> et nous ferons tout notre possible pour vous aider."+"<br>"+"<br>"+
             "Nous sommes impatients de vous accueillir à bord de notre bus et de vous offrir une expérience de voyage agréable et sans tracas."+"<br>"+"<br>"+
             "Cordialement,"+"<br>"+"L'équipe de réservation de bus de <strong>GoBus</strong>."
-        console.log(message)
-        axios.get(`notifications/notifications.php?function=create&title=${addslashes(titre)}&message=${addslashes(message)}&recipient=` + client.id)
 
-        removeContainerAndRemoveCacheClass(modale)
+        axios.get(`notifications/notifications.php?function=create&title=${addslashes(titre)}&message=${addslashes(message)}&recipient=` + client.id)
+        removeContainerAndRemoveCacheClass(container)
         fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=valide_reservation&idReservation=` + props.id_reserv + `&beginning=` + startDateTime + `&end=` + endDateTime + `&id_users=` + selectedDrivers + `&id_buses=` + busesTimeslot, "/espace-admin", "La réservation a bien été validée", "La réservation n'a pas pu être validée")
     })
 }

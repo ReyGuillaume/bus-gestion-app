@@ -222,6 +222,12 @@
 .timeslot_multi_Indisponibilité .timeslot__houres_multi{
   background-color: rgb(251, 225, 159);
 }
+.timeslot_multi_Réservation .timeslot__houres_multi{
+  background-color: rgb(255, 149, 149);
+}
+.timeslot_multi_Astreinte .timeslot__houres_multi{
+  background-color: rgb(192, 255, 190);
+}
 .multi-info{
   font-weight: bold;
   writing-mode: vertical-rl;
