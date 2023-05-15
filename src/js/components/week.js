@@ -156,7 +156,10 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entite
     }
     else if(nom == "Indisponibilité"){
         type = 3
-        let user_indiso = createChampCheckbox(popup, user.id, "selectionParticipant", user.id)
+        const sessionData = JSON.parse(sessionStorage.getItem("userData"))
+        const id_user = sessionData['id']
+
+        let user_indiso = createChampCheckbox(popup, id_user, "selectionParticipant", id_user)
         user_indiso.checked = true
         user_indiso.style.display = "none"
     }

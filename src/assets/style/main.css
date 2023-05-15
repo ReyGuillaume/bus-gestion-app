@@ -415,6 +415,53 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
 
 /* PAGES DE GESTION */
 
+.liste_gestion{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+.sous_gestion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+}
+.gestion_titre{
+  color: #fde9ff;
+  font-weight: bold;
+  text-shadow: 1px 1px 0px purple, 3px 3px 1px #165bfb;
+}
+.gestion_users, .gestion_bus, .gestion_lignes, .gestion_infos{
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+  list-style-type: none;
+  cursor: pointer;
+  transition: 0.5s;
+  color: white;
+}
+
+.gestion_users:hover, .gestion_bus:hover, .gestion_lignes:hover, .gestion_infos:hover{
+  background: linear-gradient(to right, rgb(64, 64, 64), black);
+}
+
+.gestion_users{
+  background: linear-gradient(to right, rgb(238, 137, 251), rgb(234, 110, 250));
+}
+
+.gestion_bus{
+  background: linear-gradient(to right, rgb(132, 237, 106), rgb(83, 213, 50));
+}
+
+.gestion_lignes{
+  background: linear-gradient(to right, rgb(184, 209, 255), rgb(154, 187, 250));
+}
+
+.gestion_infos{
+  background: linear-gradient(to right, rgb(255, 216, 184), rgb(255, 205, 164));
+}
+
 .plage-horaire{
   display: flex;
   align-items: center;
