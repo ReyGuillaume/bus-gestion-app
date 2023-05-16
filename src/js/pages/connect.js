@@ -59,9 +59,9 @@ const toggleConnexion = () => {
                 createHeader();
 
                 redirectUser(
-                    () => redirect("/espace-admin"), 
-                    () => redirect("/espace-admin"),
-                    () => redirect("/espace-utilisateur"),
+                    () => redirect("/agenda"), 
+                    () => redirect("/agenda"),
+                    () => redirect("/agenda"),
                     () => redirect("/espace-abonne")
                 )
             } else {
