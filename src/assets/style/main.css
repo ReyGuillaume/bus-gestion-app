@@ -428,9 +428,9 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
   padding: 15px;
 }
 .gestion_titre{
-  color: #fde9ff;
+  color: black;
   font-weight: bold;
-  text-shadow: 1px 1px 0px purple, 3px 3px 1px #165bfb;
+  text-shadow: 2px 2px lightblue;
 }
 .gestion_users, .gestion_bus, .gestion_lignes, .gestion_infos{
   border-radius: 10px;
