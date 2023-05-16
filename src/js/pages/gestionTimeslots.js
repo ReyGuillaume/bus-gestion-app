@@ -84,7 +84,14 @@ function toogleFreeBusChoices(choicesDiv){
     var divCheckboxBus = document.querySelector("#divCheckboxBus");
 
     // On supprime ce qu'il y avait dans la div de choix d'utilisateur
-    divCheckboxBus.replaceChildren("");
+
+    if (!divCheckboxBus) {
+        divCheckboxBus = create("div", choicesDiv);
+        divCheckboxBus.setAttribute("id", "divCheckboxBus");
+    } else {
+        divCheckboxBus.replaceChildren("");
+    }
+
     
     // On la re remplie
 
@@ -151,7 +158,12 @@ function toogleFreeUserChoices(choicesDiv){
     var divCheckboxUsers = document.querySelector("#divCheckboxUsers");
     
     // On supprime ce qu'il y avait dans la div de choix d'utilisateur
-    divCheckboxUsers.replaceChildren("");
+    if (!divCheckboxUsers) {
+        divCheckboxUsers = create("div", choicesDiv);
+        divCheckboxUsers.setAttribute("id", "divCheckboxUsers");
+    }else {
+        divCheckboxUsers.replaceChildren("");
+    }
     
     // On la re remplie
 
@@ -221,7 +233,12 @@ function toogleFreeDriverChoices(choicesDiv){
     // On recupere la div de choix d'utilisateur
     var divCheckboxDrivers = document.querySelector("#divCheckboxDrivers");
     // On supprime ce qu'il y avait dans la div de choix d'utilisateur
-    divCheckboxDrivers.replaceChildren("");
+    if (!divCheckboxDrivers) {
+        divCheckboxDrivers = create("div", choicesDiv);
+        divCheckboxDrivers.setAttribute("id", "divCheckboxDrivers");
+    }else {
+        divCheckboxDrivers.replaceChildren("");
+    }
     
     // On la re remplie
 
@@ -383,28 +400,28 @@ const toggleAddCreneau = () => {
 
                 switch (typeToHandle){
                     case '1' :  //Conduite
-                        toogleBusChoices(choicesDiv);
-                        toogleDriversChoices(choicesDiv);
+                        toogleFreeBusChoices(choicesDiv);
+                        toogleFreeDriverChoices(choicesDiv);
                         toogleLineChoices(choicesDiv);
                         toogleDirectionChoices(choicesDiv); 
                         break;
                     case '2' :  //Reunion 
-                        toogleUserChoices(choicesDiv);
+                        toogleFreeUserChoices(choicesDiv);
                         break;
                     case '3' : //Indisponibilite
-                        toogleDriversChoices(choicesDiv);
+                        toogleFreeDriverChoices(choicesDiv);
                         break;
                     case '5' :  //Astreinte
                         toogleBusChoices(choicesDiv);
-                        toogleDriversChoices(choicesDiv);
+                        toogleFreeDriverChoices(choicesDiv);
                         break;
                     case '5' :  //reservation
                         toogleBusChoices(choicesDiv);
-                        toogleDriversChoices(choicesDiv);
+                        toogleFreeDriverChoices(choicesDiv);
                         break;
                     default :
                         toogleBusChoices(choicesDiv)
-                        toogleUserChoices(choicesDiv)
+                        toogleFreeUserChoices(choicesDiv)
                         toogleLineChoices(choicesDiv);
                         toogleDirectionChoices(choicesDiv); 
                         break;
