@@ -71,8 +71,8 @@ const displayNotifs = (container, data, mode) => {
         }
         let divInfoNotif = create("div", divNotif, null ,["divInfoNotif"]);
         create("h3", divInfoNotif, title);
-        let m = create("p", divInfoNotif, message);
-        m.innerHTML = message.replace(/\n/g, '<br>');
+        let m = create("p", divInfoNotif);
+        m.innerHTML = message;
         create("p", divInfoNotif, notif.date);
 
         let img = create("div", divNotif, null, ["notif_image"]);
