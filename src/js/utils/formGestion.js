@@ -21,6 +21,16 @@ const idOfAllElementChecked = (selector) => {
     return res
 }
 
+const idOfAllElementCheckedTab = (selector) => {
+    let res = [];
+    for (let elem of document.querySelectorAll(selector)) {
+      if (elem.checked) {
+        res.push(elem.value);
+      }
+    }
+    return res;
+  };
+
 const fetchUrlRedirectAndAlert = (url, route, successMessage, failurMessage) => {
     axios.get(url).then(response => {
         if(response.data){
@@ -143,5 +153,6 @@ export {
     createCheckBoxOfElements,
     countElementChecked,
     addslashes,
-    fetchUrlWithLoading
+    fetchUrlWithLoading,
+    idOfAllElementCheckedTab
 }

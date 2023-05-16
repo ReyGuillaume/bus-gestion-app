@@ -84,6 +84,30 @@ function find_users_free($begining, $end){
 }
 
 /**
+    Donne tous les utilisateurs libres sur une periode donée parmis certains donnés.
+
+    @param begining : La date et heure du début du créneau de disponibilité recherché.
+    @param end : La date et heure du début du créneau de disponibilité recherché.
+
+    @return une liste des identifiant des utilisateurs libres sur la periode.
+*/
+function find_users_free_in_list($begining, $end, $all_users){
+    //array with all the id of the free users
+    $free_users = []; 
+
+
+    // for each user we check if he is if free on the periode 
+    // if yes we add it to the free users array 
+    for ($i=0; $i<count($all_users); $i=$i+1){
+        if(is_free_user($all_users[$i], $begining, $end)){
+            $free_users[] =$all_users[$i];
+        }
+    }
+
+   return $free_users;
+}
+
+/**
     Fonction qui ajoute un conducteur au creneau donné.
 
     @param idCreneau : L'id du créneau auquel on veut rajouter un conducteur.
