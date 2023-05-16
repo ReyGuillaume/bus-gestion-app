@@ -29,21 +29,6 @@ const toggleEspaceAdmin = () => {
     // agenda
     createMenuElement(nav, () => redirect("/agenda"), "rose", "src/assets/images/nav_agenda.png", "Voir mon agenda", "Voir mon agenda")
 
-    // agenda chauffeurs
-    createMenuElement(nav, () => redirect("/agenda-chauffeurs"), "jaune", "src/assets/images/nav_gens.png", "Voir l'agenda des chauffeurs", "Voir l'agenda des chauffeurs")
-
-
-    // agenda responsables
-    if(sessionData["role"] == "Directeur"){
-        createMenuElement(nav, () => redirect("/agenda-responsables"), "orange", "src/assets/images/nav_gens.png", "Voir l'agenda des responsables logistiques", "Voir l'agenda des responsables logistiques")
-        createMenuElement(nav, () => redirect("/agenda-multiple"), "vert", "src/assets/images/nav_agenda.png", "Croiser plusieurs agendas", "Croiser plusieurs agendas")
-    }
-    // agenda bus
-    createMenuElement(nav, () => redirect("/agenda-bus"), "rouge", "src/assets/images/nav_bus.png", "Voir l'agenda des bus", "Voir l'agenda des bus")
-
-    // agenda lignes de bus
-    createMenuElement(nav, () => redirect("/agenda-lignes"), "bleu", "src/assets/images/nav_ligne.png", "Voir l'agenda des lignes de bus", "Voir l'agenda des lignes de bus")
-
     // créneaux
     createMenuElement(nav, () => redirect("/creneau"), "gris", "src/assets/images/nav_creneau.png", "Ajouter un créneaux", "Ajouter un créneaux")
 

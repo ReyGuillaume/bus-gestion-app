@@ -14,8 +14,6 @@ import { toggleAjoutUser, toggleModifyUser, toggleSupprimeUser } from '../pages/
 import { AjoutBus, DisponibilityBus, ModifBus, SupprimerBus } from '../pages/gestionBuses'
 import { toggleAddLine, toggleAddLineType, toggleModifLine, toggleModifLineType, toggleRemplissageAutoConduiteSemaine, toggleSupprLine, toggleVerifCouvertureSemaine } from '../pages/gestionLigne'
 import { toggleAgenda } from '../pages/agenda'
-import { toggleMultiEntities } from '../pages/day'
-import { toggleDrivers, toggleBuses, toggleLines, toggleResp } from '../pages/agendaUsers'
 import { toggleIndisponibilitiForm } from '../pages/indisponibilitiForm'
 import { changerInfoAbonne, changerMdpAbonne } from '../pages/gestionAbonne'
 
@@ -37,11 +35,6 @@ router.on('/espace-informations-abonne/informations', changerInfoAbonne)
 router.on('/espace-informations-abonne/mot-de-passe', changerMdpAbonne)
 
 router.on('/agenda', toggleAgenda)
-router.on('/agenda-chauffeurs', toggleDrivers)
-router.on('/agenda-responsables', toggleResp)
-router.on('/agenda-bus', toggleBuses)
-router.on('/agenda-lignes', toggleLines)
-router.on('/agenda-multiple', toggleMultiEntities)
 
 router.on('/creneau', toggleAddCreneau)
 

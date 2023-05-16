@@ -359,112 +359,6 @@ const toggleDrivers = async (container, date) => {
 }
 
 
-// afficher 4 agendas (au choix)
-const toggleMultiEntities = async () => {
-
-    const main = document.querySelector("#app")
-    main.replaceChildren("")
-
-    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
-    back.title = "Retour en arrière"
-
-    create("h2", main, "Agenda multiple")
-    create("p", main, "Sélectionnez au maximum 4 agendas que vous souhaitez afficher", ["presentation"])
-
-    let users = []
-    let buses = []
-    let lines = []
-    let entites = []
-
-    await axios.get(`users/users.php?function=users`)
-    .then(res => users = res.data)
-
-    await axios.get(`buses/buses.php?function=buses`)
-    .then(res => buses = res.data)
-
-    await axios.get(`lines/lines.php?function=lines`)
-    .then(res => lines = res.data)
-
-    const multi_form = create("div", main, null, ["multi-form"])
-
-    const multi_choix = create("div", multi_form, null, ["multi-choix"])
-
-    // affichage des utilisateurs
-    const div_users = create("div", multi_choix, null, ["choix", "choix_users"])
-    create("div", div_users, "Utilisateurs", ["choix-titre"])
-
-    for(let user of users){
-        let div_user = create("div", div_users, null, ["selectMulti"])
-        createChampCheckbox(div_user, `u${user.id}`, "selectionUser", user.id).onclick = async () => entites = await entitiesSelected()
-        create("label", div_user, " " + user.firstname + " " + user.name.toUpperCase()).htmlFor = `u${user.id}`
-    }
-
-    // affichage des bus
-    const div_buses = create("div", multi_choix, null, ["choix", "choix_bus"])
-    create("div", div_buses, "Bus", ["choix-titre"])
-
-    for(let bus of buses){
-        let div_bus = create("div", div_buses, null, ["selectMulti"])
-        createChampCheckbox(div_bus, `b${bus.id}`, "selectionBus", bus.id).onclick = async () => entites = await entitiesSelected()
-        create("label", div_bus, " Bus n°" + bus.id).htmlFor = `b${bus.id}`
-    }
-
-    // affichage des lignes
-    const div_lines = create("div", multi_choix, null, ["choix", "choix_lignes"])
-    create("div", div_lines, "Lignes", ["choix-titre"])
-
-    for(let line of lines){
-        let div_line = create("div", div_lines, null, ["selectMulti"])
-        createChampCheckbox(div_line, `l${line.number}`, "selectionLine", line.number).onclick = async () => entites = await entitiesSelected()
-        create("label", div_line, " Ligne " + line.number).htmlFor = `l${line.number}`
-    }
-
-    const b = create("button", multi_form, "Afficher", ["choixButton", "unstyled-button"])
-    b.title = "Afficher"
-    b.addEventListener("click", function(){
-        if(entites.length > 4){
-            toggleError("ERREUR", "Vous ne pouvez sélectionner que 4 entités")
-        }
-        else if(entites.length < 1){
-            toggleError("ERREUR", "Veuillez choisir au moins une entité")
-        }
-        else if(entites.length == 1){
-            toggleAgenda(entites[0])
-        }
-        else{
-            toggleAgenda(undefined, undefined, true, entites)
-        }
-    })
-}
-
-// renvoie la liste des agendas sélectionnés
-const entitiesSelected = async () => {
-    let selected = []
-    for(let user of document.querySelectorAll("input[name='selectionUser']")){
-        if (user.checked) {
-            await axios.get("users/users.php?function=user&id="+user.value)
-            .then(res => selected.push(res.data))
-        }
-    }
-
-    for(let bus of document.querySelectorAll("input[name='selectionBus']")){
-        if (bus.checked) {
-            await axios.get("buses/buses.php?function=bus&id="+bus.value)
-            .then(res => selected.push(res.data))
-        }
-    }
-
-    for(let line of document.querySelectorAll("input[name='selectionLine']")){
-        if (line.checked) {
-            await axios.get("lines/lines.php?function=line&number="+line.value)
-            .then(res => selected.push(res.data))
-        }
-    }
-    return selected
-}
-
-
 const toggleMultiAgenda = async (container, date, entites) => {
     let i = 0
     let agendas = await entites
@@ -479,6 +373,5 @@ export {
     toggleDay,
     toggleDayOfWeek,
     toggleDrivers,
-    toggleMultiEntities,
     toggleMultiAgenda
 }
