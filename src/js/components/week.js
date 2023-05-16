@@ -94,21 +94,14 @@ const handleDrop = (e, date, user, multi=false, entites=null) => {
 
 // afficher une pop-up pour créer un créneau en drag & drop
 const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entites=null) => {
-    const main = document.querySelector("#app")
-    main.classList.add("cache")
+    const app = document.querySelector("#app")
 
-    const container = document.querySelector("#footer")
-
-    // la popup
-    const popup = create("div", container, null, ["pageCreateTimeslot"])
-
-    // retour en arrière
-    const back = create("button", popup, '<< Retour', ['return', "unstyled-button"])
-    back.onclick = () => {
-        popup.remove()
-        main.classList.remove("cache")
-    }
+    // création des composants
+    const overlay = create("div", app, null, ["overlay"])
+    const modale = create("div", overlay, null, ['validation'])
+    const back = create("button", modale, '<< Retour', ['return', "unstyled-button"])
     back.title = "Retour en arrière"
+    const popup = create("div", modale, null, ['content'])
 
     // titre
     create("h3", popup, nom)
@@ -166,16 +159,16 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entite
     else{
         type = 5
         let div_user = create("div", popup)
-        createChampCheckbox(div_user, `u${user.id}`, "selectionParticipant", user.id).checked = true
-        create("label", div_user, user.firstname.substr(0,1) + "." + user.name.toUpperCase()).setAttribute("for", `u${user.id}`)
+        await axios.get(`users/users.php?function=bytype&type=3`).then((res) => users = res.data)
+
         await axios.get(`buses/buses.php?function=buses`).then((res) => buses = res.data)
     }
     
     if(users){
-        create("div", popup, "Participants :", ["form-info"])
+        let div_user = create("div", popup)
+        create("div", div_user, "Participants :", ["form-info"])
         for(let user_data of users){
             if(user_data.id_user_type != 4) {
-                let div_user = create("div", popup)
                 let c = createChampCheckbox(div_user, `u${user_data.id}`, "selectionParticipant", user_data.id)
                 if (user.firstname && user.id == user_data.id) {
                     c.checked = true
@@ -187,9 +180,9 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entite
     }
 
     if(buses){
-        create("div", popup, "Bus :", ["form-info"])
+        let div_bus = create("div", popup)
+        create("div", div_bus, "Bus :", ["form-info"])
         for(let bus of buses){
-            let div_bus = create("div", popup)
             let c = createChampCheckbox(div_bus, `b${bus.id}`, "selectionBus", bus.id)
             if(user.nb_places && user.id == bus.id) {c.checked = true}
             create("label", div_bus, "Bus n°" + bus.id).setAttribute("for", `b${bus.id}`)
@@ -197,9 +190,9 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entite
     }
 
     if(lines){
-        create("div", popup, "Ligne :", ["form-info"])
+        let div_line = create("div", popup)
+        create("div", div_line, "Ligne :", ["form-info"])
         for(let line of lines){
-            let div_line = create("div", popup)
             let c = createChampRadio(div_line, `l${line.number}`, "selectionLigne", line.number)
             if(user.number && user.number == line.number) {c.checked = true}
             create("label", div_line, "Ligne " + line.number).setAttribute("for", `l${line.number}`)
@@ -214,6 +207,19 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entite
         let retour = create("div", popup, null, ["div-radio"])
         createChampRadio(retour, "retour", "selectionDirection", "retour")
         create("div", retour, "retour")
+    }
+
+    // ajout des actions au clic
+    overlay.onclick = e => {
+        e.stopPropagation()
+        e.target.remove()
+    }
+    modale.onclick = e => {
+        e.stopPropagation()
+    }
+    back.onclick = () => {
+        modale.remove()
+        overlay.remove()
     }
 
     const btn = create("div", popup, "Valider", ["modifButton"])
@@ -233,6 +239,9 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entite
         url += ligne_affectee ? `&lines=${ligne_affectee}` : `&lines=`
         url += ligne_affectee && direction_ligne ? `&directions=${direction_ligne}` : `&directions=`
 
+        modale.remove()
+        overlay.remove()
+
         axios.get(url).then(function(response){
             if(response.data){
                 let newDate = new Date(StartDateTime)
@@ -242,8 +251,6 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entite
             else{
                 toggleError("ERREUR", "Le créneau n'a pas pu être ajouté")
             }
-            popup.remove()
-            main.classList.remove("cache")
         })
     })
 }

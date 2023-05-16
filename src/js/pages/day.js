@@ -184,10 +184,10 @@ const createTimeSlots = async (date, container, user=null, multi=false, entites=
                 div = create("div", container, null, ['timeslot'], [`ts${timeslot.id}`])
             }
             div.setAttribute("tabindex", "0")
-            div.addEventListener("click", () => toggleTask(footer, timeslot, div, user, multi))
+            div.addEventListener("click", () => toggleTask(main, timeslot, div, user, multi))
             div.addEventListener("keydown", e => {
                 if (e.code === "Enter") 
-                    toggleTask(footer, timeslot, div, user, multi)
+                    toggleTask(main, timeslot, div, user, multi)
             })
 
             if(possibleDrag(user_role, timeslot.name)){
