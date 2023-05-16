@@ -24,25 +24,31 @@ function changerInfoAbonne (){
 
     //les informations de l'abonné à changer + le bouton pour valider
     axios.get(`users/users.php?function=user&id=`+sessionData["id"]).then((response) => {
-        const div = create("div", main);
-        create("h2", div, "Voici vos informations personnelles :");
+        create("h2", main, "Voici vos informations personnelles :");
 
-        create("label", div, "Votre nom :",);
-        createChamp(div, "text", "nameAbo").value = response.data["name"];
+        const form = create("div", main, null, ["app-form"]);
 
-        create("label", div, "Votre prénom :",);
-        createChamp(div, "text", "firstnameAbo").value = response.data["firstname"];
+        const div_nom = create("div", form, null, ["form-div"]);
+        create("label", div_nom, "Votre nom :", ["label-info"]);
+        createChamp(div_nom, "text", "nameAbo").value = response.data["name"];
 
-        create("label", div, "Votre date de naissance :");
-        createChamp(div, "date", "dateAbo").value =response.data["birth_date"];
+        const div_prenom = create("div", form, null, ["form-div"]);
+        create("label", div_prenom, "Votre prénom :", ["label-info"]);
+        createChamp(div_prenom, "text", "firstnameAbo").value = response.data["firstname"];
 
-        create("label", div, "Votre adresse mail :",);
-        createChamp(div, "email", "emailAbo").value = response.data["email"];
+        const div_naissance = create("div", form, null, ["form-div"]);
+        create("label", div_naissance, "Votre date de naissance :", ["label-info"]);
+        createChamp(div_naissance, "date", "dateAbo").value =response.data["birth_date"];
 
-        create("label", div, "Votre nom d'utilisateur :",);
-        createChamp(div, "text", "loginAbo").value = response.data["login"];
+        const div_email = create("div", form, null, ["form-div"]);
+        create("label", div_email, "Votre adresse mail :", ["label-info"]);
+        createChamp(div_email, "email", "emailAbo").value = response.data["email"];
 
-        const valider = create("button", div, "Valider le changement", ['gestion_infos', "unstyled-button"])
+        const div_login = create("div", form, null, ["form-div"]);
+        create("label", div_login, "Votre nom d'utilisateur :", ["label-info"]);
+        createChamp(div_login, "text", "loginAbo").value = response.data["login"];
+
+        const valider = create("button", form, "Valider le changement", ['gestion_infos', "unstyled-button"])
         valider.title = "Valider"
         valider.addEventListener("click", function () {
 
@@ -82,28 +88,45 @@ function changerMdpAbonne (){
     back.addEventListener("click", () => redirect("/espace-informations-abonne"))
     back.title = "Retour en arrière"
 
-    const div = create("div", main);
-    create("h2", div, "Voici vos informations personnelles :");
+    create("h2", main, "Voici vos informations personnelles :");
 
     axios.get(`users/users.php?function=user&id=`+sessionData["id"]).then((response) => {
-        create("p", div, "Votre nom : " + response.data["name"]);
-        create("p", div, "Votre prénom : " + response.data["firstname"]);
-        create("p", div, "Votre date de naissance : " + response.data["birth_date"]);
-        create("p", div, "Votre adresse mail : " + response.data["email"]);
-        create("p", div, "Votre nom d'utilisateur : " + response.data["login"]);
+        const form = create("div", main, null, ["app-form"]);
+
+        const div_nom = create("div", form, null, ["form-div-radio"]);
+        create("div", div_nom, "Votre nom : ", ["label-info"]);
+        create("div", div_nom, response.data["name"]);
+        
+        const div_prenom = create("div", form, null, ["form-div-radio"]);
+        create("div", div_prenom, "Votre prénom : ", ["label-info"]);
+        create("div", div_prenom, response.data["firstname"]);
+
+        const div_naissance = create("div", form, null, ["form-div-radio"]);
+        create("div", div_naissance, "Votre date de naissance : ", ["label-info"]);
+        create("div", div_naissance, response.data["birth_date"]);
+
+        const div_email = create("div", form, null, ["form-div-radio"]);
+        create("div", div_email, "Votre adresse mail : ", ["label-info"]);
+        create("div", div_email, response.data["email"]);
+
+        const div_login = create("div", form, null, ["form-div-radio"]);
+        create("div", div_login, "Votre nom d'utilisateur : ", ["label-info"]);
+        create("div", div_login, response.data["login"]);
+
+        const ancien_mdp = create("div", form, null, ["form-div"]);
+        create("label", ancien_mdp, "Votre ancien mot de passe :", ["label-info"]);
+        createChamp(ancien_mdp, "password", "oldPwdAbo");
+
+        const nouveau_mdp = create("div", form, null, ["form-div"]);
+        create("label", nouveau_mdp, "Votre nouveau mot de passe :", ["label-info"]);
+        createChamp(nouveau_mdp, "password", "newPwdAbo");
+
+        const confirme_mdp = create("div", form, null, ["form-div"]);
+        create("label", confirme_mdp, "Confirmation du nouveau mot de passe :", ["label-info"]);
+        createChamp(confirme_mdp, "password", "confNewPwdAbo");
 
 
-        create("label", div, "Votre ancien mot de passe :",);
-        createChamp(div, "password", "oldPwdAbo");
-
-        create("label", div, "Votre nouveau mot de passe :",);
-        createChamp(div, "password", "newPwdAbo");
-
-        create("label", div, "Confirmation du nouveau mot de passe :",);
-        createChamp(div, "password", "confNewPwdAbo");
-
-
-        const valider = create("button", div, "Valider le changement", ['gestion_infos', "unstyled-button"])
+        const valider = create("button", form, "Valider le changement", ['gestion_infos', "unstyled-button"])
         valider.title = "Valider"
         valider.addEventListener("click", function () {
 
@@ -182,13 +205,17 @@ const displayInscr = (container, lst_inscriptions) => {
     for(let inscription of lst_inscriptions){
         let div = create("div", container, null, ["inscription"])
 
-        let identite = create("div", div, null, ["inscription-identité"])
-        create("div", identite, inscription.firstname)
-        create("div", identite, inscription.name)
+        let identite = create("div", div, null, ["inscription-container"])
+        create("div", identite, inscription.firstname, ["inscription-prenom"])
+        create("div", identite, inscription.name, ["inscription-nom"])
 
-        create("div", div, inscription.birth_date)
+        let naissance = create("div", div, null, ["inscription-container"])
+        create("div", naissance, "Date de naissance", ["inscription-info"])
+        create("div", naissance, inscription.birth_date, ["inscription-valeur"])
 
-        create("div", div, inscription.email)
+        let email = create("div", div, null, ["inscription-container"])
+        create("div", email, "Email", ["inscription-info"])
+        create("div", email, inscription.email, ["inscription-valeur"])
 
         let btns = create("div", div, null, ["inscription-btns"])
 

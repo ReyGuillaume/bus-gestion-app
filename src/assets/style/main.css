@@ -692,16 +692,26 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border: solid 1px black;
+  border-radius: 20px;
+  background-color: #D2D4DA;
+  box-shadow: 5px 5px 5px black;
   margin: 15px;
 }
-.inscription-identité{
+.inscription-container, .inscription-btns{
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+.inscription-prenom, .inscription-nom, .inscription-info{
+  font-weight: bold;
+}
+.inscription-info{
+  color: #3192FA;
+}
+.inscription-valeur{
+  font-style: italic;
 }
 .inscription-btns{
-  display: flex;
-  flex-direction: column;
   gap: 10px;
 }
 .valideButton, .refuseButton{
