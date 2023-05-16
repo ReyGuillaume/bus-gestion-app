@@ -23,7 +23,7 @@ const afficheEntites = (entites) => {
 }
 
 // fonction qui crée un item dans le menu de l'agenda
-const createAgendaMenuItem = (container, nom, fct) => {
+const createAgendaMenuItem = (container, nom, classe, fct) => {
     const item = create("div", container, null, ["agendaMenu_item"])
 
     const titre = create("div", item, null, ["agendaMenu_titre"])
@@ -32,8 +32,9 @@ const createAgendaMenuItem = (container, nom, fct) => {
     img.src = "src/assets/images/agenda/triangle.png"
     create("div", titre, nom, ["agendaMenu_nom"])
 
-    item.addEventListener("click", function(){
+    titre.addEventListener("click", function(){
         pivoteTriangle(item.querySelector(".agendaMenu_triangle"))
+        titre.classList.toggle(`agendaMenu_titre_${classe}`)
         fct()
     })
 
@@ -55,24 +56,24 @@ const createAgendaMenu = (container, id_role, user=null, date=null, multi=false,
     const menu = create("div", container, null, ["agendaMenu"])
 
     // agenda personnel
-    createAgendaMenuItem(menu, "Votre agenda", () => toggleAgenda())
+    createAgendaMenuItem(menu, "Votre agenda", "perso", () => toggleAgenda())
 
     // agenda des chauffeurs
-    let chauffeurs = createAgendaMenuItem(menu, "Chauffeurs", () => drawUsers(3))
+    let chauffeurs = createAgendaMenuItem(menu, "Chauffeurs", "chauffeurs", () => drawUsers(3))
     createUsers(chauffeurs, 3, date, multi, entites)
 
     if(id_role == 1){
         // agenda des responsables logistiques
-        let resp = createAgendaMenuItem(menu, "Resp. Logistiques", () => drawUsers(2))
+        let resp = createAgendaMenuItem(menu, "Resp. Logistiques", "resp", () => drawUsers(2))
         createUsers(resp, 2, date, multi, entites)
     }
 
     // agenda des bus
-    let buses = createAgendaMenuItem(menu, "Bus", () => drawBuses())
+    let buses = createAgendaMenuItem(menu, "Bus", "bus", () => drawBuses())
     createBuses(buses, date, multi, entites)
 
     // agenda des lignes de bus
-    let lignes = createAgendaMenuItem(menu, "Lignes", () => drawLines())
+    let lignes = createAgendaMenuItem(menu, "Lignes", "lignes", () => drawLines())
     createLines(lignes, date, multi, entites)
 
     create("div", menu, "Afficher", ["submitButton"]).addEventListener("click", async () => {
@@ -86,7 +87,7 @@ const createAgendaMenu = (container, id_role, user=null, date=null, multi=false,
             toggleAgenda(entites_choisies[0])
         }
         else if(nb_entites > 4){
-            toggleError("ERREUR", "Vous ne pouvez choisir que 4 entités à la fois")
+            toggleError("ERREUR", "Vous ne pouvez choisir que 4 entités")
         }
         else{
             toggleAgenda(undefined, undefined, true, entites_choisies)
