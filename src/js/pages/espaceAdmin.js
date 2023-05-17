@@ -120,6 +120,9 @@ const toggleGestionBus = () => {
 }
 
 const toggleGestionLigne = () => {
+    // affiche le potentiel message d'alerte en stock
+    toggleAlertMessage()
+
     const main = document.querySelector("#app")
     main.replaceChildren("")
 

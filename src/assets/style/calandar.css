@@ -496,7 +496,8 @@
 .validation {
   display: flex;
   flex-direction: column;
-  height: 50vh;
+  min-height: 25vh;
+  max-height: 70vh;
   width: 50vw;
   background-color: #f4f4f4;
   border-radius: 1rem;
