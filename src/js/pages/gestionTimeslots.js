@@ -455,7 +455,7 @@ const toggleAddCreneau = () => {
     back.addEventListener("click", () => redirect("/espace-admin"))
     back.title = "Retour en arrière"
 
-    create("h2", main, "Ajout de crénaux");
+    create("h2", main, "Ajout de crénaux", ["colocation"]);
     create("p", main, " Rentrez les informations suivantes : ", ["presentation"]);
 
     // Creation of the form

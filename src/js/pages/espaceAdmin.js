@@ -68,8 +68,7 @@ const toggleGestionUsers = () => {
     back.addEventListener("click", () => redirect("/espace-admin"))
     back.title = "Retour en arrière"
     
-    create("h2", main, "Gestion des utilisateurs", ["gestion_users_tite"])
-    createMenuElement(main, () => null,  "violet", "src/assets/images/nav_user.png")
+    create("h2", main, "Gestion des utilisateurs", ["gestion_users_tite", "colocation"])
 
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 

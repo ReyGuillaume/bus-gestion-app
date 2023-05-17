@@ -64,9 +64,9 @@ export function toggleInfoAbonne(){
     // les informations de l'abonné + les boutons pour mofier le profil et le mot de passe
     axios.get(`users/users.php?function=user&id=`+sessionData["id"]).then((response) => {
         const div = create("div", main);
-        create("h2", div, "Voici vos informations personnelles :");
+        create("h2", div, "Voici vos informations personnelles :", ["colocation"]);
 
-        create("p", div, "Votre nom : "+ response.data["name"]);
+        create("p", div, "Votre nom : "+ response.data["name", "espacio"]);
         create("p", div, "Votre prénom : "+ response.data["firstname"]);
         create("p", div, "Votre date de naissance : "+ response.data["birth_date"]);
         create("p", div, "Votre adresse mail : "+ response.data["email"]);
