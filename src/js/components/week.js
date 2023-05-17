@@ -427,10 +427,12 @@ const createCalandar = (container, date, user=null, multi=false, entites=null) =
     if(!multi){
         const actions = create("div", container, null, ["actionsTimeslot", "actionsClosed"])
 
-        const add = create("img", actions, null, ["addTimeslot"])
-        add.src = "src/assets/images/agenda/ajouter.png"
-        add.addEventListener("click", () => modifActions(actions, sessionData['idrole'], firstDay, user, multi, entites))
-        add.title = "Ajouter un créneau"
+        if(nbActionsPossibles(sessionData['idrole'], user) > 0){
+            const add = create("img", actions, null, ["addTimeslot"])
+            add.src = "src/assets/images/agenda/ajouter.png"
+            add.addEventListener("click", () => modifActions(actions, sessionData['idrole'], firstDay, user, multi, entites))
+            add.title = "Ajouter un créneau"
+        }
     }
     return container
 }
@@ -443,6 +445,32 @@ const modifActions = (action, id_role, firstDay, user, multi, entites) => {
     else{
         removeActionsMenu(action)
     }
+}
+
+// fonction qui renvoie le nombres d'actions de drag & drop possibles pour un user
+const nbActionsPossibles = (id_role, user) => {
+    var nb_actions = 0
+
+    let role = parseInt(id_role)
+
+    // Réunion : Directeur -> Utilisateur ou lui-même
+    if(role == 1 && (!user || (user.firstname || (!user.id && !user.number)))){
+        nb_actions++
+    }
+    // Conduite : Directeur - Resp Log -> Bus - Chauffeur - Ligne
+    if(((role == 1 || role == 2) && user) && (user.nb_places || user.id_user_type == 3 || user.number)){
+        nb_actions++
+    }
+    // Indispo : Chauffeur
+    if(role == 3){
+        nb_actions++
+    }
+    // Astreinte : Directeur - Resp Log -> Chauffeur
+    if(((role == 1 || role == 2) && user) && user.id_user_type == 3){
+        nb_actions++
+    }
+
+    return nb_actions
 }
 
 // fonction qui crée l'icône d'une action de drag & drop
@@ -462,23 +490,33 @@ const toggleActionsMenu = (action_menu, id_role, firstDay, user, multi, entites)
     let add = action_menu.querySelector(".addTimeslot")
     add.style.transform = 'rotate(45deg)'
 
+    var nb_actions = 0
+
     let role = parseInt(id_role)
 
     // Réunion : Directeur -> Utilisateur ou lui-même
     if(role == 1 && (!user || (user.firstname || (!user.id && !user.number)))){
+        nb_actions++
         createActionItem(action_menu, "reunion", "Réunion", "actionReunion", firstDay, user, multi, entites)
     }
     // Conduite : Directeur - Resp Log -> Bus - Chauffeur - Ligne
     if(((role == 1 || role == 2) && user) && (user.nb_places || user.id_user_type == 3 || user.number)){
+        nb_actions++
         createActionItem(action_menu, "conduite", "Conduite", "actionConduite", firstDay, user, multi, entites)
     }
     // Indispo : Chauffeur
     if(role == 3){
+        nb_actions++
         createActionItem(action_menu, "indispo", "Indisponibilité", "actionIndispo", firstDay, user, multi, entites)
     }
     // Astreinte : Directeur - Resp Log -> Chauffeur
     if(((role == 1 || role == 2) && user) && user.id_user_type == 3){
+        nb_actions++
         createActionItem(action_menu, "astreinte", "Astreinte", "actionAstreinte", firstDay, user, multi, entites)
+    }
+
+    if(nb_actions == 0){
+        action_menu.remove()
     }
 }
 
