@@ -27,34 +27,34 @@ const toggleEspaceAdmin = () => {
     const nav = create("nav", main, null, ['navBar_Admin'])
 
     // agenda
-    createMenuElement(nav, () => redirect("/agenda"), "rose", "src/assets/images/nav_agenda.png", "Voir mon agenda", "Voir mon agenda")
+    createMenuElement(nav, () => redirect("/agenda"), "violet", "src/assets/images/nav_agenda.png", "Voir mon agenda", "Voir mon agenda")
 
     // créneaux
-    createMenuElement(nav, () => redirect("/creneau"), "gris", "src/assets/images/nav_creneau.png", "Ajouter un créneaux", "Ajouter un créneaux")
+    createMenuElement(nav, () => redirect("/creneau"), "indigo", "src/assets/images/nav_creneau.png", "Ajouter un créneau", "Ajouter un créneaux")
 
     // utilisateurs
-    createMenuElement(nav, () => redirect("/utilisateurs"), "violet", "src/assets/images/nav_user.png", 'Gérer les utilisateurs', 'Gérer les utilisateurs')
+    createMenuElement(nav, () => redirect("/utilisateurs"), "bleu", "src/assets/images/nav_user.png", 'Gérer les utilisateurs', 'Gérer les utilisateurs')
 
     // bus
-    createMenuElement(nav, () => redirect("/bus"), "vert_clair", "src/assets/images/nav_bus.png", 'Gérer les bus', 'Gérer les bus')
+    createMenuElement(nav, () => redirect("/bus"), "bleu_clair", "src/assets/images/nav_bus.png", 'Gérer les bus', 'Gérer les bus')
 
     // lignes
-    createMenuElement(nav, () => redirect("/lignes"), "bleu_clair", "src/assets/images/nav_gestion.png", 'Gérer les lignes', 'Gérer les lignes')
+    createMenuElement(nav, () => redirect("/lignes"), "vert", "src/assets/images/nav_gestion.png", 'Gérer les lignes', 'Gérer les lignes')
 
     // notif
-    createMenuElement(nav, () => redirect("/notification-center"), "orange", "src/assets/images/nav_notif.png", 'Afficher les notifications', 'Afficher les notifications')
+    createMenuElement(nav, () => redirect("/notification-center"), "vert_clair", "src/assets/images/nav_notif.png", 'Afficher les notifications', 'Afficher les notifications')
 
     // reservation
-    createMenuElement(nav, () => redirect("/reservation"), "rouge", "src/assets/images/nav_reservation.png", "Voir les réservations", "Voir les réservations")
+    createMenuElement(nav, () => redirect("/reservation"), "jaune", "src/assets/images/nav_reservation.png", "Voir les réservations", "Voir les réservations")
 
     // inscriptions
-    createMenuElement(nav, () => redirect("/inscriptions"), "bleu", "src/assets/images/nav_profil.png", "Voir les inscriptions", "Voir les inscriptions")
+    createMenuElement(nav, () => redirect("/inscriptions"), "orange", "src/assets/images/nav_profil.png", "Voir les inscriptions", "Voir les inscriptions")
     
     // arrets
-    createMenuElement(nav, () => redirect("/arrets"), "rose", "src/assets/images/nav_bus.png", 'Gérer les arrets', 'Gérer les arrets')
+    createMenuElement(nav, () => redirect("/arrets"), "rouge_orange", "src/assets/images/nav_bus.png", 'Gérer les arrets', 'Gérer les arrets')
 
     // espace utilisateur
-    createMenuElement(nav, () => redirect("/informations-utilisateur"), "jaune", "src/assets/images/nav_profil.png", "Afficher mes informations", "Afficher mes informations")
+    createMenuElement(nav, () => redirect("/informations-utilisateur"), "rouge", "src/assets/images/nav_profil.png", "Afficher mes informations", "Afficher mes informations")
 
     return main
 }
