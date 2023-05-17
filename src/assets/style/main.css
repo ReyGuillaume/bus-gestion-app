@@ -183,51 +183,42 @@ body {
   transition: 0.5s;
   padding: 8px;
 }
-.indigo, .rose, .jaune, .jaune_clair, .rouge, .rouge_orange, .orange, .bleu, .bleu_clair, .violet, .vert, .vert_clair{
+.indigo, .jaune, .rouge, .rouge_orange, .orange, .bleu, .bleu_clair, .violet, .vert, .vert_clair{
   transition: 0.5s;
   border-radius: 35px;
 }
-.indigo:hover, .rose:hover, .jaune:hover, .jaune_clair:hover, .rouge:hover, .rouge_orange:hover, .orange:hover, .bleu:hover, .bleu_clair:hover, .violet:hover, .vert:hover, .vert_clair:hover{
+.indigo:hover, .jaune:hover, .rouge:hover, .rouge_orange:hover, .orange:hover, .bleu:hover, .bleu_clair:hover, .violet:hover, .vert:hover, .vert_clair:hover{
   border-radius: 20px;
 }
 .violet{
-  background-color: #8f43c5;
-}
-.rose{
-  background-color: #E2A9FD;
+  background-color: #753a9c;
 }
 .jaune{
-  background-color: #fde385;
-}
-.jaune_clair{
-  background-color: #fff79e;
+  background-color: #FFD675;
 }
 .rouge{
   background-color: #e05e5e;
 }
 .rouge_orange{
-  background-color: #ef9f8d;
+  background-color: #e77c7e;
 }
 .orange{
-  background-color: #eec07b;
+  background-color: #e88e52;
 }
 .bleu{
   background-color: #6174ee;
 }
 .bleu_clair{
-  background-color: #A1DFF2;
-}
-.gris{
-  background-color: #a8acb7;
+  background-color: #7ed6f0;
 }
 .indigo{
-  background-color: #9a8bff;
+  background-color: #a270c6;
 }
 .vert{
-  background-color: #79fb86;
+  background-color: #74E296;
 }
 .vert_clair{
-  background-color: #ccea9a;
+  background-color: #BFFB8F;
 }
 
 /* FOOTER */
@@ -439,7 +430,7 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
   font-weight: bold;
   text-shadow: 2px 2px lightblue;
 }
-.gestion_users, .gestion_bus, .gestion_lignes, .gestion_infos{
+.gestion_users, .gestion_bus, .gestion_lignes, .gestion_infos, .gestion_arrets{
   border-radius: 10px;
   padding: 10px;
   margin: 10px;
@@ -449,12 +440,12 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
   color: white;
 }
 
-.gestion_users:hover, .gestion_bus:hover, .gestion_lignes:hover, .gestion_infos:hover{
+.gestion_users:hover, .gestion_bus:hover, .gestion_lignes:hover, .gestion_infos:hover, .gestion_arrets:hover{
   background: linear-gradient(to right, rgb(64, 64, 64), black);
 }
 
 .gestion_users{
-  background: linear-gradient(to right, rgb(238, 137, 251), rgb(234, 110, 250));
+  background: linear-gradient(to right, #efb4e0, #d589c2);
 }
 
 .gestion_bus{
@@ -467,6 +458,10 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
 
 .gestion_infos{
   background: linear-gradient(to right, rgb(255, 209, 172), rgb(247, 180, 125));
+}
+
+.gestion_arrets{
+  background: linear-gradient(to right, #3887ac, #0F658D);
 }
 
 .plage-horaire{

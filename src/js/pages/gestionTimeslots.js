@@ -474,7 +474,6 @@ const toggleAddCreneau = () => {
     create("label", divRadio, "Choisissez le type du créneau :", ["label-info"]);
     axios.get(`timeslots/timeslots.php?function=types`).then((response)=>{
         let userSession = JSON.parse(sessionStorage.getItem("userData"))
-        console.log(userSession)
         for(var type of response.data){
 
         /*--------------
