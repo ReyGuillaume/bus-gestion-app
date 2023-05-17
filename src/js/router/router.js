@@ -30,9 +30,9 @@ router.on('/inscription', toggleInscriptionForm)
 router.on('/disconnect', disconnectUser)
 router.on('/notification-center', toggleNotificationCenter)
 
-router.on('/espace-informations-abonne', toggleInfoAbonne)
-router.on('/espace-informations-abonne/informations', changerInfoAbonne)
-router.on('/espace-informations-abonne/mot-de-passe', changerMdpAbonne)
+router.on('/informations-utilisateur', toggleInfoAbonne)
+router.on('/informations-utilisateur/informations', changerInfoAbonne)
+router.on('/informations-utilisateur/mot-de-passe', changerMdpAbonne)
 
 router.on('/agenda', toggleAgenda)
 

@@ -119,15 +119,15 @@ const drawAgenda = (user=null, date=null, multi=false, entites=null) => {
     }
 
     // agenda d'un utilisateur
-    if(user && user.firstname){
+    if(user && user.firstname && !multi){
         create("h2", main, "Agenda de " + user.firstname + " " + user.name.toUpperCase(), ['mainTitle'])
     }
     // agenda d'un bus
-    else if(user && user.nb_places){
+    else if(user && user.nb_places && !multi){
         create("h2", main, "Agenda du bus n°" + user.id, ['mainTitle'])
     }
     // agenda d'une ligne de bus
-    else if(user && user.number){
+    else if(user && user.number && !multi){
         create("h2", main, "Agenda de la ligne " + user.number, ['mainTitle'])
     }
     // agenda des chauffeurs

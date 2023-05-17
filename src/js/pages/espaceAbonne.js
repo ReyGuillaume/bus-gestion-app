@@ -30,12 +30,11 @@ export function toggleEspaceAbonne() {
 
     const nav = create("nav", main, null, ['navBar_User'])
 
-    // informations de l'abonné
-    createMenuElement(nav, () => redirect("/espace-informations-abonne"), "jaune", "src/assets/images/nav_profil.png", "Afficher mes informations", "Afficher mes informations")
+    // espace utilisateur
+    createMenuElement(nav, () => redirect("/informations-utilisateur"), "jaune", "src/assets/images/nav_profil.png", "Afficher mes informations", "Afficher mes informations")
 
     // notif
     createMenuElement(nav, () => redirect("/notification-center"), "orange", "src/assets/images/nav_notif.png", "Afficher mes notifications", "Afficher mes notifications")
-
 
     // reservation
     createMenuElement(nav, () => redirect("/reservation-abonne"), "rouge", "src/assets/images/nav_reservation.png", "Gérer mes réservations", "Gérer mes réservations")
@@ -51,14 +50,6 @@ export function toggleInfoAbonne(){
     const main = document.querySelector("#app");
     main.replaceChildren("");
 
-    // redirection si l'utilisateur n'est pas un abonné
-    redirectUser(
-        () => redirect("/"),
-        () => redirect("/"),
-        () => redirect("/"),
-        () => null
-    );
-
     // affiche le potentiel message d'alerte en stock
     toggleAlertMessage()
 
@@ -67,28 +58,48 @@ export function toggleInfoAbonne(){
 
     // bouton de retour
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-abonne"))
+    back.addEventListener("click", () => redirectUser(
+        () => redirect("/espace-admin"), 
+        () => redirect("/espace-admin"),
+        () => redirect("/espace-utilisateur"),
+        () => redirect("/espace-abonne")
+    ))
     back.title = "Retour en arrière"
 
     // les informations de l'abonné + les boutons pour mofier le profil et le mot de passe
     axios.get(`users/users.php?function=user&id=`+sessionData["id"]).then((response) => {
-        const div = create("div", main);
-        create("h2", div, "Voici vos informations personnelles :");
+        create("h2", main, "Voici vos informations personnelles :");
 
-        create("p", div, "Votre nom : "+ response.data["name"]);
-        create("p", div, "Votre prénom : "+ response.data["firstname"]);
-        create("p", div, "Votre date de naissance : "+ response.data["birth_date"]);
-        create("p", div, "Votre adresse mail : "+ response.data["email"]);
-        create("p", div, "Votre nom d'utilisateur : "+ response.data["login"]);
+        const infos_user = create("div", main, null, ["infos-utilisateur"]);
+
+        const div_nom = create("div", infos_user, null, ["form-div-radio"]);
+        create("div", div_nom, "Votre nom : ", ["label-info"]);
+        create("div", div_nom, response.data["name"]);
+
+        const div_prenom = create("div", infos_user, null, ["form-div-radio"]);
+        create("div", div_prenom, "Votre prénom : ", ["label-info"]);
+        create("div", div_prenom, response.data["firstname"]);
+
+        const div_naissance = create("div", infos_user, null, ["form-div-radio"]);
+        create("div", div_naissance, "Votre date de naissance : ", ["label-info"]);
+        create("div", div_naissance, response.data["birth_date"]);
+
+        const div_email = create("div", infos_user, null, ["form-div-radio"]);
+        create("div", div_email, "Votre adresse mail : ", ["label-info"]);
+        create("div", div_email, response.data["email"]);
+
+        const div_login = create("div", infos_user, null, ["form-div-radio"]);
+        create("div", div_login, "Votre nom d'utilisateur : ", ["label-info"]);
+        create("div", div_login, response.data["login"]);
 
         // bouton pour changer les infos de l'abonné
-        const changerInfo = create("button", div, "Changer mes informations", ['gestion_infos', "unstyled-button"] )
-        changerInfo.addEventListener("click", () => redirect("/espace-informations-abonne/informations"));
+        const changerInfo = create("button", infos_user, "Changer mes informations", ['gestion_infos', "unstyled-button"] )
+        changerInfo.addEventListener("click", () => redirect("/informations-utilisateur/informations"));
         changerInfo.title = "Changer mes informations"
 
         // bouton pour changer le mot de passe de l'abonné
-        const changerMdp = create("button", div, "Changer mon mot de passe", ['gestion_infos', "unstyled-button"] )
-        changerMdp.addEventListener("click", () => redirect("/espace-informations-abonne/mot-de-passe"));
+        const changerMdp = create("button", infos_user, "Changer mon mot de passe", ['gestion_infos', "unstyled-button"] )
+        changerMdp.addEventListener("click", () => redirect("/informations-utilisateur/mot-de-passe"));
         changerMdp.title = "Changer mon mot de passe"
     })
     return main

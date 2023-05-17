@@ -87,12 +87,12 @@ const afficheDrivers = (container, tabUser) => afficheEntites(container, tabUser
 
 const afficheLines = (container, tabLine) => afficheEntites(container, tabLine, `lines/lines.php?function=lines`, "selectionLigne")
 
-const executeAction = (container, url, startDateTime, user, successMessage, errorMessage, multi) => {
+const executeAction = (container, url, startDateTime, user, successMessage, errorMessage, multi, entites) => {
     axios.get(url).then(response => {
         removeContainerAndRemoveCacheClass(container)
         if(response.data){
             let newDate = new Date(startDateTime)
-            toggleAgenda(user, newDate, multi)
+            toggleAgenda(user, newDate, multi, entites)
             toggleAlert("BRAVO", successMessage)
         } else {
             toggleError("ERREUR", errorMessage)
@@ -101,7 +101,7 @@ const executeAction = (container, url, startDateTime, user, successMessage, erro
 }
 
 // affiche le bouton pour modifier un créneau, puis son formulaire
-const modifConduite = (container, props, user=null, multi=false, overlay) => {
+const modifConduite = (container, props, user=null, multi=false, entites=null, overlay) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`).then((responseCreneau) =>{
 
         // Creation du formulaire pré remplie de modif de ligne 
@@ -205,13 +205,13 @@ const modifConduite = (container, props, user=null, multi=false, overlay) => {
             url += line ? `&lines=${line}` : `&lines=`
             url += line && direction ? `&directions=${direction}` : `&directions=`
 
-            executeAction(container, url, StartDateTime, user, "La conduite a bien été modifiée", "La conduite n'a pas pu être modifiée", multi)
+            executeAction(container, url, StartDateTime, user, "La conduite a bien été modifiée", "La conduite n'a pas pu être modifiée", multi, entites)
         })
     });
 }
 
 // affiche le bouton pour modifier un créneau, puis son formulaire
-const modifAstreinte = (container, props, user=null, multi=false, overlay) => {
+const modifAstreinte = (container, props, user=null, multi=false, entites=null, overlay) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`).then((responseCreneau) =>{
 
         // Creation du formulaire pré remplie de modif de ligne
@@ -275,13 +275,13 @@ const modifAstreinte = (container, props, user=null, multi=false, overlay) => {
 
             url += users ?  `&users=${users}` : `&users=`
             url += buses ? `&buses=${buses}` : `&buses=`
-            executeAction(container, url, StartDateTime, user, "La conduite a bien été modifiée", "La conduite n'a pas pu être modifiée", multi)
+            executeAction(container, url, StartDateTime, user, "La conduite a bien été modifiée", "La conduite n'a pas pu être modifiée", multi, entites)
         })
     });
 }
 
 
-const modifReservation = (container, props, user=null, multi=false, overlay) => {
+const modifReservation = (container, props, user=null, multi=false, entites=null, overlay) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`).then(async (responseCreneau) => {
 
         // Creation du formulaire pré remplie de modif de ligne
@@ -354,13 +354,13 @@ const modifReservation = (container, props, user=null, multi=false, overlay) => 
 
             url += users ? `&users=${users}` : `&users=`
             url += buses ? `&buses=${buses}` : `&buses=`
-            executeAction(container, url, StartDateTime, user, "La conduite a bien été modifiée", "La conduite n'a pas pu être modifiée", multi)
+            executeAction(container, url, StartDateTime, user, "La conduite a bien été modifiée", "La conduite n'a pas pu être modifiée", multi, entites)
         })
     });
 }
 
 
-const modifReunion = (container, props, user=null, multi=false, overlay) => {
+const modifReunion = (container, props, user=null, multi=false, entites=null, overlay) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`).then((responseCreneau) =>{
     
         // Creation du formulaire pré remplie de modif de ligne 
@@ -416,12 +416,12 @@ const modifReunion = (container, props, user=null, multi=false, overlay) => {
             url += users ? `&users=${users}` : "&users="
             url += "&buses=&lines=&directions="
 
-            executeAction(container, url, StartDateTime, user, "La réunion a bien été modifiée", "La réunion n'a pas pu être modifiée", multi)
+            executeAction(container, url, StartDateTime, user, "La réunion a bien été modifiée", "La réunion n'a pas pu être modifiée", multi, entites)
         })
     })
 }
 
-const modifIndispo = (container, props, user=null, multi=false, overlay) => {
+const modifIndispo = (container, props, user=null, multi=false, entites=null, overlay) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`)
     .then(responseCreneau => {
         // Creation du formulaire pré remplie de modif de ligne 
@@ -469,12 +469,12 @@ const modifIndispo = (container, props, user=null, multi=false, overlay) => {
             let url = `timeslots/timeslots.php?function=update&id=${props.id}&beginning=${StartDateTime}&end=${EndDateTime}&users=${users}`;
             url += "&buses=&lines=&directions=";
 
-            executeAction(container, url, StartDateTime, user, "L'indisponiblité a bien été modifiée", "L'indisponibilité n'a pas pu être modifiée", multi)
+            executeAction(container, url, StartDateTime, user, "L'indisponiblité a bien été modifiée", "L'indisponibilité n'a pas pu être modifiée", multi, entites)
         })
     })
 }
 
-const reunion = (container, props, bubble, user_role, user=null, multi=false, overlay) => {
+const reunion = (container, props, bubble, user_role, user=null, multi=false, entites=null, overlay) => {
     //titre
     create('p', container, props.name, ["task-name"])
 
@@ -498,7 +498,7 @@ const reunion = (container, props, bubble, user_role, user=null, multi=false, ov
         const btns = create("div", container, null, ["btn-task"])
 
         const b1 = create("button", btns, "Modifier", ["modifButton", "unstyled-button"])
-        b1.onclick = () => modifReunion(container, props, user, multi, overlay)
+        b1.onclick = () => modifReunion(container, props, user, multi, entites, overlay)
         b1.title = "Modifier"
 
         const b2 = create("button", btns, "Supprimer", ["delButton", "unstyled-button"])
@@ -510,7 +510,7 @@ const reunion = (container, props, bubble, user_role, user=null, multi=false, ov
 }
 
 
-const conduite = (container, props, bubble, user_role, user=null, multi=false, overlay) => {
+const conduite = (container, props, bubble, user_role, user=null, multi=false, entites=null, overlay) => {
 
     //titre
     create('p', container, props.name, ["task-name"])
@@ -546,7 +546,7 @@ const conduite = (container, props, bubble, user_role, user=null, multi=false, o
         const btns = create("div", container, null, ["btn-task"])
         
         const b1 = create("button", btns, "Modifier", ["modifButton", "unstyled-button"])
-        b1.onclick = () => modifConduite(container, props, user, multi, overlay)
+        b1.onclick = () => modifConduite(container, props, user, multi, entites, overlay)
         b1.title = "Modifier"
 
         const b2 = create("button", btns, "Supprimer", ["delButton", "unstyled-button"])
@@ -626,7 +626,7 @@ const astreinte = (container, props, bubble, user_role, user=null, multi=false, 
 }
 
 
-const reservation = async (container, props, bubble, user_role, user = null, multi = false, overlay) => {
+const reservation = async (container, props, bubble, user_role, user = null, multi = false, entites = null, overlay) => {
     //titre
     create('p', container, props.name, ["task-name"])
 
@@ -667,7 +667,7 @@ const reservation = async (container, props, bubble, user_role, user = null, mul
     if (["Responsable Logistique", "Directeur"].includes(user_role)) {
         const btns = create("div", container, null, ["btn-task"])
 
-        create("div", btns, "Modifier", ["modifButton"]).onclick = () => modifReservation(container, props, user, multi, overlay)
+        create("div", btns, "Modifier", ["modifButton"]).onclick = () => modifReservation(container, props, user, multi, entites, overlay)
         create("div", btns, "Supprimer", ["delButton"]).onclick = () => supprimeCreneau(container, props, bubble)
     }
 
@@ -676,7 +676,7 @@ const reservation = async (container, props, bubble, user_role, user = null, mul
 
 
 // fonction qui permet d'afficher un créneau horaire affecté à l'utilisateur connecté
-const toggleTask = (container, props, bubble, user=null, multi=false) => {
+const toggleTask = (container, props, bubble, user=null, multi=false, entites=null) => {
     const sessionData = JSON.parse(sessionStorage.getItem("userData"))
     const role = sessionData["role"]
 
@@ -701,15 +701,15 @@ const toggleTask = (container, props, bubble, user=null, multi=false) => {
         overlay.remove()
     }
     switch (props.name) {
-        case "Conduite": conduite(modale, props, bubble, role, user, multi, overlay)
+        case "Conduite": conduite(modale, props, bubble, role, user, multi, entites, overlay)
             break;
-        case "Réunion": reunion(modale, props, bubble, role, user, multi, overlay)
+        case "Réunion": reunion(modale, props, bubble, role, user, multi, entites, overlay)
             break;
-        case "Indisponibilité": indispo(modale, props, bubble, role, user, multi, overlay)
+        case "Indisponibilité": indispo(modale, props, bubble, role, user, multi, entites, overlay)
             break;
-        case "Astreinte": astreinte(modale, props, bubble, role, user, multi, overlay)
+        case "Astreinte": astreinte(modale, props, bubble, role, user, multi, entites, overlay)
             break;
-        case "Réservation": reservation(modale, props, bubble, role, user, multi, overlay)
+        case "Réservation": reservation(modale, props, bubble, role, user, multi, entites, overlay)
             break;
         default: create("h2", modale, "Une erreur est survenue")
             break;

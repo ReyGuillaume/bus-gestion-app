@@ -19,7 +19,7 @@ function changerInfoAbonne (){
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
 
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-informations-abonne"))
+    back.addEventListener("click", () => redirect("/informations-utilisateur"))
     back.title = "Retour en arrière"
 
     //les informations de l'abonné à changer + le bouton pour valider
@@ -68,7 +68,7 @@ function changerInfoAbonne (){
             const userData = { id, prenom, nom, role, idrole, email }
             sessionStorage.setItem("userData", JSON.stringify(userData))
             createHeader()
-            fetchUrlRedirectAndAlert(url, '/espace-informations-abonne', "Votre profil a bien été modifié.", "Votre profil n'a pas été modifié.")
+            fetchUrlRedirectAndAlert(url, '/informations-utilisateur', "Votre profil a bien été modifié.", "Votre profil n'a pas été modifié.")
         });
     })
 
@@ -85,7 +85,7 @@ function changerMdpAbonne (){
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
 
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-informations-abonne"))
+    back.addEventListener("click", () => redirect("/informations-utilisateur"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Voici vos informations personnelles :");
@@ -138,7 +138,7 @@ function changerMdpAbonne (){
 
             //création de l'url
             let url = `users/users.php?function=updatepwd&id=${sessionData["id"]}&old=${oldPwdAbo}&new=${newPwdAbo}&confirm=${confNewPwdAbo}`;
-            fetchUrlRedirectAndAlert(url, '/espace-informations-abonne', "Votre mot de passe a bien été modifié.", "Votre mot de passe n'a pas été modifié.")
+            fetchUrlRedirectAndAlert(url, '/informations-utilisateur', "Votre mot de passe a bien été modifié.", "Votre mot de passe n'a pas été modifié.")
         });
     })
     return main
