@@ -30,12 +30,11 @@ export function toggleEspaceAbonne() {
 
     const nav = create("nav", main, null, ['navBar_User'])
 
-    // informations de l'abonné
-    createMenuElement(nav, () => redirect("/espace-informations-abonne"), "jaune", "src/assets/images/nav_profil.png", "Afficher mes informations", "Afficher mes informations")
+    // espace utilisateur
+    createMenuElement(nav, () => redirect("/informations-utilisateur"), "jaune", "src/assets/images/nav_profil.png", "Afficher mes informations", "Afficher mes informations")
 
     // notif
     createMenuElement(nav, () => redirect("/notification-center"), "orange", "src/assets/images/nav_notif.png", "Afficher mes notifications", "Afficher mes notifications")
-
 
     // reservation
     createMenuElement(nav, () => redirect("/reservation-abonne"), "rouge", "src/assets/images/nav_reservation.png", "Gérer mes réservations", "Gérer mes réservations")
@@ -50,14 +49,6 @@ export function toggleInfoAbonne(){
 
     const main = document.querySelector("#app");
     main.replaceChildren("");
-
-    // redirection si l'utilisateur n'est pas un abonné
-    redirectUser(
-        () => redirect("/"),
-        () => redirect("/"),
-        () => redirect("/"),
-        () => null
-    );
 
     // affiche le potentiel message d'alerte en stock
     toggleAlertMessage()
@@ -83,12 +74,12 @@ export function toggleInfoAbonne(){
 
         // bouton pour changer les infos de l'abonné
         const changerInfo = create("button", div, "Changer mes informations", ['gestion_infos', "unstyled-button"] )
-        changerInfo.addEventListener("click", () => redirect("/espace-informations-abonne/informations"));
+        changerInfo.addEventListener("click", () => redirect("/informations-utilisateur/informations"));
         changerInfo.title = "Changer mes informations"
 
         // bouton pour changer le mot de passe de l'abonné
         const changerMdp = create("button", div, "Changer mon mot de passe", ['gestion_infos', "unstyled-button"] )
-        changerMdp.addEventListener("click", () => redirect("/espace-informations-abonne/mot-de-passe"));
+        changerMdp.addEventListener("click", () => redirect("/informations-utilisateur/mot-de-passe"));
         changerMdp.title = "Changer mon mot de passe"
     })
     return main

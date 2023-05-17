@@ -29,6 +29,9 @@ const toggleEspaceUser = () => {
 
     // notif
     createMenuElement(nav, () => redirect("/notification-center"), "orange", "src/assets/images/nav_notif.png", "Afficher les notifications", "Afficher les notifications")
+
+    // espace utilisateur
+    createMenuElement(nav, () => redirect("/informations-utilisateur"), "jaune", "src/assets/images/nav_profil.png", "Afficher mes informations", "Afficher mes informations")
     
     return main
 }

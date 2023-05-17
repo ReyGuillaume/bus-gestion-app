@@ -48,10 +48,13 @@ const toggleEspaceAdmin = () => {
     createMenuElement(nav, () => redirect("/reservation"), "rouge", "src/assets/images/nav_reservation.png", "Voir les réservations", "Voir les réservations")
 
     // inscriptions
-    createMenuElement(nav, () => redirect("/inscriptions"), "bleu", "/src/assets/images/nav_profil.png", "Voir les inscriptions", "Voir les inscriptions")
+    createMenuElement(nav, () => redirect("/inscriptions"), "bleu", "src/assets/images/nav_profil.png", "Voir les inscriptions", "Voir les inscriptions")
     
     // arrets
     createMenuElement(nav, () => redirect("/arrets"), "rose", "src/assets/images/nav_bus.png", 'Gérer les arrets', 'Gérer les arrets')
+
+    // espace utilisateur
+    createMenuElement(nav, () => redirect("/informations-utilisateur"), "jaune", "src/assets/images/nav_profil.png", "Afficher mes informations", "Afficher mes informations")
 
     return main
 }
