@@ -6,16 +6,16 @@ const createListeItem = (container, elem, itemText, classe) => {
     let div = create("div", container, null, [classe, "item_invisible"])
     div.title = itemText
     if(elem.firstname){
-        createChampCheckbox(div, `u${elem.id}`, "selectionUser", elem.id)
-        create("label", div, elem.firstname + " " + elem.name.toUpperCase()).setAttribute("for", `u${elem.id}`)
+        createChampCheckbox(div, `user${elem.id}`, "selectionUser", elem.id)
+        create("label", div, elem.firstname + " " + elem.name.toUpperCase()).setAttribute("for", `user${elem.id}`)
     }
     else if(elem.nb_places){
-        createChampCheckbox(div, `b${elem.id}`, "selectionBus", elem.id)
-        create("label", div, `Bus n°${elem.id}`).setAttribute("for", `b${elem.id}`)
+        createChampCheckbox(div, `bus${elem.id}`, "selectionBus", elem.id)
+        create("label", div, `Bus n°${elem.id}`).setAttribute("for", `bus${elem.id}`)
     }
     else{
-        createChampCheckbox(div, `l${elem.number}`, "selectionLine", elem.number)
-        create("label", div, `Ligne ${elem.number}`).setAttribute("for", `l${elem.number}`) 
+        createChampCheckbox(div, `ligne${elem.number}`, "selectionLine", elem.number)
+        create("label", div, `Ligne ${elem.number}`).setAttribute("for", `ligne${elem.number}`)
     }
 }
 

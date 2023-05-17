@@ -1,17 +1,23 @@
 
 import { create, createChamp, createChampCheckbox, createChampRadio, toggleError } from "../utils/domManipulation";
-import { fetchUrlRedirectAndAlert,fetchUrlWithLoading, valueFirstElementChecked, countElementChecked } from "../utils/formGestion";
-import { redirect } from "../utils/redirection";
+import {
+    fetchUrlRedirectAndAlert,
+    fetchUrlWithLoading,
+    valueFirstElementChecked,
+    countElementChecked,
+    addslashes
+} from "../utils/formGestion";
+import {redirect, toggleAlertMessage} from "../utils/redirection";
 import axios from 'axios';
 //------------------------------------------------------- */
-//   Gestion Arrets 
+//   Gestion Arrets
 //------------------------------------------------------- */
 const toggleAddArrets =() =>{
     const main = document.querySelector("#app")
     main.replaceChildren("")
-    
+
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
-    back.addEventListener("click", () => redirect("/lignes"))
+    back.addEventListener("click", () => redirect("/arrets"))
     back.title = "Retour en arrière"
 
     create("h2", main, "Ajout d'un arrêt ")
@@ -25,7 +31,7 @@ const toggleAddArrets =() =>{
     create("label", div_name, "Entrez le nom de l'arrêt à ajouter :", ["label-info"]);
     createChamp(div_name, "text", "name");
 
-   
+
     // Creation of submit button
     const bouton = create("button", form, "Envoyer", ["submitButton"])
     bouton.title = "Envoyer"
@@ -36,34 +42,37 @@ const toggleAddArrets =() =>{
     })
 }
 
-const createArretRadio = (form, container, line) => {
+const createArretRadio = (form, container, arret, type) => {
     //Ajout d'un evenement au clic d'un radio
-    createChampRadio(container, arret.id , "selectionArret", arret.id)
-    .addEventListener('click', function(){
+    createChampRadio(container, "a"+arret.id , "selectionArret", arret.id)
+    .addEventListener('click', function() {
         // Recuperation de la ligne a modifier
-        var idArretToModify = valueFirstElementChecked("input[name='selectionArret']");
-        
-        axios.get(`arrets/arrets.php?function=arret_by_id&id=${idArretToModify}`).then((responseArret) =>{
-           
-            // Creation du formulaire pré remplie de modif de ligne 
+        var idArret = valueFirstElementChecked("input[name='selectionArret']");
+
+        axios.get(`arrets/arrets.php?function=arret_by_id&id=${idArret}`).then((responseArret) => {
+            // Creation du formulaire pré remplie de modif de ligne
             form.replaceChildren("")
 
-            const div_name= create("div", form, null, ["form-div"])
+            const div_name = create("div", form, null, ["form-div"])
             create("label", div_name, "Nom de l'arrêt :", ["form-info"]);
             createChamp(div_name, "text", "name").value = responseArret.data.name;
 
-            
+
             // Creation of submit button
-            const bouton = create("div", form, "Modifier", ["submitButton"])
-            bouton.title = "Modifier"
-            bouton.addEventListener("click", function(){
-                let name = document.querySelector("input[name='name']").value;
-                fetchUrlRedirectAndAlert(`arrets/arrets.php?function=modify_arret&id=${idArretToModify}&new_name=${name}`, "/lignes", "La ligne a bien été modifiée", "La ligne n'a pas pu être modifiée")
-            })
+            if (type === "modify") {
+                const bouton = create("div", form, "Modifier", ["submitButton"])
+                bouton.title = "Modifier"
+                bouton.addEventListener("click", function () {
+                    let name = document.querySelector("input[name='name']").value;
+                    fetchUrlRedirectAndAlert(`arrets/arrets.php?function=modify_arret&id=` + idArret + `&newName=` + addslashes(name), "/arrets", "L'arrêt a bien été modifié", "L'arrêt n'a pas pu être modifié")
+                })
+            } else if (type === "delete") {
+                fetchUrlRedirectAndAlert(`arrets/arrets.php?function=delete_arret&id=` + idArret, "/arrets", "L'arrêt a bien été supprimé", "L'arrêt n'a pas pu être supprimé")
+            }
         })
     })
-    var label = create("label", container, "Ligne " + line.number);
-    label.setAttribute("for", line.number);
+    var label = create("label", container, arret.name);
+    label.setAttribute("for", "a" + arret.id);
 }
 
 
@@ -85,14 +94,40 @@ const toggleModifyArrets =()=>{
    axios.get(`arrets/arrets.php?function=arrets`).then(response => {
     for(var arret of response.data){
         var div_arret = create("div", form, null, ["form-div-radio"])
-        createArretRadio(form, div_arret, arret)
+        createArretRadio(form, div_arret, arret, "modify")
     }
 })
+}
+
+
+const toggleDeleteArret = () => {
+    const main = document.querySelector("#app")
+    main.replaceChildren("")
+
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/arrets"))
+    back.title = "Retour en arrière"
+
+    create("h2", main, "Suppression d'un arret ")
+    create("p", main, "Choisir l'arret à supprimer :", ["presentation"])
+
+    // Creation of the form
+    const form = create("div", main, null, ["app-form"])
+
+    // Recuperation de toutes les lignes
+    axios.get(`arrets/arrets.php?function=arrets`).then(response => {
+        for(var arret of response.data){
+            var div_arret = create("div", form, null, ["form-div-radio"])
+            createArretRadio(form, div_arret, arret, "delete")
+        }
+    })
 
 }
+
 export {
     toggleAddArrets,
-    toggleModifyArrets
+    toggleModifyArrets,
+    toggleDeleteArret
     
 
 }

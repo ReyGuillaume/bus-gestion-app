@@ -101,14 +101,13 @@ const executeAction = (container, url, startDateTime, user, successMessage, erro
 }
 
 // affiche le bouton pour modifier un créneau, puis son formulaire
-const modifConduite = (container, props, user=null, multi=false) => {
+const modifConduite = (container, props, user=null, multi=false, overlay) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`).then((responseCreneau) =>{
 
         // Creation du formulaire pré remplie de modif de ligne 
         container.replaceChildren("")
 
         const back = create("button", container, '<< Retour', ['return', "unstyled-button"])
-        back.onclick = () => removeContainerAndRemoveCacheClass(container)
         back.title = "Retour en arrière"
 
         //titre
@@ -176,6 +175,15 @@ const modifConduite = (container, props, user=null, multi=false) => {
 
         tabDirAller ? champAller.checked = true : champRetour.checked = true
 
+        // ajout des actions au clic
+        container.onclick = e => {
+            e.stopPropagation()
+        }
+        back.onclick = () => {
+            container.remove()
+            overlay.remove()
+        }
+
         // Creation of submit button
         const bouton = create("button", container, "Modifier", ["modifButton", "unstyled-button"])
         bouton.title = "Modifier"
@@ -203,14 +211,14 @@ const modifConduite = (container, props, user=null, multi=false) => {
 }
 
 // affiche le bouton pour modifier un créneau, puis son formulaire
-const modifAstreinte = (container, props, user=null, multi=false) => {
+const modifAstreinte = (container, props, user=null, multi=false, overlay) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`).then((responseCreneau) =>{
 
         // Creation du formulaire pré remplie de modif de ligne
         container.replaceChildren("")
 
-        create("div", container, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(container)
-
+        const back = create("button", container, '<< Retour', ['return', "unstyled-button"])
+        back.title = "Retour en arrière"
         //titre
         create('p', container, props.name, ["task-name"])
 
@@ -244,6 +252,14 @@ const modifAstreinte = (container, props, user=null, multi=false) => {
         create("div", divCheckboxUsers, "Conducteur(s) :", ["form-info"]);
         afficheDrivers(divCheckboxUsers, tabUser)
 
+        // ajout des actions au clic
+        container.onclick = e => {
+            e.stopPropagation()
+        }
+        back.onclick = () => {
+            container.remove()
+            overlay.remove()
+        }
 
         // Creation of submit button
         const bouton = create("div", container, "Modifier", ["modifButton"])
@@ -265,13 +281,14 @@ const modifAstreinte = (container, props, user=null, multi=false) => {
 }
 
 
-const modifReservation = (container, props, user=null, multi=false) => {
+const modifReservation = (container, props, user=null, multi=false, overlay) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`).then(async (responseCreneau) => {
 
         // Creation du formulaire pré remplie de modif de ligne
         container.replaceChildren("")
 
-        create("div", container, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(container)
+        const back = create("button", container, '<< Retour', ['return', "unstyled-button"])
+        back.title = "Retour en arrière"
 
         create('p', container, props.name, ["task-name"])
 
@@ -314,6 +331,15 @@ const modifReservation = (container, props, user=null, multi=false) => {
         create("div", divCheckboxUsers, "Conducteur(s) :", ["form-info"]);
         afficheDrivers(divCheckboxUsers, tabUser)
 
+        // ajout des actions au clic
+        container.onclick = e => {
+            e.stopPropagation()
+        }
+        back.onclick = () => {
+            container.remove()
+            overlay.remove()
+        }
+
         // Creation of submit button
         const bouton = create("div", container, "Modifier", ["modifButton"])
         bouton.addEventListener("click", function () {
@@ -334,14 +360,13 @@ const modifReservation = (container, props, user=null, multi=false) => {
 }
 
 
-const modifReunion = (container, props, user=null, multi=false) => {
+const modifReunion = (container, props, user=null, multi=false, overlay) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`).then((responseCreneau) =>{
     
         // Creation du formulaire pré remplie de modif de ligne 
         container.replaceChildren("")
 
         const back = create("button", container, '<< Retour', ['return', "unstyled-button"])
-        back.onclick = () => removeContainerAndRemoveCacheClass(container)
         back.title = "Retour en arrière"
 
         //titre
@@ -365,7 +390,16 @@ const modifReunion = (container, props, user=null, multi=false) => {
         var divCheckboxUsers = create("div", container);
         create("div", divCheckboxUsers, "Participant(s) :", ["form-info"]);
         afficheUsers(divCheckboxUsers, tabUser)
-        
+
+        // ajout des actions au clic
+        container.onclick = e => {
+            e.stopPropagation()
+        }
+        back.onclick = () => {
+            container.remove()
+            overlay.remove()
+        }
+
         // Creation of submit button
         const bouton = create("button", container, "Modifier", ["modifButton", "unstyled-button"])
         bouton.title = "Modifier"
@@ -387,14 +421,13 @@ const modifReunion = (container, props, user=null, multi=false) => {
     })
 }
 
-const modifIndispo = (container, props, user=null, multi=false) => {
+const modifIndispo = (container, props, user=null, multi=false, overlay) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`)
     .then(responseCreneau => {
         // Creation du formulaire pré remplie de modif de ligne 
         container.replaceChildren("")
 
         const back = create("button", container, '<< Retour', ['return', "unstyled-button"])
-        back.onclick = () => removeContainerAndRemoveCacheClass(container)
         back.title = "Retour en arrière"
 
         //titre
@@ -416,6 +449,15 @@ const modifIndispo = (container, props, user=null, multi=false) => {
             users += response_user.id;
         }
 
+        // ajout des actions au clic
+        container.onclick = e => {
+            e.stopPropagation()
+        }
+        back.onclick = () => {
+            container.remove()
+            overlay.remove()
+        }
+
         // Creation of submit button
         const bouton = create("button", container, "Modifier", ["modifButton", "unstyled-button"])
         bouton.title = "Modifier"
@@ -432,7 +474,7 @@ const modifIndispo = (container, props, user=null, multi=false) => {
     })
 }
 
-const reunion = (container, props, bubble, user_role, user=null, multi=false) => {
+const reunion = (container, props, bubble, user_role, user=null, multi=false, overlay) => {
     //titre
     create('p', container, props.name, ["task-name"])
 
@@ -456,7 +498,7 @@ const reunion = (container, props, bubble, user_role, user=null, multi=false) =>
         const btns = create("div", container, null, ["btn-task"])
 
         const b1 = create("button", btns, "Modifier", ["modifButton", "unstyled-button"])
-        b1.onclick = () => modifReunion(container, props, user, multi)
+        b1.onclick = () => modifReunion(container, props, user, multi, overlay)
         b1.title = "Modifier"
 
         const b2 = create("button", btns, "Supprimer", ["delButton", "unstyled-button"])
@@ -468,7 +510,7 @@ const reunion = (container, props, bubble, user_role, user=null, multi=false) =>
 }
 
 
-const conduite = (container, props, bubble, user_role, user=null, multi=false) => {
+const conduite = (container, props, bubble, user_role, user=null, multi=false, overlay) => {
 
     //titre
     create('p', container, props.name, ["task-name"])
@@ -504,7 +546,7 @@ const conduite = (container, props, bubble, user_role, user=null, multi=false) =
         const btns = create("div", container, null, ["btn-task"])
         
         const b1 = create("button", btns, "Modifier", ["modifButton", "unstyled-button"])
-        b1.onclick = () => modifConduite(container, props, user, multi)
+        b1.onclick = () => modifConduite(container, props, user, multi, overlay)
         b1.title = "Modifier"
 
         const b2 = create("button", btns, "Supprimer", ["delButton", "unstyled-button"])
@@ -516,7 +558,7 @@ const conduite = (container, props, bubble, user_role, user=null, multi=false) =
 }
 
 
-const indispo = (container, props, bubble, user_role, user=null, multi=false) => {
+const indispo = (container, props, bubble, user_role, user=null, multi=false, overlay) => {
     //titre
     create('p', container, props.name, ["task-name"])
     create("div", container, "Noté comme indisponible", ["form-info"])
@@ -535,7 +577,7 @@ const indispo = (container, props, bubble, user_role, user=null, multi=false) =>
         const btns = create("div", container, null, ["btn-task"])
         
         const b1 = create("button", btns, "Modifier", ["modifButton", "unstyled-button"])
-        b1.onclick = () => modifIndispo(container, props, user, multi)
+        b1.onclick = () => modifIndispo(container, props, user, multi, overlay)
         b1.title = "Modifier"
 
         const b2 = create("button", btns, "Supprimer", ["delButton", "unstyled-button"])
@@ -546,7 +588,7 @@ const indispo = (container, props, bubble, user_role, user=null, multi=false) =>
     return container
 }
 
-const astreinte = (container, props, bubble, user_role, user=null, multi=false) => {
+const astreinte = (container, props, bubble, user_role, user=null, multi=false, overlay) => {
     //titre
     create('p', container, props.name, ["task-name"])
 
@@ -576,7 +618,7 @@ const astreinte = (container, props, bubble, user_role, user=null, multi=false) 
     if(["Responsable Logistique", "Directeur"].includes(user_role)){
         const btns = create("div", container, null, ["btn-task"])
 
-        create("div", btns, "Modifier", ["modifButton"]).onclick = () => modifAstreinte(container, props, user, multi)
+        create("div", btns, "Modifier", ["modifButton"]).onclick = () => modifAstreinte(container, props, user, multi, overlay)
         create("div", btns, "Supprimer", ["delButton"]).onclick = () => supprimeCreneau(container, props, bubble)
     }
 
@@ -584,7 +626,7 @@ const astreinte = (container, props, bubble, user_role, user=null, multi=false) 
 }
 
 
-const reservation = async (container, props, bubble, user_role, user = null, multi = false) => {
+const reservation = async (container, props, bubble, user_role, user = null, multi = false, overlay) => {
     //titre
     create('p', container, props.name, ["task-name"])
 
@@ -625,7 +667,7 @@ const reservation = async (container, props, bubble, user_role, user = null, mul
     if (["Responsable Logistique", "Directeur"].includes(user_role)) {
         const btns = create("div", container, null, ["btn-task"])
 
-        create("div", btns, "Modifier", ["modifButton"]).onclick = () => modifReservation(container, props, user, multi)
+        create("div", btns, "Modifier", ["modifButton"]).onclick = () => modifReservation(container, props, user, multi, overlay)
         create("div", btns, "Supprimer", ["delButton"]).onclick = () => supprimeCreneau(container, props, bubble)
     }
 
@@ -635,37 +677,41 @@ const reservation = async (container, props, bubble, user_role, user = null, mul
 
 // fonction qui permet d'afficher un créneau horaire affecté à l'utilisateur connecté
 const toggleTask = (container, props, bubble, user=null, multi=false) => {
-
-    const main = document.querySelector("#app")
-    main.classList.add("cache")
-
     const sessionData = JSON.parse(sessionStorage.getItem("userData"))
     const role = sessionData["role"]
-    
-    const ancienne_task = document.querySelector("#task")
 
-    if(ancienne_task){
-        ancienne_task.remove()
-    }
+    const app = document.querySelector("#app")
 
-    const task = create("div", container, null, null, "task")
-
-    const back = create("button", task, '<< Retour', ['return', "unstyled-button"])
-    back.onclick = () => removeContainerAndRemoveCacheClass(task)
+    // création des composants
+    const overlay = create("div", app, null, ["overlay"])
+    const modale = create("div", overlay, null, ['validation'])
+    const back = create("button", modale, '<< Retour', ['return', "unstyled-button"])
     back.title = "Retour en arrière"
 
+    // ajout des actions au clic
+    overlay.onclick = e => {
+        e.stopPropagation()
+        e.target.remove()
+    }
+    modale.onclick = e => {
+        e.stopPropagation()
+    }
+    back.onclick = () => {
+        modale.remove()
+        overlay.remove()
+    }
     switch (props.name) {
-        case "Conduite": conduite(task, props, bubble, role, user, multi)
+        case "Conduite": conduite(modale, props, bubble, role, user, multi, overlay)
             break;
-        case "Réunion": reunion(task, props, bubble, role, user, multi)
+        case "Réunion": reunion(modale, props, bubble, role, user, multi, overlay)
             break;
-        case "Indisponibilité": indispo(task, props, bubble, role, user, multi)
+        case "Indisponibilité": indispo(modale, props, bubble, role, user, multi, overlay)
             break;
-        case "Astreinte": astreinte(task, props, bubble, role, user, multi)
+        case "Astreinte": astreinte(modale, props, bubble, role, user, multi, overlay)
             break;
-        case "Réservation": reservation(task, props, bubble, role, user, multi)
+        case "Réservation": reservation(modale, props, bubble, role, user, multi, overlay)
             break;
-        default: create("h2", task, "Une erreur est survenue")
+        default: create("h2", modale, "Une erreur est survenue")
             break;
     }
 }

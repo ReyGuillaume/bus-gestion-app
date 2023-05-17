@@ -283,15 +283,22 @@ const toggleValideReservation = (container, props, user = null, multi = false) =
     bouton.addEventListener("click", function(){
         // On recupere le temps du trajet
         let temps_trajet = document.querySelector("input[name='temps_trajet']").value;
-        formValidationReservation (modale, props, user, multi, temps_trajet);
+        formValidationReservation (modale, props, user, multi, temps_trajet, overlay);
 
 
     })
     return container;
 }
 
-const formValidationReservation = (container, props, user = null, multi = false, temps_trajet) => {
+const formValidationReservation = (container, props, user = null, multi = false, temps_trajet, overlay) => {
     container.replaceChildren("");
+
+    const back = create("button", container, '<< Retour', ['return', "unstyled-button"])
+    back.title = "Retour en arrière"
+    back.onclick = () => {
+        container.remove()
+        overlay.remove()
+    }
 
     // Creation d'un affichage pour indiquer si la reservation est acceptable
 
