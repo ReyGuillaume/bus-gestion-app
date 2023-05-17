@@ -21,6 +21,16 @@ const idOfAllElementChecked = (selector) => {
     return res
 }
 
+const idOfAllElementCheckedTab = (selector) => {
+    let res = [];
+    for (let elem of document.querySelectorAll(selector)) {
+      if (elem.checked) {
+        res.push(elem.value);
+      }
+    }
+    return res;
+  };
+
 const fetchUrlRedirectAndAlert = (url, route, successMessage, failurMessage) => {
     axios.get(url).then(response => {
         if(response.data){
@@ -32,11 +42,70 @@ const fetchUrlRedirectAndAlert = (url, route, successMessage, failurMessage) => 
     })
 }
 
+const showLoading = () => {
+    // Sélectionne l'élément qui contiendra le message de chargement
+    const loadingElement = document.getElementById('loading');
 
-const createCheckboxOfElement = (container, elt, checkboxName, letter) => {
-    createChampCheckbox(container, letter+elt.id , checkboxName, elt.id);
-    var label = create("label", container, elt.id );
-    label.setAttribute("for", letter+elt.id);
+    // Affiche le message de chargement
+    loadingElement.innerText = 'Chargement en cours...';
+    loadingElement.style.display = 'block';
+};
+
+
+const hideLoading = () => {
+    const loading = document.getElementById("loading");
+    if (loading) {
+        loading.style.display = "none";
+    }
+}
+  
+const fetchUrlWithLoading = (url, route, successMessage, failureMessage) => {
+    let isLoading = true;
+    showLoading(); // Affiche la loading
+
+    axios.get(url).then(response => {
+        isLoading = false;
+        hideLoading(); // Cache la loading
+        var type = "failure";
+        var alerte = { type, failureMessage }
+
+        if (response.data) {
+            var type = "success";
+            alerte = { type, successMessage }
+        }
+
+        sessionStorage.setItem("alerte", JSON.stringify(alerte))
+
+        var alerte_msg = JSON.parse(sessionStorage.getItem("alerte"))
+
+        if(alerte_msg){
+            const { type, message } = alerte_msg
+
+            if(type == "success"){
+                toggleAlert("BRAVO", message)
+            }
+            else{
+                toggleError("ERREUR", message)
+            }
+
+            sessionStorage.removeItem("alerte")
+        }
+
+
+
+    }).catch(error => {
+        isLoading = false;
+        hideLoading(); // Cache la loading
+
+        // Traitez l'erreur ici
+        console.error(error);
+    });
+}
+
+const createCheckboxOfElement = (container, text, value, checkboxName, letter) => {
+    createChampCheckbox(container, letter+text , checkboxName, value);
+    var label = create("label", container, text );
+    label.setAttribute("for", letter+text);
 }
 
 
@@ -83,5 +152,7 @@ export {
     createCheckboxOfElement,
     createCheckBoxOfElements,
     countElementChecked,
-    addslashes
+    addslashes,
+    fetchUrlWithLoading,
+    idOfAllElementCheckedTab
 }

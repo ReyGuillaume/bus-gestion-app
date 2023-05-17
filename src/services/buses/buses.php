@@ -1,6 +1,7 @@
 <?php
 // accès à une fonction bdd() qui renvoie une instance de PDO
 include_once "../connexion.php";
+include_once "buses_free.php";
 
 // ======================== Bus ========================
 
@@ -12,15 +13,15 @@ include_once "../connexion.php";
     @return boolean si l'ajout est un succès.
 */
 function create_bus($id_bus_type) {
-    if(bdd()->query("SELECT * FROM BusType WHERE id = {$id_bus_type}")->fetch()) {
-        bdd()->query("INSERT INTO Bus (`id_bus_type`) VALUE ({$id_bus_type})");
+    if(bdd()->query("SELECT * FROM bustype WHERE id = {$id_bus_type}")->fetch()) {
+        bdd()->query("INSERT INTO bus (`id_bus_type`) VALUE ({$id_bus_type})");
         return true;
     }
     return false;
 }
 
 /**
-    Crée un type de bus si name et nb_places est un couple de valeur qui n'est pas déjà présent dans la table BusType.
+    Crée un type de bus si name et nb_places est un couple de valeur qui n'est pas déjà présent dans la table bustype.
 
     @param name : nom du nouveau type de bus.
     @param nb_places : Entier correspondant au nombre de places disponible dans le bus.
@@ -28,10 +29,10 @@ function create_bus($id_bus_type) {
     @return boolean si l'ajout est un succès.
 */
 function create_bus_type($name, $nb_places) {
-    if(bdd()->query("SELECT * FROM BusType WHERE name = '{$name}' AND nb_places = {$nb_places}")->fetch()) {
+    if(bdd()->query("SELECT * FROM bustype WHERE name = '{$name}' AND nb_places = {$nb_places}")->fetch()) {
         return false;
     }
-    bdd()->query("INSERT INTO BusType (`name`, `nb_places`) VALUE ('{$name}', {$nb_places})");
+    bdd()->query("INSERT INTO bustype (`name`, `nb_places`) VALUE ('{$name}', {$nb_places})");
     return true;
 }
 
@@ -41,7 +42,7 @@ Renvoie tous les bus existants.
 @return liste des bus (id : Int, id_bus_type : Int).
  */
 function fetch_buses() {
-    $res = bdd()->query("SELECT * FROM Bus");
+    $res = bdd()->query("SELECT * FROM bus");
     return $res->fetchAll();
 }
 
@@ -51,7 +52,7 @@ Renvoie tous les types de bus existants.
 @return liste des types de bus (id : Int, name : String, nb_places : Int).
  */
 function fetch_bus_type() {
-    $res = bdd()->query("SELECT * FROM BusType");
+    $res = bdd()->query("SELECT * FROM bustype");
     return $res->fetchAll();
 }
 
@@ -63,7 +64,7 @@ function fetch_bus_type() {
     @return objet bus (id : Int, name_bus_type : String, nb_places : Int).
 */
 function fetch_bus($id) {
-    $res = bdd()->query("SELECT b.id, bt.name, bt.nb_places FROM `Bus` b JOIN `BusType` bt ON b.id_bus_type = bt.id WHERE b.id={$id}");
+    $res = bdd()->query("SELECT b.id, bt.name, bt.nb_places FROM `bus` b JOIN `bustype` bt ON b.id_bus_type = bt.id WHERE b.id={$id}");
     return $res->fetch();
 }
 
@@ -75,7 +76,7 @@ function fetch_bus($id) {
     @return liste des bus (id : Int, name_bus_type : String, nb_places : Int)
 */
 function fetch_bus_by_type($id_bus_type) {
-    $res = bdd()->query("SELECT * FROM Bus WHERE id_bus_type = {$id_bus_type}");
+    $res = bdd()->query("SELECT * FROM bus WHERE id_bus_type = {$id_bus_type}");
     return $res->fetchAll();
 }
 
@@ -111,7 +112,7 @@ function is_available($id, $beginning, $end) {
     @return boolean si la modification est un succès.
  */
 function modify_bus($id, $id_bus_type) {
-    if(bdd()->query("SELECT * FROM BusType WHERE id = {$id_bus_type}")->fetch()) {
+    if(bdd()->query("SELECT * FROM bustype WHERE id = {$id_bus_type}")->fetch()) {
         bdd()->query("UPDATE `bus` SET `id_bus_type`={$id_bus_type} WHERE id = {$id}");
         return true;
     }
@@ -128,10 +129,10 @@ function modify_bus($id, $id_bus_type) {
     @return boolean si la modification est un succès.
  */
 function modify_bus_type($id, $name, $nb_places) {
-    if(bdd()->query("SELECT * FROM BusType WHERE name = '{$name}' AND nb_places = {$nb_places}")->fetch()) {
+    if(bdd()->query("SELECT * FROM bustype WHERE name = '{$name}' AND nb_places = {$nb_places}")->fetch()) {
         return false;
-    } else if (bdd()->query("SELECT * FROM BusType WHERE id = {$id}")->fetch()) {
-        bdd()->query("UPDATE `BusType` SET `name`='{$name}', `nb_places`={$nb_places} WHERE id = {$id}");
+    } else if (bdd()->query("SELECT * FROM bustype WHERE id = {$id}")->fetch()) {
+        bdd()->query("UPDATE `bustype` SET `name`='{$name}', `nb_places`={$nb_places} WHERE id = {$id}");
         return true;
     } else {
         return false;
@@ -146,9 +147,9 @@ function modify_bus_type($id, $name, $nb_places) {
     @return boolean si la délétion est un succès.
 */
 function delete_bus($id) {  //supprimer également tous les créneaux qui sont dépendants de ce bus
-    if(bdd()->query("SELECT * FROM Bus WHERE id = {$id}")->fetch()) {
+    if(bdd()->query("SELECT * FROM bus WHERE id = {$id}")->fetch()) {
         bdd()->query("DELETE FROM `bus_timeslot` WHERE id_bus = {$id}");
-        bdd()->query("DELETE FROM Bus WHERE id = {$id}");
+        bdd()->query("DELETE FROM bus WHERE id = {$id}");
         return true;
     }
     return false;
@@ -162,96 +163,18 @@ function delete_bus($id) {  //supprimer également tous les créneaux qui sont d
     @return boolean si la délétion est un succès.
 */
 function delete_bus_type($id) { // supprimer également tous les bus qui sont dépendants de ce type de bus
-    if(bdd()->query("SELECT * FROM BusType WHERE id = {$id}")->fetch()) {
-        $res = bdd()->query("SELECT id FROM Bus WHERE id_bus_type = {$id}")->fetchAll();
+    if(bdd()->query("SELECT * FROM bustype WHERE id = {$id}")->fetch()) {
+        $res = bdd()->query("SELECT id FROM bus WHERE id_bus_type = {$id}")->fetchAll();
         foreach($res as $row) {
             delete_bus($row['id']);
         }
-        bdd()->query("DELETE FROM BusType WHERE id = {$id}");
+        bdd()->query("DELETE FROM bustype WHERE id = {$id}");
         return true;
     }
     return false;
 }
 
-/**
-    Indique si un bus est libre sur une periode de temps.
 
-    @param id_user : l'id du bus dont on souhaite vérifier la disponibilité.
-    @param begining : La date et heure du début du créneau de disponibilité recherché.
-    @param end : La date et heure du début du créneau de disponibilité recherché.
-
-    @return boolean.
-*/
-function is_free($id_bus, $begining, $end){
-    $result = bdd()->
-    query("SELECT id FROM `timeslot` ts
-     JOIN bus_timeslot bts ON ts.id = bts.id_time_slot 
-     WHERE bts.id_bus = '{$id_bus}' 
-     AND (ts.begining BETWEEN '{$begining}' AND '{$end}' 
-     OR ts.end BETWEEN '{$begining}' AND '{$end}'
-     OR (ts.begining < '{$begining}' AND ts.begining > '{$end}'))");
-
-
-   if ($result->rowCount() == 0) {
-        return true;    
-    } else {
-        return false;
-        }
-}
-
-/**
-    Donne tous les bus libres sur une periode donée.
-
-    @param begining : La date et heure du début du créneau de disponibilité recherché.
-    @param end : La date et heure du début du créneau de disponibilité recherché.
-
-    @return une liste des identifiant des bus libres sur la periode.
-*/
-function find_buses_free($begining, $end){
-    //array with all the id of the free buses
-    $free_buses = array(); 
-
-    //array with all the id of the buses
-    $all_buses = bdd()->
-    query("SELECT id FROM `bus`");
-
-    // for each bus we check if he is if free on the periode 
-    // if yes we add it to the free buses array 
-    foreach ($all_buses as $bus) {
-        if(is_free($bus['id'], $begining, $end)){
-            $free_buses[] = $bus['id'];
-        }
-    }
-
-   return $free_buses;
-}
-/**
-    Fonction qui ajoute un bus au creneau donné.
-
-    @param idCreneau : L'id du créneau auquel on veut rajouter un bus.
-
-    @return un booléen indiquant si l'opération s'est bien passée. 
-*/
-function add_a_bus_to_timeslot($idCreneau){
-    $res = false; 
-    
-    // On recupere le timeslot en question
-    require_once '../timeslots/timeslots.php';
-    $creneau = fetch_time_slot($idCreneau);
-
-    // On regarde si un bus est libre pour ce timeslot 
-    $free_buses = find_buses_free($creneau['begining'], $creneau['end']);
-    
-    // On regarde si un bus est libre et si oui on le relie
-    if (count($free_buses) > 0) {
-        $random_index = rand(0, count($free_buses) - 1);
-        $res = bdd()->query("INSERT INTO `bus_timeslot`(`id_bus`, `id_time_slot`) VALUES ({$free_buses[$random_index]}, {$idCreneau})");
-        } 
-
-    //on indique si l'ajout c'est bien passé 
-    return $res; 
-    
-}
 
 switch ($_GET['function']) {
     case 'create':      // type

@@ -2,22 +2,23 @@
 // accès à une fonction bdd() qui renvoie une instance de PDO
 include_once "../connexion.php";
 
-// ======================== TimeSlot ========================
+// ======================== timeslot ========================
+
 
 /**
-    Crée un créneau si $beginning est inférieur à $end et sont tous les deux suppérieur à la date courante.
+ *Crée un créneau si $beginning est inférieur à $end et sont tous les deux suppérieur à la date courante.
 
-    @param beginning : date de début du créneau au format yyyy-MM-dd hh:mm:ss.
-    @param end : date de fin du créneau au format yyyy-MM-dd hh:mm:ss.
-    @param id_time_slot_type : id du type de créneau.
-    @param id_users : chaine de caractère avec "," comme séparateur correspondant à la liste des id des utilisateur qui interviennent lors de ce créneau. 
-    @param id_buses : chaine de caractère avec "," comme séparateur correspondant à la liste des id des bus qui sont affectés au créneau.
-    @param num_lines : chaine de caractère avec "," comme séparateur correspondant à la liste des numéros de lignes qui sont affectés au créneau.
-    @param directions : chaine de caractère avec "," comme séparateur correspondant à la liste des directions des lignes de bus affectées au créneau.
+ *@param $beginning : date de début du créneau au format yyyy-MM-dd hh:mm:ss.
+ *@param $end : date de fin du créneau au format yyyy-MM-dd hh:mm:ss.
+ *@param $id_time_slot_type : id du type de créneau.
+ *@param $id_users : chaine de caractère avec "," comme séparateur correspondant à la liste des id des utilisateur qui interviennent lors de ce créneau.
+ *@param $id_buses : chaine de caractère avec "," comme séparateur correspondant à la liste des id des bus qui sont affectés au créneau.
+ *@param $num_lines : chaine de caractère avec "," comme séparateur correspondant à la liste des numéros de lignes qui sont affectés au créneau.
+ *@param $directions : chaine de caractère avec "," comme séparateur correspondant à la liste des directions des lignes de bus affectées au créneau.
 
-    @return boolean si l'ajout est un succès.
-*/
-function create_time_slot($beginning, $end, $id_time_slot_type, $id_users, $id_buses, $num_lines, $directions) { // ajout des lignes dans User_TimeSlot et dans Bus_TimeSlot
+ *@return boolean si l'ajout est un succès.
+ */
+function create_time_slot($beginning, $end, $id_time_slot_type, $id_users, $id_buses, $num_lines, $directions) { // ajout des lignes dans user_timeslot et dans bus_timeslot
     $tz = timezone_open('Europe/Paris');
     $d1 = date_create($beginning, $tz);
     $d2 = date_create($end, $tz);
@@ -69,7 +70,7 @@ Retourne tous les types de créneau existants.
 @return liste des types de créneaux (id : Int, name : String)
  */
 function fetch_time_slot_type() {
-    $res = bdd()->query("SELECT * FROM TimeSlotType WHERE `id` != 4");
+    $res = bdd()->query("SELECT * FROM timeslottype WHERE `id` != 4");
     return $res->fetchAll();
 }
 
@@ -79,7 +80,7 @@ Retourne tous les créneaux existants.
 @return liste des créneaux (id : Int, name : String)
  */
 function fetch_timeslots() {
-    $res = bdd()->query("SELECT * FROM TimeSlot");
+    $res = bdd()->query("SELECT * FROM timeslot");
     return $res->fetchAll();
 }
 
@@ -91,14 +92,14 @@ function fetch_timeslots() {
     @return objet créneau (id : Int, beginning : String, end : String, time_slot_type : Int, users (liste d'utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : String)), buses (liste des bus (id : Int, name : String, nb_places : Int)) , lines (liste des lignes (number : Int, direction : String)))
 */
 function fetch_time_slot($id) {
-    $res = bdd()->query("SELECT * FROM TimeSlot ts JOIN TimeSlotType tst ON tst.id = ts.id_time_slot_type WHERE ts.id = {$id}");
-    $res = bdd()->query("SELECT ts.*, tst.name FROM TimeSlot ts LEFT JOIN TimeSlotType tst ON tst.id = ts.id_time_slot_type WHERE ts.id = {$id}");
+    $res = bdd()->query("SELECT * FROM timeslot ts JOIN timeslottype tst ON tst.id = ts.id_time_slot_type WHERE ts.id = {$id}");
+    $res = bdd()->query("SELECT ts.*, tst.name FROM timeslot ts LEFT JOIN timeslottype tst ON tst.id = ts.id_time_slot_type WHERE ts.id = {$id}");
     $res = $res->fetch();
-    $users = bdd()->query("SELECT u.id , u.login , u.name , u.firstname , u.birth_date , u.email , ut.name AS user_type FROM User u JOIN user_timeslot uts ON uts.id_user = u.id JOIN usertype ut ON u.id_user_type = ut.id  WHERE uts.id_time_slot = {$id}");
+    $users = bdd()->query("SELECT u.id , u.login , u.name , u.firstname , u.birth_date , u.email , ut.name AS user_type FROM user u JOIN user_timeslot uts ON uts.id_user = u.id JOIN usertype ut ON u.id_user_type = ut.id  WHERE uts.id_time_slot = {$id}");
     $res['users'] = $users->fetchAll();
     $buses = bdd()->query("SELECT b.id , bt.nb_places , bt.name FROM Bus b JOIN bus_timeslot bts ON bts.id_bus = b.id JOIN bustype bt ON b.id_bus_type = bt.id  WHERE bts.id_time_slot = {$id}");
     $res['buses'] = $buses->fetchAll();
-    $lines = bdd()->query("SELECT `number`, direction FROM `Line` l JOIN line_timeslot lts ON l.number = lts.num_line WHERE lts.id_time_slot = {$id}");
+    $lines = bdd()->query("SELECT `number`, direction FROM `line` l JOIN line_timeslot lts ON l.number = lts.num_line WHERE lts.id_time_slot = {$id}");
     $res['lines'] = $lines->fetchAll();
     return $res;
 }
@@ -239,7 +240,7 @@ function update_time_slot($id_time_slot, $beginning, $end, $id_users, $id_buses,
 }
 
 /**
-    Supprime toutes les lignes de User_TimeSlot correspondant à $id_time_slot et les remplace par une nouvelle liste d'utilisateurs.
+    Supprime toutes les lignes de user_timeslot correspondant à $id_time_slot et les remplace par une nouvelle liste d'utilisateurs.
 
     @param id_time_slot : entier correspondant à l'id du créneau à modifier.
     @param id_users : chaine de caractère avec "," comme séparateur correspondant à la nouvelle liste d'utilisateurs à affecter au créneau.
@@ -247,8 +248,8 @@ function update_time_slot($id_time_slot, $beginning, $end, $id_users, $id_buses,
     @return boolean si la modification est un succès.
  */
 function update_users_of_time_slot($id_time_slot, $id_users) {
-    if(bdd()->query("SELECT * FROM TimeSlot WHERE id = {$id_time_slot}")->fetch()) {
-        bdd()->query("DELETE FROM User_TimeSlot WHERE id_time_slot = {$id_time_slot}");
+    if(bdd()->query("SELECT * FROM timeslot WHERE id = {$id_time_slot}")->fetch()) {
+        bdd()->query("DELETE FROM user_timeslot WHERE id_time_slot = {$id_time_slot}");
         $users = explode(',', $id_users);
         foreach ($users as $id_user) {
             bdd()->query("INSERT INTO `user_timeslot`(`id_user`, `id_time_slot`) VALUES ({$id_user}, {$id_time_slot})");
@@ -260,7 +261,7 @@ function update_users_of_time_slot($id_time_slot, $id_users) {
 }
 
 /**
-    Supprime toutes les lignes de Bus_TimeSlot correspondant à $id_time_slot et les remplace par une nouvelle liste de bus.
+    Supprime toutes les lignes de bus_timeslot correspondant à $id_time_slot et les remplace par une nouvelle liste de bus.
 
     @param id_time_slot : entier correspondant à l'id du créneau à modifier.
     @param id_buses : chaine de caractère avec "," comme séparateur correspondant à la nouvelle liste des id des bus à affecter au créneau.
@@ -268,8 +269,8 @@ function update_users_of_time_slot($id_time_slot, $id_users) {
     @return boolean si la modification est un succès.
  */
 function update_buses_of_time_slot($id_time_slot, $id_buses) {
-    if(bdd()->query("SELECT * FROM TimeSlot WHERE id = {$id_time_slot}")->fetch()) {
-        bdd()->query("DELETE FROM Bus_TimeSlot WHERE id_time_slot = {$id_time_slot}");
+    if(bdd()->query("SELECT * FROM timeslot WHERE id = {$id_time_slot}")->fetch()) {
+        bdd()->query("DELETE FROM bus_timeslot WHERE id_time_slot = {$id_time_slot}");
         $buses = explode(',', $id_buses);
         foreach ($buses as $id_bus) {
             bdd()->query("INSERT INTO `bus_timeslot`(`id_bus`, `id_time_slot`) VALUES ({$id_bus}, {$id_time_slot})");
@@ -281,7 +282,7 @@ function update_buses_of_time_slot($id_time_slot, $id_buses) {
 }
 
 /**
-    Supprime toutes les lignes de Line_TimeSlot correspondant à $id_time_slot et les remplace par une nouvelle liste de lignes.
+    Supprime toutes les lignes de line_timeslot correspondant à $id_time_slot et les remplace par une nouvelle liste de lignes.
 
     @param id_time_slot : entier correspondant à l'id du créneau à modifier.
     @param num_lines : chaine de caractère avec "," comme séparateur correspondant à la nouvelle liste des numéros de ligne à affecter au créneau.
@@ -289,8 +290,8 @@ function update_buses_of_time_slot($id_time_slot, $id_buses) {
     @return boolean si la modification est un succès.
  */
 function update_lines_of_time_slot($id_time_slot, $num_lines, $directions) {
-    if(bdd()->query("SELECT * FROM TimeSlot WHERE id = {$id_time_slot}")->fetch()) {
-        bdd()->query("DELETE FROM Line_TimeSlot WHERE id_time_slot = {$id_time_slot}");
+    if(bdd()->query("SELECT * FROM timeslot WHERE id = {$id_time_slot}")->fetch()) {
+        bdd()->query("DELETE FROM line_timeslot WHERE id_time_slot = {$id_time_slot}");
         if(strlen($num_lines) > 0 && strlen($directions) > 0){
             $lines = explode(',', $num_lines);
             $dir = explode(',', $directions);
@@ -313,12 +314,12 @@ function update_lines_of_time_slot($id_time_slot, $num_lines, $directions) {
 
     @return boolean si la délétion est un succès.
 */
-function delete_time_slot($id_time_slot) { // délétion des lignes dans User_TimeSlot, Bus_TimeSlot et Line_TimeSlot
-    bdd()->query("DELETE FROM User_TimeSlot WHERE id_time_slot = {$id_time_slot}");
-    bdd()->query("DELETE FROM Bus_TimeSlot WHERE id_time_slot = {$id_time_slot}");
-    bdd()->query("DELETE FROM Line_TimeSlot WHERE id_time_slot = {$id_time_slot}");
+function delete_time_slot($id_time_slot) { // délétion des lignes dans user_timeslot, bus_timeslot et line_timeslot
+    bdd()->query("DELETE FROM user_timeslot WHERE id_time_slot = {$id_time_slot}");
+    bdd()->query("DELETE FROM bus_timeslot WHERE id_time_slot = {$id_time_slot}");
+    bdd()->query("DELETE FROM line_timeslot WHERE id_time_slot = {$id_time_slot}");
     bdd()->query("DELETE FROM reservation_timeslot WHERE id_timeslot = {$id_time_slot}");
-    $res = bdd()->query("DELETE FROM TimeSlot WHERE id = {$id_time_slot}");
+    $res = bdd()->query("DELETE FROM timeslot WHERE id = {$id_time_slot}");
     return $res == true;
 }
 
@@ -407,6 +408,16 @@ function update_reservation ($idReservation, $arretDepart, $arretArrive, $dateDe
  */
 function fetch_by_id_reservation ($idReservation) {
     $result = bdd()->query("SELECT * FROM `reservation` WHERE `id_reserv` =  '{$idReservation}'");
+    return $result -> fetch();
+}
+
+/**
+ * Fonction qui renvoie toutes les informations sur une réservation
+ * @param $idTimeslot int l'id du timeslot de la réservation
+ * @return array|false un tableau des informations ou faux
+ */
+function fetch_by_id_timeslot ($idTimeslot) {
+    $result = bdd()->query("SELECT * FROM `reservation` r JOIN reservation_timeslot rt ON r.id_reserv=rt.id_reservation  WHERE rt.`id_timeslot` =  '{$idTimeslot}'");
     return $result -> fetch();
 }
 
@@ -526,6 +537,9 @@ switch ($_GET['function']) {
         break;
     case 'fetch_by_id_reservation' :     // idReservation
         $res = fetch_by_id_reservation ($_GET['idReservation']);
+        break;
+    case 'fetch_by_id_timeslot' :     // idTimeslot
+        $res = fetch_by_id_timeslot ($_GET['idTimeslot']);
         break;
     case 'fetch_by_id_client' :     // idClient
         $res = fetch_by_id_client ($_GET['idClient']);

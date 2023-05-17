@@ -1,8 +1,12 @@
 import { create } from "../utils/domManipulation";
+import { toggleAlertMessage } from "../utils/redirection";
 
 const toggleAccueil = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // affiche les (éventuels) messages d'alerte
+    toggleAlertMessage()
 
     const sessionData = JSON.parse(sessionStorage.getItem("userData"))
 

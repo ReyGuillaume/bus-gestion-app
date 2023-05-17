@@ -2,6 +2,7 @@
 // accès à une fonction bdd() qui renvoie une instance de PDO
 include_once "../connexion.php";
 
+include_once "users_free.php";
 // ======================== Utilisateur ========================
 
 /**
@@ -20,10 +21,10 @@ Enregistre un utilisateur si $password == $confirmation, si $login n'est pas dé
  */
 function user_registration($login, $password, $confirmation, $birth_date, $name, $firstname, $email, $id_user_type) {
     if ($password == $confirmation) {
-        if(bdd()->query("SELECT * FROM UserType WHERE id = {$id_user_type}")->fetch()) {
+        if(bdd()->query("SELECT * FROM usertype WHERE id = {$id_user_type}")->fetch()) {
             $pwd = hash("sha256", $password);
-            bdd()->query("INSERT INTO Code (`login`, `password`) VALUE ('{$login}', '{$pwd}')");
-            $sql = "INSERT INTO User (`name`, `firstname`, `birth_date`, `email`, `id_user_type`, `login`) VALUE ('{$name}', '{$firstname}', '{$birth_date}', '{$email}', {$id_user_type},'{$login}')";
+            bdd()->query("INSERT INTO code (`login`, `password`) VALUE ('{$login}', '{$pwd}')");
+            $sql = "INSERT INTO user (`name`, `firstname`, `birth_date`, `email`, `id_user_type`, `login`) VALUE ('{$name}', '{$firstname}', '{$birth_date}', '{$email}', {$id_user_type},'{$login}')";
             bdd()->query($sql);
             return true;
         }
@@ -46,8 +47,8 @@ Enregistre un utilisateur si $password == $confirmation, si $login n'est pas dé
 @return boolean si l'ajout a réussi ou non.
  */
 function employe_registration($login, $birth_date, $name, $firstname, $email, $id_user_type) {
-    if(bdd()->query("SELECT * FROM UserType WHERE id = {$id_user_type}")->fetch()) {
-        $sql = "INSERT INTO User (`name`, `firstname`, `birth_date`, `email`, `id_user_type`, `login`) VALUE ('{$name}', '{$firstname}', '{$birth_date}', '{$email}', {$id_user_type},'{$login}')";
+    if(bdd()->query("SELECT * FROM usertype WHERE id = {$id_user_type}")->fetch()) {
+        $sql = "INSERT INTO user (`name`, `firstname`, `birth_date`, `email`, `id_user_type`, `login`) VALUE ('{$name}', '{$firstname}', '{$birth_date}', '{$email}', {$id_user_type},'{$login}')";
         bdd()->query($sql);
         return true;
     }
@@ -64,7 +65,7 @@ function employe_registration($login, $birth_date, $name, $firstname, $email, $i
 */
 function user_log_in($login, $password) {
     $pwd = hash("sha256", $password);
-    $sql = "SELECT u.id, u.login, u.id_user_type FROM Code c RIGHT JOIN User u ON c.login = u.login WHERE c.login = '{$login}' AND c.password = '{$pwd}'";
+    $sql = "SELECT u.id, u.login, u.id_user_type FROM code c RIGHT JOIN user u ON c.login = u.login WHERE c.login = '{$login}' AND c.password = '{$pwd}'";
     $res = bdd()->query($sql);
     if($res){
         return $res->fetch();
@@ -84,7 +85,7 @@ function user_log_in($login, $password) {
 */
 function user_infos($login, $password) {
     $pwd = hash("sha256", $password);
-    $sql = "SELECT u.id, u.name AS lastname, u.firstname, ut.name, u.email, ut.id AS idrole FROM Code c JOIN User u ON c.login = u.login JOIN Usertype ut ON u.id_user_type = ut.id WHERE c.login = '$login' AND c.password = '$pwd'";
+    $sql = "SELECT u.id, u.name AS lastname, u.firstname, ut.name, u.email, ut.id AS idrole FROM code c JOIN user u ON c.login = u.login JOIN usertype ut ON u.id_user_type = ut.id WHERE c.login = '{$login}' AND c.password = '{$pwd}'";
     $res = bdd()->query($sql);
     if($res){
         return $res->fetch();
@@ -100,7 +101,7 @@ Récupère tous les types d'utilisateur.
 @return liste des types d'utilisateur (id : Int, name : String)
  */
 function fetch_user_types() {
-    $res = bdd()->query("SELECT * FROM UserType");
+    $res = bdd()->query("SELECT * FROM usertype");
     return $res->fetchAll();
 }
 
@@ -110,7 +111,7 @@ Récupère tous les utilisateurs.
 @return liste des utilisateurs (id : Int, name : String, firstname : String, birth_date : String, email : String, user_type : Int, login : String)
  */
 function fetch_users() {
-    $res = bdd()->query("SELECT * FROM User");
+    $res = bdd()->query("SELECT * FROM user");
     return $res->fetchAll();
 }
 
@@ -122,7 +123,7 @@ function fetch_users() {
     @return objet utilisateur (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : Int)
 */
 function fetch_user($id) {
-    $res = bdd()->query("SELECT * FROM User WHERE id = {$id}");
+    $res = bdd()->query("SELECT * FROM user WHERE id = {$id}");
     return $res->fetch();
 }
 
@@ -134,7 +135,7 @@ function fetch_user($id) {
     @return liste des utilisateurs (id : Int, login : String, name : String, firstname : String, birth_date : String, email : String, user_type : Int)
 */
 function fetch_users_by_type($id_user_type) {
-    $sql = "SELECT * FROM User WHERE id_user_type = {$id_user_type}";
+    $sql = "SELECT * FROM user WHERE id_user_type = {$id_user_type}";
     $result = bdd()->query($sql);
     $res = array();
     while ($row = $result->fetch()) {
@@ -153,7 +154,7 @@ function fetch_users_by_type($id_user_type) {
     @return boolean si la modification est un succès.
 */
 function modify_user_data($id, $email, $login, $name, $firstname, $date) {
-    $sql = "SELECT * FROM User u JOIN Code c ON u.login = c.login WHERE u.id = {$id}";
+    $sql = "SELECT * FROM user u JOIN code c ON u.login = c.login WHERE u.id = {$id}";
     $user = bdd()->query($sql);
     if ($user) {
         $user = $user->fetch();
@@ -161,7 +162,7 @@ function modify_user_data($id, $email, $login, $name, $firstname, $date) {
         $pwd = $user['password'];
         bdd()->query("UPDATE `user` SET `email`='{$email}',`name`='{$name}',`firstname`='{$firstname}',`birth_date`='{$date}' WHERE id = {$id}");
         if ($old_login != $login) {
-            bdd()->query("INSERT INTO Code (login, password) VALUE ('{$login}', '{$pwd}')");
+            bdd()->query("INSERT INTO code (login, password) VALUE ('{$login}', '{$pwd}')");
             bdd()->query("UPDATE `user` SET `login`='{$login}' WHERE id = {$id}");
             bdd()->query("DELETE FROM `code` WHERE login = '{$old_login}'");
         }
@@ -183,7 +184,7 @@ function modify_user_data($id, $email, $login, $name, $firstname, $date) {
 function modify_user_password($id, $old_password, $new_password, $confirmation) {
     if ($new_password == $confirmation) {
         $old_pwd = hash("sha256", $old_password);
-        $res = bdd()->query("SELECT * FROM User u JOIN Code c ON u.login = c.login WHERE u.id = {$id} AND c.password = '{$old_pwd}'");
+        $res = bdd()->query("SELECT * FROM user u JOIN code c ON u.login = c.login WHERE u.id = {$id} AND c.password = '{$old_pwd}'");
         $user = $res->fetch();
         if ($user) {
             $login = $user['login'];
@@ -202,130 +203,90 @@ function modify_user_password($id, $old_password, $new_password, $confirmation) 
 
     @return boolean si la délétion est un succès.
 */
-function delete_user($id) { //supprime également les lignes de Code et de User_TimeSlot qui ont pour id_utilisateur $id
-    $res = bdd()->query("SELECT * FROM User WHERE id = {$id}");
+function delete_user($id) { //supprime également les lignes de code et de user_TimeSlot qui ont pour id_utilisateur $id
+    $res = bdd()->query("SELECT * FROM user WHERE id = {$id}");
     bdd()->query("DELETE FROM `user_timeslot` WHERE id_user = {$id}");
-    bdd()->query("DELETE FROM User WHERE id = {$id}");
+    bdd()->query("DELETE FROM user WHERE id = {$id}");
     if ($res) {
         $user = $res->fetch();
         if ($user) {
             $login = $user['login'];
-            bdd()->query("DELETE FROM Code WHERE login = '{$login}'");
+            bdd()->query("DELETE FROM code WHERE login = '{$login}'");
             return true;
         }
     }
     return false;
 }
 
-/**
-    Indique si un utilisateur est libre sur une periode de temps.
-
-    @param id_user : l'id de l'utilisateur dont on souhaite vérifier la disponibilité.
-    @param begining : La date et heure du début du créneau de disponibilité recherché.
-    @param end : La date et heure du début du créneau de disponibilité recherché.
-
-    @return boolean.
-*/
-function is_free_user($id_user, $begining, $end){
-    $result = bdd()->
-    query("SELECT id FROM `timeslot` ts
-     JOIN user_timeslot uts ON ts.id = uts.id_time_slot 
-     WHERE uts.id_user = '{$id_user}' 
-     AND (ts.begining BETWEEN '{$begining}' AND '{$end}' 
-     OR ts.end BETWEEN '{$begining}' AND '{$end}'
-     OR (ts.begining < '{$begining}' AND ts.begining > '{$end}'))");
-
-   if ($result->rowCount() == 0) {
-        return true;    
-    } else {
-        return false;
-        }
-}
 
 /**
-    Donne tous les conducteurs libres sur une periode donée.
+    Fonction qui ajoute une demande d'inscription d'abonné.
 
-    @param begining : La date et heure du début du créneau de disponibilité recherché.
-    @param end : La date et heure du début du créneau de disponibilité recherché.
-
-    @return une liste des identifiant des conducteurs libres sur la periode.
-*/
-function find_drivers_free($begining, $end){
-    
-    //array with all the id of the free drivers
-    $free_drivers = array(); 
-
-    //array with all the id of the drivers
-    $all_drivers = bdd()->
-    query("SELECT id FROM `user`WHERE id_user_type = '3' ");
-
-    // for each driver we check if he is if free on the periode 
-    // if yes we add it to the free drivers array 
-    foreach ($all_drivers as $driver) {
-        if(is_free_user($driver['id'], $begining, $end)){
-            $free_drivers[] = $driver['id']; // ajouter l'id du conducteur disponible au tableau
-        }
-    }
-
-   return $free_drivers;
-}
-
-/**
-    Donne tous les utilisateurs libres sur une periode donée.
-
-    @param begining : La date et heure du début du créneau de disponibilité recherché.
-    @param end : La date et heure du début du créneau de disponibilité recherché.
-
-    @return une liste des identifiant des utilisateurs libres sur la periode.
-*/
-function find_users_free($begining, $end){
-    //array with all the id of the free users
-    $free_users = array(); 
-
-    //array with all the id of the users
-    $all_users = bdd()->
-    query("SELECT id FROM `user`");
-
-    // for each user we check if he is if free on the periode 
-    // if yes we add it to the free users array 
-    foreach ($all_users as $user) {
-        if(is_free_user($user['id'], $begining, $end)){
-            $free_users[] = $user['id'];
-        }
-    }
-
-   return $free_users;
-}
-
-/**
-    Fonction qui ajoute un conducteur au creneau donné.
-
-    @param idCreneau : L'id du créneau auquel on veut rajouter un conducteur.
+    @param prenom : prénom de l'abonné.
+    @param nom : nom de l'abonné.
+    @param email : email de l'abonné.
+    @param birth_date : birth_date de l'abonné.
+    @param login : login de l'abonné.
+    @param password : mot de passe de l'abonné.
 
     @return un booléen indiquant si l'opération s'est bien passée. 
 */
-function add_a_driver_to_timeslot($idCreneau){
-    //On initialise le res 
-    $res = false; 
-    
-    // On recupere le timeslot en question
-    require_once '../timeslots/timeslots.php';
-    $creneau = fetch_time_slot($idCreneau);
-
-    // On regarde si un conducteur est libre pour ce timeslot 
-    $free_drivers = find_drivers_free($creneau['begining'], $creneau['end']);
-    
-    // On regarde si un conducteur est libre et si oui on le relie
-    if (count($free_drivers) > 0) {
-        $random_index = rand(0, count($free_drivers) - 1);
-        $res = bdd()->query("INSERT INTO `user_timeslot`(`id_user`, `id_time_slot`) VALUES({$free_drivers[$random_index]}, {$idCreneau})");
-        } 
-
-    //on indique si l'ajout c'est bien passé 
-    return $res; 
-    
+function abonne_inscription($prenom, $nom, $email, $birth_date, $login, $password){
+    if(!bdd()->query("SELECT * FROM `code` WHERE `login`='{$login}'")->fetch()){
+        bdd()->query("INSERT INTO `inscription` (`name`, `firstname`, `birth_date`, `email`, `login`, `password`) VALUE('{$nom}', '{$prenom}', '{$birth_date}', '{$email}', '{$login}', '{$password}')");
+        return true;
+    }
+    return false;
 }
 
+/**
+    Fonction qui affiche toutes les demandes d'inscription.
+
+    @return la liste des users qui demandent une inscription en tant qu'abonné.
+*/
+function fetch_inscriptions(){
+    $res = bdd()->query("SELECT * FROM `inscription`");
+    return $res->fetchAll();
+}
+
+/**
+    Fonction qui valide une demande d'inscription.
+
+    @param id : id de l'abonné.
+
+    @return un booléen indiquant si tout s'est bien passé.
+*/
+function valide_inscription($id){
+    $res = bdd()->query("SELECT * FROM `inscription` WHERE `id`={$id}");
+    
+    $infos = $res->fetch();
+    if($infos){
+        $prenom = $infos['firstname'];
+        $nom = $infos['name'];
+        $birth_date = $infos['birth_date'];
+        $email = $infos['email'];
+        $login = $infos['login'];
+        $password = $infos['password'];
+        user_registration($login, $password, $password, $birth_date, $nom, $prenom, $email, 4);
+        supprime_inscription($id);
+        return true;
+    }
+    return false;
+}
+
+/**
+    Fonction qui supprime une demande d'inscription.
+
+    @param id : id de l'abonné.
+
+    @return un booléen indiquant si tout s'est bien passé.
+*/
+function supprime_inscription($id){
+    if(bdd()->query("DELETE FROM `inscription` WHERE `id`={$id}")){
+        return true;
+    }
+    return false;
+}
 
 switch ($_GET['function']) {
     case 'create':      // login, password, confirm, date, name, firstname, email, type
@@ -369,6 +330,18 @@ switch ($_GET['function']) {
         break;
     case 'freeUsers':
         $res = find_users_free($_GET['beginning'], $_GET['end']);
+        break;
+    case 'inscription':
+        $res = abonne_inscription($_GET['prenom'], $_GET['nom'], $_GET['email'], $_GET['birth_date'], $_GET['login'], $_GET['password']);
+        break;
+    case 'fetch_inscriptions':
+        $res = fetch_inscriptions();
+        break;
+    case 'valide_inscription':
+        $res = valide_inscription($_GET['id']);
+        break;
+    case 'refuse_inscription':
+        $res = supprime_inscription($_GET['id']);
         break;
     default:
         $res = "invalid function";

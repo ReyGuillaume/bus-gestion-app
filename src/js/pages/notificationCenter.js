@@ -71,7 +71,8 @@ const displayNotifs = (container, data, mode) => {
         }
         let divInfoNotif = create("div", divNotif, null ,["divInfoNotif"]);
         create("h3", divInfoNotif, title);
-        create("p", divInfoNotif, message);
+        let m = create("p", divInfoNotif);
+        m.innerHTML = message;
         create("p", divInfoNotif, notif.date);
 
         let img = create("div", divNotif, null, ["notif_image"]);
@@ -116,7 +117,8 @@ function showNotification (notif, divAllNotif){
     divAllNotif.replaceChildren("");
     divAllNotif.className = "oneNotification";
     create("h3", divAllNotif, titleNotif);
-    create("p", divAllNotif, messageNotif);
+    let m = create("p", divAllNotif, messageNotif);
+    m.innerHTML = messageNotif.replace(/\n/g, '<br>');
     create("p", divAllNotif, dateNotif);
 
     const img = create("div", divAllNotif, null, ["notif_image"]);

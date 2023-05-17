@@ -1,125 +1,137 @@
-import { create } from "../utils/domManipulation";
+import { create, createChampCheckbox } from "../utils/domManipulation";
 import { toggleAgenda } from "./agenda";
-import { convertMinutesToTime } from "../utils/dates"
-import { redirectUser, redirect } from "../utils/redirection";
 import axios from 'axios';
 
-const createListeItem = (ul, elem, itemText, color) => {
-    let li = create("button", ul, null, [color, "unstyled-button"])
-    li.title = itemText
-    li.onclick = () => toggleAgenda(elem)
-    create("li", li, itemText)
+const createListeItem = (container, elem, itemText, classe) => {
+    let div = create("div", container, null, [classe, "item_invisible"])
+    div.title = itemText
+    if(elem.firstname){
+        createChampCheckbox(div, `user${elem.id}`, "selectionUser", elem.id)
+        create("label", div, elem.firstname + " " + elem.name.toUpperCase()).setAttribute("for", `user${elem.id}`)
+    }
+    else if(elem.nb_places){
+        createChampCheckbox(div, `bus${elem.id}`, "selectionBus", elem.id)
+        create("label", div, `Bus n°${elem.id}`).setAttribute("for", `bus${elem.id}`)
+    }
+    else{
+        createChampCheckbox(div, `ligne${elem.number}`, "selectionLine", elem.number)
+        create("label", div, `Ligne ${elem.number}`).setAttribute("for", `ligne${elem.number}`)
+    }
 }
 
-// afficher la liste des users de type idtype
-const drawUsers = (idtype) => {
-    const main = document.querySelector("#app")
-    main.replaceChildren("")
-
-    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
-    back.title = "Retour en arrière"
+// créer la liste des users de type idtype
+const createUsers = (container, idtype, date=null, multi=false, entites=null) => {
     
-    if(idtype == 2){
-        create("h2", main, "Agenda des responsables logistiques", ['mainTitle'])
-        create("div", main, "Liste des responsables logistiques :", ["presentation"])
-    } else if(idtype == 3){
-        create("h2", main, "Agenda des chauffeurs", ['mainTitle'])
-        create("div", main, "Liste des chauffeurs :", ["presentation"])
-    }
-    
-    const ul = create("ul", main, null, ['navBar'])
     // on récupère tous les users de la base de données, du type renseigné
     axios.get("users/users.php?function=bytype&type="+idtype).then(function(response){
-        let users = response.data;
+        let users = response.data
 
-        users.forEach(user => createListeItem(ul, user, `${user.firstname} ${user.name.toUpperCase()}`, "liste_users_"+idtype))
+        users.forEach(user => createListeItem(container, user, `${user.firstname} ${user.name.toUpperCase()}`, "agendaMenu_user_"+idtype))
 
         if(idtype == 3){
-            const b = create("button", ul, "Vision globale", ["submitButton", "unstyled-button"])
+            const b = create("div", container, "Vision globale", ["agendaMenu_user_3", "item_invisible"])
             b.onclick = () => toggleAgenda(undefined, undefined, true)
             b.title = "Vision globale"
         }
     })
     
-    return main
+    return container
 }
 
-// fonction qui réclame l'affichage de la liste des chauffeurs de bus
-const toggleDrivers = () => {
-    const main = document.querySelector("#app")
-    main.replaceChildren("")
-    drawUsers(3)
+// rendre visible la liste des users de type idtype
+const drawUsers = (idtype) => {
+    let users = document.querySelectorAll(".agendaMenu_user_"+idtype)
+
+    for(let user of users){
+        user.classList.toggle("item_invisible")
+        user.classList.toggle("item_visible")
+    }
 }
 
-// fonction qui réclame l'affichage de la liste des responsables logistiques
-const toggleResp = () => {
-    const main = document.querySelector("#app")
-    main.replaceChildren("")
-    drawUsers(2)
-}
 
-// afficher l'agenda des bus
-const toggleBuses = () => {
-    const main = document.querySelector("#app")
-    main.replaceChildren("")
-
-    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
-    back.title = "Retour en arrière"
-
-    create("h2", main, "Agenda des bus", ['mainTitle'])
-    create("div", main, "Liste des bus :", ["presentation"])
-    const ul = create("ul", main, null, ["navBar"])
-
+// créer la liste des bus
+const createBuses = (container, date=null, multi=false, entites=null) => {
+    
     // on récupère tous les users de la base de données, du type renseigné
     axios.get("buses/buses.php?function=buses").then(async function(response){
-
-        let buses = response.data;
-        buses.sort((b1, b2) => b1.id - b2.id)
+        let buses = response.data
         
         for(let bus of buses){
             await axios.get("buses/buses.php?function=bus&id="+bus.id).then(function(responseBus){
 
                 let bus = responseBus.data
-                createListeItem(ul, bus, `Bus n°${bus.id} (${bus.nb_places} places)`, "liste_bus")
+                createListeItem(container, bus, `Bus n°${bus.id}`, "agendaMenu_bus")
             })
         }
     })
+    
+    return container
 }
 
 
-// afficher l'agenda des lignes de bus
-const toggleLines = () => {
-    const main = document.querySelector("#app")
-    main.replaceChildren("")
-    
-    // redirection vers l'accueil si user n'est pas connecté
-    redirectUser(
-        () => null, 
-        () => null, 
-        () => null, 
-        () => null,
-        () => redirect("/")
-    )
+// rendre visible la liste des bus
+const drawBuses = () => {
+    let buses = document.querySelectorAll(".agendaMenu_bus")
 
-    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
-    back.addEventListener("click", () => redirect("/espace-admin"))
-    back.title = "Retour en arrière"
-    create("h2", main, "Agenda des lignes de bus", ['mainTitle'])
-    create("div", main, "Liste des lignes de bus :", ["presentation"])
-    const ul = create("ul", main, null, ['navBar'])
+    for(let bus of buses){
+        bus.classList.toggle("item_invisible")
+        bus.classList.toggle("item_visible")
+    }
+}
 
-    // on récupère tous les users de la base de données, du type renseigné
+
+// créer la liste des lignes de bus
+const createLines = (container, date=null, multi=false, entites=null) => {
     axios.get("lines/lines.php?function=lines").then(function(response){
-        let lines = response.data;
-        lines.forEach(line => createListeItem(ul, line, `Ligne ${line.number} (${convertMinutesToTime(line.travel_time)} de trajet)`, "liste_lignes"))
+        let lines = response.data
+        lines.forEach(line => createListeItem(container, line, `Ligne ${line.number}`, "agendaMenu_ligne"))
     })
 }
 
+// rendre visible la liste des lignes de bus
+const drawLines = () => {
+    let lines = document.querySelectorAll(".agendaMenu_ligne")
+
+    for(let line of lines){
+        line.classList.toggle("item_invisible")
+        line.classList.toggle("item_visible")
+    }
+}
+
+// renvoie la liste des agendas sélectionnés
+const entitiesSelected = async () => {
+    let selected = []
+    for(let user of document.querySelectorAll("input[name='selectionUser']")){
+        if (user.checked) {
+            await axios.get("users/users.php?function=user&id="+user.value)
+            .then(res => selected.push(res.data))
+        }
+    }
+
+    for(let bus of document.querySelectorAll("input[name='selectionBus']")){
+        if (bus.checked) {
+            await axios.get("buses/buses.php?function=bus&id="+bus.value)
+            .then(res => selected.push(res.data))
+        }
+    }
+
+    for(let line of document.querySelectorAll("input[name='selectionLine']")){
+        if (line.checked) {
+            await axios.get("lines/lines.php?function=line&number="+line.value)
+            .then(res => selected.push(res.data))
+        }
+    }
+    return selected
+}
+
+
+
 export {
-    toggleDrivers,
-    toggleBuses,
-    toggleResp,
-    toggleLines
+    createUsers,
+    drawUsers,
+    createBuses,
+    drawBuses,
+    createLines,
+    drawLines,
+    entitiesSelected
 }

@@ -63,6 +63,49 @@
   border-radius: 0.25rem;
   font-size: 1.2rem;
 }
+.actionsTimeslot{
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+.actionsTimeslot img{
+  padding: 5px;
+  width: 40px;
+  height: 40px;
+  border-radius: 25px;
+  cursor: pointer;
+}
+.addTimeslot{
+  position: fixed;
+  bottom: 5px;
+  right: 5px;
+  background-color: lightgreen;
+  transition: 0.25s;
+}
+.actionReunion{
+  position: fixed;
+  bottom: 55px;
+  right: 55px;
+  background-color: pink;
+}
+.actionConduite{
+  position: fixed;
+  bottom: 5px;
+  right: 55px;
+  background-color: lightblue;
+}
+.actionIndispo{
+  position: fixed;
+  bottom: 55px;
+  right: 5px;
+  background-color: rgb(221, 54, 221);
+}
+.actionAstreinte{
+  position: fixed;
+  bottom: 55px;
+  right: 5px;
+  background-color: rgb(135, 231, 135);
+}
 
 /* JOURS DU CALENDRIER */
 
@@ -140,6 +183,12 @@
 .Indisponibilité .div-color{
   background-color: rgb(251, 225, 159);
 }
+.Astreinte .div-color{
+  background-color: rgb(192, 255, 190);
+}
+.Réservation .div-color{
+  background-color: rgb(255, 149, 149);
+}
 
 /* CRÉNEAUX DE L'AGENDA MULTIPLE */
 
@@ -150,7 +199,7 @@
   width: 150px;
   align-items:first baseline;
 }
-.timeslot, .timeslot_multi_Conduite, .timeslot_multi_Réunion, .timeslot_multi_Indisponibilité{
+.timeslot, .timeslot_multi_Conduite, .timeslot_multi_Réunion, .timeslot_multi_Indisponibilité, .timeslot_multi_Réservation, .timeslot_multi_Astreinte{
   position: absolute;
   display: flex;
   align-items: center;
@@ -167,7 +216,7 @@
   font-size: 50%;
   margin-top: -25px;
 }
-.timeslot_multi_Conduite, .timeslot_multi_Réunion, .timeslot_multi_Indisponibilité{
+.timeslot_multi_Conduite, .timeslot_multi_Réunion, .timeslot_multi_Indisponibilité, .timeslot_multi_Réservation, .timeslot_multi_Astreinte{
   justify-content: space-around;
   overflow: hidden;
 }
@@ -179,6 +228,12 @@
 }
 .timeslot_multi_Indisponibilité .timeslot__houres_multi{
   background-color: rgb(251, 225, 159);
+}
+.timeslot_multi_Réservation .timeslot__houres_multi{
+  background-color: rgb(255, 149, 149);
+}
+.timeslot_multi_Astreinte .timeslot__houres_multi{
+  background-color: rgb(192, 255, 190);
 }
 .multi-info{
   font-weight: bold;
@@ -245,6 +300,21 @@
 }
 .btn-task div{
   margin: 3px;
+}
+
+.pageCreateTimeslot{
+  position: fixed;
+  top: 55%;
+  left: 50%;
+  background-color: white;
+  width: 270px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -50%);
+}
+.div-radio{
+  display: flex;
 }
 
 /* AGENDA PAR 4 */
@@ -435,6 +505,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 1.5rem;
+  overflow-y: auto;
 }
 .validation .important {
   font-weight: bold;
@@ -487,6 +558,14 @@
 .primary-button:hover {
   color: #3D7C98;
   background-color: #ffffff;
+}
+
+/* RESPONSIVE DESIGN */
+
+@media only screen and (max-width: 480px) {
+  .calandar__body{
+    overflow-x: scroll;
+  }
 }
 
 /*# sourceMappingURL=calandar.css.map */

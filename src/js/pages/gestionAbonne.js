@@ -1,10 +1,14 @@
-import {create, createChamp} from "../utils/domManipulation.js";
+import {create, createChamp, toggleAlert} from "../utils/domManipulation.js";
 import axios from "axios";
-import {fetchUrlRedirectAndAlert, idOfAllElementChecked} from "../utils/formGestion.js";
-import {toggleInfoAbonne} from "./espaceAbonne.js";
+import {addslashes, fetchUrlRedirectAndAlert, idOfAllElementChecked} from "../utils/formGestion.js";
+import {createReservationRadio, toggleInfoAbonne} from "./espaceAbonne.js";
 import {removeContainerAndRemoveCacheClass} from "./userTask.js";
 import {toogleBusChoices, toogleDriversChoices }from "./gestionTimeslots.js";
 import { createHeader } from "../components/header.js";
+import {createMenuElement} from "../components/menuItem.js";
+import {redirect} from "../utils/redirection.js";
+import {formatedHour} from "../utils/dates.js";
+
 
 function changerInfoAbonne (){
 
@@ -14,32 +18,38 @@ function changerInfoAbonne (){
     // recuperation des infos de l'utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => toggleInfoAbonne())
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/informations-utilisateur"))
+    back.title = "Retour en arrière"
 
     //les informations de l'abonné à changer + le bouton pour valider
     axios.get(`users/users.php?function=user&id=`+sessionData["id"]).then((response) => {
-        const div = create("div", main);
-        create("h2", div, "Voici vos informations personnelles :");
+        create("h2", main, "Voici vos informations personnelles :");
 
-        create("label", div, "Votre nom :",);
-        createChamp(div, "text", "nameAbo").value = response.data["name"];
+        const form = create("div", main, null, ["app-form"]);
 
-        create("label", div, "Votre prénom :",);
-        createChamp(div, "text", "firstnameAbo").value = response.data["firstname"];
+        const div_nom = create("div", form, null, ["form-div"]);
+        create("label", div_nom, "Votre nom :", ["label-info"]);
+        createChamp(div_nom, "text", "nameAbo").value = response.data["name"];
 
-        create("label", div, "Votre date de naissance :");
-        createChamp(div, "date", "dateAbo").value =response.data["birth_date"];
+        const div_prenom = create("div", form, null, ["form-div"]);
+        create("label", div_prenom, "Votre prénom :", ["label-info"]);
+        createChamp(div_prenom, "text", "firstnameAbo").value = response.data["firstname"];
 
-        create("label", div, "Votre adresse mail :",);
-        createChamp(div, "email", "emailAbo").value = response.data["email"];
+        const div_naissance = create("div", form, null, ["form-div"]);
+        create("label", div_naissance, "Votre date de naissance :", ["label-info"]);
+        createChamp(div_naissance, "date", "dateAbo").value =response.data["birth_date"];
 
-        create("label", div, "Votre nom d'utilisateur :",);
-        createChamp(div, "text", "loginAbo").value = response.data["login"];
+        const div_email = create("div", form, null, ["form-div"]);
+        create("label", div_email, "Votre adresse mail :", ["label-info"]);
+        createChamp(div_email, "email", "emailAbo").value = response.data["email"];
 
-        create("p", div, "Votre mot de passe : **********");
+        const div_login = create("div", form, null, ["form-div"]);
+        create("label", div_login, "Votre nom d'utilisateur :", ["label-info"]);
+        createChamp(div_login, "text", "loginAbo").value = response.data["login"];
 
-
-        const valider = create("div", div, "Valider le changement", ['gestion_infos'])
+        const valider = create("button", form, "Valider le changement", ['gestion_infos', "unstyled-button"])
+        valider.title = "Valider"
         valider.addEventListener("click", function () {
 
             //selection des informations
@@ -56,10 +66,9 @@ function changerInfoAbonne (){
             //création de l'url
             let url = `users/users.php?function=update&id=${id}&email=${email}&login=${login}&name=${nom}&firstname=${prenom}&date=${date}`;
             const userData = { id, prenom, nom, role, idrole, email }
-            // console.log(userData)
             sessionStorage.setItem("userData", JSON.stringify(userData))
             createHeader()
-            fetchUrlRedirectAndAlert(url, '/espace-informations-abonne', "Votre profil a bien été modifié.", "Votre profil n'a pas été modifié.")
+            fetchUrlRedirectAndAlert(url, '/informations-utilisateur', "Votre profil a bien été modifié.", "Votre profil n'a pas été modifié.")
         });
     })
 
@@ -75,30 +84,50 @@ function changerMdpAbonne (){
     // recuperation des infos de l'utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
 
-    create("div", main, '<< Retour', ['return']).addEventListener("click", () => toggleInfoAbonne())
+    const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
+    back.addEventListener("click", () => redirect("/informations-utilisateur"))
+    back.title = "Retour en arrière"
 
-    const div = create("div", main);
-    create("h2", div, "Voici vos informations personnelles :");
+    create("h2", main, "Voici vos informations personnelles :");
 
     axios.get(`users/users.php?function=user&id=`+sessionData["id"]).then((response) => {
-        create("p", div, "Votre nom : " + response.data["name"]);
-        create("p", div, "Votre prénom : " + response.data["firstname"]);
-        create("p", div, "Votre date de naissance : " + response.data["birth_date"]);
-        create("p", div, "Votre adresse mail : " + response.data["email"]);
-        create("p", div, "Votre nom d'utilisateur : " + response.data["login"]);
+        const form = create("div", main, null, ["app-form"]);
+
+        const div_nom = create("div", form, null, ["form-div-radio"]);
+        create("div", div_nom, "Votre nom : ", ["label-info"]);
+        create("div", div_nom, response.data["name"]);
+        
+        const div_prenom = create("div", form, null, ["form-div-radio"]);
+        create("div", div_prenom, "Votre prénom : ", ["label-info"]);
+        create("div", div_prenom, response.data["firstname"]);
+
+        const div_naissance = create("div", form, null, ["form-div-radio"]);
+        create("div", div_naissance, "Votre date de naissance : ", ["label-info"]);
+        create("div", div_naissance, response.data["birth_date"]);
+
+        const div_email = create("div", form, null, ["form-div-radio"]);
+        create("div", div_email, "Votre adresse mail : ", ["label-info"]);
+        create("div", div_email, response.data["email"]);
+
+        const div_login = create("div", form, null, ["form-div-radio"]);
+        create("div", div_login, "Votre nom d'utilisateur : ", ["label-info"]);
+        create("div", div_login, response.data["login"]);
+
+        const ancien_mdp = create("div", form, null, ["form-div"]);
+        create("label", ancien_mdp, "Votre ancien mot de passe :", ["label-info"]);
+        createChamp(ancien_mdp, "password", "oldPwdAbo");
+
+        const nouveau_mdp = create("div", form, null, ["form-div"]);
+        create("label", nouveau_mdp, "Votre nouveau mot de passe :", ["label-info"]);
+        createChamp(nouveau_mdp, "password", "newPwdAbo");
+
+        const confirme_mdp = create("div", form, null, ["form-div"]);
+        create("label", confirme_mdp, "Confirmation du nouveau mot de passe :", ["label-info"]);
+        createChamp(confirme_mdp, "password", "confNewPwdAbo");
 
 
-        create("label", div, "Votre ancien mot de passe :",);
-        createChamp(div, "password", "oldPwdAbo");
-
-        create("label", div, "Votre nouveau mot de passe :",);
-        createChamp(div, "password", "newPwdAbo");
-
-        create("label", div, "Confirmation du nouveau mot de passe :",);
-        createChamp(div, "password", "confNewPwdAbo");
-
-
-        const valider = create("div", div, "Valider le changement", ['gestion_infos'])
+        const valider = create("button", form, "Valider le changement", ['gestion_infos', "unstyled-button"])
+        valider.title = "Valider"
         valider.addEventListener("click", function () {
 
             //selection des informations
@@ -109,7 +138,7 @@ function changerMdpAbonne (){
 
             //création de l'url
             let url = `users/users.php?function=updatepwd&id=${sessionData["id"]}&old=${oldPwdAbo}&new=${newPwdAbo}&confirm=${confNewPwdAbo}`;
-            fetchUrlRedirectAndAlert(url, '/espace-informations-abonne', "Votre mot de passe a bien été modifié.", "Votre mot de passe n'a pas été modifié.")
+            fetchUrlRedirectAndAlert(url, '/informations-utilisateur', "Votre mot de passe a bien été modifié.", "Votre mot de passe n'a pas été modifié.")
         });
     })
     return main
@@ -117,33 +146,102 @@ function changerMdpAbonne (){
 
 
 function displayReserv (container, data) {
-
     // recuperation des infos de l'utilisateur
     const roleUser = JSON.parse(sessionStorage.getItem("userData")).role;
-
     if(data.length === 0)
-        create("h3", container, "Il n'y a aucune demande de réservation")
+        create("h3", container, "Il n'y a aucune réservation")
 
     for(let reserv of data){
-        let divReserv = create("div", container);
-
         let title = reserv.arretDepart + "  -  "+ reserv.arretArrive;
         let message = reserv.dateDepart;
 
-        let divInfoReserv = create("div", divReserv, null, ["divNotif"]);
-        let div = create("div", divInfoReserv);
+        let divInfoReserv = create("div", container, null, ["divNotif"]);
+        let div = create("div", divInfoReserv, null, ["divInfoReserv"]);
         create("h3", div, title);
         create("p", div, message);
 
-        if(roleUser != "Abonné"){
-            let divResp = create("div", divInfoReserv);
-            let footer = document.querySelector("#footer")
-            let task = create("div", footer, null, null, "task")
-            create("div", divResp, "Valider", ['gestion_users']).addEventListener("click", () => toggleValideReservation(task, reserv))
-            create("div", divResp, "Refuser", ['gestion_users']).addEventListener("click", () => toggleRefuseReservation(reserv.id_reserv, container, data))
+        let divResp = create("div", divInfoReserv, null, ["divBoutonsReserv"]);
+        let footer = document.querySelector("#footer")
 
+        if(roleUser != "Abonné"){
+            const b1 = create("button", divResp, "Valider", ['gestion_users'])
+            b1.onclick = () => toggleValideReservation(footer, reserv)
+            b1.title = "Valider"
+            const b2 = create("button", divResp, "Refuser", ['gestion_users'])
+            b2.onclick = () => toggleRefuseReservation(reserv.id_reserv, container, data)
+            b2.title = "Refuser"
+        }
+        else{
+            switch (reserv.etat){
+                case "attente" :
+                    // Creation of the form
+                    const form = create("div", footer, null, null, "task")
+                    var div_reservation = create("div", container, null, ["form-div-radio"])
+                    createMenuElement(divResp, () => createReservationRadio(form, div_reservation, reserv, "/reservation-abonne"), "rouge", "../src/assets/images/edit.png", "modifier", ""  )
+                    createMenuElement(divResp, () =>
+                        fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=delete_reservation&idReservation=`+reserv.id_reserv, "/reservation-abonne", "La réservation a bien été supprimée", "La réservation n'a pas pu être supprimée")
+                        , "rouge", "../src/assets/images/croix.png", "supprimer", ""  )
+                    break;
+                case "valide":
+                    break;
+                case "refuse":
+                    createMenuElement(divResp, () =>
+                            fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=delete_reservation&idReservation=`+reserv.id_reserv, "/reservation-abonne", "La réservation a bien été supprimée", "La réservation n'a pas pu être supprimée")
+                        , "rouge", "../src/assets/images/croix.png", "supprimer", ""  )
+                    break;
+                default:
+                    break;
+            }
         }
     }
+}
+
+
+const displayInscr = (container, lst_inscriptions) => {
+
+    if(lst_inscriptions.length === 0)
+        create("h3", container, "Il n'y a aucune demande d'inscription")
+
+    for(let inscription of lst_inscriptions){
+        let div = create("div", container, null, ["inscription"])
+
+        let identite = create("div", div, null, ["inscription-container"])
+        create("div", identite, inscription.firstname, ["inscription-prenom"])
+        create("div", identite, inscription.name, ["inscription-nom"])
+
+        let naissance = create("div", div, null, ["inscription-container"])
+        create("div", naissance, "Date de naissance", ["inscription-info"])
+        create("div", naissance, inscription.birth_date, ["inscription-valeur"])
+
+        let email = create("div", div, null, ["inscription-container"])
+        create("div", email, "Email", ["inscription-info"])
+        create("div", email, inscription.email, ["inscription-valeur"])
+
+        let btns = create("div", div, null, ["inscription-btns"])
+
+        let btn = create("button", btns, "Valider", ["valideButton", "unstyled-button"])
+        btn.addEventListener("click", () => valideInscription(inscription.id, div))
+        btn.title = "Valider"
+
+        btn = create("button", btns, "Refuser", ["refuseButton", "unstyled-button"])
+        btn.addEventListener("click", () => refuseInscription(inscription.id, div))
+        btn.title = "Refuser"
+    }
+}
+
+
+const valideInscription = (id_inscription, container) => {
+    axios.get(`users/users.php?function=valide_inscription&id=${id_inscription}`).then(function(){
+        toggleAlert("BRAVO", "Inscription validée")
+        container.remove()
+    })
+}
+
+const refuseInscription = (id_inscription, container) => {
+    axios.get(`users/users.php?function=refuse_inscription&id=${id_inscription}`).then(function(){
+        toggleAlert("BRAVO", "Inscription refusée")
+        container.remove()
+    })
 }
 
 const toggleRefuseReservation = (idReservation,container, data) => {
@@ -155,55 +253,173 @@ const toggleRefuseReservation = (idReservation,container, data) => {
     })
 }
 
+
+
 const toggleValideReservation = (container, props, user = null, multi = false) => {
-    const main = document.querySelector("#app")
-    main.classList.add("cache")
-    container.classList.remove("cache")
+    const app = document.querySelector("#app")
+    const overlay = create("div", app, null, ["overlay"])
+    const modale = create("div", overlay, null, ["validation"])
+    const back = create("button", modale, '<< Retour', ['return', "unstyled-button"])
+    back.title = "Retour en arrière"
 
-    // Creation du formulaire pré remplie de modif de ligne
-    container.replaceChildren("")
+    // ajout des actions au clic
+    overlay.onclick = e => {
+        e.stopPropagation()
+        e.target.remove()
+    }
+    modale.onclick = e => {
+        e.stopPropagation()
+    }
+    back.onclick = () => {
+        modale.remove()
+        overlay.remove()
+    }
 
-    create("div", container, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(container)
+    create("p", modale, "Cette reservation demande le trajet : "+props.arretDepart +" - "+ props.arretArrive)
+    create("label", modale, "Combien de minutes le trajet va durer :", ["form-info"]);
+    createChamp(modale, "integer", "temps_trajet");
+
+    const bouton = create("div", modale, "Valider", ["submitButton"])
+    bouton.addEventListener("click", function(){
+        // On recupere le temps du trajet
+        let temps_trajet = document.querySelector("input[name='temps_trajet']").value;
+        formValidationReservation (modale, props, user, multi, temps_trajet, overlay);
+
+
+    })
+    return container;
+}
+
+const formValidationReservation = (container, props, user = null, multi = false, temps_trajet, overlay) => {
+    container.replaceChildren("");
+
+    const back = create("button", container, '<< Retour', ['return', "unstyled-button"])
+    back.title = "Retour en arrière"
+    back.onclick = () => {
+        container.remove()
+        overlay.remove()
+    }
+
+    // Creation d'un affichage pour indiquer si la reservation est acceptable
+
+    var acceptable_bus = create("div", container, "");
+
+    let depart = new Date(props.dateDepart.replace(' ', 'T'));
+    let fin = new Date(depart.getTime() + temps_trajet * 60000);
+
+    // Requête axios pour vérifier la disponibilité des bus
+    let axiosUrl_bus = `buses/buses.php?function=freeBuses&beginning=${depart}&end=${fin}`;
+
+    axios.get(axiosUrl_bus)
+        .then(function (response) {
+            // Vérification si la réponse contient des données
+            if (response.data.length > 0) {
+                acceptable_bus.textContent = "Un bus est disponible ";
+            } else {
+                acceptable_bus.textContent = "Pas de bus disponible";
+            }
+        })
+
+    // Creation d'un affichage pour indiquer si la reservation est acceptable
+
+    var acceptable_driver = create("div", container, "");
+
+    // Requête axios pour vérifier la disponibilité des bus
+
+
+    let axiosUrl = `users/users.php?function=freeDrivers&beginning=${depart}&end=${fin}`;
+
+    axios.get(axiosUrl)
+        .then(function (response) {
+            // Vérification si la réponse contient des données
+            if (response.data.length > 0) {
+                acceptable_driver.textContent = "Un conducteur est disponible ";
+            } else {
+                acceptable_driver.textContent = "Pas de conducteur disponible";
+            }
+        })
+
 
     // Creation of each champ
     //create("label", container, "Début : " + props.dateDepart, ["form-info"]);
 
+
     create("label", container, "Début :", ["form-info"]);
     let champ =createChamp(container, "datetime-local", "StartDateTime");
     champ.value = props.dateDepart
+    champ.value = props.dateDepart;
     champ.disabled = true;
-    
+
     create("label", container, "Fin :", ["form-info"]);
-    createChamp(container, "datetime-local", "EndDateTime").value = props.dateDepart;
+
+
+    const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
+    const finAdjusted = new Date(fin.getTime() - timeZoneOffset);
+    const endDateTimeInput = createChamp(container, "datetime-local", "EndDateTime");
+
+    endDateTimeInput.value = finAdjusted.toISOString().slice(0, 16);
+    endDateTimeInput.disabled = true;
 
     toogleBusChoices(container)
     toogleDriversChoices(container)
 
-
     // Creation of submit button
+    const bouton = create("button", container, "Valider", ["submitButton", "unstyled-button"])
+    bouton.title = "Valider"
+    bouton.addEventListener("click", async function () {
 
-    const bouton = create("div", container, "Valider", ["submitButton"])
-    bouton.addEventListener("click", function(){
         // On recupere le debut et la fin du creneau
         let startDateTime = props.dateDepart;
         let endDateTime = document.querySelector("input[name='EndDateTime']").value;
 
         // select the types of participants and return those who are checked in a string : 1,2,...
-        const selectedDrivers = () => idOfAllElementChecked("input[name='selectionConducteurs']")
-        console.log(selectedDrivers())
-// select the types of buses and return those who are checked in a string : 1,2,...
-        const busesTimeslot = () => idOfAllElementChecked("input[name='selectionBus']")
+        const selectedDrivers = idOfAllElementChecked("input[name='selectionConducteurs']");
+        // select the types of buses and return those who are checked in a string : 1,2,...
+        const busesTimeslot = idOfAllElementChecked("input[name='selectionBus']");
 
-        fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=valide_reservation&idReservation=`+props.id_reserv+`&beginning=`+startDateTime+`&end=`+endDateTime+`&id_users=`+selectedDrivers()+`&id_buses=`+busesTimeslot(), "/espace-admin", "La réservation a bien été validée", "La réservation n'a pas pu être validée")
+        //notification au client
+        let client = await axios.get(`users/users.php?function=user&id=` + props.id_client)
+        client = client.data
+
+        let arret = await axios.get("timeslots/timeslots.php?function=fetch_by_id_reservation&idReservation="+props.id_reserv)
+        arret = arret.data
+
+        let heure_debut = formatedHour(new Date(startDateTime).getHours())
+        let min_debut = formatedHour(new Date(startDateTime).getMinutes())
+        let heure_fin = formatedHour(new Date(endDateTime).getHours())
+        let min_fin = formatedHour(new Date(endDateTime).getMinutes())
+
+        let debut_jour = formatedHour(new Date(startDateTime).getDate())
+        let debut_annee = formatedHour(new Date(startDateTime).getFullYear())
+        let debut_mois = formatedHour(new Date(startDateTime).getMonth())
+        let fin_jour = formatedHour(new Date(endDateTime).getDate())
+        let fin_annee = formatedHour(new Date(endDateTime).getFullYear())
+        let fin_mois = formatedHour(new Date(endDateTime).getMonth())
+
+        let debut = heure_debut+":"+min_debut
+        let fin = heure_fin+":"+min_fin
+        let debutDate = debut_jour+"/"+debut_mois+"/"+debut_annee
+        let finDate = fin_jour+"/"+fin_mois+"/"+fin_annee
+
+        let titre = "Confirmation de votre réservation de bus pour " + arret.arretDepart + " - " + arret.arretArrive;
+        let message = "Bonjour " + client.firstname +", "+"<br>"+"<br>"
+        message += "Je suis ravi de vous informer que votre réservation de bus a été <strong>validée</strong> avec succès. Votre bus partira de l'arrêt <strong>"
+            +arret.arretDepart+"</strong> à <strong>"+debut+"</strong> le <strong>"+debutDate+"</strong> et arrivera à l'arrêt <strong>"+arret.arretArrive+"</strong> à <strong>"+fin+"</strong> le <strong>"+finDate+"</strong><br>"+"<br>"
+        message+="Nous avons affecté un chauffeur <strong>expérimenté</strong> à votre bus pour vous assurer un voyage <strong>sûr et agréable</strong>. Notre équipe de conducteurs est formée pour offrir un service de <strong>qualité</strong> et pour prendre <strong>soin de nos passagers</strong>."+"<br>"+"<br>"+
+            "Veuillez vous assurer <strong>d'arriver à l'arrêt de départ à l'heure</strong> pour éviter tout retard pour vous. Si vous avez des questions ou des préoccupations, n'hésitez pas à nous <strong>contacter</strong> et nous ferons tout notre possible pour vous aider."+"<br>"+"<br>"+
+            "Nous sommes impatients de vous accueillir à bord de notre bus et de vous offrir une expérience de voyage agréable et sans tracas."+"<br>"+"<br>"+
+            "Cordialement,"+"<br>"+"L'équipe de réservation de bus de <strong>GoBus</strong>."
+
+        axios.get(`notifications/notifications.php?function=create&title=${addslashes(titre)}&message=${addslashes(message)}&recipient=` + client.id)
+        removeContainerAndRemoveCacheClass(container)
+        fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=valide_reservation&idReservation=` + props.id_reserv + `&beginning=` + startDateTime + `&end=` + endDateTime + `&id_users=` + selectedDrivers + `&id_buses=` + busesTimeslot, "/espace-admin", "La réservation a bien été validée", "La réservation n'a pas pu être validée")
     })
-
-    return container;
 }
 
 export {
     changerInfoAbonne,
     changerMdpAbonne,
     displayReserv,
-    toggleRefuseReservation,
-    toggleValideReservation
+    displayInscr,
+    toggleRefuseReservation
 }

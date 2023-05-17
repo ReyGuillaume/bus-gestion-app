@@ -2,6 +2,9 @@
 // accès à une fonction bdd() qui renvoie une instance de PDO
 include_once "../connexion.php";
 
+include_once "../buses/buses_free.php";
+include_once "../users/users_free.php";
+
 // ======================== Line ========================
 
 /**
@@ -13,8 +16,8 @@ include_once "../connexion.php";
     @return boolean si l'ajout est un succès.
 */
 function create_line($number, $travel_time, $id_type_line) {
-    if(!bdd()->query("SELECT * FROM `Line`  WHERE `number` = '{$number}'")->fetch()){
-        bdd()->query("INSERT INTO `Line` (`number`, `travel_time`) VALUE ('{$number}', '{$travel_time}')");
+    if(!bdd()->query("SELECT * FROM `line`  WHERE `number` = '{$number}'")->fetch()){
+        bdd()->query("INSERT INTO `line` (`number`, `travel_time`) VALUE ('{$number}', '{$travel_time}')");
         bdd()->query("INSERT INTO `linetype_line`(`id_type`, `num_line`) VALUE ('{$id_type_line}', '{$number}')");
         $res = true;  
         
@@ -31,7 +34,7 @@ function create_line($number, $travel_time, $id_type_line) {
     @return liste des lignes (number : Int, travel_time : Int).
 */
 function fetch_lines() {
-    $res = bdd()->query("SELECT * FROM `Line`");
+    $res = bdd()->query("SELECT * FROM `line`");
     return $res->fetchAll();
 }
 
@@ -53,7 +56,7 @@ function fetch_linetypes() {
     @return objet line (number : Int, travel_time : Int).
 */
 function fetch_line($number) {
-    $res = bdd()->query("SELECT * FROM `Line` WHERE `number` = {$number}");
+    $res = bdd()->query("SELECT * FROM `line` WHERE `number` = {$number}");
     return $res->fetch();
 }
 
@@ -77,7 +80,7 @@ function fetch_linetype($id) {
     @return liste des créneaux (num_line : Int, id_time_slot : Int, direction : String)
 */
 function fetch_timeslots_of_line($number) {
-    $res = bdd()->query("SELECT * FROM Line_TimeSlot WHERE num_line = {$number}");
+    $res = bdd()->query("SELECT * FROM line_timeslot WHERE num_line = {$number}");
     return $res->fetchAll();
 }
 
@@ -90,8 +93,8 @@ function fetch_timeslots_of_line($number) {
     @return boolean si la modification est un succès.
  */
 function modify_traveltime_line($number, $travel_time) {
-    if(bdd()->query("SELECT * FROM `Line`  WHERE `number` = {$number}")->fetch()) {
-        bdd()->query("UPDATE `Line` SET `travel_time`={$travel_time} WHERE `number` = {$number}");
+    if(bdd()->query("SELECT * FROM `line`  WHERE `number` = {$number}")->fetch()) {
+        bdd()->query("UPDATE `line` SET `travel_time`={$travel_time} WHERE `number` = {$number}");
         return true;
     }
     return false;
@@ -106,15 +109,15 @@ function modify_traveltime_line($number, $travel_time) {
     @return boolean si la modification est un succès.
  */
 function modify_line_direction($number, $id_creneau) {
-    $res = bdd()->query("SELECT * FROM `Line_TimeSlot` WHERE `num_line` = {$number} AND `id_time_slot` = {$id_creneau}");
+    $res = bdd()->query("SELECT * FROM `line_timeslot` WHERE `num_line` = {$number} AND `id_time_slot` = {$id_creneau}");
     $row = $res->fetch(PDO::FETCH_ASSOC);
     if($row != null) {
         $direction = $row['direction'];
         if($direction == "aller"){
-            bdd()->query("UPDATE `Line_TimeSlot` SET `direction` = 'retour' WHERE `num_line` = {$number} AND `id_time_slot` = {$id_creneau}");
+            bdd()->query("UPDATE `line_timeslot` SET `direction` = 'retour' WHERE `num_line` = {$number} AND `id_time_slot` = {$id_creneau}");
         }
         else{
-            bdd()->query("UPDATE `Line_TimeSlot` SET `direction` = 'aller' WHERE `num_line` = {$number} AND `id_time_slot` = {$id_creneau}");
+            bdd()->query("UPDATE `line_timeslot` SET `direction` = 'aller' WHERE `num_line` = {$number} AND `id_time_slot` = {$id_creneau}");
         }
         return true;
     } else {
@@ -130,13 +133,18 @@ function modify_line_direction($number, $id_creneau) {
     @return boolean si la délétion est un succès.
 */
 function delete_line($number) {  //supprimer également tous les créneaux qui sont dépendants de ce bus
-    if(bdd()->query("SELECT * FROM `Line` WHERE `number` = {$number}")->fetch()) {
-        bdd()->query("DELETE FROM `Line_TimeSlot` WHERE num_line = {$number}");
-        bdd()->query("DELETE FROM `Line` WHERE `number` = {$number}");
+    if(bdd()->query("SELECT * FROM `line` WHERE `number` = {$number}")->fetch()) {
+        bdd()->query("DELETE FROM `line_timeslot` WHERE num_line = {$number}");
+        bdd()->query("DELETE FROM `line` WHERE `number` = {$number}");
         return true;
     }
     return false;
 }
+
+/* ---------------------------------------------------------------
+                        Verification de couverture  
+ ------------------------------------------------------------------ */
+
 
 /**
   Fonction qui indique si toutes les lignes sont bien couvertes pendant la semaine donée
@@ -147,7 +155,7 @@ function delete_line($number) {  //supprimer également tous les créneaux qui s
    
 */
 function semaine_lignes_couvertes ($semaine) { 
-    $toute_ligne = bdd()->query("SELECT `number` FROM `Line`");
+    $toute_ligne = bdd()->query("SELECT `number` FROM `line`");
     // Boucle pour parcourir tous les numéros de ligne et les afficher
     $res= true; 
     
@@ -298,8 +306,38 @@ function creneau_couvert ($crenau,$jour, $id_line){
     return true;
 }
 
+/* ---------------------------------------------------------------
+                        Auto remplissage Couverture 
+ ------------------------------------------------------------------ */
 /**
-  Fonction qui creer tout les crénaux de conduite nécessaires pour que la semaine donnée soit bien couverte 
+  Fonction qui creer tout les crénaux de conduite nécessaires pour que la semaine donnée soit bien couverte et qui 
+  au lieu de prendre en compte tous les conducteurs prend seulements en compte ceux dont l'id est donné 
+  
+  @param week : La semaine à couvrir
+  @param drivers : Id des conducteurs à prendre en compte 
+  
+  @return un booléen qui indique si tout c'est bien passé
+    
+*/
+ function cover_a_week_with_drivers($id_week, $drivers){
+    // Recupere toutes les lignes 
+    $toute_ligne = bdd()->query("SELECT `number` FROM `line`");
+
+    var_dump($drivers);
+
+    // Pour chaque ligne on la couvre pour la semaine 
+    $res = true;
+    while ($ligne = $toute_ligne->fetch(PDO::FETCH_ASSOC)) {
+        if (!cover_a_line_for_a_week_sql($id_week, $ligne['number'], $drivers)){
+            $res=false;
+        }
+    }
+    $res = true;
+    return $res;
+
+}
+/**
+  Fonction qui cree tout les crénaux de conduite nécessaires pour que la semaine donnée soit bien couverte 
   
   @param week : La semaine à couvrir
   
@@ -308,17 +346,219 @@ function creneau_couvert ($crenau,$jour, $id_line){
 */
 function  cover_a_week($week){
     // Recupere toutes les lignes 
-    $toute_ligne = bdd()->query("SELECT `number` FROM `Line`");
+    $toute_ligne = bdd()->query("SELECT `number` FROM `line`");
     
-    // Pour chaque ligne verifie qu'elle est bien couverte pour la semaine 
+    // Pour chaque ligne on la couvre pour la semaine 
     $res = true;
     while ($ligne = $toute_ligne->fetch(PDO::FETCH_ASSOC)) {
-        if (!cover_a_line_for_a_week($week, $ligne['number'])){
+        if (!cover_a_line_for_a_week_sql($week, $ligne['number'],[])){
             $res=false;
         }
     }
+    $res = true;
     return $res;
 }
+
+/**
+  Fonction qui renvoit la requete sql pour créer tous les crénaux de conduite nécessaires pour qu'une ligne soit bien couverte durant la semaine donnée 
+  
+  @param week : La semaine à couvrir
+  @param id_line : L'id de la ligne à couvrir
+  @param drivers : Les id des drivers de la semaine
+
+  @return un booléen qui indique si tout c'est bien passé
+    */
+function cover_a_line_for_a_week_sql($week, $id_line, $drivers){
+    // On isole l'année et le numéro de la semaine
+      $year = substr($week, 0, 4);
+      $weekNumber = substr($week, 6, 2);
+      $sql = "";
+      $res = false;
+
+      //On cherche un bus qui serait libre pour la semaine 
+      $free_bus_for_week = find_a_bus_id_free_for_the_week($week);
+      
+      
+      // On creer le jour de depart ( 1 pour lundi )
+      $startDate = new DateTime();
+      $startDate->setISODate($year, $weekNumber, 1);
+      
+      // On parcours chaque jour de la semaine et on le couvre
+      
+      for ($i = 0; $i < 7; $i++) {
+        $date = $startDate->format('Y-m-d');
+        $sql .= couvre_a_line_for_a_day_sql ($date, $id_line, $free_bus_for_week, $drivers);
+        $startDate->add(new DateInterval('P1D'));
+      }
+
+      //echo($sql);
+      if (!bdd()->query($sql)){
+        $res = true;
+      }
+
+
+        return $res;
+}
+    
+
+/**
+  Fonction qui renvoit la requete sql pour creer tous les crénaux de conduite nécessaires pour qu'une ligne soit bien couverte durant un jour donné
+  
+  @param jour : Le jour à couvrir
+  @param id_line : L'id de la ligne à couvrir
+  @param free_bus : L'id du bus à relié si il y en a un qui est donné
+  @param drivers : Les id des drivers de la semaine
+
+
+  @return un booléen qui indique si tout c'est bien passé
+    */
+function couvre_a_line_for_a_day_sql ($jour, $id_line, $free_bus, $drivers){
+    $sql = "";
+    // On récupère tous les créneaux à couvrir pour cette ligne la en fonction de son type 
+    $id_type_query= bdd()->query("SELECT `id_type` FROM `linetype_line` WHERE `num_line`={$id_line};");
+    $id_type = $id_type_query->fetch();
+    $tous_creneaux = bdd()->query("SELECT * FROM `linetypeconditions` WHERE `id_type` = {$id_type['id_type']};");
+
+    //On cherche un bus qui serait libre pour le jour si on pas trouvé pour la semaine 
+    if($free_bus <0){
+        $free_bus = find_a_bus_id_free_for_the_day($jour);
+    }
+
+    var_dump( $drivers);
+    
+    // On cherche des conducteurs à assigner 
+    $begining = date("Y-m-d H:i:s", strtotime($jour));
+    $end = date("Y-m-d H:i:s", strtotime("+1 day", strtotime($jour)));
+    $drivers_free = find_users_free_in_list($begining, $end, $drivers);
+
+
+
+    if (count($drivers_free) >= 2) {
+        $drivers_to_use = array($drivers_free[0]);
+        $drivers_to_use = array($drivers_free[1]);
+    } elseif (count($drivers) == 1) {
+        $drivers_to_use = array($drivers_free[0]);
+    } else {
+        $drivers_to_use = array();
+    }
+
+    
+
+    // On remplit chaque creneau de couverture obligatoire 
+    while ($crenau = $tous_creneaux->fetch(PDO::FETCH_ASSOC)) {
+        $sql .= couvrire_creneau_sql ($crenau,$jour, $id_line, $free_bus,$drivers_to_use );
+        
+    }
+    return $sql;
+}
+
+
+/**
+  Fonction qui renvoit la requete sql pour creer tout les crénaux de conduite nécessaires pour qu'une ligne soit bien couverte pour un créneau de couverture obligatoire donné 
+  
+  @param creneau : Le créneau à couvrire
+  @param jour : Le jour à couvrir
+  @param id_line : la ligne à remplir 
+  @param free_bus : L'id du bus à relié si il y en a un qui est donné
+  @param drivers : Les id des conducteurs à assigner 
+
+  @return la requete sql 
+    
+*/
+function couvrire_creneau_sql ($crenau, $jour, $id_line, $free_bus, $drivers){
+    
+    // On recupere toutes les variables nécessaire 
+    $temps_creneau = 60; //++++ A améliorer car pas très maniable 
+    $heure_courante = $crenau['begin'];
+    $intervalle = $crenau['intervalle'];
+    $sql = "";
+    $compteur = 0;
+
+    $bdd = bdd();
+
+    while ($heure_courante <= $crenau['end'] ){
+
+        //echo "{$heure_courante}";
+
+        // creation des datetime de debut et de fin 
+        $date_complete_debut = DateTime::createFromFormat('Y-m-d H:i:s', $jour . ' ' . $heure_courante);
+        $date_complete_debut_str = $date_complete_debut->format('Y-m-d H:i:s');
+
+        $datetime_debut = DateTime::createFromFormat('H:i:s', $heure_courante);
+        $datetime_debut->add(new DateInterval('PT60M'));
+        $heure_fin_courante =  $datetime_debut->format('H:i:s');
+
+        $date_complete_fin = DateTime::createFromFormat('Y-m-d H:i:s', $jour . ' ' . $heure_fin_courante);
+        $date_complete_fin_str = $date_complete_fin->format('Y-m-d H:i:s');
+
+      
+        // On entre un creneau dans la base de donnée
+        $nv = $bdd->query("INSERT INTO `timeslot`(`begining`, `end`, `id_time_slot_type`) VALUES ('{$date_complete_debut_str}', '{$date_complete_fin_str}', 1);");
+        
+
+        // récupérer l'ID généré automatiquement pour le nouveau timeslot
+        $id_timeslot = $bdd->lastInsertId();
+        if ($id_line == 3 || $id_line == 4){
+            $sql .= "INSERT INTO `line_timeslot`(`num_line`, `id_time_slot`, `direction`) VALUES ('{$id_line}','{$id_timeslot}','aller');";
+        }else{
+            if ($compteur % 2 == 0){
+                $sql .= "INSERT INTO `line_timeslot`(`num_line`, `id_time_slot`, `direction`) VALUES ('{$id_line}','{$id_timeslot}','aller');";
+            } else {
+                $sql .= "INSERT INTO `line_timeslot`(`num_line`, `id_time_slot`, `direction`) VALUES ('{$id_line}','{$id_timeslot}','retour');";
+            }
+
+        }
+     
+        // On ajoute un conducteur si possible 
+
+    
+        if (count($drivers) >= 1) {
+            if ($id_line == 3 || $id_line == 4){
+            //Que des aller donc on fait C1 C2 C1 C2
+
+                if ($compteur % 2 == 0){
+                    $sql .= "INSERT INTO `user_timeslot`(`id_user`, `id_time_slot`) VALUES({$drivers[0]}, {$id_timeslot});";
+                } else {
+                    if (count($drivers) == 2) {
+                        $sql .= "INSERT INTO `user_timeslot`(`id_user`, `id_time_slot`) VALUES({$drivers[1]}, {$id_timeslot});";
+                    }
+                }
+
+            }else{
+            //Aller retour donc on fait C1 C1 C2 C2
+
+                if ((intdiv($compteur , 2 )%2) == 0){
+                    $sql .= "INSERT INTO `user_timeslot`(`id_user`, `id_time_slot`) VALUES({$drivers[0]}, {$id_timeslot});";
+                } else {
+                    if (count($drivers) == 2) {
+                        $sql .= "INSERT INTO `user_timeslot`(`id_user`, `id_time_slot`) VALUES({$drivers[1]}, {$id_timeslot});";
+                    }          
+                }
+
+            }
+        }
+
+        // On y ajoute un bus si possible 
+        if ($free_bus<0 ){
+            $sql .=  add_a_bus_to_timeslot_sql($id_timeslot);
+        }else{
+            $sql .= "INSERT INTO `bus_timeslot`(`id_bus`, `id_time_slot`) VALUES ({$free_bus}, {$id_timeslot});";
+      
+        }
+        
+     
+        // On avance 
+        $datetime_courante = DateTime::createFromFormat('H:i:s', $heure_courante);
+        $datetime_courante->add(new DateInterval("PT{$intervalle}M"));
+        $heure_courante =  $datetime_courante->format('H:i:s');
+
+        $compteur = $compteur +1;
+    } 
+    return $sql ; 
+}
+
+
+
 
 /**
   Fonction qui creer tout les crénaux de conduite nécessaires pour qu'une ligne soit bien couverte pour une semaine donnée 
@@ -342,9 +582,11 @@ function cover_a_line_for_a_week($week, $id_line){
   $res = true;
   for ($i = 0; $i < 7; $i++) {
     $date = $startDate->format('Y-m-d');
+    // On couvre la ligne pour ce jour la
     if (!couvre_a_line_for_a_day ($date, $id_line)){
         $res=false;
     }
+    // On passe au jour suivant 
     $startDate->add(new DateInterval('P1D'));
   }
     return $res;
@@ -360,6 +602,7 @@ function cover_a_line_for_a_week($week, $id_line){
     
 */
 function couvre_a_line_for_a_day ($jour, $id_line){
+   
     // On récupère tous les créneaux à couvrir pour cette ligne la en fonction de son type 
     $id_type_query= bdd()->query("SELECT `id_type` FROM `linetype_line` WHERE `num_line`={$id_line}");
     $id_type = $id_type_query->fetch();
@@ -375,6 +618,7 @@ function couvre_a_line_for_a_day ($jour, $id_line){
     return $res;
 }
 
+
 /**
   Fonction qui creer tout les crénaux de conduite nécessaires pour qu'une ligne soit bien couverte pour un créneau de couverture obligatoire donné 
   
@@ -386,15 +630,14 @@ function couvre_a_line_for_a_day ($jour, $id_line){
     
 */
 function couvrire_creneau ($crenau, $jour, $id_line){
-    require_once '../users/users.php';
-    require_once '../buses/buses.php';
+    
     // On recupere toutes les variables nécessaire 
     $temps_creneau = 60; //++++ A améliorer car pas très maniable 
     $heure_courante = $crenau['begin'];
     $intervalle = $crenau['intervalle'];
     $res = true;
 
-    $bdd = bdd();
+    
 
     while ($heure_courante <= $crenau['end'] ){
 
@@ -412,27 +655,27 @@ function couvrire_creneau ($crenau, $jour, $id_line){
 
       
         // On entre un creneau dans la base de donnée
-        $nv = $bdd->query("INSERT INTO `timeslot`(`begining`, `end`, `id_time_slot_type`) VALUES ('{$date_complete_debut_str}', '{$date_complete_fin_str}', 1)");
+        $nv = bdd()->query("INSERT INTO `timeslot`(`begining`, `end`, `id_time_slot_type`) VALUES ('{$date_complete_debut_str}', '{$date_complete_fin_str}', 1)");
         if ($nv===false){
             $res = false;
         }
 
         // récupérer l'ID généré automatiquement pour le nouveau timeslot
-        $id_timeslot = $bdd->lastInsertId();
-        $liaison = $bdd->query("INSERT INTO `line_timeslot`(`num_line`, `id_time_slot`, `direction`) VALUES ('{$id_line}','{$id_timeslot}','aller')");
+        $id_timeslot = bdd()->lastInsertId();
+        $liaison = bdd()->query("INSERT INTO `line_timeslot`(`num_line`, `id_time_slot`, `direction`) VALUES ('{$id_line}','{$id_timeslot}','aller')");
         
-     
+     /*
         // On y ajoute un bus si possible 
         $bus_relie =  add_a_bus_to_timeslot($id_timeslot);
         
         // On y ajoute un conducteur si possible
         $driver_relie =  add_a_driver_to_timeslot($id_timeslot);
 
-        if (($bus_relie==false )||( $driver_relie==false )){
+        /*if (($bus_relie==false )||( $driver_relie==false )){
             $res = false;
-        }
+        }*/
 
-
+     
         // On avance 
         $datetime_courante = DateTime::createFromFormat('H:i:s', $heure_courante);
         $datetime_courante->add(new DateInterval("PT{$intervalle}M"));
@@ -441,6 +684,10 @@ function couvrire_creneau ($crenau, $jour, $id_line){
     //echo("{$res}");
     return $res ; 
 }
+
+/* ---------------------------------------------------------------
+                        Gestion Line conditions 
+ ------------------------------------------------------------------ */
 
 /**
   Fonction qui crée une nouvelle plage horaire pour un type de ligne
@@ -547,6 +794,10 @@ function delete_type_line($id){
     return false;
 }
 
+
+
+
+
 switch ($_GET['function']) {
     case 'create':      // number, temps de trajet
         $res = create_line($_GET['number'], $_GET['travel_time'],$_GET['id_type'] );
@@ -572,8 +823,14 @@ switch ($_GET['function']) {
     case 'WeekCovered': //week
         $res =semaine_lignes_couvertes ($_GET['week']);
         break;
-    case 'coverWeek': // week
-        $res = cover_a_week ($_GET['week']);
+    case 'coverWeekWithDrivers': // week
+        $res = cover_a_week_with_drivers ($_GET['week'], array_map('intval', explode(',', $_GET['drivers'])));
+        break;
+    case 'coverLineWeek': //week idline
+        $res = cover_a_line_for_a_week($_GET['week'], $_GET['idline']);
+        break;
+    case 'coverLineWeek': //week line
+        $res = cover_a_line_for_a_week ($_GET['week'], $_GET['idline']);
         break;
     case 'typesline':
         $res =fetch_linetypes();

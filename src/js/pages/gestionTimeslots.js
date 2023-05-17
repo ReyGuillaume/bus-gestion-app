@@ -6,10 +6,17 @@ import {
     toggleError,
     toggleAlert
 } from "../utils/domManipulation";
-import { valueFirstElementChecked, idOfAllElementChecked, fetchUrlRedirectAndAlert, createCheckBoxOfElements } from "../utils/formGestion";
+import {
+    valueFirstElementChecked,
+    idOfAllElementChecked,
+    fetchUrlRedirectAndAlert,
+    createCheckBoxOfElements,
+    addslashes
+} from "../utils/formGestion";
 import { redirect, redirectWithAlert } from "../utils/redirection";
 
 import axios from 'axios';
+import {formatedHour} from "../utils/dates.js";
 
 
 // select the types of participants and return those who are checked in a string : 1,2,...
@@ -84,7 +91,14 @@ function toogleFreeBusChoices(choicesDiv){
     var divCheckboxBus = document.querySelector("#divCheckboxBus");
 
     // On supprime ce qu'il y avait dans la div de choix d'utilisateur
-    divCheckboxBus.replaceChildren("");
+
+    if (!divCheckboxBus) {
+        divCheckboxBus = create("div", choicesDiv);
+        divCheckboxBus.setAttribute("id", "divCheckboxBus");
+    } else {
+        divCheckboxBus.replaceChildren("");
+    }
+
     
     // On la re remplie
 
@@ -125,9 +139,11 @@ function toogleUserChoices(choicesDiv){
     // On cree chaque champs 
     axios.get(`users/users.php?function=users`).then((response)=>{
         for(var user of response.data){
-            createChampCheckbox(divCheckboxUsers, `u${user.id}` , "selectionParticipant", user.id);
-            var label = create("label", divCheckboxUsers, user.name + " "+ user.firstname);
-            label.setAttribute("for", `u${user.id}`);
+            if (user.id_user_type !== "4") {
+                createChampCheckbox(divCheckboxUsers, `u${user.id}`, "selectionParticipant", user.id);
+                var label = create("label", divCheckboxUsers, user.name + " " + user.firstname);
+                label.setAttribute("for", `u${user.id}`);
+            }
         }
     });
 
@@ -144,12 +160,16 @@ function toogleUserChoices(choicesDiv){
 // BUT with only the one that are free on the periode
 // @param choiceDiv la div dans lequel mettre ça 
 function toogleFreeUserChoices(choicesDiv){
-
     // On recupere la div de choix d'utilisateur
     var divCheckboxUsers = document.querySelector("#divCheckboxUsers");
     
     // On supprime ce qu'il y avait dans la div de choix d'utilisateur
-    divCheckboxUsers.replaceChildren("");
+    if (!divCheckboxUsers) {
+        divCheckboxUsers = create("div", choicesDiv);
+        divCheckboxUsers.setAttribute("id", "divCheckboxUsers");
+    }else {
+        divCheckboxUsers.replaceChildren("");
+    }
     
     // On la re remplie
 
@@ -161,6 +181,7 @@ function toogleFreeUserChoices(choicesDiv){
     create("label", divCheckboxUsers, "Choisissez les participants parmis ceux disponibles :");
 
     let axiosUrl = `users/users.php?function=freeUsers&beginning=${StartDateTime}&end=${EndDateTime}`
+
     createCheckBoxOfElements(axiosUrl, "users/users.php?function=user&id=", divCheckboxUsers, "selectionParticipant", (elt => `${elt.name} ${elt.firstname}`), "pd")
     
     // On cree le bouton permettant d'afficher tous les utilisateurs
@@ -218,7 +239,12 @@ function toogleFreeDriverChoices(choicesDiv){
     // On recupere la div de choix d'utilisateur
     var divCheckboxDrivers = document.querySelector("#divCheckboxDrivers");
     // On supprime ce qu'il y avait dans la div de choix d'utilisateur
-    divCheckboxDrivers.replaceChildren("");
+    if (!divCheckboxDrivers) {
+        divCheckboxDrivers = create("div", choicesDiv);
+        divCheckboxDrivers.setAttribute("id", "divCheckboxDrivers");
+    }else {
+        divCheckboxDrivers.replaceChildren("");
+    }
     
     // On la re remplie
 
@@ -230,7 +256,7 @@ function toogleFreeDriverChoices(choicesDiv){
     create("label", divCheckboxDrivers, "Choisissez les conducteurs parmis ceux disponibles :");
 
     let axiosUrl = `users/users.php?function=freeDrivers&beginning=${StartDateTime}&end=${EndDateTime}`
-    createCheckBoxOfElements(axiosUrl, "users/users.php?function=user&id=", divCheckboxDrivers, "selectionParticipant", (elt => `${elt.name} ${elt.firstname}`), "cd")
+    createCheckBoxOfElements(axiosUrl, "users/users.php?function=user&id=", divCheckboxDrivers, "selectionConducteurs", (elt => `${elt.name} ${elt.firstname}`), "cd")
     
     // On cree le bouton permettant d'afficher tous les conducteurs
     var bouton = create("button", divCheckboxDrivers, "Afficher tous les conducteurs");
@@ -282,7 +308,6 @@ function axiosUrlSendWhenADD(type){
     // selection of the start and end time
     let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
     let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
-
     // creation of the variables
     let users, drivers, buses,  line, direction
     ({users, drivers, buses,  line, direction} = getData())
@@ -340,6 +365,88 @@ function axiosUrlSendWhenADD(type){
     return url;
 }
 
+const sendNotifReunionOblige = async (idUser, startDateTime, endDateTime) => {
+    let user = await axios.get(`users/users.php?function=user&id=` + idUser)
+    user = user.data
+
+    let heure_debut = formatedHour(new Date(startDateTime).getHours())
+    let min_debut = formatedHour(new Date(startDateTime).getMinutes())
+    let heure_fin = formatedHour(new Date(endDateTime).getHours())
+    let min_fin = formatedHour(new Date(endDateTime).getMinutes())
+
+    let debut_jour = formatedHour(new Date(startDateTime).getDate())
+    let debut_annee = formatedHour(new Date(startDateTime).getFullYear())
+    let debut_mois = formatedHour(new Date(startDateTime).getMonth())
+    let fin_jour = formatedHour(new Date(endDateTime).getDate())
+    let fin_annee = formatedHour(new Date(endDateTime).getFullYear())
+    let fin_mois = formatedHour(new Date(endDateTime).getMonth())
+
+    let debut = heure_debut+":"+min_debut
+    let fin = heure_fin+":"+min_fin
+    let debutDate = debut_jour+"/"+debut_mois+"/"+debut_annee
+    let finDate = fin_jour+"/"+fin_mois+"/"+fin_annee
+
+    const titre = "Convocation obligatoire à la réunion"
+    let message = "Bonjour " + user.firstname +", <br><br>"
+    message += "Nous espérons que vous allez bien. Nous vous rappelons que vous êtes <strong>obligé(e)</strong> de participer à la réunion qui aura lieu le <strong>"
+    message += debutDate + "</strong> à <strong>" + debut + "</strong> et qui finira à <strong>" + finDate + "</strong> à <strong>" + fin + "</strong>"
+    message += " dans notre salle de conférence principale. <br><br>"
+    message += "Il est <strong>important</strong> que vous assistiez à cette réunion car nous discuterons de sujets importants concernant notre entreprise. Nous avons également des informations importantes à vous communiquer. <br><br>"
+    message += "Nous vous prions de prendre les dispositions nécessaires pour être présent(e) à cette réunion et pour y contribuer de manière active. Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter. <br><br>"
+    message += "Nous comptons sur votre présence et votre contribution pour faire avancer notre entreprise. Merci pour votre collaboration et à bientôt à la réunion. <br><br>"
+    message += "Cordialement, <br>L'équipe GoBus."
+    axios.get(`notifications/notifications.php?function=create&title=${addslashes(titre)}&message=${addslashes(message)}&recipient=` + idUser)
+
+}
+
+const selectUserOblige = (form) => {
+    document.querySelector(".submitButton").remove()
+
+    let startDateTime = document.querySelector("input[name='StartDateTime']").value;
+    let endDateTime = document.querySelector("input[name='EndDateTime']").value;
+
+    let tab = []
+    for (var participant of document.querySelectorAll("input[name='selectionParticipant']")){
+        if (participant.checked) {
+            tab.push(participant.value)
+        }
+    }
+
+    // On met le titre
+    create("label", form, "Entrez les participants qui ont l'obligation de venir à la réunion :", ["label-info"]);
+
+    // On recupere la div de choix d'utilisateur
+    let divCheckboxUsers = create("div", form);
+    divCheckboxUsers.setAttribute("id", "divCheckboxUsers");
+
+    // On cree chaque champs
+    axios.get(`users/users.php?function=users`).then((response)=>{
+        for(var user of response.data){
+            if (tab.includes(user.id)) {
+                createChampCheckbox(divCheckboxUsers, `us${user.id}`, "selectionParticipantOblige", user.id);
+                var label = create("label", divCheckboxUsers, user.name + " " + user.firstname);
+                label.setAttribute("for", `us${user.id}`);
+            }
+        }
+    });
+
+    // Creation of submit button
+    const bouton = create("button", form, "Envoyer", ["submitButton", "unstyled-button"])
+    bouton.title = "Envoyer"
+    bouton.addEventListener("click", function (){
+
+        for(let elem of document.querySelectorAll("input[name='selectionParticipantOblige']")){
+            if (elem.checked) {
+                let idUser = elem.value
+                sendNotifReunionOblige (idUser, startDateTime, endDateTime)
+            }
+        }
+
+        let url = axiosUrlSendWhenADD(typeTimeslot())
+        fetchUrlRedirectAndAlert(url, "/espace-admin", "Le créneau a bien été ajouté", "Le créneau n'a pas pu être ajouté")
+    })
+}
+
 const toggleAddCreneau = () => {
     const main = document.querySelector("#app");
     main.replaceChildren("");
@@ -380,30 +487,30 @@ const toggleAddCreneau = () => {
 
                 switch (typeToHandle){
                     case '1' :  //Conduite
-                        toogleBusChoices(choicesDiv);
-                        toogleDriversChoices(choicesDiv);
+                        toogleFreeBusChoices(choicesDiv);
+                        toogleFreeDriverChoices(choicesDiv);
                         toogleLineChoices(choicesDiv);
                         toogleDirectionChoices(choicesDiv); 
                         break;
                     case '2' :  //Reunion 
-                        toogleUserChoices(choicesDiv);
+                        toogleFreeUserChoices(choicesDiv);
                         break;
                     case '3' : //Indisponibilite
-                        toogleDriversChoices(choicesDiv);
+                        toogleFreeDriverChoices(choicesDiv);
                         break;
                     case '5' :  //Astreinte
                         toogleBusChoices(choicesDiv);
-                        toogleDriversChoices(choicesDiv);
+                        toogleFreeDriverChoices(choicesDiv);
                         break;
-                    case '5' :  //reservation
+                    case '4' :  //reservation
                         toogleBusChoices(choicesDiv);
-                        toogleDriversChoices(choicesDiv);
+                        toogleFreeDriverChoices(choicesDiv);
                         break;
                     default :
                         toogleBusChoices(choicesDiv)
-                        toogleUserChoices(choicesDiv)
+                        toogleFreeUserChoices(choicesDiv)
                         toogleLineChoices(choicesDiv);
-                        toogleDirectionChoices(choicesDiv); 
+                        toogleDirectionChoices(choicesDiv);
                         break;
                 }
             })
@@ -419,8 +526,13 @@ const toggleAddCreneau = () => {
     const bouton = create("button", form, "Envoyer", ["submitButton", "unstyled-button"])
     bouton.title = "Envoyer"
     bouton.addEventListener("click", function (){
-        let url = axiosUrlSendWhenADD(typeTimeslot())
-        fetchUrlRedirectAndAlert(url, "/espace-admin", "Le créneau a bien été ajouté", "Le créneau n'a pas pu être ajouté")
+        let type = typeTimeslot()
+        if (type == 2){
+            selectUserOblige(form)
+        }else {
+            let url = axiosUrlSendWhenADD(type)
+            //fetchUrlRedirectAndAlert(url, "/espace-admin", "Le créneau a bien été ajouté", "Le créneau n'a pas pu être ajouté")
+        }
     })
 }
 

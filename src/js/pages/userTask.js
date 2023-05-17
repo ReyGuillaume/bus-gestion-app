@@ -1,6 +1,12 @@
 import { create, createChamp, createChampRadio, createChampCheckbox, toggleAlert, toggleError } from "../utils/domManipulation"
 import { getDayToString, getMonthToString, formatedHour } from "../utils/dates";
-import { participantsTimeslot, busesTimeslot, lineTimeslot, lineDirectionTimeslot }  from "./gestionTimeslots"
+import {
+    participantsTimeslot,
+    busesTimeslot,
+    lineTimeslot,
+    lineDirectionTimeslot,
+    selectedDrivers
+} from "./gestionTimeslots"
 import { toggleAgenda } from "./agenda";
 import axios from "axios";
 
@@ -31,7 +37,9 @@ const afficheEntites = (container, tabEntite, axiosRequest, checkBoxName) => {
             var champ
             // user ou bus
             if(elem.id && elem.firstname){
-                champ = createChampCheckbox(container, "p"+elem.id, checkBoxName, elem.id, );
+                if(elem.id_user_type !== "4") {
+                    champ = createChampCheckbox(container, "p" + elem.id, checkBoxName, elem.id,);
+                }
             }
             else if(elem.id ){
                 champ = createChampCheckbox(container, "bt"+elem.id, checkBoxName, elem.id, );
@@ -51,8 +59,11 @@ const afficheEntites = (container, tabEntite, axiosRequest, checkBoxName) => {
             var label
             // user
             if(elem.firstname){
-                label = create("label", container, elem.firstname.substr(0,1) + "." + elem.name, null, "p"+elem.id);
-                label.setAttribute("for", "p"+elem.id);
+                if(elem.id_user_type !== "4") {
+                    label = create("label", container, elem.firstname.substr(0, 1) + "." + elem.name, null, "p" + elem.id);
+                    label.setAttribute("for", "p" + elem.id);
+                    create("br", container)
+                }
             }
             // bus
             else if(elem.id_bus_type){
@@ -72,16 +83,16 @@ const afficheBuses = (container, tabBus) => afficheEntites(container, tabBus, `b
 
 const afficheUsers = (container, tabUser) => afficheEntites(container, tabUser, `users/users.php?function=users`, "selectionParticipant")
 
-const afficheDrivers = (container, tabUser) => afficheEntites(container, tabUser, `users/users.php?function=bytype&type=3`, "selectionParticipant")
+const afficheDrivers = (container, tabUser) => afficheEntites(container, tabUser, `users/users.php?function=bytype&type=3`, "selectionConducteurs")
 
 const afficheLines = (container, tabLine) => afficheEntites(container, tabLine, `lines/lines.php?function=lines`, "selectionLigne")
 
-const executeAction = (container, url, startDateTime, user, successMessage, errorMessage, multi) => {
+const executeAction = (container, url, startDateTime, user, successMessage, errorMessage, multi, entites) => {
     axios.get(url).then(response => {
         removeContainerAndRemoveCacheClass(container)
         if(response.data){
             let newDate = new Date(startDateTime)
-            toggleAgenda(user, newDate, multi)
+            toggleAgenda(user, newDate, multi, entites)
             toggleAlert("BRAVO", successMessage)
         } else {
             toggleError("ERREUR", errorMessage)
@@ -90,21 +101,23 @@ const executeAction = (container, url, startDateTime, user, successMessage, erro
 }
 
 // affiche le bouton pour modifier un créneau, puis son formulaire
-const modifConduite = (container, props, user=null, multi=false) => {
+const modifConduite = (container, props, user=null, multi=false, entites=null, overlay) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`).then((responseCreneau) =>{
 
         // Creation du formulaire pré remplie de modif de ligne 
         container.replaceChildren("")
 
         const back = create("button", container, '<< Retour', ['return', "unstyled-button"])
-        back.onclick = () => removeContainerAndRemoveCacheClass(container)
         back.title = "Retour en arrière"
 
+        //titre
+        create('p', container, props.name, ["task-name"])
+
         // Creation of each champ
-        create("label", container, "Début :", ["form-info"]);
+        create("label", container, "Date de début : ", ["form-info"]);
         createChamp(container, "datetime-local", "StartDateTime").value = responseCreneau.data.begining;
 
-        create("label", container, "Fin :", ["form-info"]);
+        create("label", container, "Date de fin : ", ["form-info"]);
         createChamp(container, "datetime-local", "EndDateTime").value = responseCreneau.data.end;
 
         //recup tous les bus 
@@ -115,7 +128,7 @@ const modifConduite = (container, props, user=null, multi=false) => {
 
         // Creation of the checkbox to define the bus involved in the timeslot
         var divCheckboxBus = create("div", container);
-        create("div", divCheckboxBus, "Bus :", ["form-info"]);
+        create("div", divCheckboxBus, "Bus affecté(s) :", ["form-info"]);
         afficheBuses(divCheckboxBus, tabBus)
 
         //recup tous les user 
@@ -126,7 +139,7 @@ const modifConduite = (container, props, user=null, multi=false) => {
 
         // Creation of the checkbox to define the users involved in the timeslot
         var divCheckboxUsers = create("div", container);
-        create("div", divCheckboxUsers, "Chauffeurs :", ["form-info"]);
+        create("div", divCheckboxUsers, "Conducteur(s) :", ["form-info"]);
         afficheDrivers(divCheckboxUsers, tabUser)
 
         //recup ligne 
@@ -143,7 +156,7 @@ const modifConduite = (container, props, user=null, multi=false) => {
         //recup direction 
         var tabDirAller= true;
         for (var line of responseCreneau.data.lines){
-            if (line.direction = 'retour'){
+            if (line.direction == 'retour'){
                 tabDirAller = false;
             }
         }
@@ -162,6 +175,15 @@ const modifConduite = (container, props, user=null, multi=false) => {
 
         tabDirAller ? champAller.checked = true : champRetour.checked = true
 
+        // ajout des actions au clic
+        container.onclick = e => {
+            e.stopPropagation()
+        }
+        back.onclick = () => {
+            container.remove()
+            overlay.remove()
+        }
+
         // Creation of submit button
         const bouton = create("button", container, "Modifier", ["modifButton", "unstyled-button"])
         bouton.title = "Modifier"
@@ -171,7 +193,7 @@ const modifConduite = (container, props, user=null, multi=false) => {
             let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
 
             // selection of the type of timeslot, participants and buses
-            let users = participantsTimeslot();
+            let users = selectedDrivers();
             let buses = busesTimeslot();
             let line = lineTimeslot();
             let direction = lineDirectionTimeslot();
@@ -183,55 +205,61 @@ const modifConduite = (container, props, user=null, multi=false) => {
             url += line ? `&lines=${line}` : `&lines=`
             url += line && direction ? `&directions=${direction}` : `&directions=`
 
-            executeAction(container, url, StartDateTime, user, "La conduite a bien été modifiée", "La conduite n'a pas pu être modifiée", multi)
+            executeAction(container, url, StartDateTime, user, "La conduite a bien été modifiée", "La conduite n'a pas pu être modifiée", multi, entites)
         })
     });
 }
 
 // affiche le bouton pour modifier un créneau, puis son formulaire
-const modifAstreinte = (container, props, user=null, multi=false) => {
+const modifAstreinte = (container, props, user=null, multi=false, entites=null, overlay) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`).then((responseCreneau) =>{
 
         // Creation du formulaire pré remplie de modif de ligne
         container.replaceChildren("")
 
-        create("div", container, '<< Retour', ['return']).onclick = () => removeContainerAndRemoveCacheClass(container)
+        const back = create("button", container, '<< Retour', ['return', "unstyled-button"])
+        back.title = "Retour en arrière"
+        //titre
+        create('p', container, props.name, ["task-name"])
 
         // Creation of each champ
-        create("label", container, "Début :", ["form-info"]);
-        create("label", container, responseCreneau.data.begining, ["StartDateTime"]);
+        create("label", container, "Date de début : ", ["form-info"]);
+        createChamp(container, "datetime-local", "StartDateTime").value = responseCreneau.data.begining;
 
-        create("label", container, "Fin :", ["form-info"]);
-        create("label", container, responseCreneau.data.end, ["EndDateTime"]);
+        create("label", container, "Date de fin : ", ["form-info"]);
+        createChamp(container, "datetime-local", "EndDateTime").value = responseCreneau.data.end;
 
         //recup tous les bus
-        var tabBus= [];
-        for (var bus of responseCreneau.data.buses){
+        var tabBus = [];
+        for (var bus of responseCreneau.data.buses) {
             tabBus.push(bus.id);
         }
 
         // Creation of the checkbox to define the bus involved in the timeslot
         var divCheckboxBus = create("div", container);
-        create("div", divCheckboxBus, "Bus :", ["form-info"]);
+        create("div", divCheckboxBus, "Bus affecté(s) :", ["form-info"]);
         afficheBuses(divCheckboxBus, tabBus)
 
         //recup tous les user
-        var tabUser= [];
-        for (var response_user of responseCreneau.data.users){
+        var tabUser = [];
+        for (var response_user of responseCreneau.data.users) {
             tabUser.push(response_user.id);
         }
 
+
         // Creation of the checkbox to define the users involved in the timeslot
         var divCheckboxUsers = create("div", container);
-        create("div", divCheckboxUsers, "Participants :", ["form-info"]);
-        afficheUsers(divCheckboxUsers, tabUser)
+        create("div", divCheckboxUsers, "Conducteur(s) :", ["form-info"]);
+        afficheDrivers(divCheckboxUsers, tabUser)
 
-        //recup ligne
-        var tabLine= [];
-        for (var line of responseCreneau.data.lines){
-            tabLine.push(line.number);
+        // ajout des actions au clic
+        container.onclick = e => {
+            e.stopPropagation()
         }
-
+        back.onclick = () => {
+            container.remove()
+            overlay.remove()
+        }
 
         // Creation of submit button
         const bouton = create("div", container, "Modifier", ["modifButton"])
@@ -239,38 +267,118 @@ const modifAstreinte = (container, props, user=null, multi=false) => {
             // selection of the start and end time
             let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
             let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
-
             // selection of the type of timeslot, participants and buses
-            let users = participantsTimeslot();
+            let users = selectedDrivers();
             let buses = busesTimeslot();
 
             let url = `timeslots/timeslots.php?function=update&id=${props.id}&beginning=${StartDateTime}&end=${EndDateTime}`;
 
             url += users ?  `&users=${users}` : `&users=`
             url += buses ? `&buses=${buses}` : `&buses=`
-
-            executeAction(container, url, StartDateTime, user, "La conduite a bien été modifiée", "La conduite n'a pas pu être modifiée", multi)
+            executeAction(container, url, StartDateTime, user, "La conduite a bien été modifiée", "La conduite n'a pas pu être modifiée", multi, entites)
         })
     });
 }
 
 
-const modifReunion = (container, props, user=null, multi=false) => {
+const modifReservation = (container, props, user=null, multi=false, entites=null, overlay) => {
+    axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`).then(async (responseCreneau) => {
+
+        // Creation du formulaire pré remplie de modif de ligne
+        container.replaceChildren("")
+
+        const back = create("button", container, '<< Retour', ['return', "unstyled-button"])
+        back.title = "Retour en arrière"
+
+        create('p', container, props.name, ["task-name"])
+
+        // Creation of each champ
+        create("label", container, "Date de départ : ", ["form-info"]);
+        createChamp(container, "datetime-local", "StartDateTime").value = responseCreneau.data.begining;
+        document.querySelector("input[name='StartDateTime']").disabled = true;
+
+        create("label", container, "Date d'arrivée : ", ["form-info"]);
+        createChamp(container, "datetime-local", "EndDateTime").value = responseCreneau.data.end;
+
+        let arret = await axios.get("timeslots/timeslots.php?function=fetch_by_id_timeslot&idTimeslot=" + props.id)
+        arret = arret.data
+
+        const arretDepart = create("div", container, "Arrêt de départ : ", ["form-info"])
+        create("em", container, arret.arretDepart)
+
+        const arretArrive = create("div", container, "Arrêt d'arrivée : ", ["form-info"])
+        create("em", container, arret.arretArrive)
+
+        //recup tous les bus
+        var tabBus = [];
+        for (var bus of responseCreneau.data.buses) {
+            tabBus.push(bus.id);
+        }
+
+        // Creation of the checkbox to define the bus involved in the timeslot
+        var divCheckboxBus = create("div", container);
+        create("div", divCheckboxBus, "Bus affecté(s) :", ["form-info"]);
+        afficheBuses(divCheckboxBus, tabBus)
+
+        //recup tous les user
+        var tabUser = [];
+        for (var response_user of responseCreneau.data.users) {
+            tabUser.push(response_user.id);
+        }
+
+        // Creation of the checkbox to define the users involved in the timeslot
+        var divCheckboxUsers = create("div", container);
+        create("div", divCheckboxUsers, "Conducteur(s) :", ["form-info"]);
+        afficheDrivers(divCheckboxUsers, tabUser)
+
+        // ajout des actions au clic
+        container.onclick = e => {
+            e.stopPropagation()
+        }
+        back.onclick = () => {
+            container.remove()
+            overlay.remove()
+        }
+
+        // Creation of submit button
+        const bouton = create("div", container, "Modifier", ["modifButton"])
+        bouton.addEventListener("click", function () {
+            // selection of the start and end time
+            let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
+            let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
+            // selection of the type of timeslot, participants and buses
+            let users = selectedDrivers();
+            let buses = busesTimeslot();
+
+            let url = `timeslots/timeslots.php?function=update&id=${props.id}&beginning=${StartDateTime}&end=${EndDateTime}`;
+
+            url += users ? `&users=${users}` : `&users=`
+            url += buses ? `&buses=${buses}` : `&buses=`
+            executeAction(container, url, StartDateTime, user, "La conduite a bien été modifiée", "La conduite n'a pas pu être modifiée", multi, entites)
+        })
+    });
+}
+
+
+const modifReunion = (container, props, user=null, multi=false, entites=null, overlay) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`).then((responseCreneau) =>{
     
         // Creation du formulaire pré remplie de modif de ligne 
         container.replaceChildren("")
 
         const back = create("button", container, '<< Retour', ['return', "unstyled-button"])
-        back.onclick = () => removeContainerAndRemoveCacheClass(container)
         back.title = "Retour en arrière"
 
-        // Creation of each champ
-        create("label", container, "Début :", ["form-info"]);
-        createChamp(container, "datetime-local", "StartDateTime").value = responseCreneau.data.begining;
+        //titre
+        create('p', container, props.name, ["task-name"])
 
-        create("label", container, "Fin :", ["form-info"]);
-        createChamp(container, "datetime-local", "EndDateTime").value = responseCreneau.data.end;
+        //date de départ
+        create("div", container, "Date de début : ", ["form-info"])
+        createChamp(container, "datetime-local", "StartDateTime").value = props.begining;
+
+        //date d'arrivée
+        create("div", container, "Date de fin : ", ["form-info"])
+        createChamp(container, "datetime-local", "EndDateTime").value = props.end;
 
         //recup tous les user 
         var tabUser= [];
@@ -280,9 +388,18 @@ const modifReunion = (container, props, user=null, multi=false) => {
 
         // Creation of the checkbox to define the users involved in the timeslot
         var divCheckboxUsers = create("div", container);
-        create("div", divCheckboxUsers, "Participants :", ["form-info"]);
+        create("div", divCheckboxUsers, "Participant(s) :", ["form-info"]);
         afficheUsers(divCheckboxUsers, tabUser)
-        
+
+        // ajout des actions au clic
+        container.onclick = e => {
+            e.stopPropagation()
+        }
+        back.onclick = () => {
+            container.remove()
+            overlay.remove()
+        }
+
         // Creation of submit button
         const bouton = create("button", container, "Modifier", ["modifButton", "unstyled-button"])
         bouton.title = "Modifier"
@@ -299,32 +416,46 @@ const modifReunion = (container, props, user=null, multi=false) => {
             url += users ? `&users=${users}` : "&users="
             url += "&buses=&lines=&directions="
 
-            executeAction(container, url, StartDateTime, user, "La réunion a bien été modifiée", "La réunion n'a pas pu être modifiée", multi)
+            executeAction(container, url, StartDateTime, user, "La réunion a bien été modifiée", "La réunion n'a pas pu être modifiée", multi, entites)
         })
     })
 }
 
-const modifIndispo = (container, props, user=null, multi=false) => {
+const modifIndispo = (container, props, user=null, multi=false, entites=null, overlay) => {
     axios.get(`timeslots/timeslots.php?function=timeslot&id=${props.id}`)
     .then(responseCreneau => {
         // Creation du formulaire pré remplie de modif de ligne 
         container.replaceChildren("")
 
         const back = create("button", container, '<< Retour', ['return', "unstyled-button"])
-        back.onclick = () => removeContainerAndRemoveCacheClass(container)
         back.title = "Retour en arrière"
 
-        // Creation of each champ
-        create("label", container, "Début :", ["form-info"]);
-        createChamp(container, "datetime-local", "StartDateTime").value = responseCreneau.data.begining;
+        //titre
+        create('p', container, props.name, ["task-name"])
+        create("div", container, "Noté comme indisponible", ["form-info"])
 
-        create("label", container, "Fin :", ["form-info"]);
-        createChamp(container, "datetime-local", "EndDateTime").value = responseCreneau.data.end;
+        // Creation of each champ
+        //date de départ
+        create("div", container, "Date de début : ", ["form-info"])
+        createChamp(container, "datetime-local", "StartDateTime").value = props.begining;
+
+        //date d'arrivée
+        create("div", container, "Date de fin : ", ["form-info"])
+        createChamp(container, "datetime-local", "EndDateTime").value = props.end;
         
         //recup tous les user 
         var users = "";
         for (var response_user of responseCreneau.data.users){
             users += response_user.id;
+        }
+
+        // ajout des actions au clic
+        container.onclick = e => {
+            e.stopPropagation()
+        }
+        back.onclick = () => {
+            container.remove()
+            overlay.remove()
         }
 
         // Creation of submit button
@@ -338,36 +469,36 @@ const modifIndispo = (container, props, user=null, multi=false) => {
             let url = `timeslots/timeslots.php?function=update&id=${props.id}&beginning=${StartDateTime}&end=${EndDateTime}&users=${users}`;
             url += "&buses=&lines=&directions=";
 
-            executeAction(container, url, StartDateTime, user, "L'indisponiblité a bien été modifiée", "L'indisponibilité n'a pas pu être modifiée", multi)
+            executeAction(container, url, StartDateTime, user, "L'indisponiblité a bien été modifiée", "L'indisponibilité n'a pas pu être modifiée", multi, entites)
         })
     })
 }
 
-const reunion = (container, props, bubble, user_role, user=null, multi=false) => {
-
-    let heure_debut = formatedHour(new Date(props.begining).getHours())
-    let min_debut = formatedHour(new Date(props.begining).getMinutes())
-    let heure_fin = formatedHour(new Date(props.end).getHours())
-    let min_fin = formatedHour(new Date(props.end).getMinutes())
-
+const reunion = (container, props, bubble, user_role, user=null, multi=false, entites=null, overlay) => {
+    //titre
     create('p', container, props.name, ["task-name"])
-    create("div", container, "Participants : ", ["form-info"])
-    props.users.forEach(element => {
-        create("em", container, element.firstname + " " + element.name + ", ")
-    });
-    const debut = create("div", container)
-    create("span", debut, "Début : ", ["form-info"])
-    debut.innerHTML += heure_debut + ":" + min_debut
 
-    const fin = create("div", container)
-    create("span", fin, "Fin : ", ["form-info"])
-    fin.innerHTML += heure_fin + ":" + min_fin
+    //date de départ
+    create("div", container, "Date de début : ", ["form-info"])
+    createChamp(container, "datetime-local", "StartDateTime").value = props.begining;
+    document.querySelector("input[name='StartDateTime']").disabled = true;
+
+    //date d'arrivée
+    create("div", container, "Date de fin : ", ["form-info"])
+    createChamp(container, "datetime-local", "EndDateTime").value = props.end;
+    document.querySelector("input[name='EndDateTime']").disabled = true;
+
+    //Participants
+    create("div", container, "Participant(s) : ", ["form-info"])
+    props.users.forEach(element => {
+        create("em", container, element.firstname + " " + element.name)
+    });
 
     if(user_role == "Directeur"){
         const btns = create("div", container, null, ["btn-task"])
 
         const b1 = create("button", btns, "Modifier", ["modifButton", "unstyled-button"])
-        b1.onclick = () => modifReunion(container, props, user, multi)
+        b1.onclick = () => modifReunion(container, props, user, multi, entites, overlay)
         b1.title = "Modifier"
 
         const b2 = create("button", btns, "Supprimer", ["delButton", "unstyled-button"])
@@ -379,42 +510,43 @@ const reunion = (container, props, bubble, user_role, user=null, multi=false) =>
 }
 
 
-const conduite = (container, props, bubble, user_role, user=null, multi=false) => {
+const conduite = (container, props, bubble, user_role, user=null, multi=false, entites=null, overlay) => {
 
-    let heure_debut = formatedHour(new Date(props.begining).getHours())
-    let min_debut = formatedHour(new Date(props.begining).getMinutes())
-    let heure_fin = formatedHour(new Date(props.end).getHours())
-    let min_fin = formatedHour(new Date(props.end).getMinutes())
-
+    //titre
     create('p', container, props.name, ["task-name"])
-    create("div", container, "Conducteur : ", ["form-info"])
-    props.users.forEach(element => {
-        create("em", container, element.firstname + " " + element.name + ", ")
-    });
 
-    create("div", container, "Bus affectés : ", ["form-info"])
+    //date de départ
+    create("div", container, "Date de début : ", ["form-info"])
+    createChamp(container, "datetime-local", "StartDateTime").value = props.begining;
+    document.querySelector("input[name='StartDateTime']").disabled = true;
+
+    //date d'arrivée
+    create("div", container, "Date de fin : ", ["form-info"])
+    createChamp(container, "datetime-local", "EndDateTime").value = props.end;
+    document.querySelector("input[name='EndDateTime']").disabled = true;
+
+    //bus
+    create("div", container, "Bus affecté(s) : ", ["form-info"])
     props.buses.forEach(element => {
-        create("em", container, element.id + " (" + element.nb_places + " places), ")
+        create("em", container, element.id + " (" + element.nb_places + " places)")
     });
 
-    create("div", container, "Sur la ligne : ", ["form-info"])
+    //conducteurs
+    create("div", container, "Conducteur(s) : ", ["form-info"])
+    props.users.forEach(element => {
+        create("em", container, element.firstname + " " + element.name)
+    });
+
+    create("div", container, "Ligne : ", ["form-info"])
     props.lines.forEach(element => {
         create("em", container, element.number + " (" + element.direction + ")")
     });
-
-    const debut = create("div", container)
-    create("span", debut, "Début : ", ["form-info"])
-    debut.innerHTML += heure_debut + ":" + min_debut
-
-    const fin = create("div", container)
-    create("span", fin, "Fin : ", ["form-info"])
-    fin.innerHTML += heure_fin + ":" + min_fin
 
     if(["Responsable Logistique", "Directeur"].includes(user_role)){
         const btns = create("div", container, null, ["btn-task"])
         
         const b1 = create("button", btns, "Modifier", ["modifButton", "unstyled-button"])
-        b1.onclick = () => modifConduite(container, props, user, multi)
+        b1.onclick = () => modifConduite(container, props, user, multi, entites, overlay)
         b1.title = "Modifier"
 
         const b2 = create("button", btns, "Supprimer", ["delButton", "unstyled-button"])
@@ -426,28 +558,26 @@ const conduite = (container, props, bubble, user_role, user=null, multi=false) =
 }
 
 
-const indispo = (container, props, bubble, user_role, user=null, multi=false) => {
-
-    
-
-    let heure_debut = formatedHour(new Date(props.begining).getHours())
-    let min_debut = formatedHour(new Date(props.begining).getMinutes())
-    let heure_fin = formatedHour(new Date(props.end).getHours())
-    let min_fin = formatedHour(new Date(props.end).getMinutes())
-
-    let day = getDayToString(new Date(props.begining).getDay())
-    let nb = new Date(props.begining).getDate()
-    let month = getMonthToString(new Date(props.begining).getMonth())
-
+const indispo = (container, props, bubble, user_role, user=null, multi=false, overlay) => {
+    //titre
     create('p', container, props.name, ["task-name"])
-    create("p", container, "Noté comme indisponible le " + day + " " + nb + " " + month)
-    create("p", container, "de " + heure_debut + ":" + min_debut + " à " + heure_fin + ":" + min_fin)
+    create("div", container, "Noté comme indisponible", ["form-info"])
+
+    //date de départ
+    create("div", container, "Date de début : ", ["form-info"])
+    createChamp(container, "datetime-local", "StartDateTime").value = props.begining;
+    document.querySelector("input[name='StartDateTime']").disabled = true;
+
+    //date d'arrivée
+    create("div", container, "Date de fin : ", ["form-info"])
+    createChamp(container, "datetime-local", "EndDateTime").value = props.end;
+    document.querySelector("input[name='EndDateTime']").disabled = true;
 
     if(user_role == "Conducteur"){
         const btns = create("div", container, null, ["btn-task"])
         
         const b1 = create("button", btns, "Modifier", ["modifButton", "unstyled-button"])
-        b1.onclick = () => modifIndispo(container, props, user, multi)
+        b1.onclick = () => modifIndispo(container, props, user, multi, overlay)
         b1.title = "Modifier"
 
         const b2 = create("button", btns, "Supprimer", ["delButton", "unstyled-button"])
@@ -458,37 +588,86 @@ const indispo = (container, props, bubble, user_role, user=null, multi=false) =>
     return container
 }
 
-const astreinte = (container, props, bubble, user_role, user=null, multi=false) => {
-
-    let heure_debut = formatedHour(new Date(props.begining).getHours())
-    let min_debut = formatedHour(new Date(props.begining).getMinutes())
-    let heure_fin = formatedHour(new Date(props.end).getHours())
-    let min_fin = formatedHour(new Date(props.end).getMinutes())
-
+const astreinte = (container, props, bubble, user_role, user=null, multi=false, overlay) => {
+    //titre
     create('p', container, props.name, ["task-name"])
-    create("div", container, "Conducteur : ", ["form-info"])
-    props.users.forEach(element => {
-        create("em", container, element.firstname + " " + element.name + ", ")
-    });
 
-    create("div", container, "Bus affectés : ", ["form-info"])
+    //date de départ
+    create("div", container, "Date de début : ", ["form-info"])
+    createChamp(container, "datetime-local", "StartDateTime").value = props.begining;
+    document.querySelector("input[name='StartDateTime']").disabled = true;
+
+    //date d'arrivée
+    create("div", container, "Date de fin : ", ["form-info"])
+    createChamp(container, "datetime-local", "EndDateTime").value = props.end;
+    document.querySelector("input[name='EndDateTime']").disabled = true;
+
+    //bus
+    create("div", container, "Bus affecté(s) : ", ["form-info"])
     props.buses.forEach(element => {
-        create("em", container, element.id + " (" + element.nb_places + " places), ")
+        create("em", container, element.id + " (" + element.nb_places + " places)")
     });
 
+    //conducteurs
+    create("div", container, "Conducteur(s) : ", ["form-info"])
+    props.users.forEach(element => {
+        create("em", container, element.firstname + " " + element.name)
+    });
 
-    const debut = create("div", container)
-    create("span", debut, "Début : ", ["form-info"])
-    debut.innerHTML += heure_debut + ":" + min_debut
-
-    const fin = create("div", container)
-    create("span", fin, "Fin : ", ["form-info"])
-    fin.innerHTML += heure_fin + ":" + min_fin
 
     if(["Responsable Logistique", "Directeur"].includes(user_role)){
         const btns = create("div", container, null, ["btn-task"])
 
-        create("div", btns, "Modifier", ["modifButton"]).onclick = () => modifAstreinte(container, props, user, multi)
+        create("div", btns, "Modifier", ["modifButton"]).onclick = () => modifAstreinte(container, props, user, multi, overlay)
+        create("div", btns, "Supprimer", ["delButton"]).onclick = () => supprimeCreneau(container, props, bubble)
+    }
+
+    return container
+}
+
+
+const reservation = async (container, props, bubble, user_role, user = null, multi = false, entites = null, overlay) => {
+    //titre
+    create('p', container, props.name, ["task-name"])
+
+    //date de départ
+    create("div", container, "Date de départ : ", ["form-info"])
+    createChamp(container, "datetime-local", "StartDateTime").value = props.begining;
+    document.querySelector("input[name='StartDateTime']").disabled = true;
+
+    //date d'arrivée
+    create("div", container, "Date d'arrivée : ", ["form-info"])
+    createChamp(container, "datetime-local", "EndDateTime").value = props.end;
+    document.querySelector("input[name='EndDateTime']").disabled = true;
+
+    //selection des informations de la réservation
+    let arret = await axios.get("timeslots/timeslots.php?function=fetch_by_id_timeslot&idTimeslot="+props.id)
+    arret = arret.data
+
+    //arret de départ
+    create("div", container, "Arrêt de départ : ", ["form-info"])
+    create("em", container, arret.arretDepart)
+
+    //arret d'arrivée
+    create("div", container, "Arrêt d'arrivée : ", ["form-info"])
+    create("em", container, arret.arretArrive)
+
+    //bus
+    create("div", container, "Bus affecté(s) : ", ["form-info"])
+    props.buses.forEach(element => {
+        create("em", container, element.id + " (" + element.nb_places + " places)")
+    });
+
+    //conducteurs
+    create("div", container, "Conducteur(s) : ", ["form-info"])
+    props.users.forEach(element => {
+        create("em", container, element.firstname + " " + element.name)
+    });
+
+    if (["Responsable Logistique", "Directeur"].includes(user_role)) {
+        const btns = create("div", container, null, ["btn-task"])
+
+        create("div", btns, "Modifier", ["modifButton"]).onclick = () => modifReservation(container, props, user, multi, entites, overlay)
         create("div", btns, "Supprimer", ["delButton"]).onclick = () => supprimeCreneau(container, props, bubble)
     }
 
@@ -497,38 +676,42 @@ const astreinte = (container, props, bubble, user_role, user=null, multi=false) 
 
 
 // fonction qui permet d'afficher un créneau horaire affecté à l'utilisateur connecté
-const toggleTask = (container, props, bubble, user=null, multi=false) => {
-
-    const main = document.querySelector("#app")
-    main.classList.add("cache")
-
+const toggleTask = (container, props, bubble, user=null, multi=false, entites=null) => {
     const sessionData = JSON.parse(sessionStorage.getItem("userData"))
     const role = sessionData["role"]
-    
-    const ancienne_task = document.querySelector("#task")
 
-    if(ancienne_task){
-        ancienne_task.remove()
-    }
+    const app = document.querySelector("#app")
 
-    const task = create("div", container, null, null, "task")
-
-    const back = create("button", task, '<< Retour', ['return', "unstyled-button"])
-    back.onclick = () => removeContainerAndRemoveCacheClass(task)
+    // création des composants
+    const overlay = create("div", app, null, ["overlay"])
+    const modale = create("div", overlay, null, ['validation'])
+    const back = create("button", modale, '<< Retour', ['return', "unstyled-button"])
     back.title = "Retour en arrière"
 
+    // ajout des actions au clic
+    overlay.onclick = e => {
+        e.stopPropagation()
+        e.target.remove()
+    }
+    modale.onclick = e => {
+        e.stopPropagation()
+    }
+    back.onclick = () => {
+        modale.remove()
+        overlay.remove()
+    }
     switch (props.name) {
-        case "Conduite": conduite(task, props, bubble, role, user, multi)
+        case "Conduite": conduite(modale, props, bubble, role, user, multi, entites, overlay)
             break;
-        case "Réunion": reunion(task, props, bubble, role, user, multi)
+        case "Réunion": reunion(modale, props, bubble, role, user, multi, entites, overlay)
             break;
-        case "Indisponibilité": indispo(task, props, bubble, role, user, multi)
+        case "Indisponibilité": indispo(modale, props, bubble, role, user, multi, entites, overlay)
             break;
-        case "Astreinte": astreinte(task, props, bubble, role, user, multi)
+        case "Astreinte": astreinte(modale, props, bubble, role, user, multi, entites, overlay)
             break;
-        case "Réservation": astreinte(task, props, bubble, role, user, multi)
+        case "Réservation": reservation(modale, props, bubble, role, user, multi, entites, overlay)
             break;
-        default: create("h2", task, "Une erreur est survenue")
+        default: create("h2", modale, "Une erreur est survenue")
             break;
     }
 }

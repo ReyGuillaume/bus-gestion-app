@@ -1,8 +1,10 @@
 import { toggleAlert, toggleError } from "./domManipulation"
+import { router } from "../router/router"
 
 const redirect = (path) => {
-    window.location = path
+    router.navigate(path)
 }
+
 
 const redirectWithAlert = (route, type, message) => {
     // stocke le message d'alerte
@@ -10,7 +12,7 @@ const redirectWithAlert = (route, type, message) => {
     sessionStorage.setItem("alerte", JSON.stringify(alerte))
 
     // Effectue la redirection vers la route spécifiée
-    window.location = route
+    redirect(route)
 }
 
 const toggleAlertMessage = () => {
@@ -52,7 +54,7 @@ const redirectUser = (redirectGerant=()=>null, redirectReponsable=()=>null, redi
         }
         
     } else {        // utilisateur non connecté
-        window.location = "/connexion"
+        redirect("/connexion")
     }
 }
 

@@ -6,7 +6,9 @@ const toggle404 = () => {
 
     create("h1", main, "404 not found")
     create("h3", main, "Vous êtes perdus ?")
-    create("a", main, "Retour à l'accueil").href = "/"
+    const l1 = create("a", main, "Retour à l'accueil")
+    l1.href = "/"
+    l1.setAttribute("data-navigo", "true")
     return main
 }
 
