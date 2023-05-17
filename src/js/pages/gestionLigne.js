@@ -172,6 +172,7 @@ const toggleVerifCouvertureSemaine = () => {
     bouton.title = "Envoyer"
     bouton.addEventListener("click", function(){
         let semaine = document.querySelector("input[name='semaine']").value;
+        console.log(`lines/lines.php?function=WeekCovered&week=${semaine}`);
         fetchUrlRedirectAndAlert(`lines/lines.php?function=WeekCovered&week=${semaine}`, "/lignes", "Le semaine est bien couverte", "Il semblerait que tout ne soit pas bien rempli...")
     })
 }
