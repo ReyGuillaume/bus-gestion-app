@@ -147,6 +147,20 @@ const toggleModifLine = () => {
    })
 }
 
+// Get the current week number
+function getCurrentWeekNumber() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const weekNumber = getWeekNumber(now);
+    return year + '-W' + weekNumber.toString().padStart(2, '0');
+}
+
+// Get the ISO week number from a given date
+function getWeekNumber(date) {
+    const onejan = new Date(date.getFullYear(), 0, 1);
+    const week = Math.ceil(((date - onejan) / 86400000 + onejan.getDay() + 1) / 7);
+    return week;
+}
 const toggleVerifCouvertureSemaine = () => {
 
     // Recuperation de la div à modifier 
@@ -165,14 +179,14 @@ const toggleVerifCouvertureSemaine = () => {
     const form = create("div", main, null, ["app-form"])
 
     // Remplissage du formulaire 
-    createChamp(form, "week", "semaine");
+    createChamp(form, "week", "semaine").value = getCurrentWeekNumber();
 
     // Creation of submit button
     const bouton = create("div", form, "Envoyer", ["submitButton"])
     bouton.title = "Envoyer"
     bouton.addEventListener("click", function(){
         let semaine = document.querySelector("input[name='semaine']").value;
-        console.log(`lines/lines.php?function=WeekCovered&week=${semaine}`);
+        
         fetchUrlRedirectAndAlert(`lines/lines.php?function=WeekCovered&week=${semaine}`, "/lignes", "Le semaine est bien couverte", "Il semblerait que tout ne soit pas bien rempli...")
     })
 }
