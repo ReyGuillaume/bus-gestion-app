@@ -485,6 +485,22 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
 
 /* MENU DE L'AGENDA */
 
+.showAgendaMenu{
+  position: absolute;
+  top: 47.5%;
+  left: 0;
+  background-color: #c28367;
+  padding: 5px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  z-index: 101;
+  transition: 0.25s;
+  filter: invert(1);
+}
+.agendaMenu_invisible{
+  display: none;
+}
 .agendaMenu{
   display: flex;
   flex-direction: column;
