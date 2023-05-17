@@ -30,7 +30,7 @@ const toggleEspaceAdmin = () => {
     createMenuElement(nav, () => redirect("/agenda"), "violet", "src/assets/images/nav_agenda.png", "Voir mon agenda", "Voir mon agenda")
 
     // créneaux
-    createMenuElement(nav, () => redirect("/creneau"), "indigo", "src/assets/images/nav_creneau.png", "Ajouter un créneau", "Ajouter un créneaux")
+    createMenuElement(nav, () => redirect("/creneau"), "indigo", "src/assets/images/nav_creneau.png", "Ajouter un créneau", "Ajouter un créneau")
 
     // utilisateurs
     createMenuElement(nav, () => redirect("/utilisateurs"), "bleu", "src/assets/images/nav_user.png", 'Gérer les utilisateurs', 'Gérer les utilisateurs')
