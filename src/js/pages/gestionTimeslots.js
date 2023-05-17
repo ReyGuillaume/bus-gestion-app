@@ -153,7 +153,6 @@ function toogleUserChoices(choicesDiv){
 // BUT with only the one that are free on the periode
 // @param choiceDiv la div dans lequel mettre ça 
 function toogleFreeUserChoices(choicesDiv){
-    console.log(choicesDiv)
     // On recupere la div de choix d'utilisateur
     var divCheckboxUsers = document.querySelector("#divCheckboxUsers");
     
@@ -292,7 +291,6 @@ function axiosUrlSendWhenADD(type){
     // selection of the start and end time
     let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
     let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
-    console.log(StartDateTime)
     // creation of the variables
     let users, drivers, buses,  line, direction
     ({users, drivers, buses,  line, direction} = getData())
@@ -396,7 +394,6 @@ const selectUserOblige = (form) => {
             tab.push(participant.value)
         }
     }
-    console.log("tab : ", tab)
 
     // On met le titre
     create("label", form, "Entrez les participants qui ont l'obligation de venir à la réunion :", ["label-info"]);
@@ -408,7 +405,6 @@ const selectUserOblige = (form) => {
     // On cree chaque champs
     axios.get(`users/users.php?function=users`).then((response)=>{
         for(var user of response.data){
-            console.log(user.id)
             if (tab.includes(user.id)) {
                 createChampCheckbox(divCheckboxUsers, `us${user.id}`, "selectionParticipantOblige", user.id);
                 var label = create("label", divCheckboxUsers, user.name + " " + user.firstname);
@@ -517,7 +513,6 @@ const toggleAddCreneau = () => {
         if (type == 2){
             selectUserOblige(form)
         }else {
-            console.log(1)
             let url = axiosUrlSendWhenADD(type)
             //fetchUrlRedirectAndAlert(url, "/espace-admin", "Le créneau a bien été ajouté", "Le créneau n'a pas pu être ajouté")
         }
