@@ -424,7 +424,6 @@ function couvre_a_line_for_a_day_sql ($jour, $id_line, $free_bus, $drivers){
         $free_bus = find_a_bus_id_free_for_the_day($jour);
     }
 
-    var_dump( $drivers);
     
     // On cherche des conducteurs à assigner 
     $begining = date("Y-m-d H:i:s", strtotime($jour));
