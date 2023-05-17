@@ -219,11 +219,11 @@ const displayInscr = (container, lst_inscriptions) => {
 
         let btns = create("div", div, null, ["inscription-btns"])
 
-        let btn = create("button", btns, "Valider", ["valideButton", "unstyled-button"])
+        let btn = create("button", btns, "   VALIDER   ", ["valideButton", "unstyled-button"])
         btn.addEventListener("click", () => valideInscription(inscription.id, div))
         btn.title = "Valider"
 
-        btn = create("button", btns, "Refuser", ["refuseButton", "unstyled-button"])
+        btn = create("button", btns, "   REFUSER   ", ["refuseButton", "unstyled-button"])
         btn.addEventListener("click", () => refuseInscription(inscription.id, div))
         btn.title = "Refuser"
     }

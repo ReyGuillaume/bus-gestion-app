@@ -139,7 +139,7 @@ const drawAgenda = (user=null, date=null, multi=false, entites=null) => {
         create("h2", main, "Agenda multiple " + afficheEntites(entites), ['mainTitle'])
     }
     else{
-        create("h2", main, "Votre Agenda", ['mainTitle'])
+        create("h2", main, "Votre Agenda", ['colocation'])
     }
     if(date){
         calandar(main, user, multi, entites, date.getFullYear(), date.getMonth(), date.getDate())

@@ -98,7 +98,7 @@ const toggleGestionBus = () => {
     back.addEventListener("click", () => redirect("/espace-admin"))
     back.title = "Retour en arrière"
 
-    create("h2", main, "Gestion des Bus")
+    create("h2", main, "Gestion des Bus", ["colocation"])
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
     const nav = create("nav", main, null, ['liste_gestion'])
@@ -247,7 +247,7 @@ const toggleGestionArrets= () => {
     back.addEventListener("click", () => redirect("/espace-admin"))
     back.title = "Retour en arrière"
 
-    create("h2", main, "Gestion des arrêts")
+    create("h2", main, "Gestion des arrêts", ["colocation"])
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
 
     const nav = create("nav", main, null, ['liste_gestion'])

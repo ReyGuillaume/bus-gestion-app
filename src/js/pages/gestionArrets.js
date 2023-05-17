@@ -22,6 +22,7 @@ const toggleAddArrets =() =>{
 
     create("h2", main, "Ajout d'un arrêt ")
     create("p", main, "Rentrez les informations suivantes :", ["presentation"])
+    
 
     // Creation of the form
     const form = create("div", main, null, ["app-form"])

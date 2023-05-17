@@ -94,7 +94,9 @@ body {
 .presentation{
   text-align: center;
   font-weight: bold;
-  color: rgb(49, 88, 188);
+  color: rgb(43, 80, 171);
+  transform: scale(1.5);
+  padding-bottom: 20px;
 }
 .form-info, .ul-info{
   color: rgb(177, 96, 96);
@@ -324,7 +326,7 @@ body {
 }
 
 .label-info{
-  color: rgb(177, 96, 96);
+  color: rgb(105, 96, 177);
 }
 
 input[type="datetime-local"], input[type="week"], input[type="time"], input[type="date"]{
@@ -489,21 +491,29 @@ padding-bottom: 10px;
 
 }
 
+.colocation{
+
+  padding-left: 75px;
+  padding-top: 30px;
+
+
+}
+
 
 .gestion_users_title{
   text-align: center ;
 }
 
-.gestion_users:hover, .gestion_bus:hover, .gestion_lignes:hover, .gestion_infos:hover{
+.gestion_users:hover, .gestion_bus:hover, .gestion_lignes:hover, .gestion_infos:hover, .gestion_arrets:hover{
   background: linear-gradient(to right, rgba(99, 98, 98, 0.595), rgba(0, 0, 0, 0.584));
 }
 
 .gestion_users{
-  background: linear-gradient(to right, rgb(238, 137, 251), rgb(234, 110, 250));
+  background: linear-gradient(to right, rgb(176, 118, 247), rgb(176, 110, 250));
 }
 
 .gestion_bus{
-  background: linear-gradient(to right, rgb(132, 237, 106), rgb(83, 213, 50));
+  background: linear-gradient(to right, rgb(131, 219, 111), rgb(150, 217, 134));
 }
 
 .gestion_lignes{
@@ -512,6 +522,10 @@ padding-bottom: 10px;
 
 .gestion_infos{
   background: linear-gradient(to right, rgb(255, 216, 184), rgb(255, 205, 164));
+}
+
+.gestion_arrets{
+  background: linear-gradient(to right, #E2A9FD, #d8a2f1);
 }
 
 .plage-horaire{
@@ -533,12 +547,13 @@ padding-bottom: 10px;
 .agendaMenu{
   display: flex;
   flex-direction: column;
-  background-color: white;
+  background-color: rgb(255, 255, 255);
   border: solid 2px #3D7C98;
+  border-radius: 10px;
   padding: 5px;
   position: absolute;
   top: 50%;
-  left: 0;
+  left: 3%;
   z-index: 100;
   opacity: 80%;
 }
@@ -567,7 +582,7 @@ padding-bottom: 10px;
   width: 100%;
 }
 .agendaMenu_nom:hover{
-  color: white;
+  color: rgb(255, 255, 255);
 }
 .agendaMenu_item{
   display: flex;
@@ -745,8 +760,8 @@ padding-bottom: 10px;
   justify-content: space-around;
   align-items: center;
   border-radius: 20px;
-  background-color: #D2D4DA;
-  box-shadow: 5px 5px 5px black;
+  background-color: #b2c3f06b;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.39);
   margin: 15px;
 }
 .inscription-container, .inscription-btns{
@@ -758,7 +773,7 @@ padding-bottom: 10px;
   font-weight: bold;
 }
 .inscription-info{
-  color: #3192FA;
+  color: #2f6aa9;
 }
 .inscription-valeur{
   font-style: italic;
@@ -766,16 +781,28 @@ padding-bottom: 10px;
 .inscription-btns{
   gap: 10px;
 }
-.valideButton, .refuseButton{
+.valideButton{
   cursor: pointer;
   transition: 0.5s;
   border: solid 2px #3D7C98;
   width: max-content;
-  border-radius: 15px;
+  border-radius: 10px;
   padding: 5px;
 }
+
+.refuseButton{
+  cursor: pointer;
+  transition: 0.5s;
+  border: solid 2px #ffffff;
+  width: max-content;
+  border-radius: 10px;
+  padding: 5px;
+
+
+
+}
 .valideButton:hover{
-  background-color: #79fb86;
+  background-color: #67d672;
 }
 .refuseButton:hover{
   background-color: rgb(232, 86, 86);
@@ -855,6 +882,17 @@ padding-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.gestion_arrets{
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px;
+  list-style-type: none;
+  cursor: pointer;
+  transition: 0.5s;
+  transform: scale(1.2);
+  color: white;
 }
 
 /*# sourceMappingURL=main.css.map */
