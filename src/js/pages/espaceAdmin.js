@@ -215,6 +215,9 @@ const toggleInscriptions = () => {
 }
 
 const toggleGestionArrets= () => {
+    // affiche le potentiel message d'alerte en stock
+    toggleAlertMessage()
+
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -228,19 +231,20 @@ const toggleGestionArrets= () => {
 
     const nav = create("nav", main, null, ['liste_gestion'])
 
-    const b1 = create("button", nav, 'Ajouter un arrêts', ['gestion_arrets', "unstyled-button"])
+    const b1 = create("button", nav, 'Ajouter un arrêt', ['gestion_arrets', "unstyled-button"])
     b1.addEventListener("click", () => redirect("/arrets/ajout"))
-    b1.title = 'Ajouter un arrêts'
+    b1.title = 'Ajouter un arrêt'
 
     
-    const b2 = create("button", nav, "Modifier un arrêts", ['gestion_arrets', "unstyled-button"])
+    const b2 = create("button", nav, "Modifier un arrêt", ['gestion_arrets', "unstyled-button"])
     b2.addEventListener("click", () => redirect("/arrets/modification"))
-    b2.title = "Modifier un arrêts"
-/*
-    const b3 = create("button", nav, "Supprimer un arrêts", ['gestion_arrets', "unstyled-button"])
+    b2.title = "Modifier un arrêt"
+
+
+    const b3 = create("button", nav, "Supprimer un arrêt", ['gestion_arrets', "unstyled-button"])
     b3.addEventListener("click", () => redirect("/arrets/suppression"))
-    b3.title = "Supprimer un arrêts"
-*/
+    b3.title = "Supprimer un arrêt"
+
     return main
 }
 export {
