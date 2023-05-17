@@ -486,17 +486,21 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
 /* MENU DE L'AGENDA */
 
 .showAgendaMenu{
+  display: flex;
+  align-items: center;
   position: absolute;
-  top: 47.5%;
+  top: 35%;
   left: 0;
-  background-color: #c28367;
-  padding: 5px;
-  width: 20px;
-  height: 20px;
+  height: 100px;
+  background-color: #3D7C98;
   cursor: pointer;
   z-index: 101;
-  transition: 0.25s;
+}
+.showAgendaMenu img{
+  width: 15px;
+  height: 15px;
   filter: invert(1);
+  transition: 0.25s;
 }
 .agendaMenu_invisible{
   display: none;
@@ -508,8 +512,8 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
   border: solid 2px #3D7C98;
   padding: 5px;
   position: absolute;
-  top: 50%;
-  left: 0;
+  top: 35%;
+  left: 15px;
   z-index: 100;
   opacity: 80%;
 }

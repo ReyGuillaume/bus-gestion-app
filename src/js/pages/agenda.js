@@ -98,10 +98,12 @@ const createAgendaMenu = (container, id_role, user=null, date=null, multi=false,
 
 // fonction qui affiche la flèche qui permet d'ouvrir le menu de l'agenda
 const showAgendaMenu = (container) => {
-    const show = create("img", container, null, ["showAgendaMenu"])
-    show.src = "src/assets/images/agenda/triangle.png"
-    show.addEventListener("click", () => {
-        pivoteTriangle(show)
+    const show_menu = create("div", container, null, ["showAgendaMenu"])
+    let img = create("img", show_menu)
+    img.src = "src/assets/images/agenda/triangle.png"
+
+    show_menu.addEventListener("click", () => {
+        pivoteTriangle(img)
         let menu = document.querySelector(".agendaMenu_invisible")
         if(menu){
             menu.classList.remove("agendaMenu_invisible")
