@@ -119,7 +119,7 @@ const drawAgenda = (user=null, date=null, multi=false, entites=null) => {
     }
 
     // agenda d'un utilisateur
-    if(user && user.firstname){
+    if(user && user.firstname && !multi){
         create("h2", main, "Agenda de " + user.firstname + " " + user.name.toUpperCase(), ['mainTitle'])
     }
     // agenda d'un bus
@@ -154,6 +154,8 @@ const toggleAgenda = (user=null, date=null, multi=false, entites=null) => {
 
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    console.log(user)
 
     // redirection vers l'accueil si user n'est pas connecté
     redirectUser()

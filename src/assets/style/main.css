@@ -329,6 +329,7 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
   border: 2px solid #ccc;
   padding: 5px;
   border-radius: 15px;
+  min-height: 25px;
 }
 
 .app-form .form-div, .app-form .form-div-radio{
