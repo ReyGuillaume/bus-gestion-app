@@ -332,7 +332,7 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
   min-height: 25px;
 }
 
-.app-form .form-div, .app-form .form-div-radio{
+.app-form .form-div, .app-form .form-div-radio, .infos-utilisateur .form-div-radio{
   margin: 5px;
   display: flex;
 }
@@ -460,7 +460,7 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
 }
 
 .gestion_infos{
-  background: linear-gradient(to right, rgb(255, 216, 184), rgb(255, 205, 164));
+  background: linear-gradient(to right, rgb(255, 209, 172), rgb(247, 180, 125));
 }
 
 .plage-horaire{
@@ -685,6 +685,22 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
 
 #app .archive .divInfoNotif {
   font-style: italic;
+}
+
+/* INFORMATIONS UTILISATEUR */
+
+.infos-utilisateur{
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(to right, #ecedef, #dcdee3);
+  box-shadow: 5px 5px rgb(60, 60, 60);
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+  align-items: center;
+  padding: 20px;
+  border-radius: 25px;
+
 }
 
 /* INSCRIPTIONS */
