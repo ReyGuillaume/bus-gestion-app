@@ -93,7 +93,7 @@ const handleDrop = (e, date, user, multi=false, entites=null) => {
 }
 
 // afficher une pop-up pour créer un créneau en drag & drop
-const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entites=null) => {
+const toggleNewTimeSlot = async (nom, e, dateOfMonday, user=null, multi=false, entites=null) => {
     const app = document.querySelector("#app")
 
     // création des composants
@@ -170,7 +170,7 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user, multi=false, entite
         for(let user_data of users){
             if(user_data.id_user_type != 4) {
                 let c = createChampCheckbox(div_user, `u${user_data.id}`, "selectionParticipant", user_data.id)
-                if (user.firstname && user.id == user_data.id) {
+                if (user && user.firstname && user.id == user_data.id) {
                     c.checked = true
                 }
                 var label = create("label", div_user, user_data.name + " " + user_data.firstname);

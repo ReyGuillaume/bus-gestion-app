@@ -183,12 +183,15 @@ body {
   transition: 0.5s;
   padding: 8px;
 }
-.rose, .jaune, .jaune_clair, .rouge, .orange, .bleu, .bleu_clair, .gris, .violet, .vert, .vert_clair{
+.indigo, .rose, .jaune, .jaune_clair, .rouge, .rouge_orange, .orange, .bleu, .bleu_clair, .violet, .vert, .vert_clair{
   transition: 0.5s;
   border-radius: 35px;
 }
-.rose:hover, .jaune:hover, .jaune_clair:hover, .rouge:hover, .orange:hover, .bleu:hover, .bleu_clair:hover, .gris:hover, .violet:hover, .vert:hover, .vert_clair:hover{
+.indigo:hover, .rose:hover, .jaune:hover, .jaune_clair:hover, .rouge:hover, .rouge_orange:hover, .orange:hover, .bleu:hover, .bleu_clair:hover, .violet:hover, .vert:hover, .vert_clair:hover{
   border-radius: 20px;
+}
+.violet{
+  background-color: #8f43c5;
 }
 .rose{
   background-color: #E2A9FD;
@@ -200,13 +203,16 @@ body {
   background-color: #fff79e;
 }
 .rouge{
-  background-color: #F2A1A1;
+  background-color: #e05e5e;
+}
+.rouge_orange{
+  background-color: #ef9f8d;
 }
 .orange{
   background-color: #eec07b;
 }
 .bleu{
-  background-color: #a1abed;
+  background-color: #6174ee;
 }
 .bleu_clair{
   background-color: #A1DFF2;
@@ -214,14 +220,14 @@ body {
 .gris{
   background-color: #a8acb7;
 }
-.violet{
-  background-color: #a68bff;
+.indigo{
+  background-color: #9a8bff;
 }
 .vert{
   background-color: #79fb86;
 }
 .vert_clair{
-  background-color: #baf8bf;
+  background-color: #ccea9a;
 }
 
 /* FOOTER */
@@ -479,6 +485,26 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
 
 /* MENU DE L'AGENDA */
 
+.showAgendaMenu{
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 35%;
+  left: 0;
+  height: 100px;
+  background-color: #3D7C98;
+  cursor: pointer;
+  z-index: 101;
+}
+.showAgendaMenu img{
+  width: 15px;
+  height: 15px;
+  filter: invert(1);
+  transition: 0.25s;
+}
+.agendaMenu_invisible{
+  display: none;
+}
 .agendaMenu{
   display: flex;
   flex-direction: column;
@@ -486,8 +512,8 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
   border: solid 2px #3D7C98;
   padding: 5px;
   position: absolute;
-  top: 50%;
-  left: 0;
+  top: 35%;
+  left: 15px;
   z-index: 100;
   opacity: 80%;
 }

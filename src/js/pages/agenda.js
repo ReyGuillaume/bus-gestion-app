@@ -53,7 +53,7 @@ const pivoteTriangle = (triangle) => {
 
 // fonction qui crée le menu de l'agenda
 const createAgendaMenu = (container, id_role, user=null, date=null, multi=false, entites=null) => {
-    const menu = create("div", container, null, ["agendaMenu"])
+    const menu = create("div", container, null, ["agendaMenu_invisible"])
 
     // agenda personnel
     createAgendaMenuItem(menu, "Votre agenda", "perso", () => toggleAgenda())
@@ -96,6 +96,28 @@ const createAgendaMenu = (container, id_role, user=null, date=null, multi=false,
 }
 
 
+// fonction qui affiche la flèche qui permet d'ouvrir le menu de l'agenda
+const showAgendaMenu = (container) => {
+    const show_menu = create("div", container, null, ["showAgendaMenu"])
+    let img = create("img", show_menu)
+    img.src = "src/assets/images/agenda/triangle.png"
+
+    show_menu.addEventListener("click", () => {
+        pivoteTriangle(img)
+        let menu = document.querySelector(".agendaMenu_invisible")
+        if(menu){
+            menu.classList.remove("agendaMenu_invisible")
+            menu.classList.add("agendaMenu")
+        }
+        else{
+            let menu_visible = document.querySelector(".agendaMenu")
+            menu_visible.classList.add("agendaMenu_invisible")
+            menu_visible.classList.remove("agendaMenu")
+        }
+    })
+}
+
+
 const drawAgenda = (user=null, date=null, multi=false, entites=null) => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
@@ -115,6 +137,7 @@ const drawAgenda = (user=null, date=null, multi=false, entites=null) => {
     }
 
     if(id_role == 1 || id_role == 2){
+        showAgendaMenu(main)
         createAgendaMenu(main, id_role, user, date, multi, entites)
     }
 
