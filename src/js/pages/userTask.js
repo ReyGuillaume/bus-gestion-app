@@ -17,7 +17,8 @@ export const removeContainerAndRemoveCacheClass = container => {
 }
 
 // affiche le bouton pour supprimer un créneau dans une tâche
-const supprimeCreneau = (container, props, bubble) => {
+const supprimeCreneau = (container, props, bubble, overlay) => {
+    overlay.remove()
     axios.get("timeslots/timeslots.php?function=delete&id="+props.id).then(function(response){
         if(response.data){
             toggleAlert("BRAVO", "Le créneau a bien été supprimé")
@@ -502,7 +503,7 @@ const reunion = (container, props, bubble, user_role, user=null, multi=false, en
         b1.title = "Modifier"
 
         const b2 = create("button", btns, "Supprimer", ["delButton", "unstyled-button"])
-        b2.onclick = () => supprimeCreneau(container, props, bubble)
+        b2.onclick = () => supprimeCreneau(container, props, bubble, overlay)
         b2.title = "Supprimer"
     }
 
@@ -550,7 +551,7 @@ const conduite = (container, props, bubble, user_role, user=null, multi=false, e
         b1.title = "Modifier"
 
         const b2 = create("button", btns, "Supprimer", ["delButton", "unstyled-button"])
-        b2.onclick = () => supprimeCreneau(container, props, bubble)
+        b2.onclick = () => supprimeCreneau(container, props, bubble, overlay)
         b2.title = "Supprimer"
     }
 
@@ -581,14 +582,14 @@ const indispo = (container, props, bubble, user_role, user=null, multi=false, ov
         b1.title = "Modifier"
 
         const b2 = create("button", btns, "Supprimer", ["delButton", "unstyled-button"])
-        b2.onclick = () => supprimeCreneau(container, props, bubble)
+        b2.onclick = () => supprimeCreneau(container, props, bubble, overlay)
         b2.title = "Supprimer"
     }
 
     return container
 }
 
-const astreinte = (container, props, bubble, user_role, user=null, multi=false, overlay) => {
+const astreinte = (container, props, bubble, user_role, user=null, multi=false,entites=null, overlay) => {
     //titre
     create('p', container, props.name, ["task-name"])
 
@@ -618,8 +619,8 @@ const astreinte = (container, props, bubble, user_role, user=null, multi=false, 
     if(["Responsable Logistique", "Directeur"].includes(user_role)){
         const btns = create("div", container, null, ["btn-task"])
 
-        create("div", btns, "Modifier", ["modifButton"]).onclick = () => modifAstreinte(container, props, user, multi, overlay)
-        create("div", btns, "Supprimer", ["delButton"]).onclick = () => supprimeCreneau(container, props, bubble)
+        create("div", btns, "Modifier", ["modifButton"]).onclick = () => modifAstreinte(container, props, user, multi, entites, overlay)
+        create("div", btns, "Supprimer", ["delButton"]).onclick = () => supprimeCreneau(container, props, bubble, overlay)
     }
 
     return container
@@ -668,7 +669,7 @@ const reservation = async (container, props, bubble, user_role, user = null, mul
         const btns = create("div", container, null, ["btn-task"])
 
         create("div", btns, "Modifier", ["modifButton"]).onclick = () => modifReservation(container, props, user, multi, entites, overlay)
-        create("div", btns, "Supprimer", ["delButton"]).onclick = () => supprimeCreneau(container, props, bubble)
+        create("div", btns, "Supprimer", ["delButton"]).onclick = () => supprimeCreneau(container, props, bubble, overlay)
     }
 
     return container
