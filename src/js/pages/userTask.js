@@ -559,7 +559,7 @@ const conduite = (container, props, bubble, user_role, user=null, multi=false, e
 }
 
 
-const indispo = (container, props, bubble, user_role, user=null, multi=false, overlay) => {
+const indispo = (container, props, bubble, user_role, user=null, multi=false,entities=null, overlay) => {
     //titre
     create('p', container, props.name, ["task-name"])
     create("div", container, "Noté comme indisponible", ["form-info"])
