@@ -1,8 +1,11 @@
 import { create } from "../utils/domManipulation";
+import {sendMail} from "../utils/sendMail.js";
 
 const toggle404 = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+    sendMail("ConfirmInscriptionConducteur",
+        {firstname : "Amélie", mail:"ameliehacque@gmail.com", login:"hacquea"})
 
     create("h1", main, "404 not found")
     create("h3", main, "Vous êtes perdus ?")
