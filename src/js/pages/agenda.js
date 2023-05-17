@@ -155,8 +155,6 @@ const toggleAgenda = (user=null, date=null, multi=false, entites=null) => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
-    console.log(user)
-
     // redirection vers l'accueil si user n'est pas connecté
     redirectUser()
     

@@ -184,8 +184,6 @@ const modifConduite = (container, props, user=null, multi=false, entites=null, o
             overlay.remove()
         }
 
-        console.log(user)
-
         // Creation of submit button
         const bouton = create("button", container, "Modifier", ["modifButton", "unstyled-button"])
         bouton.title = "Modifier"
@@ -683,8 +681,6 @@ const toggleTask = (container, props, bubble, user=null, multi=false, entites=nu
     const role = sessionData["role"]
 
     const app = document.querySelector("#app")
-
-    console.log(user)
 
     // création des composants
     const overlay = create("div", app, null, ["overlay"])
