@@ -1,5 +1,5 @@
 import { create, createChamp, createChampCheckbox, createChampRadio, toggleError } from "../utils/domManipulation";
-import { fetchUrlRedirectAndAlert,fetchUrlWithLoading, valueFirstElementChecked, countElementChecked } from "../utils/formGestion";
+import { fetchUrlRedirectAndAlert, idOfAllElementCheckedTab,fetchUrlWithLoading, valueFirstElementChecked, countElementChecked } from "../utils/formGestion";
 import { redirect } from "../utils/redirection";
 
 import axios from 'axios';
@@ -188,7 +188,7 @@ const toggleRemplissageAutoConduiteSemaine = () => {
     back.title = "Retour en arrière"
 
     create("h2", main, "Remplissage automatique de la semaine")
-    create("p", main, "Indiquer la semaine à remplir, attention cela ne prend pas en compte les créneaux de conduite déjà ajoutés", ["presentation"])
+    create("p", main, "Indiquer la semaine à remplir, attention cela ne prend pas en compte les créneaux de conduite déjà ajoutés. Les bus et les conducteurs seront reliés aux conduites dans la mesure du possible. ", ["presentation"])
 
 
     // Creation of the form
@@ -197,14 +197,36 @@ const toggleRemplissageAutoConduiteSemaine = () => {
     // Remplissage du formulaire 
     createChamp(form, "week", "semaine");
 
+   
+    let divCheckboxDrivers = create("div", form);
+    divCheckboxDrivers.setAttribute("id", "divCheckboxDrivers");
+   
+   
+    // On met le titre 
+    create("label", divCheckboxDrivers, "Choisissez le(s) conducteur(s) disponibles durant la semaine:");
+
+    // On cree chaque champs 
+    axios.get(`users/users.php?function=users`).then((response)=>{
+        for(var user of response.data){
+            if (user.id_user_type == 3) {
+                createChampCheckbox(divCheckboxDrivers, `u${user.id}` , "selectionConducteurs", user.id);
+                var label = create("label", divCheckboxDrivers, user.name + " "+ user.firstname);
+                label.setAttribute("for", `u${user.id}`);
+            }
+        }
+    });
+
     // Creation of submit button
     const bouton = create("div", form, "Envoyer", ["submitButton"]);
-    const chargement = create("p", form, "Attente",null,'loading');
     bouton.title = "Envoyer"
+
+    const chargement = create("p", form, "Remplissez le formulaire",null,'loading');
+    
     
     bouton.addEventListener("click", function(){
         let semaine = document.querySelector("input[name='semaine']").value;
-        fetchUrlWithLoading(`lines/lines.php?function=coverWeek&week=${semaine}`, "/lignes", "Toutes les conduites de la semaine ont étées ajoutées", "Il semblerait que tout ne se soit pas passé comme prévu...")
+        let drivers = idOfAllElementCheckedTab("input[name='selectionConducteurs']");
+        fetchUrlWithLoading(`lines/lines.php?function=coverWeekWithDrivers&week=${semaine}&drivers=${drivers}`, "/lignes", "Toutes les conduites de la semaine ont étées ajoutées", "Il semblerait que tout ne se soit pas passé comme prévu...")
     })
 
     
