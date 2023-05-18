@@ -377,6 +377,9 @@ function cover_a_line_for_a_week_sql($week, $id_line, $drivers){
 
       //On cherche un bus qui serait libre pour la semaine 
       $free_bus_for_week = find_a_bus_id_free_for_the_week($week);
+      echo($id_line);
+      echo($week);
+      var_dump($free_bus_for_week );
       
       
       // On creer le jour de depart ( 1 pour lundi )
