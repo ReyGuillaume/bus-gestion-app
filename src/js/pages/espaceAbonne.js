@@ -31,13 +31,13 @@ export function toggleEspaceAbonne() {
     const nav = create("nav", main, null, ['navBar_User'])
 
     // espace utilisateur
-    createMenuElement(nav, () => redirect("/informations-utilisateur"), "jaune", "src/assets/images/nav_profil.png", "Afficher mes informations", "Afficher mes informations")
+    createMenuElement(nav, () => redirect("/informations-utilisateur"), "rouge", "src/assets/images/nav_profil.png", "Afficher mes informations", "Afficher mes informations")
 
     // notif
-    createMenuElement(nav, () => redirect("/notification-center"), "orange", "src/assets/images/nav_notif.png", "Afficher mes notifications", "Afficher mes notifications")
+    createMenuElement(nav, () => redirect("/notification-center"), "vert_clair", "src/assets/images/nav_notif.png", "Afficher mes notifications", "Afficher mes notifications")
 
     // reservation
-    createMenuElement(nav, () => redirect("/reservation-abonne"), "rouge", "src/assets/images/nav_reservation.png", "Gérer mes réservations", "Gérer mes réservations")
+    createMenuElement(nav, () => redirect("/reservation-abonne"), "jaune", "src/assets/images/nav_reservation.png", "Gérer mes réservations", "Gérer mes réservations")
 
     return main
 }
@@ -195,6 +195,7 @@ function toggleAddReservation(){
         filteredArrets.forEach(arret => {
             let option = document.createElement("option");
             option.textContent = arret.name;
+            option.classList.add("filtre-nom");
             arretList_depart.appendChild(option);
         });
 
@@ -230,6 +231,7 @@ function toggleAddReservation(){
         filteredArretsArrive.forEach(arret => {
             let option = document.createElement("option");
             option.textContent = arret.name;
+            option.classList.add("filtre-nom");
             arretList_arrive.appendChild(option);
         });
 
