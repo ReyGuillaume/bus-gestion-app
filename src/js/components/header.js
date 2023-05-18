@@ -13,6 +13,12 @@ const createNavBar = () => {
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
     if (sessionData) {
         // si l'utilisateur est un responsable logistique ou le gérant
+        if(["Responsable Logistique", "Directeur", "Conducteur"].includes(sessionData["role"])){
+            const agendaButton = create("button", nav, 'Voir mon agenda', ['navBar__item', "unstyled-button"])
+            agendaButton.onclick = () => redirect("/agenda")
+            agendaButton.title = "Agenda"
+        }
+
         if(["Responsable Logistique", "Directeur"].includes(sessionData["role"])){
             const l2 = create("button", nav, 'Espace administrateur', ['navBar__item', "unstyled-button"])
             l2.onclick = () => redirect("/espace-admin")

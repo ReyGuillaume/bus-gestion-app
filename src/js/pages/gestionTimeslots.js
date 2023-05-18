@@ -473,12 +473,15 @@ const toggleAddCreneau = () => {
     var divRadio = create("div", form);
     create("label", divRadio, "Choisissez le type du créneau :", ["label-info"]);
     axios.get(`timeslots/timeslots.php?function=types`).then((response)=>{
+        let userSession = JSON.parse(sessionStorage.getItem("userData"))
         for(var type of response.data){
 
         /*--------------
          Au clic du choix de type de créneau on affiche les autres infos à choisir 
          ---------------*/
 
+        if (!(userSession.idrole == "2" && type.id == "2")) {   // on désactive les réunions pour les resp. logistiques
+            
             createChampRadio(divRadio, type.name , "selectionType", type.id).addEventListener('click', function(){
 
                 // Recuperation du type du créneau en création
@@ -517,7 +520,7 @@ const toggleAddCreneau = () => {
 
             var label = create("label", divRadio, type.name);
             label.setAttribute("for", type.name);
-        }
+        }}
     })
 
     const choicesDiv = create("div", form);

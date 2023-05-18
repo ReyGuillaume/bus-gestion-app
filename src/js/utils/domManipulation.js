@@ -97,7 +97,7 @@ const toggleAlert = (titre, message) => {
     const container = document.querySelector("#header")
     const div = create("div", container, null, null, "fenetreAlerte")
 
-    create("img", div, null, ["imageFenetre"]).src = "src/assets/images/ok.png"
+    create("img", div, null, ["imageFenetre"]).src = "/src/assets/images/ok.png"
     div.style.backgroundColor = "rgb(75, 208, 75)"
 
     const div2 = create("div", div, null, null, "contenuFenetre")
@@ -128,7 +128,7 @@ const toggleError = (titre, message) => {
     const container = document.querySelector("#header")
     const div = create("div", container, null, null, "fenetreAlerte")
 
-    create("img", div, null, ["imageFenetre"]).src = "src/assets/images/croix.png"
+    create("img", div, null, ["imageFenetre"]).src = "/src/assets/images/croix.png"
     div.style.backgroundColor = "rgb(176, 66, 66)"
 
     const div2 = create("div", div, null, null, "contenuFenetre")

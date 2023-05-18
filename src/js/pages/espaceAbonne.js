@@ -195,6 +195,7 @@ function toggleAddReservation(){
         filteredArrets.forEach(arret => {
             let option = document.createElement("option");
             option.textContent = arret.name;
+            option.classList.add("filtre-nom");
             arretList_depart.appendChild(option);
         });
 
@@ -230,6 +231,7 @@ function toggleAddReservation(){
         filteredArretsArrive.forEach(arret => {
             let option = document.createElement("option");
             option.textContent = arret.name;
+            option.classList.add("filtre-nom");
             arretList_arrive.appendChild(option);
         });
 
