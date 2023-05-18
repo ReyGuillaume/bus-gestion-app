@@ -19,13 +19,19 @@ export const removeContainerAndRemoveCacheClass = container => {
 // affiche le bouton pour supprimer un créneau dans une tâche
 const supprimeCreneau = (container, props, bubble, overlay) => {
     overlay.remove()
-    axios.get("timeslots/timeslots.php?function=delete&id="+props.id).then(function(response){
-        if(response.data){
+    let url = ""
+    if(props.id_time_slot_type !== "4") {
+        url = "timeslots/timeslots.php?function=delete&id=" + props.id
+    }else{
+        url = "timeslots/timeslots.php?function=delete_reservation_by_id_timeslot&idTimeslot=" + props.id
+    }
+    console.log(props)
+    axios.get(url).then(function (response) {
+        if (response.data) {
             toggleAlert("BRAVO", "Le créneau a bien été supprimé")
             bubble.remove()
             removeContainerAndRemoveCacheClass(container)
-        }
-        else{
+        } else {
             toggleError("ERREUR", "Le créneau n'a pas pu être supprimé")
         }
     })

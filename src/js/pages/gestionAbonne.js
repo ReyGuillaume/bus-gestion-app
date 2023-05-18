@@ -153,21 +153,22 @@ function displayReserv (container, data) {
 
     for(let reserv of data){
         let title = reserv.arretDepart + "  -  "+ reserv.arretArrive;
-        let message = reserv.dateDepart;
+        let message = "départ : "+reserv.dateDepart;
 
-        let divInfoReserv = create("div", container, null, ["divNotif"]);
-        let div = create("div", divInfoReserv, null, ["divInfoReserv"]);
+        let divReserv = create("div", container, null, ["divReserv"]);
+        let div = create("div", divReserv, null, ["divInfoReserv"]);
         create("h3", div, title);
-        create("p", div, message);
+        let divHReserv = create("div", div, null, ["divHReserv"]);
+        create("p", divHReserv, message);
 
-        let divResp = create("div", divInfoReserv, null, ["divBoutonsReserv"]);
+        let divBoutonReserv = create("div", divReserv, null, ["divBoutonsReserv"]);
         let footer = document.querySelector("#footer")
 
         if(roleUser != "Abonné"){
-            const b1 = create("button", divResp, "Valider", ['gestion_users'])
+            const b1 = create("button", divBoutonReserv, "Valider", ['gestion_users'])
             b1.onclick = () => toggleValideReservation(footer, reserv)
             b1.title = "Valider"
-            const b2 = create("button", divResp, "Refuser", ['gestion_users'])
+            const b2 = create("button", divBoutonReserv, "Refuser", ['gestion_users'])
             b2.onclick = () => toggleRefuseReservation(reserv.id_reserv, container, data)
             b2.title = "Refuser"
         }
@@ -177,15 +178,16 @@ function displayReserv (container, data) {
                     // Creation of the form
                     const form = create("div", footer, null, null, "task")
                     var div_reservation = create("div", container, null, ["form-div-radio"])
-                    createMenuElement(divResp, () => createReservationRadio(form, div_reservation, reserv, "/reservation-abonne"), "rouge", "../src/assets/images/edit.png", "modifier", ""  )
-                    createMenuElement(divResp, () =>
+                    createMenuElement(divBoutonReserv, () => createReservationRadio(form, div_reservation, reserv, "/reservation-abonne"), "rouge", "../src/assets/images/edit.png", "modifier", ""  )
+                    createMenuElement(divBoutonReserv, () =>
                         fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=delete_reservation&idReservation=`+reserv.id_reserv, "/reservation-abonne", "La réservation a bien été supprimée", "La réservation n'a pas pu être supprimée")
                         , "rouge", "../src/assets/images/croix.png", "supprimer", ""  )
                     break;
                 case "valide":
+                    create("p", divHReserv, "arrivée : "+reserv.end, ["pArrivee"]);
                     break;
                 case "refuse":
-                    createMenuElement(divResp, () =>
+                    createMenuElement(divBoutonReserv, () =>
                             fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=delete_reservation&idReservation=`+reserv.id_reserv, "/reservation-abonne", "La réservation a bien été supprimée", "La réservation n'a pas pu être supprimée")
                         , "rouge", "../src/assets/images/croix.png", "supprimer", ""  )
                     break;
