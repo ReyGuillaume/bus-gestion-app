@@ -70,7 +70,7 @@ export function toggleInfoAbonne(){
     axios.get(`users/users.php?function=user&id=`+sessionData["id"]).then((response) => {
         create("h2", main, "Voici vos informations personnelles :");
 
-        const infos_user = create("div", main, null, ["infos-utilisateur"]);
+        const infos_user = create("div", main, null, ["app-form"]);
 
         const div_nom = create("div", infos_user, null, ["form-div-radio"]);
         create("div", div_nom, "Votre nom : ", ["label-info"]);

@@ -443,7 +443,7 @@ const toggleAddCreneau = () => {
     back.addEventListener("click", () => redirect("/espace-admin"))
     back.title = "Retour en arrière"
 
-    create("h2", main, "Ajout de crénaux");
+    create("h2", main, "Ajout de créneaux");
     create("p", main, " Rentrez les informations suivantes : ", ["presentation"]);
 
     // Creation of the form
@@ -453,7 +453,7 @@ const toggleAddCreneau = () => {
     create("label", form, "Entrez la date de début du créneau :", ["label-info"]);
     createChamp(form, "datetime-local", "StartDateTime");
     create("br", form);
-    create("label", form, "Entrez la date de fin du creneau :", ["label-info"]);
+    create("label", form, "Entrez la date de fin du créneau :", ["label-info"]);
     createChamp(form, "datetime-local", "EndDateTime");
     create("br", form);
 

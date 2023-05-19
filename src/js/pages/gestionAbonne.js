@@ -165,10 +165,10 @@ function displayReserv(container, data) {
         let footer = document.querySelector("#footer")
 
         if (roleUser != "Abonné") {
-            const b1 = create("button", divBoutonReserv, "Valider", ['gestion_users'])
+            const b1 = create("button", divBoutonReserv, "Valider", ['gestion_notifs', "unstyled-button"])
             b1.onclick = () => toggleValideReservation(footer, reserv)
             b1.title = "Valider"
-            const b2 = create("button", divBoutonReserv, "Refuser", ['gestion_users'])
+            const b2 = create("button", divBoutonReserv, "Refuser", ['gestion_notifs', "unstyled-button"])
             b2.onclick = () => toggleRefuseReservation(reserv.id_reserv, container, data)
             b2.title = "Refuser"
         } else {

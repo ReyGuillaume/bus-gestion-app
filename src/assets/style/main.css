@@ -191,34 +191,34 @@ body {
   border-radius: 20px;
 }
 .violet{
-  background-color: #753a9c;
+  background-color: #c38ae8;
 }
 .jaune{
   background-color: #FFD675;
 }
 .rouge{
-  background-color: #e05e5e;
+  background-color: #e56f6f;
 }
 .rouge_orange{
-  background-color: #e77c7e;
+  background-color: #ee8872;
 }
 .orange{
-  background-color: #e88e52;
+  background-color: #f6bd85;
 }
 .bleu{
-  background-color: #6174ee;
+  background-color: #bac2ef;
 }
 .bleu_clair{
-  background-color: #7ed6f0;
+  background-color: #b9e3ef;
 }
 .indigo{
-  background-color: #a270c6;
+  background-color: #a093ce;
 }
 .vert{
-  background-color: #74E296;
+  background-color: #a3e5b7;
 }
 .vert_clair{
-  background-color: #BFFB8F;
+  background-color: #d1ffab;
 }
 
 /* FOOTER */
@@ -430,7 +430,7 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
   font-weight: bold;
   text-shadow: 2px 2px lightblue;
 }
-.gestion_users, .gestion_bus, .gestion_lignes, .gestion_infos, .gestion_arrets{
+.gestion_users,.gestion_notifs, .gestion_bus, .gestion_lignes, .gestion_infos, .gestion_arrets{
   border-radius: 10px;
   padding: 10px;
   margin: 10px;
@@ -440,28 +440,32 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
   color: white;
 }
 
-.gestion_users:hover, .gestion_bus:hover, .gestion_lignes:hover, .gestion_infos:hover, .gestion_arrets:hover{
+.gestion_users:hover,.gestion_notifs:hover, .gestion_bus:hover, .gestion_lignes:hover, .gestion_infos:hover, .gestion_arrets:hover{
   background: linear-gradient(to right, rgb(64, 64, 64), black);
 }
 
 .gestion_users{
-  background: linear-gradient(to right, #efb4e0, #d589c2);
+  background: linear-gradient(to right, #bac2ef, #9fa8da);
 }
 
 .gestion_bus{
-  background: linear-gradient(to right, rgb(132, 237, 106), rgb(83, 213, 50));
-}
-
-.gestion_lignes{
   background: linear-gradient(to right, rgb(184, 209, 255), rgb(154, 187, 250));
 }
 
+.gestion_lignes{
+  background: linear-gradient(to right, #a3e5b7, #97dead);
+}
+
 .gestion_infos{
-  background: linear-gradient(to right, rgb(255, 209, 172), rgb(247, 180, 125));
+  background: linear-gradient(to right, #e56f6f, #d35f5f);
 }
 
 .gestion_arrets{
-  background: linear-gradient(to right, #3887ac, #0F658D);
+  background: linear-gradient(to right, #ee8872, #d77965);
+}
+
+.gestion_notifs{
+  background: linear-gradient(to right, #fad379, #e5be63);
 }
 
 .plage-horaire{
@@ -746,8 +750,9 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
   align-items: center;
   border-radius: 20px;
   background-color: #D2D4DA;
-  box-shadow: 5px 5px 5px black;
   margin: 15px;
+  border: 1px solid;
+  padding: 5px;
 }
 .inscription-container, .inscription-btns{
   display: flex;
