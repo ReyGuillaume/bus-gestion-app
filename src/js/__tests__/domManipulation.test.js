@@ -7,8 +7,6 @@ import {
   createChamp,
   createChampCheckbox,
   createChampRadio,
-  // toggleAlert,
-  // toggleError
 } from "../utils/domManipulation";
 
 test("La fonction create() crée bien un élément button dans le DOM", () => {
@@ -63,17 +61,28 @@ test("La fonction createChamp crée un input dans le DOM contenant le type, le n
 });
 
 test("Par défaut, le type d'input créé par createChamp est un type text", () => {
-  const input = createChamp(document.body)
-  expect(input.type).toEqual("text")
-})
+  const input = createChamp(document.body);
+  expect(input.type).toEqual("text");
+});
 
 test("createChampCheckbox crée bien un input[type=checkbox] avec les paramètres renseignés.", () => {
-  const checkbox = createChampCheckbox(document.body, "monId", "mon nom", 123)
+  const checkbox = createChampCheckbox(document.body, "monId", "mon nom", 123);
 
-  expect(document.body.contains(checkbox)).toBe(true)
+  expect(document.body.contains(checkbox)).toBe(true);
   expect(checkbox).toBeInstanceOf(HTMLInputElement);
-  expect(checkbox.type).toEqual("checkbox")
-  expect(checkbox.id).toEqual("monId")
-  expect(checkbox.name).toEqual("mon nom")
-  expect(checkbox.value).toBe("123")
-})
+  expect(checkbox.type).toEqual("checkbox");
+  expect(checkbox.id).toEqual("monId");
+  expect(checkbox.name).toEqual("mon nom");
+  expect(checkbox.value).toBe("123");
+});
+
+test("createChampRadio crée un input de type radio avec les paramètres renseignés", () => {
+  const radio = createChampRadio(document.body, "monId", "mon nom", 123);
+
+  expect(document.body.contains(radio)).toBe(true);
+  expect(radio).toBeInstanceOf(HTMLInputElement);
+  expect(radio.type).toEqual("radio");
+  expect(radio.id).toEqual("monId");
+  expect(radio.name).toEqual("mon nom");
+  expect(radio.value).toBe("123");
+});
