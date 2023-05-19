@@ -4,6 +4,7 @@ import { toggleEspaceAdmin } from "./espaceAdmin";
 import { redirect } from "../utils/redirection";
 
 import axios from 'axios';
+import {sendMail, sendMailTemplate} from "../utils/sendMail.js";
 
 //------------------------------------------------------- */
 //   Gestion Utilisateurs
@@ -68,6 +69,20 @@ const toggleAjoutUser = () => {
         let firstname = document.querySelector("input[name='nameUser']").value;
         let email = document.querySelector("input[name='mailUser']").value;
         let type = valueFirstElementChecked("input[name='typeUser']");
+
+        if(type === "4"){//notification-mail au client
+            sendMailTemplate("template_2lkyfis",
+                {
+                    firstname: firstname,
+                    mail: email,
+                    login:login
+                })
+        }else if (type === "3"){
+            sendMail("ConfirmInscriptionConducteur",
+                {firstname: firstname,
+                    login:login,
+                    mail : email})
+        }
 
         //creation of the url
         let url = `users/users.php?function=create&login=${login}&password=gobus123&confirm=gobus123&date=${date}&name=${name}&firstname=${firstname}&email=${email}&type=${type}`

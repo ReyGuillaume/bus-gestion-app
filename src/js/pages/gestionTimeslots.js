@@ -16,7 +16,7 @@ import {
 import { redirect, redirectWithAlert } from "../utils/redirection";
 
 import axios from 'axios';
-import {formatedHour} from "../utils/dates.js";
+import {reecritDateEtHeure} from "../utils/sendMail.js";
 
 
 // select the types of participants and return those who are checked in a string : 1,2,...
@@ -369,22 +369,10 @@ const sendNotifReunionOblige = async (idUser, startDateTime, endDateTime) => {
     let user = await axios.get(`users/users.php?function=user&id=` + idUser)
     user = user.data
 
-    let heure_debut = formatedHour(new Date(startDateTime).getHours())
-    let min_debut = formatedHour(new Date(startDateTime).getMinutes())
-    let heure_fin = formatedHour(new Date(endDateTime).getHours())
-    let min_fin = formatedHour(new Date(endDateTime).getMinutes())
-
-    let debut_jour = formatedHour(new Date(startDateTime).getDate())
-    let debut_annee = formatedHour(new Date(startDateTime).getFullYear())
-    let debut_mois = formatedHour(new Date(startDateTime).getMonth())
-    let fin_jour = formatedHour(new Date(endDateTime).getDate())
-    let fin_annee = formatedHour(new Date(endDateTime).getFullYear())
-    let fin_mois = formatedHour(new Date(endDateTime).getMonth())
-
-    let debut = heure_debut+":"+min_debut
-    let fin = heure_fin+":"+min_fin
-    let debutDate = debut_jour+"/"+debut_mois+"/"+debut_annee
-    let finDate = fin_jour+"/"+fin_mois+"/"+fin_annee
+    let debut = reecritDateEtHeure(startDateTime).debut
+    let fin = reecritDateEtHeure(endDateTime).debut
+    let debutDate = reecritDateEtHeure(startDateTime).debutDate
+    let finDate = reecritDateEtHeure(endDateTime).debutDate
 
     const titre = "Convocation obligatoire à la réunion"
     let message = "Bonjour " + user.firstname +", <br><br>"
@@ -534,7 +522,7 @@ const toggleAddCreneau = () => {
             selectUserOblige(form)
         }else {
             let url = axiosUrlSendWhenADD(type)
-            //fetchUrlRedirectAndAlert(url, "/espace-admin", "Le créneau a bien été ajouté", "Le créneau n'a pas pu être ajouté")
+            fetchUrlRedirectAndAlert(url, "/espace-admin", "Le créneau a bien été ajouté", "Le créneau n'a pas pu être ajouté")
         }
     })
 }
