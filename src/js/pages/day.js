@@ -70,9 +70,9 @@ const possibleDrag = (user_role, timeslot_name) => {
     if(user_role == "Conducteur"){
         return timeslot_name == "Indisponibilité"
     } else if (user_role == "Responsable Logistique"){
-        return timeslot_name == "Conduite"
+        return timeslot_name == "Conduite" || timeslot_name == "Astreinte"
     } else {
-        return timeslot_name == "Conduite" || timeslot_name == "Réunion"
+        return timeslot_name == "Conduite" || timeslot_name == "Astreinte" || timeslot_name == "Réunion"
     }
 }
 
