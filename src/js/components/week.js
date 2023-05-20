@@ -3,7 +3,13 @@ import { toggleDayOfWeek, toggleDrivers, toggleMultiAgenda } from "../pages/day"
 import { datePhp, formatedDatePhp } from "../utils/dates";
 import { toggleAgenda } from "../pages/agenda";
 import { getMonthToString, getIdOfDay, getDayToString, formatedHour, getFirstMonday, getNearestHour, getNearestMinute } from "../utils/dates"
-import { participantsTimeslot, busesTimeslot, lineDirectionTimeslot, lineTimeslot } from "../pages/gestionTimeslots";
+import {
+    participantsTimeslot,
+    busesTimeslot,
+    lineDirectionTimeslot,
+    lineTimeslot,
+    selectUserOblige
+} from "../pages/gestionTimeslots";
 import axios from "axios"
 
 import '../../assets/style/calandar.css'
@@ -224,6 +230,7 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user=null, multi=false, e
 
     const btn = create("div", popup, "Valider", ["modifButton"])
     btn.addEventListener("click", function(){
+
         let StartDateTime = document.querySelector("input[name='StartDateTime']").value
         let EndDateTime = document.querySelector("input[name='EndDateTime']").value
 
@@ -239,19 +246,22 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user=null, multi=false, e
         url += ligne_affectee ? `&lines=${ligne_affectee}` : `&lines=`
         url += ligne_affectee && direction_ligne ? `&directions=${direction_ligne}` : `&directions=`
 
-        modale.remove()
-        overlay.remove()
+        if (nom === "Réunion"){
+            selectUserOblige(popup, ".modifButton", url)
+        }else {
+            modale.remove()
+            overlay.remove()
 
-        axios.get(url).then(function(response){
-            if(response.data){
-                let newDate = new Date(StartDateTime)
-                toggleAgenda(user, newDate, multi)
-                toggleAlert("BRAVO", "Le créneau a bien été ajouté")
-            }
-            else{
-                toggleError("ERREUR", "Le créneau n'a pas pu être ajouté")
-            }
-        })
+            axios.get(url).then(function (response) {
+                if (response.data) {
+                    let newDate = new Date(StartDateTime)
+                    toggleAgenda(user, newDate, multi)
+                    toggleAlert("BRAVO", "Le créneau a bien été ajouté")
+                } else {
+                    toggleError("ERREUR", "Le créneau n'a pas pu être ajouté")
+                }
+            })
+        }
     })
 }
 

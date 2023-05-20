@@ -387,8 +387,8 @@ const sendNotifReunionOblige = async (idUser, startDateTime, endDateTime) => {
 
 }
 
-const selectUserOblige = (form) => {
-    document.querySelector(".submitButton").remove()
+const selectUserOblige = (form, classButton, url) => {
+    document.querySelector(classButton).remove()
 
     let startDateTime = document.querySelector("input[name='StartDateTime']").value;
     let endDateTime = document.querySelector("input[name='EndDateTime']").value;
@@ -422,15 +422,12 @@ const selectUserOblige = (form) => {
     const bouton = create("button", form, "Envoyer", ["submitButton", "unstyled-button"])
     bouton.title = "Envoyer"
     bouton.addEventListener("click", function (){
-
-        for(let elem of document.querySelectorAll("input[name='selectionParticipantOblige']")){
-            if (elem.checked) {
-                let idUser = elem.value
-                sendNotifReunionOblige (idUser, startDateTime, endDateTime)
+            for (let elem of document.querySelectorAll("input[name='selectionParticipantOblige']")) {
+                if (elem.checked) {
+                    let idUser = elem.value
+                    sendNotifReunionOblige(idUser, startDateTime, endDateTime)
+                }
             }
-        }
-
-        let url = axiosUrlSendWhenADD(typeTimeslot())
         fetchUrlRedirectAndAlert(url, "/espace-admin", "Le créneau a bien été ajouté", "Le créneau n'a pas pu être ajouté")
     })
 }
@@ -524,10 +521,10 @@ const toggleAddCreneau = () => {
     bouton.addEventListener("click", function (){
         let type = typeTimeslot()
         if (type == 2){
-            selectUserOblige(form)
+            selectUserOblige(form, ".submitButton", axiosUrlSendWhenADD(type))
         }else {
             let url = axiosUrlSendWhenADD(type)
-            fetchUrlRedirectAndAlert(url, "/espace-admin", "Le créneau a bien été ajouté", "Le créneau n'a pas pu être ajouté")
+            fetchUrlRedirectAndAlert(url, "/agenda", "Le créneau a bien été ajouté", "Le créneau n'a pas pu être ajouté")
         }
     })}
 }
@@ -545,5 +542,6 @@ export {
     toogleFreeBusChoices,
     toogleUserChoices,
     toogleFreeUserChoices,
-    toogleDriversChoices
+    toogleDriversChoices,
+    selectUserOblige
 }

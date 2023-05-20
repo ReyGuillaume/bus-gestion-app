@@ -685,9 +685,10 @@ const reservation = async (container, props, bubble, user_role, user = null, mul
         create("div", btns, "Modifier", ["modifButton"]).onclick = () => {
             modifReservation(container, props, user, multi, entites, overlay)
         }
-
         create("div", btns, "Supprimer", ["delButton"]).onclick = async () => {
-            let client = await axios.get(`users/users.php?function=user&id=` + props.id_client)
+            let timeslot = await axios.get("timeslots/timeslots.php?function=fetch_by_id_timeslot&idTimeslot="+props.id)
+            timeslot = timeslot.data
+            let client = await axios.get(`users/users.php?function=user&id=` + timeslot.id_client)
             client = client.data
             sendMail("SupprReservationAbonne",
                 {
