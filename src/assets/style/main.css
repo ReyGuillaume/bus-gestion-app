@@ -808,12 +808,11 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
 }
 .filtre-nom{
   padding: 5px;
-  border: solid 2px grey;
-  border-radius: 15px;
+  border: solid 1px grey;
+  border-radius: 5px;
   cursor: pointer;
-  background: linear-gradient(to right, #d5e9f6, #BCDFF4);
-  margin-top: 3px;
 }
+
 .filtre-nom:hover{
   background-color: black;
   color: white;
