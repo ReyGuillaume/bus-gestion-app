@@ -208,11 +208,11 @@ const toggleNewTimeSlot = async (nom, e, dateOfMonday, user=null, multi=false, e
 
         let aller = create("div", popup, null, ["div-radio"])
         createChampRadio(aller, "aller", "selectionDirection", "aller").checked = true
-        create("div", aller, "aller")
+        create("label", aller, "aller").setAttribute("for", "aller")
 
         let retour = create("div", popup, null, ["div-radio"])
         createChampRadio(retour, "retour", "selectionDirection", "retour")
-        create("div", retour, "retour")
+        create("label", retour, "retour").setAttribute("for", "retour")
     }
 
     // ajout des actions au clic
