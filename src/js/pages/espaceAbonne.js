@@ -44,9 +44,6 @@ export function toggleEspaceAbonne() {
 
 
 export function toggleInfoAbonne(){
-    const main = document.querySelector("#app");
-    main.replaceChildren("");
-
     // affiche le potentiel message d'alerte en stock
     toggleAlertMessage()
     const main = document.querySelector("#app");
