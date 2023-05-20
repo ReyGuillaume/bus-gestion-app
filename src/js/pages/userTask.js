@@ -26,7 +26,6 @@ const supprimeCreneau = (container, props, bubble, overlay) => {
     }else{
         url = "timeslots/timeslots.php?function=delete_reservation_by_id_timeslot&idTimeslot=" + props.id
     }
-    console.log(props)
     axios.get(url).then(function (response) {
         if (response.data) {
             toggleAlert("BRAVO", "Le créneau a bien été supprimé")
