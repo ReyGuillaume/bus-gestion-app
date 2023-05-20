@@ -298,6 +298,7 @@ create_table_creneau_couverture();
 create_table_notification();
 create_table_reservation();
 create_table_reservation_timeslot();
+create_table_inscription();
 // ==================== Instanciation des types de créneaux ====================
 $timeSlotTypes = array('Conduite', 'Réunion', 'Indisponibilité', 'Réservation', 'Astreinte');
 
