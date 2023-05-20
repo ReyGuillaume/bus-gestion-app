@@ -76,6 +76,10 @@ const toggleInscriptionForm = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
+    // redirection si user est connecté
+    if(sessionStorage.getItem("userData"))
+        redirect("/")
+
     create("h2", main, "Formulaire d'inscription")
 
     // Creation of the form

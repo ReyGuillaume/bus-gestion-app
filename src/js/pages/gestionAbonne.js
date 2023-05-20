@@ -18,6 +18,10 @@ function changerInfoAbonne (){
     // recuperation des infos de l'utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
 
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
+
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/informations-utilisateur"))
     back.title = "Retour en arrière"
@@ -80,6 +84,10 @@ function changerMdpAbonne (){
 
     const main = document.querySelector("#app");
     main.replaceChildren("");
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
 
     // recuperation des infos de l'utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));

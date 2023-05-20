@@ -11,6 +11,10 @@ import axios from 'axios';
 const toggleAddLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
     
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
     back.addEventListener("click", () => redirect("/lignes"))
@@ -57,6 +61,14 @@ const toggleAddLine = () => {
 const toggleSupprLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
     
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
     back.addEventListener("click", () => redirect("/lignes"))
@@ -127,6 +139,10 @@ const createLineRadio = (form, container, line) => {
 const toggleModifLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
     
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
     back.addEventListener("click", () => redirect("/lignes"))
@@ -152,6 +168,10 @@ const toggleVerifCouvertureSemaine = () => {
     // Recuperation de la div à modifier 
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
     
     // Mise en place des titres
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
@@ -181,6 +201,10 @@ const toggleRemplissageAutoConduiteSemaine = () => {
     // Recuperation de la div à modifier 
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
     
     // Mise en place des titres
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
@@ -283,6 +307,10 @@ const createPlageHoraire = (container, supprimable=null) => {
 const toggleAddLineType = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
     
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
     back.addEventListener("click", () => redirect("/lignes"))
@@ -349,6 +377,10 @@ const toggleAddLineType = () => {
 const toggleModifLineType = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
     
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
     back.addEventListener("click", () => redirect("/lignes"))

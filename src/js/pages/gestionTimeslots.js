@@ -438,6 +438,10 @@ const selectUserOblige = (form) => {
 const toggleAddCreneau = () => {
     const main = document.querySelector("#app");
     main.replaceChildren("");
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/espace-admin"))

@@ -142,7 +142,13 @@ function showNotification (notif, divAllNotif){
 const toggleNotificationCenter = () => {
     const main = document.querySelector("#app");
     main.replaceChildren("");
-    const id_user = JSON.parse(sessionStorage.getItem("userData")).id;
+
+    let sessionData = sessionStorage.getItem("userData")
+    // redirection si user est connecté
+    if(!sessionData)
+        redirect("/")
+
+    const id_user = JSON.parse(sessionData).id;
 
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
     back.title = "Retour en arrière"

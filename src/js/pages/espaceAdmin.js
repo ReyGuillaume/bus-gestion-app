@@ -63,6 +63,10 @@ const toggleGestionUsers = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
+
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/espace-admin"))
     back.title = "Retour en arrière"
@@ -90,6 +94,10 @@ const toggleGestionUsers = () => {
 const toggleGestionBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
 
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/espace-admin"))
@@ -122,6 +130,10 @@ const toggleGestionBus = () => {
 const toggleGestionLigne = () => {
     // affiche le potentiel message d'alerte en stock
     toggleAlertMessage()
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
 
     const main = document.querySelector("#app")
     main.replaceChildren("")
@@ -181,6 +193,10 @@ const toggleReservation = () => {
     // affiche le potentiel message d'alerte en stock
     toggleAlertMessage()
 
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
+
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -204,6 +220,10 @@ const toggleInscriptions = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
+
     // bouton de retour
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/espace-admin"))
@@ -226,6 +246,10 @@ const toggleGestionArrets= () => {
 
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
 
     // bouton de retour
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])

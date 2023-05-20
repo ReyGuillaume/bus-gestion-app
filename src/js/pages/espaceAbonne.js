@@ -47,6 +47,10 @@ export function toggleInfoAbonne(){
     // affiche le potentiel message d'alerte en stock
     toggleAlertMessage()
 
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
+
     const main = document.querySelector("#app");
     main.replaceChildren("");
 
@@ -113,6 +117,10 @@ function toogleReservAbonne (){
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
+
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/espace-abonne"))
     back.title = "Retour en arrière"
@@ -156,6 +164,10 @@ async function  showSuggestions(input) {
 function toggleAddReservation(){
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
 
     // bouton de retour
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
@@ -307,6 +319,10 @@ function toggleUpdateReservation(){
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
+
     // bouton de retour
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
 
@@ -341,6 +357,10 @@ function toggleUpdateReservation(){
 function toggleDeleteReservation(){
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
 
     // bouton de retour
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
@@ -412,6 +432,10 @@ function toggleSeeReservation(){
 
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
 
     // recuperation des infos de l'utilisateur
     const idClient = JSON.parse(sessionStorage.getItem("userData")).id;
