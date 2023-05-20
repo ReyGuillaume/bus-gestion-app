@@ -18,6 +18,11 @@ function changerInfoAbonne (){
     // recuperation des infos de l'utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
 
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")){
+        redirect("/")
+    }else {
+
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/informations-utilisateur"))
     back.title = "Retour en arrière"
@@ -70,7 +75,7 @@ function changerInfoAbonne (){
             createHeader()
             fetchUrlRedirectAndAlert(url, '/informations-utilisateur', "Votre profil a bien été modifié.", "Votre profil n'a pas été modifié.")
         });
-    })
+    })}
 
     return main
 
@@ -80,6 +85,11 @@ function changerMdpAbonne (){
 
     const main = document.querySelector("#app");
     main.replaceChildren("");
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")) {
+        redirect("/")
+    }else {
 
     // recuperation des infos de l'utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
@@ -140,7 +150,7 @@ function changerMdpAbonne (){
             let url = `users/users.php?function=updatepwd&id=${sessionData["id"]}&old=${oldPwdAbo}&new=${newPwdAbo}&confirm=${confNewPwdAbo}`;
             fetchUrlRedirectAndAlert(url, '/informations-utilisateur', "Votre mot de passe a bien été modifié.", "Votre mot de passe n'a pas été modifié.")
         });
-    })
+    })}
     return main
 }
 
@@ -335,16 +345,26 @@ const formValidationReservation = (container, props, user = null, multi = false,
     let depart = new Date(props.dateDepart.replace(' ', 'T'));
     let fin = new Date(depart.getTime() + temps_trajet * 60000);
 
+    const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
+    const finAdjusted = new Date(fin.getTime() - timeZoneOffset);
+
+
     // Requête axios pour vérifier la disponibilité des bus
-    let axiosUrl_bus = `buses/buses.php?function=freeBuses&beginning=${depart}&end=${fin}`;
+    let axiosUrl_bus = `buses/buses.php?function=freeBuses&beginning=${depart.toISOString().slice(0, 16)}&end=${finAdjusted.toISOString().slice(0, 16)};"}`;
+
+    
 
     axios.get(axiosUrl_bus)
         .then(function (response) {
             // Vérification si la réponse contient des données
             if (response.data.length > 0) {
                 acceptable_bus.textContent = "Un bus est disponible ";
+                acceptable_bus.style.backgroundColor = "green"; 
+
             } else {
                 acceptable_bus.textContent = "Pas de bus disponible";
+                acceptable_bus.style.backgroundColor = "red";
+
             }
         })
 
@@ -355,15 +375,19 @@ const formValidationReservation = (container, props, user = null, multi = false,
     // Requête axios pour vérifier la disponibilité des bus
 
 
-    let axiosUrl = `users/users.php?function=freeDrivers&beginning=${depart}&end=${fin}`;
+    let axiosUrl = `users/users.php?function=freeDrivers&beginning=${depart.toISOString().slice(0, 16)}&end=${finAdjusted.toISOString().slice(0, 16)};"}`;
 
     axios.get(axiosUrl)
         .then(function (response) {
             // Vérification si la réponse contient des données
             if (response.data.length > 0) {
                 acceptable_driver.textContent = "Un conducteur est disponible ";
+                acceptable_driver.style.backgroundColor = "green"; 
+
             } else {
                 acceptable_driver.textContent = "Pas de conducteur disponible";
+                acceptable_driver.style.backgroundColor = "red"; 
+
             }
         })
 
@@ -371,7 +395,7 @@ const formValidationReservation = (container, props, user = null, multi = false,
     // Creation of each champ
     //create("label", container, "Début : " + props.dateDepart, ["form-info"]);
 
-
+    
     create("label", container, "Début :", ["form-info"]);
     let champ =createChamp(container, "datetime-local", "StartDateTime");
     champ.value = props.dateDepart
@@ -380,11 +404,8 @@ const formValidationReservation = (container, props, user = null, multi = false,
 
     create("label", container, "Fin :", ["form-info"]);
 
-
-    const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
-    const finAdjusted = new Date(fin.getTime() - timeZoneOffset);
     const endDateTimeInput = createChamp(container, "datetime-local", "EndDateTime");
-
+    
     endDateTimeInput.value = finAdjusted.toISOString().slice(0, 16);
     endDateTimeInput.disabled = true;
 

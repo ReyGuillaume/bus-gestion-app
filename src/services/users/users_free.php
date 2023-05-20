@@ -19,7 +19,7 @@ function is_free_user($id_user, $begining, $end){
      WHERE uts.id_user = '{$id_user}' 
      AND (ts.begining BETWEEN '{$begining}' AND '{$end}' 
      OR ts.end BETWEEN '{$begining}' AND '{$end}'
-     OR (ts.begining < '{$begining}' AND ts.begining > '{$end}'))");
+     OR (ts.begining < '{$begining}' AND ts.end > '{$end}'))");
 
    if ($result->rowCount() == 0) {
         return true;    
@@ -135,10 +135,17 @@ function add_a_driver_to_timeslot($idCreneau){
     
 }
 
+/**
+    Fonction qui renvoie le code sql nécessaire pour ajouter un conducteur au creneau donné.
 
+    @param idCreneau : L'id du créneau auquel on veut rajouter un conducteur.
+
+    @return le code sql. 
+*/
 function add_a_driver_to_timeslot_sql($idCreneau){
     
     // On recupere le timeslot en question
+    $res = "";
     $creneau = fetch_time_slot($idCreneau);
 
     // On regarde si un conducteur est libre pour ce timeslot 

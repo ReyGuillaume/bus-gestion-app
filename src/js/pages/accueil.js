@@ -1,5 +1,5 @@
 import { create } from "../utils/domManipulation";
-import { toggleAlertMessage } from "../utils/redirection";
+import { redirect, toggleAlertMessage } from "../utils/redirection";
 
 const toggleAccueil = () => {
     const main = document.querySelector("#app")
@@ -9,6 +9,7 @@ const toggleAccueil = () => {
     toggleAlertMessage()
 
     const sessionData = JSON.parse(sessionStorage.getItem("userData"))
+    let button
 
     create("h2", main, "Bienvenue sur GoBus, la solution collaborative pour la gestion de vos trajets en bus !", null, "titreAccueil")
     
@@ -35,15 +36,10 @@ const toggleAccueil = () => {
     p2.innerHTML += " donc votre emploi du temps personnel, et "
     create("span", p2, "indiquez", ["GoBus_role"])
     p2.innerHTML +=  " vos créneaux d'indisponibilité !"
-    if(!sessionData){
-        create("a", paragraphe2, "Voir votre espace utilisateur").href = "/connexion"
-    }
-    else if(sessionData["role"] != "Conducteur"){
-        create("a", paragraphe2, "Voir votre espace utilisateur").href = "/"
-    }
-    else{
-        create("a", paragraphe2, "Voir votre espace utilisateur").href = "/espace-utilisateur"
-    }
+    
+    button = create("button", paragraphe2, "Voir votre espace utilisateur", ["unstyled-button"])
+    button.onclick = () => redirect("/espace-utilisateur")
+    button.title = "Voir votre espace utilisateur"
 
     // Présentation du responsable logistique
     const paragraphe3 = create("div", main, null, ["paragraphe"])
@@ -53,15 +49,10 @@ const toggleAccueil = () => {
     p3.innerHTML += " donc à leur emploi du temps, et "
     create("span", p3, "affectez", ["GoBus_role"])
     p3.innerHTML +=  " leur des créneaux de conduite afin de piloter les différentes lignes de bus à disposition !"
-    if(!sessionData){
-        create("a", paragraphe3, "Voir votre espace administrateur").href = "/connexion"
-    }
-    else if(sessionData["role"] != "Responsable Logistique"){
-        create("a", paragraphe3, "Voir votre espace administrateur").href = "/"
-    }
-    else{
-        create("a", paragraphe3, "Voir votre espace administrateur").href = "/espace-admin"
-    }
+    
+    button = create("button", paragraphe3, "Voir votre espace administrateur", ["unstyled-button"])
+    button.onclick = () => redirect("/espace-admin")
+    button.title = "Voir votre espace administrateur"
 
     // Présentation du gérant
     const paragraphe4 = create("div", main, null, ["paragraphe"])
@@ -75,15 +66,10 @@ const toggleAccueil = () => {
     p4.innerHTML +=  " et "
     create("span", p4, "visualisez", ["GoBus_role"])
     p4.innerHTML += " l'emploi du temps des différentes lignes de bus !"
-    if(!sessionData){
-        create("a", paragraphe4, "Voir votre espace administrateur").href = "/connexion"
-    }
-    else if(sessionData["role"] != "Directeur"){
-        create("a", paragraphe4, "Voir votre espace administrateur").href = "/"
-    }
-    else{
-        create("a", paragraphe4, "Voir votre espace administrateur").href = "/espace-admin"
-    }
+
+    button = create("button", paragraphe4, "Voir votre espace administrateur", ["unstyled-button"])
+    button.onclick = () => redirect("/espace-admin")
+    button.title = "Voir votre espace administrateur"
 
     const paragraphe7 = create("div", main, null, ["paragraphe"])
     create("h3", paragraphe7, "Vous êtes un abonné qui veut réserver un bus ?", ["phrasePres"])
@@ -96,15 +82,10 @@ const toggleAccueil = () => {
     p7.innerHTML +=  " et "
     create("span", p7, "visualisez", ["GoBus_role"])
     p7.innerHTML += " vos données personnelles !"
-    if(!sessionData){
-        create("a", paragraphe7, "Voir votre espace d'abonné").href = "/connexion"
-    }
-    else if(sessionData["role"] != "Abonné"){
-        create("a", paragraphe7, "Voir votre espace d'abonné").href = "/"
-    }
-    else{
-        create("a", paragraphe7, "Voir votre espace d'abonné").href = "/espace-abonne"
-    }
+    
+    button = create("button", paragraphe7, "Voir votre espace d'abonné", ["unstyled-button"])
+    button.onclick = () => redirect("/espace-abonne")
+    button.title = "Voir votre espace d'abonné"
 
     // Présentation des fonctionnalités
     const paragraphe5 = create("div", main, null, ["paragraphe", "paragraphe_info"])
@@ -121,7 +102,9 @@ const toggleAccueil = () => {
         p6.innerHTML += " dès maintenant pour découvrir toutes les fonctionnalités de "
         create("span", p6, "GoBus", ["GoBus_titre"])
         p6.innerHTML += "."
-        create("a", paragraphe6, "Connexion").href = "/connexion"
+        button = create("button", paragraphe6, "Connexion", ["unstyled-button"])
+        button.onclick = () => redirect("/connexion")
+        button.title = "Connexion"
     }
 
     return main

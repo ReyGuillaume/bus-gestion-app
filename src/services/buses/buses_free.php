@@ -18,7 +18,7 @@ function is_free($id_bus, $begining, $end){
      WHERE bts.id_bus = '{$id_bus}' 
      AND (ts.begining BETWEEN '{$begining}' AND '{$end}' 
      OR ts.end BETWEEN '{$begining}' AND '{$end}'
-     OR (ts.begining < '{$begining}' AND ts.begining > '{$end}'))");
+     OR (ts.begining < '{$begining}' AND ts.end > '{$end}'))");
 
 
    if ($result->rowCount() == 0) {
@@ -92,7 +92,7 @@ function add_a_bus_to_timeslot($idCreneau){
 */
 function add_a_bus_to_timeslot_sql($idCreneau){
      
-    
+    $res = "";
     // On recupere le timeslot en question
     $creneau = fetch_time_slot($idCreneau);
 
@@ -110,13 +110,41 @@ function add_a_bus_to_timeslot_sql($idCreneau){
     
 }
 
-function is_free_for_week($id_bus, $id_week) {
-    $week_start = date("Y-m-d H:i:s", strtotime("first day of week {$id_week}"));
-    $week_end = date("Y-m-d H:i:s", strtotime("last day of week {$id_week}"));
+/**
+    Fonction qui indique si un bus est disponible pour une semaine
 
-    return is_free($id_bus, $week_start, $week_end);
+    @param id_bus: L'id du bus.
+    @param week_id: L'id de la semaine.
+
+
+    @return un booléen indiquant si le bus est disponible ou non . 
+*/
+function is_free_for_week($id_bus, $week_id) {
+   
+    // Obtention de la date du premier jour de la semaine
+    $year = substr($week_id, 0, 4); // Année
+    $week_number = substr($week_id, 6); // Numéro de la semaine
+    
+    $date = new DateTime();
+    $date->setISODate($year, $week_number, 1); // Premier jour de la semaine (lundi)
+    $start_week = $date->format('Y-m-d 00:00:00');
+    
+    // Obtention de la date du dernier jour de la semaine
+    $date->modify('+6 days'); // Passage au dimanche
+    $end_week = $date->format('Y-m-d 23:59:59');
+    
+
+
+    return is_free($id_bus, $start_week, $end_week);
 }
 
+/**
+    Fonction qui trouve un bus disponible pour une semaine donné
+
+    @param id_week: L'id de la semaine.
+
+    @return un entier : l'id d'un bus disponible pour la semaine ou -1 si aucun n'est disponible . 
+*/
 function find_a_bus_id_free_for_the_week($id_week){
     //array with all the id of the free buses
     $free_buses = array(); 
@@ -132,7 +160,11 @@ function find_a_bus_id_free_for_the_week($id_week){
             $free_buses[] = $bus['id'];
         }
     }
-    
+
+    echo("FIND A BUS FREE FOR THE WEEK ");
+    var_dump($free_buses );
+
+
     if (count($free_buses) > 0) {
         $random_index = rand(0, count($free_buses) - 1);
         $res = $free_buses[$random_index];
@@ -143,6 +175,15 @@ function find_a_bus_id_free_for_the_week($id_week){
    return $res;
 }
 
+/**
+    Fonction qui indique si un bus est disponible pour un jour
+
+    @param id_bus: L'id du bus.
+    @param date: Le jour à vérifier .
+
+
+    @return un booléen indiquant si le bus est disponible ou non . 
+*/
 function is_free_for_day($id_bus, $date) {
     $begining = date("Y-m-d H:i:s", strtotime($date));
     $end = date("Y-m-d H:i:s", strtotime("+1 day", strtotime($date)));
@@ -150,6 +191,13 @@ function is_free_for_day($id_bus, $date) {
     return is_free($id_bus, $begining, $end);
 }
 
+/**
+    Fonction qui trouve un bus disponible pour un jour donné
+
+    @param date: La date du jour.
+
+    @return un entier : l'id d'un bus disponible pour le jour  ou -1 si aucun n'est disponible . 
+*/
 function find_a_bus_id_free_for_the_day($date) {
     //array with all the id of the free buses
     $free_buses = array(); 

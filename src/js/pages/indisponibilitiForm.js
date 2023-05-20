@@ -7,6 +7,10 @@ const toggleIndisponibilitiForm = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
+
     create("h2", main, "Ajout de créneaux d'indisponibilité")
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
     back.addEventListener("click", toggleEspaceUser)

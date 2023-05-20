@@ -63,6 +63,11 @@ const toggleGestionUsers = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")){
+        redirect("/")
+    }else {
+
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/espace-admin"))
     back.title = "Retour en arrière"
@@ -83,6 +88,7 @@ const toggleGestionUsers = () => {
     const b3 = create("button", nav, "Supprimer un utilisateur", ['gestion_users', "unstyled-button"])
     b3.addEventListener("click", () => redirect("/utilisateurs/suppression"))
     b3.title = "Supprimer un utilisateur"
+    }
 
     return main
 }
@@ -90,6 +96,11 @@ const toggleGestionUsers = () => {
 const toggleGestionBus = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")){
+        redirect("/")
+    }else{
 
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/espace-admin"))
@@ -115,13 +126,18 @@ const toggleGestionBus = () => {
     const b4 = create("button", nav, "Supprimer un bus", ['gestion_bus', "unstyled-button"])
     b4.addEventListener("click", () => redirect("/bus/suppression"))
     b4.title = "Supprimer un bus"
-
+    }
     return main
 }
 
 const toggleGestionLigne = () => {
     // affiche le potentiel message d'alerte en stock
     toggleAlertMessage()
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")){
+        redirect("/")
+    }else{
 
     const main = document.querySelector("#app")
     main.replaceChildren("")
@@ -175,11 +191,16 @@ const toggleGestionLigne = () => {
     const b8 = create("button", types, "Supprimer un type de ligne", ['gestion_lignes', "unstyled-button"])
     b8.addEventListener("click", () => redirect("/lignes/suppression-type"))
     b8.title = "Supprimer un type de ligne"
+    }
 }
 
 const toggleReservation = () => {
     // affiche le potentiel message d'alerte en stock
     toggleAlertMessage()
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
 
     const main = document.querySelector("#app")
     main.replaceChildren("")
@@ -204,6 +225,10 @@ const toggleInscriptions = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
+
     // bouton de retour
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/espace-admin"))
@@ -226,6 +251,10 @@ const toggleGestionArrets= () => {
 
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
 
     // bouton de retour
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])

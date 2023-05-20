@@ -79,6 +79,5 @@ router.on('/arrets/suppression', toggleDeleteArret)
 
 router.on('/inscriptions', toggleInscriptions)
 router.on('*', toggle404)
-// router.resolve()
 
 export {router}
