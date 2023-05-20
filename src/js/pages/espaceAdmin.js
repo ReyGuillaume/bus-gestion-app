@@ -60,6 +60,9 @@ const toggleEspaceAdmin = () => {
 }
 
 const toggleGestionUsers = () => {
+    // affiche le potentiel message d'alerte en stock
+    toggleAlertMessage()
+
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
