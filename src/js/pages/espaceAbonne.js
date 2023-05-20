@@ -49,6 +49,8 @@ export function toggleInfoAbonne(){
 
     // affiche le potentiel message d'alerte en stock
     toggleAlertMessage()
+    const main = document.querySelector("#app");
+    main.replaceChildren("");
 
     // redirection si user n'est pas connecté
     if(!sessionStorage.getItem("userData")){
@@ -107,7 +109,6 @@ export function toggleInfoAbonne(){
         changerMdp.addEventListener("click", () => redirect("/informations-utilisateur/mot-de-passe"));
         changerMdp.title = "Changer mon mot de passe"
     })}
-    return main
 }
 
 

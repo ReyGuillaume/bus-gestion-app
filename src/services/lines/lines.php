@@ -332,7 +332,7 @@ function creneau_couvert ($crenau,$jour, $id_line){
             $res=false;
         }
     }
-    $res = true;
+    
     return $res;
 
 }
@@ -343,7 +343,7 @@ function creneau_couvert ($crenau,$jour, $id_line){
   
   @return un booléen qui indique si tout c'est bien passé
     
-*/
+
 function  cover_a_week($week){
     // Recupere toutes les lignes 
     $toute_ligne = bdd()->query("SELECT `number` FROM `line`");
@@ -355,10 +355,10 @@ function  cover_a_week($week){
             $res=false;
         }
     }
-    $res = true;
+
     return $res;
 }
-
+*/
 /**
   Fonction qui renvoit la requete sql pour créer tous les crénaux de conduite nécessaires pour qu'une ligne soit bien couverte durant la semaine donnée 
   
@@ -377,6 +377,9 @@ function cover_a_line_for_a_week_sql($week, $id_line, $drivers){
 
       //On cherche un bus qui serait libre pour la semaine 
       $free_bus_for_week = find_a_bus_id_free_for_the_week($week);
+      echo($id_line);
+      echo($week);
+      var_dump($free_bus_for_week );
       
       
       // On creer le jour de depart ( 1 pour lundi )
@@ -424,7 +427,6 @@ function couvre_a_line_for_a_day_sql ($jour, $id_line, $free_bus, $drivers){
         $free_bus = find_a_bus_id_free_for_the_day($jour);
     }
 
-    var_dump( $drivers);
     
     // On cherche des conducteurs à assigner 
     $begining = date("Y-m-d H:i:s", strtotime($jour));

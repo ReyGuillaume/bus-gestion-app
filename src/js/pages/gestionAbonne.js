@@ -345,16 +345,26 @@ const formValidationReservation = (container, props, user = null, multi = false,
     let depart = new Date(props.dateDepart.replace(' ', 'T'));
     let fin = new Date(depart.getTime() + temps_trajet * 60000);
 
+    const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
+    const finAdjusted = new Date(fin.getTime() - timeZoneOffset);
+
+
     // Requête axios pour vérifier la disponibilité des bus
-    let axiosUrl_bus = `buses/buses.php?function=freeBuses&beginning=${depart}&end=${fin}`;
+    let axiosUrl_bus = `buses/buses.php?function=freeBuses&beginning=${depart.toISOString().slice(0, 16)}&end=${finAdjusted.toISOString().slice(0, 16)};"}`;
+
+    
 
     axios.get(axiosUrl_bus)
         .then(function (response) {
             // Vérification si la réponse contient des données
             if (response.data.length > 0) {
                 acceptable_bus.textContent = "Un bus est disponible ";
+                acceptable_bus.style.backgroundColor = "green"; 
+
             } else {
                 acceptable_bus.textContent = "Pas de bus disponible";
+                acceptable_bus.style.backgroundColor = "red";
+
             }
         })
 
@@ -365,15 +375,19 @@ const formValidationReservation = (container, props, user = null, multi = false,
     // Requête axios pour vérifier la disponibilité des bus
 
 
-    let axiosUrl = `users/users.php?function=freeDrivers&beginning=${depart}&end=${fin}`;
+    let axiosUrl = `users/users.php?function=freeDrivers&beginning=${depart.toISOString().slice(0, 16)}&end=${finAdjusted.toISOString().slice(0, 16)};"}`;
 
     axios.get(axiosUrl)
         .then(function (response) {
             // Vérification si la réponse contient des données
             if (response.data.length > 0) {
                 acceptable_driver.textContent = "Un conducteur est disponible ";
+                acceptable_driver.style.backgroundColor = "green"; 
+
             } else {
                 acceptable_driver.textContent = "Pas de conducteur disponible";
+                acceptable_driver.style.backgroundColor = "red"; 
+
             }
         })
 
@@ -381,7 +395,7 @@ const formValidationReservation = (container, props, user = null, multi = false,
     // Creation of each champ
     //create("label", container, "Début : " + props.dateDepart, ["form-info"]);
 
-
+    
     create("label", container, "Début :", ["form-info"]);
     let champ =createChamp(container, "datetime-local", "StartDateTime");
     champ.value = props.dateDepart
@@ -390,11 +404,8 @@ const formValidationReservation = (container, props, user = null, multi = false,
 
     create("label", container, "Fin :", ["form-info"]);
 
-
-    const timeZoneOffset = new Date().getTimezoneOffset() * 60000;
-    const finAdjusted = new Date(fin.getTime() - timeZoneOffset);
     const endDateTimeInput = createChamp(container, "datetime-local", "EndDateTime");
-
+    
     endDateTimeInput.value = finAdjusted.toISOString().slice(0, 16);
     endDateTimeInput.disabled = true;
 

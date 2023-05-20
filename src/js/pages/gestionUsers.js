@@ -86,7 +86,14 @@ const toggleAjoutUser = () => {
             sendMail("ConfirmInscriptionConducteur",
                 {firstname: firstname,
                     login:login,
-                    mail : email})
+                    mail : email}
+            )
+        }else if (type === "2"){
+            sendMail("ConfirmInscriptionConducteur",
+                {firstname: firstname,
+                    login:login,
+                    mail : email}
+            )
         }
 
         //creation of the url
@@ -157,9 +164,12 @@ const toggleModifyUser = () => {
                     // selection the infos
                     let login = document.querySelector("input[name='loginUser']").value;
                     let email = document.querySelector("input[name='mailUser']").value;
+                    let name = document.querySelector("input[name='lastNameUser']").value;
+                    let firstname = document.querySelector("input[name='nameUser']").value;
+                    let date = document.querySelector("input[name='birthDate']").value;
 
                     //creation of the url
-                    let url = `users/users.php?function=update&id=${idUserToModify}&email=${email}&login=${login}`
+                    let url = `users/users.php?function=update&id=${idUserToModify}&email=${email}&login=${login}&name=${name}&firstname=${firstname}&date=${date}`
                     fetchUrlRedirectAndAlert(url, "/utilisateurs", "L'utilisateur a bien été modifié", "L'utilisateur n'a pas pu être modifié")
                 })
             });
