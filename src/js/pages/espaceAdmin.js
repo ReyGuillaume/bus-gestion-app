@@ -62,12 +62,13 @@ const toggleEspaceAdmin = () => {
 const toggleGestionUsers = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
-
+    
     // redirection si user n'est pas connecté
     if(!sessionStorage.getItem("userData")){
         redirect("/")
     }else {
-
+        
+    toggleAlertMessage()
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/espace-admin"))
     back.title = "Retour en arrière"
@@ -101,7 +102,8 @@ const toggleGestionBus = () => {
     if(!sessionStorage.getItem("userData")){
         redirect("/")
     }else{
-
+    
+    toggleAlertMessage()
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/espace-admin"))
     back.title = "Retour en arrière"
