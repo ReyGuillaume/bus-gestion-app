@@ -106,7 +106,6 @@ export function toggleInfoAbonne(){
         changerMdp.addEventListener("click", () => redirect("/informations-utilisateur/mot-de-passe"));
         changerMdp.title = "Changer mon mot de passe"
     })}
-    return main
 }
 
 
