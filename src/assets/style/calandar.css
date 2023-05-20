@@ -45,7 +45,7 @@
   align-items: center;
   gap: 1.5rem;
   background-color: #f4f4f4;
-  z-index: 1;
+  z-index: 10;
   border-bottom: #3D7C98 0.15rem solid;
 }
 .calandar__body .timeslots {
@@ -69,6 +69,7 @@
   right: 0;
 }
 .actionsTimeslot img{
+  z-index: 999;
   padding: 5px;
   width: 40px;
   height: 40px;
@@ -143,7 +144,7 @@
   align-items: center;
 }
 .timeslot:hover, .timeslot_multi_Conduite:hover, .timeslot_multi_Réunion:hover, .timeslot_multi_Indisponibilité:hover{
-  z-index: 90;
+  z-index: 5;
   border: 1px solid #888;
 }
 .timeslot .timeslot__color,

@@ -183,6 +183,16 @@ body {
   transition: 0.5s;
   padding: 8px;
 }
+/* .navBar_container { */
+.divBoutonsReserv{
+  display: flex;
+}
+.divBoutonsReserv .navBar_image {
+  margin: 8px;
+}
+.divBoutonsReserv .navBar_image img {
+  scale: .7;
+}
 .indigo, .jaune, .rouge, .rouge_orange, .orange, .bleu, .bleu_clair, .violet, .vert, .vert_clair{
   transition: 0.5s;
   border-radius: 35px;
@@ -315,7 +325,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: max-content;
+  width: 100%;
+  max-width: max-content;
   margin-left: auto;
   margin-right: auto;
   padding: 10px;
@@ -384,7 +395,7 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
   color: white;
   border-radius: 10px;
   padding: 10px;
-  width: max-content;
+  width: 100%;
 }
 
 .sous_paragraphe{
@@ -694,7 +705,10 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
 
 .divReserv, .divInfoReserv{
   display: flex;
+}
+.divInfoReserv {
   flex-direction: column;
+  flex-grow: 1;
 }
 
 #app .divNotif, .divTitresNotif, .notif_image{
@@ -800,7 +814,7 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
 }
 
 .divBoutonsReserv img {
-  height: 45px;
+  height: 32px;
   width: auto;
 }
 
