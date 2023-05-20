@@ -7,7 +7,7 @@ import {toogleBusChoices, toogleDriversChoices }from "./gestionTimeslots.js";
 import { createHeader } from "../components/header.js";
 import {createMenuElement} from "../components/menuItem.js";
 import {redirect} from "../utils/redirection.js";
-import {formatedHour} from "../utils/dates.js";
+import {reecritDateEtHeure, sendMail, sendMailTemplate} from "../utils/sendMail.js";
 
 
 function changerInfoAbonne (){
@@ -17,6 +17,11 @@ function changerInfoAbonne (){
 
     // recuperation des infos de l'utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")){
+        redirect("/")
+    }else {
 
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/informations-utilisateur"))
@@ -70,7 +75,7 @@ function changerInfoAbonne (){
             createHeader()
             fetchUrlRedirectAndAlert(url, '/informations-utilisateur', "Votre profil a bien été modifié.", "Votre profil n'a pas été modifié.")
         });
-    })
+    })}
 
     return main
 
@@ -80,6 +85,11 @@ function changerMdpAbonne (){
 
     const main = document.querySelector("#app");
     main.replaceChildren("");
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")) {
+        redirect("/")
+    }else {
 
     // recuperation des infos de l'utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
@@ -140,54 +150,55 @@ function changerMdpAbonne (){
             let url = `users/users.php?function=updatepwd&id=${sessionData["id"]}&old=${oldPwdAbo}&new=${newPwdAbo}&confirm=${confNewPwdAbo}`;
             fetchUrlRedirectAndAlert(url, '/informations-utilisateur', "Votre mot de passe a bien été modifié.", "Votre mot de passe n'a pas été modifié.")
         });
-    })
+    })}
     return main
 }
 
 
-function displayReserv (container, data) {
+function displayReserv(container, data) {
     // recuperation des infos de l'utilisateur
     const roleUser = JSON.parse(sessionStorage.getItem("userData")).role;
-    if(data.length === 0)
+    if (data.length === 0)
         create("h3", container, "Il n'y a aucune réservation")
 
-    for(let reserv of data){
-        let title = reserv.arretDepart + "  -  "+ reserv.arretArrive;
-        let message = reserv.dateDepart;
+    for (let reserv of data) {
+        let title = reserv.arretDepart + "  -  " + reserv.arretArrive;
+        let message = "départ : " + reserv.dateDepart;
 
-        let divInfoReserv = create("div", container, null, ["divNotif"]);
-        let div = create("div", divInfoReserv, null, ["divInfoReserv"]);
+        let divReserv = create("div", container, null, ["divReserv"]);
+        let div = create("div", divReserv, null, ["divInfoReserv"]);
         create("h3", div, title);
-        create("p", div, message);
+        let divHReserv = create("div", div, null, ["divHReserv"]);
+        create("p", divHReserv, message);
 
-        let divResp = create("div", divInfoReserv, null, ["divBoutonsReserv"]);
+        let divBoutonReserv = create("div", divReserv, null, ["divBoutonsReserv"]);
         let footer = document.querySelector("#footer")
 
-        if(roleUser != "Abonné"){
-            const b1 = create("button", divResp, "Valider", ['gestion_users'])
+        if (roleUser != "Abonné") {
+            const b1 = create("button", divBoutonReserv, "Valider", ['gestion_notifs', "unstyled-button"])
             b1.onclick = () => toggleValideReservation(footer, reserv)
             b1.title = "Valider"
-            const b2 = create("button", divResp, "Refuser", ['gestion_users'])
+            const b2 = create("button", divBoutonReserv, "Refuser", ['gestion_notifs', "unstyled-button"])
             b2.onclick = () => toggleRefuseReservation(reserv.id_reserv, container, data)
             b2.title = "Refuser"
-        }
-        else{
-            switch (reserv.etat){
+        } else {
+            switch (reserv.etat) {
                 case "attente" :
                     // Creation of the form
                     const form = create("div", footer, null, null, "task")
                     var div_reservation = create("div", container, null, ["form-div-radio"])
-                    createMenuElement(divResp, () => createReservationRadio(form, div_reservation, reserv, "/reservation-abonne"), "rouge", "../src/assets/images/edit.png", "modifier", ""  )
-                    createMenuElement(divResp, () =>
-                        fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=delete_reservation&idReservation=`+reserv.id_reserv, "/reservation-abonne", "La réservation a bien été supprimée", "La réservation n'a pas pu être supprimée")
-                        , "rouge", "../src/assets/images/croix.png", "supprimer", ""  )
+                    createMenuElement(divBoutonReserv, () => createReservationRadio(form, div_reservation, reserv, "/reservation-abonne"), "rouge", "../src/assets/images/edit.png", "modifier", "")
+                    createMenuElement(divBoutonReserv, () =>
+                            fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=delete_reservation&idReservation=` + reserv.id_reserv, "/reservation-abonne", "La réservation a bien été supprimée", "La réservation n'a pas pu être supprimée")
+                        , "rouge", "../src/assets/images/croix.png", "supprimer", "")
                     break;
                 case "valide":
+                    create("p", divHReserv, "arrivée : " + reserv.end, ["pArrivee"]);
                     break;
                 case "refuse":
-                    createMenuElement(divResp, () =>
-                            fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=delete_reservation&idReservation=`+reserv.id_reserv, "/reservation-abonne", "La réservation a bien été supprimée", "La réservation n'a pas pu être supprimée")
-                        , "rouge", "../src/assets/images/croix.png", "supprimer", ""  )
+                    createMenuElement(divBoutonReserv, () =>
+                            fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=delete_reservation&idReservation=` + reserv.id_reserv, "/reservation-abonne", "La réservation a bien été supprimée", "La réservation n'a pas pu être supprimée")
+                        , "rouge", "../src/assets/images/croix.png", "supprimer", "")
                     break;
                 default:
                     break;
@@ -220,11 +231,25 @@ const displayInscr = (container, lst_inscriptions) => {
         let btns = create("div", div, null, ["inscription-btns"])
 
         let btn = create("button", btns, "Valider", ["valideButton", "unstyled-button"])
-        btn.addEventListener("click", () => valideInscription(inscription.id, div))
+        btn.addEventListener("click", async () => {
+            //notification-mail au client
+            sendMailTemplate("template_2lkyfis",
+                {
+                    firstname: inscription.firstname,
+                    mail: inscription.email,
+                    login:inscription.login
+                })
+            valideInscription(inscription.id, div);
+        })
         btn.title = "Valider"
 
         btn = create("button", btns, "Refuser", ["refuseButton", "unstyled-button"])
-        btn.addEventListener("click", () => refuseInscription(inscription.id, div))
+        btn.addEventListener("click", () => {
+            sendMail("RefusInscriptionAbonne",
+                {firstname: inscription.firstname,
+                    mail : inscription.email})
+            refuseInscription(inscription.id, div)
+        })
         btn.title = "Refuser"
     }
 }
@@ -245,10 +270,23 @@ const refuseInscription = (id_inscription, container) => {
 }
 
 const toggleRefuseReservation = (idReservation,container, data) => {
-    axios.get("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=refuse_reservation&idReservation="+idReservation).then( () => {
+    axios.get("http://localhost/projetL2S4/src/services/timeslots/timeslots.php?function=refuse_reservation&idReservation="+idReservation).then( async () => {
+        let timeslot = await axios.get("timeslots/timeslots.php?function=fetch_by_id_reservation&idReservation="+idReservation)
+        timeslot = timeslot.data
+        let client = await axios.get(`users/users.php?function=user&id=` + timeslot.id_client)
+        client = client.data
+        sendMail("RefusReservationAbonne",
+            {
+                firstname: client.firstname,
+                mail: client.email,
+                arretDepart:timeslot.arretDepart,
+                debutDate:reecritDateEtHeure(timeslot.dateDepart).debutDate,
+                debut:reecritDateEtHeure(timeslot.dateDepart).debut,
+                id:client.id
+            })
         container.replaceChildren("")
-        axios.get(`timeslots/timeslots.php?function=fetch_all_reservation_attente`).then((response)=>{
-            displayReserv (container, response.data);
+        axios.get(`timeslots/timeslots.php?function=fetch_all_reservation_attente`).then((response) => {
+            displayReserv(container, response.data);
         })
     })
 }
@@ -388,40 +426,17 @@ const formValidationReservation = (container, props, user = null, multi = false,
         // select the types of buses and return those who are checked in a string : 1,2,...
         const busesTimeslot = idOfAllElementChecked("input[name='selectionBus']");
 
-        //notification au client
+        //notification-mail au client
         let client = await axios.get(`users/users.php?function=user&id=` + props.id_client)
         client = client.data
 
         let arret = await axios.get("timeslots/timeslots.php?function=fetch_by_id_reservation&idReservation="+props.id_reserv)
         arret = arret.data
 
-        let heure_debut = formatedHour(new Date(startDateTime).getHours())
-        let min_debut = formatedHour(new Date(startDateTime).getMinutes())
-        let heure_fin = formatedHour(new Date(endDateTime).getHours())
-        let min_fin = formatedHour(new Date(endDateTime).getMinutes())
+        sendMail("ConfirmReserv",
+            {firstname : client.firstname, mail:client.email, arretDepart:arret.arretDepart, arretArrive:arret.arretArrive, finDate: reecritDateEtHeure(endDateTime).debutDate, debutDate:reecritDateEtHeure(startDateTime).debutDate, debut:reecritDateEtHeure(startDateTime).debut, fin:reecritDateEtHeure(endDateTime).debut, id:client.id})
 
-        let debut_jour = formatedHour(new Date(startDateTime).getDate())
-        let debut_annee = formatedHour(new Date(startDateTime).getFullYear())
-        let debut_mois = formatedHour(new Date(startDateTime).getMonth())
-        let fin_jour = formatedHour(new Date(endDateTime).getDate())
-        let fin_annee = formatedHour(new Date(endDateTime).getFullYear())
-        let fin_mois = formatedHour(new Date(endDateTime).getMonth())
 
-        let debut = heure_debut+":"+min_debut
-        let fin = heure_fin+":"+min_fin
-        let debutDate = debut_jour+"/"+debut_mois+"/"+debut_annee
-        let finDate = fin_jour+"/"+fin_mois+"/"+fin_annee
-
-        let titre = "Confirmation de votre réservation de bus pour " + arret.arretDepart + " - " + arret.arretArrive;
-        let message = "Bonjour " + client.firstname +", "+"<br>"+"<br>"
-        message += "Je suis ravi de vous informer que votre réservation de bus a été <strong>validée</strong> avec succès. Votre bus partira de l'arrêt <strong>"
-            +arret.arretDepart+"</strong> à <strong>"+debut+"</strong> le <strong>"+debutDate+"</strong> et arrivera à l'arrêt <strong>"+arret.arretArrive+"</strong> à <strong>"+fin+"</strong> le <strong>"+finDate+"</strong><br>"+"<br>"
-        message+="Nous avons affecté un chauffeur <strong>expérimenté</strong> à votre bus pour vous assurer un voyage <strong>sûr et agréable</strong>. Notre équipe de conducteurs est formée pour offrir un service de <strong>qualité</strong> et pour prendre <strong>soin de nos passagers</strong>."+"<br>"+"<br>"+
-            "Veuillez vous assurer <strong>d'arriver à l'arrêt de départ à l'heure</strong> pour éviter tout retard pour vous. Si vous avez des questions ou des préoccupations, n'hésitez pas à nous <strong>contacter</strong> et nous ferons tout notre possible pour vous aider."+"<br>"+"<br>"+
-            "Nous sommes impatients de vous accueillir à bord de notre bus et de vous offrir une expérience de voyage agréable et sans tracas."+"<br>"+"<br>"+
-            "Cordialement,"+"<br>"+"L'équipe de réservation de bus de <strong>GoBus</strong>."
-
-        axios.get(`notifications/notifications.php?function=create&title=${addslashes(titre)}&message=${addslashes(message)}&recipient=` + client.id)
         removeContainerAndRemoveCacheClass(container)
         fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=valide_reservation&idReservation=` + props.id_reserv + `&beginning=` + startDateTime + `&end=` + endDateTime + `&id_users=` + selectedDrivers + `&id_buses=` + busesTimeslot, "/espace-admin", "La réservation a bien été validée", "La réservation n'a pas pu être validée")
     })

@@ -9,6 +9,7 @@ import {
 } from "./gestionTimeslots"
 import { toggleAgenda } from "./agenda";
 import axios from "axios";
+import {reecritDateEtHeure, sendMail} from "../utils/sendMail.js";
 
 
 export const removeContainerAndRemoveCacheClass = container => {
@@ -19,13 +20,19 @@ export const removeContainerAndRemoveCacheClass = container => {
 // affiche le bouton pour supprimer un créneau dans une tâche
 const supprimeCreneau = (container, props, bubble, overlay) => {
     overlay.remove()
-    axios.get("timeslots/timeslots.php?function=delete&id="+props.id).then(function(response){
-        if(response.data){
+    let url = ""
+    if(props.id_time_slot_type !== "4") {
+        url = "timeslots/timeslots.php?function=delete&id=" + props.id
+    }else{
+        url = "timeslots/timeslots.php?function=delete_reservation_by_id_timeslot&idTimeslot=" + props.id
+    }
+    console.log(props)
+    axios.get(url).then(function (response) {
+        if (response.data) {
             toggleAlert("BRAVO", "Le créneau a bien été supprimé")
             bubble.remove()
             removeContainerAndRemoveCacheClass(container)
-        }
-        else{
+        } else {
             toggleError("ERREUR", "Le créneau n'a pas pu être supprimé")
         }
     })
@@ -343,7 +350,16 @@ const modifReservation = (container, props, user=null, multi=false, entites=null
 
         // Creation of submit button
         const bouton = create("div", container, "Modifier", ["modifButton"])
-        bouton.addEventListener("click", function () {
+        bouton.addEventListener("click", async function () {
+
+            let client = await axios.get(`users/users.php?function=user&id=` + arret.id_client)
+            client = client.data
+            sendMail("ModifReservationAbonne",
+                {
+                    firstname: client.firstname,
+                    mail: client.email,
+                    id: client.id
+                })
             // selection of the start and end time
             let StartDateTime = document.querySelector("input[name='StartDateTime']").value;
             let EndDateTime = document.querySelector("input[name='EndDateTime']").value;
@@ -630,7 +646,6 @@ const astreinte = (container, props, bubble, user_role, user=null, multi=false,e
 const reservation = async (container, props, bubble, user_role, user = null, multi = false, entites = null, overlay) => {
     //titre
     create('p', container, props.name, ["task-name"])
-
     //date de départ
     create("div", container, "Date de départ : ", ["form-info"])
     createChamp(container, "datetime-local", "StartDateTime").value = props.begining;
@@ -668,8 +683,27 @@ const reservation = async (container, props, bubble, user_role, user = null, mul
     if (["Responsable Logistique", "Directeur"].includes(user_role)) {
         const btns = create("div", container, null, ["btn-task"])
 
-        create("div", btns, "Modifier", ["modifButton"]).onclick = () => modifReservation(container, props, user, multi, entites, overlay)
-        create("div", btns, "Supprimer", ["delButton"]).onclick = () => supprimeCreneau(container, props, bubble, overlay)
+        create("div", btns, "Modifier", ["modifButton"]).onclick = () => {
+            modifReservation(container, props, user, multi, entites, overlay)
+        }
+
+        create("div", btns, "Supprimer", ["delButton"]).onclick = async () => {
+            let client = await axios.get(`users/users.php?function=user&id=` + props.id_client)
+            client = client.data
+            sendMail("SupprReservationAbonne",
+                {
+                    firstname: client.firstname,
+                    mail: client.email,
+                    arretDepart:arret.arretDepart,
+                    arretArrive:arret.arretArrive,
+                    finDate: reecritDateEtHeure(props.end).debutDate,
+                    debutDate:reecritDateEtHeure(props.begining).debutDate,
+                    debut:reecritDateEtHeure(props.begining).debut,
+                    fin:reecritDateEtHeure(props.end).debut,
+                    id:client.id
+                })
+            supprimeCreneau(container, props, bubble, overlay)
+        }
     }
 
     return container

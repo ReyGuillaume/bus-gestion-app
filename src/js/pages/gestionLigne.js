@@ -11,6 +11,11 @@ import axios from 'axios';
 const toggleAddLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")){
+        redirect("/")
+    }else{
     
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
     back.addEventListener("click", () => redirect("/lignes"))
@@ -53,10 +58,16 @@ const toggleAddLine = () => {
         fetchUrlRedirectAndAlert(`lines/lines.php?function=create&number=${number}&travel_time=${travel_time}&id_type=${id_type}`, "/lignes", "La ligne a bien été ajoutée", "La ligne n'a pas pu être ajoutée")
     })
 }
+}
 
 const toggleSupprLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")){
+        redirect("/")
+    }else{
     
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
     back.addEventListener("click", () => redirect("/lignes"))
@@ -87,7 +98,7 @@ const toggleSupprLine = () => {
                 }
             }
         })
-   })
+   })}
 }
 
 const createLineRadio = (form, container, line) => {
@@ -127,6 +138,11 @@ const createLineRadio = (form, container, line) => {
 const toggleModifLine = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")){
+        redirect("/")
+    }else{
     
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
     back.addEventListener("click", () => redirect("/lignes"))
@@ -145,7 +161,7 @@ const toggleModifLine = () => {
             createLineRadio(form, div_line, line)
         }
    })
-}
+}}
 
 // Get the current week number
 function getCurrentWeekNumber() {
@@ -166,7 +182,12 @@ const toggleVerifCouvertureSemaine = () => {
     // Recuperation de la div à modifier 
     const main = document.querySelector("#app")
     main.replaceChildren("")
-    
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")){
+        redirect("/")
+    }else{
+        
     // Mise en place des titres
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
     back.addEventListener("click", () => redirect("/lignes"))
@@ -188,7 +209,7 @@ const toggleVerifCouvertureSemaine = () => {
         let semaine = document.querySelector("input[name='semaine']").value;
         
         fetchUrlRedirectAndAlert(`lines/lines.php?function=WeekCovered&week=${semaine}`, "/lignes", "Le semaine est bien couverte", "Il semblerait que tout ne soit pas bien rempli...")
-    })
+    })}
 }
 
 const toggleRemplissageAutoConduiteSemaine = () => {
@@ -196,6 +217,11 @@ const toggleRemplissageAutoConduiteSemaine = () => {
     // Recuperation de la div à modifier 
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")){
+        redirect("/")
+    }else{
     
     // Mise en place des titres
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
@@ -243,10 +269,7 @@ const toggleRemplissageAutoConduiteSemaine = () => {
         let drivers = idOfAllElementCheckedTab("input[name='selectionConducteurs']");
         fetchUrlWithLoading(`lines/lines.php?function=coverWeekWithDrivers&week=${semaine}&drivers=${drivers}`, "/lignes", "Toutes les conduites de la semaine ont étées ajoutées", "Il semblerait que tout ne se soit pas passé comme prévu...")
     })
-
-    
-      
-}
+}}
 
 
 // TYPES DE LIGNES
@@ -298,6 +321,11 @@ const createPlageHoraire = (container, supprimable=null) => {
 const toggleAddLineType = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")){
+        redirect("/")
+    }else{
     
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
     back.addEventListener("click", () => redirect("/lignes"))
@@ -358,12 +386,17 @@ const toggleAddLineType = () => {
             }  
         }
     })
-}
+}}
 
 
 const toggleModifLineType = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")){
+        redirect("/")
+    }else{
     
     const back = create("button", main, "<< Retour", ["return", "unstyled-button"])
     back.addEventListener("click", () => redirect("/lignes"))
@@ -435,7 +468,7 @@ const toggleModifLineType = () => {
             })
         }
    })
-}
+}}
 
 
 // delete the line types who are checked

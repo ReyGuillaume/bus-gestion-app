@@ -7,9 +7,9 @@ import axios from 'axios';
 const toggleConnexion = () => {
 
     // redirection si user est connecté
-    if(sessionStorage.getItem("userData"))
+    if(sessionStorage.getItem("userData")){
         redirect("/")
-
+    } else {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
@@ -69,13 +69,17 @@ const toggleConnexion = () => {
             }
         })
     })
-}
+}}
 
 
 const toggleInscriptionForm = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
+    // redirection si user est connecté
+    if(sessionStorage.getItem("userData")){
+        redirect("/")
+    } else {
     create("h2", main, "Formulaire d'inscription")
 
     // Creation of the form
@@ -121,6 +125,6 @@ const toggleInscriptionForm = () => {
         let url = `users/users.php?function=inscription&prenom=${prenom}&nom=${nom}&email=${email}&birth_date=${birth_date}&login=${login}&password=${password}` 
         fetchUrlRedirectAndAlert(url, "/", "Demande d'inscription envoyée", "Demande d'inscription erronnée")
     })
-}
+}}
 
 export { toggleConnexion, toggleInscriptionForm }

@@ -379,9 +379,21 @@ function valide_reservation ($idReservation, $beginning, $end, $id_users, $id_bu
 function delete_reservation ($idReservation){
     $id_time_slot = bdd()->query("SELECT id_timeslot FROM `reservation_timeslot` WHERE id_reservation = '{$idReservation}'")->fetch();
     $id_time_slot = $id_time_slot['id_timeslot'];
+    $res = refuse_reservation($idReservation);
     delete_time_slot($id_time_slot);
-    $res = bdd()->query(
-        "DELETE FROM `reservation` WHERE `id_reserv` ='{$idReservation}'");
+    return $res == true;
+}
+
+/**
+ * Fonction qui supprime une réservation
+ * @param $idReservation int  l'id du timeslot
+ * @return bool renvoie si la réservation a été supprimé ou non
+ */
+function delete_reservation_by_id_timeslot ($idTimeslot){
+    $id_reserv = bdd()->query("SELECT id_reservation FROM `reservation_timeslot` WHERE id_timeslot = '{$idTimeslot}'")->fetch();
+    $id_reserv = $id_reserv['id_reservation'];
+    $res = refuse_reservation($id_reserv);
+    delete_time_slot($idTimeslot);
     return $res == true;
 }
 
@@ -427,7 +439,8 @@ function fetch_by_id_timeslot ($idTimeslot) {
  * @return array|false un tableau des réservations ou faux
  */
 function fetch_by_id_client ($idClient) {
-    $result = bdd()->query("SELECT * FROM `reservation` WHERE `id_client` =  '{$idClient}'");
+    $result = bdd()->query("SELECT r.id_reserv, r.arretDepart, r.arretArrive, r.dateDepart, r.etat, r.id_client, t.end
+FROM `reservation` r LEFT JOIN `reservation_timeslot` rt ON rt.id_reservation=r.id_reserv LEFT JOIN `timeslot` t ON rt.id_timeslot=t.id WHERE r.`id_client` =  '{$idClient}'");
     return $result -> fetchAll();
 }
 
@@ -467,7 +480,12 @@ function fetch_all_reservation_refuse (){
  * @return array|false un tableau des réservations ou faux
  */
 function fetch_by_id_client_and_etat ($idClient, $etat) {
-    $result = bdd()->query("SELECT * FROM `reservation` WHERE `id_client` =  '{$idClient}' AND `etat` = '{$etat}'");
+    if ($etat == "valide") {
+        $result = bdd()->query("SELECT r.id_reserv, r.arretDepart, r.arretArrive, r.dateDepart, r.etat, r.id_client, t.end
+FROM `reservation` r JOIN `reservation_timeslot` rt ON rt.id_reservation=r.id_reserv JOIN `timeslot` t ON rt.id_timeslot=t.id  WHERE r.`id_client` =  '{$idClient}' AND r.`etat` = '{$etat}'");
+    }  else{
+        $result = bdd()->query("SELECT * FROM `reservation` WHERE `id_client` =  '{$idClient}' AND `etat` = '{$etat}'");
+    }
     return $result -> fetchAll();
 }
 
@@ -531,6 +549,9 @@ switch ($_GET['function']) {
         break;
     case 'delete_reservation' :     // idReservation
         $res =delete_reservation ($_GET['idReservation']);
+        break;
+    case 'delete_reservation_by_id_timeslot' :     // idReservation
+        $res =delete_reservation_by_id_timeslot ($_GET['idTimeslot']);
         break;
     case 'update_reservation' :     // idReservation, arretDepart, arretArrive, dateDepart
         $res = update_reservation ($_GET['idReservation'], $_GET['arretDepart'], $_GET['arretArrive'], $_GET['dateDepart']);

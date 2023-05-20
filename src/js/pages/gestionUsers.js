@@ -4,6 +4,7 @@ import { toggleEspaceAdmin } from "./espaceAdmin";
 import { redirect } from "../utils/redirection";
 
 import axios from 'axios';
+import {sendMail, sendMailTemplate} from "../utils/sendMail.js";
 
 //------------------------------------------------------- */
 //   Gestion Utilisateurs
@@ -12,6 +13,11 @@ import axios from 'axios';
 const toggleAjoutUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")) {
+        redirect("/")
+    }else{
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/utilisateurs"))
@@ -69,15 +75,34 @@ const toggleAjoutUser = () => {
         let email = document.querySelector("input[name='mailUser']").value;
         let type = valueFirstElementChecked("input[name='typeUser']");
 
+        if(type === "4"){//notification-mail au client
+            sendMailTemplate("template_2lkyfis",
+                {
+                    firstname: firstname,
+                    mail: email,
+                    login:login
+                })
+        }else if (type === "3"){
+            sendMail("ConfirmInscriptionConducteur",
+                {firstname: firstname,
+                    login:login,
+                    mail : email})
+        }
+
         //creation of the url
         let url = `users/users.php?function=create&login=${login}&password=gobus123&confirm=gobus123&date=${date}&name=${name}&firstname=${firstname}&email=${email}&type=${type}`
         fetchUrlRedirectAndAlert(url, "/espace-admin", "L'utilisateur a bien été ajouté", "L'utilisateur n'a pas pu être ajouté")
-    })
+    })}
 }
 
 const toggleModifyUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")) {
+        redirect("/")
+    }else {
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/utilisateurs"))
@@ -142,7 +167,7 @@ const toggleModifyUser = () => {
 
         var label = create("label", div_user, user.name + " "+ user.firstname);
         label.setAttribute("for", "u"+user.id);
-    }})
+    }})}
 }
 
 // delete the user who are checked
@@ -158,6 +183,11 @@ const deleteUsersChecked = () => {
 const toggleSupprimeUser = () => {
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")){
+        redirect("/")
+    }else{
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/utilisateurs"))
@@ -183,7 +213,7 @@ const toggleSupprimeUser = () => {
         const bouton = create("button", form, "Supprimer", ["submitButton", "unstyled-button"])
         bouton.title = "Supprimer"
         bouton.onclick = () => deleteUsersChecked()
-    });
+    })}
 }
 
 

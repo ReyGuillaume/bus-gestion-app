@@ -47,6 +47,11 @@ export function toggleInfoAbonne(){
     // affiche le potentiel message d'alerte en stock
     toggleAlertMessage()
 
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")){
+        redirect("/")
+    } else {
+
     const main = document.querySelector("#app");
     main.replaceChildren("");
 
@@ -70,7 +75,7 @@ export function toggleInfoAbonne(){
     axios.get(`users/users.php?function=user&id=`+sessionData["id"]).then((response) => {
         create("h2", main, "Voici vos informations personnelles :");
 
-        const infos_user = create("div", main, null, ["infos-utilisateur"]);
+        const infos_user = create("div", main, null, ["app-form"]);
 
         const div_nom = create("div", infos_user, null, ["form-div-radio"]);
         create("div", div_nom, "Votre nom : ", ["label-info"]);
@@ -101,7 +106,7 @@ export function toggleInfoAbonne(){
         const changerMdp = create("button", infos_user, "Changer mon mot de passe", ['gestion_infos', "unstyled-button"] )
         changerMdp.addEventListener("click", () => redirect("/informations-utilisateur/mot-de-passe"));
         changerMdp.title = "Changer mon mot de passe"
-    })
+    })}
     return main
 }
 
@@ -112,6 +117,10 @@ function toogleReservAbonne (){
 
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
 
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/espace-abonne"))
@@ -156,6 +165,10 @@ async function  showSuggestions(input) {
 function toggleAddReservation(){
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData"))
+        redirect("/")
 
     // bouton de retour
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
@@ -307,6 +320,11 @@ function toggleUpdateReservation(){
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")){
+        redirect("/")
+    }else{
+
     // bouton de retour
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
 
@@ -333,7 +351,7 @@ function toggleUpdateReservation(){
         }
     
       });
-
+    }
     return main
 }
 
@@ -341,6 +359,11 @@ function toggleUpdateReservation(){
 function toggleDeleteReservation(){
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")){
+        redirect("/")
+    }else{
 
     // bouton de retour
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
@@ -372,8 +395,7 @@ function toggleDeleteReservation(){
         var id_reserv = valueFirstElementChecked("input[name='idReservation']");
         
         fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=delete_reservation&idReservation=`+id_reserv, "/reservation-abonne", "La réservation a bien été supprimée", "La réservation n'a pas pu être supprimée")
-    })
-
+    })}
 
     return main
 }
@@ -412,6 +434,11 @@ function toggleSeeReservation(){
 
     const main = document.querySelector("#app")
     main.replaceChildren("")
+
+    // redirection si user n'est pas connecté
+    if(!sessionStorage.getItem("userData")){
+        redirect("/")
+    }else{
 
     // recuperation des infos de l'utilisateur
     const idClient = JSON.parse(sessionStorage.getItem("userData")).id;
@@ -461,7 +488,7 @@ function toggleSeeReservation(){
 
         var label = create("label", li, status, ["navNotif_name"]);
         label.setAttribute("for", status);
-    }
+    }}
 }
 
 export {
