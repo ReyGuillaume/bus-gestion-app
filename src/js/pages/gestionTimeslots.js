@@ -440,8 +440,9 @@ const toggleAddCreneau = () => {
     main.replaceChildren("");
 
     // redirection si user n'est pas connecté
-    if(!sessionStorage.getItem("userData"))
+    if(!sessionStorage.getItem("userData")) {
         redirect("/")
+    } else {
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/espace-admin"))
@@ -528,7 +529,7 @@ const toggleAddCreneau = () => {
             let url = axiosUrlSendWhenADD(type)
             fetchUrlRedirectAndAlert(url, "/espace-admin", "Le créneau a bien été ajouté", "Le créneau n'a pas pu être ajouté")
         }
-    })
+    })}
 }
 
 

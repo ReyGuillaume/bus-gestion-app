@@ -48,8 +48,9 @@ export function toggleInfoAbonne(){
     toggleAlertMessage()
 
     // redirection si user n'est pas connecté
-    if(!sessionStorage.getItem("userData"))
+    if(!sessionStorage.getItem("userData")){
         redirect("/")
+    } else {
 
     const main = document.querySelector("#app");
     main.replaceChildren("");
@@ -105,7 +106,7 @@ export function toggleInfoAbonne(){
         const changerMdp = create("button", infos_user, "Changer mon mot de passe", ['gestion_infos', "unstyled-button"] )
         changerMdp.addEventListener("click", () => redirect("/informations-utilisateur/mot-de-passe"));
         changerMdp.title = "Changer mon mot de passe"
-    })
+    })}
     return main
 }
 
@@ -320,8 +321,9 @@ function toggleUpdateReservation(){
     main.replaceChildren("")
 
     // redirection si user n'est pas connecté
-    if(!sessionStorage.getItem("userData"))
+    if(!sessionStorage.getItem("userData")){
         redirect("/")
+    }else{
 
     // bouton de retour
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
@@ -349,7 +351,7 @@ function toggleUpdateReservation(){
         }
     
       });
-
+    }
     return main
 }
 
@@ -359,8 +361,9 @@ function toggleDeleteReservation(){
     main.replaceChildren("")
 
     // redirection si user n'est pas connecté
-    if(!sessionStorage.getItem("userData"))
+    if(!sessionStorage.getItem("userData")){
         redirect("/")
+    }else{
 
     // bouton de retour
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
@@ -392,8 +395,7 @@ function toggleDeleteReservation(){
         var id_reserv = valueFirstElementChecked("input[name='idReservation']");
         
         fetchUrlRedirectAndAlert(`timeslots/timeslots.php?function=delete_reservation&idReservation=`+id_reserv, "/reservation-abonne", "La réservation a bien été supprimée", "La réservation n'a pas pu être supprimée")
-    })
-
+    })}
 
     return main
 }
@@ -434,8 +436,9 @@ function toggleSeeReservation(){
     main.replaceChildren("")
 
     // redirection si user n'est pas connecté
-    if(!sessionStorage.getItem("userData"))
+    if(!sessionStorage.getItem("userData")){
         redirect("/")
+    }else{
 
     // recuperation des infos de l'utilisateur
     const idClient = JSON.parse(sessionStorage.getItem("userData")).id;
@@ -485,7 +488,7 @@ function toggleSeeReservation(){
 
         var label = create("label", li, status, ["navNotif_name"]);
         label.setAttribute("for", status);
-    }
+    }}
 }
 
 export {

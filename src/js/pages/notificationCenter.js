@@ -145,8 +145,9 @@ const toggleNotificationCenter = () => {
 
     let sessionData = sessionStorage.getItem("userData")
     // redirection si user est connecté
-    if(!sessionData)
+    if(!sessionData){
         redirect("/")
+    } else {
 
     const id_user = JSON.parse(sessionData).id;
 
@@ -202,6 +203,6 @@ const toggleNotificationCenter = () => {
     }
 
     fetch_data(divAllNotif, id_user, "all")
-}
+}}
 
 export { toggleNotificationCenter }

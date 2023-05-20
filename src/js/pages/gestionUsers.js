@@ -15,8 +15,9 @@ const toggleAjoutUser = () => {
     main.replaceChildren("")
 
     // redirection si user n'est pas connecté
-    if(!sessionStorage.getItem("userData"))
+    if(!sessionStorage.getItem("userData")) {
         redirect("/")
+    }else{
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/utilisateurs"))
@@ -91,7 +92,7 @@ const toggleAjoutUser = () => {
         //creation of the url
         let url = `users/users.php?function=create&login=${login}&password=gobus123&confirm=gobus123&date=${date}&name=${name}&firstname=${firstname}&email=${email}&type=${type}`
         fetchUrlRedirectAndAlert(url, "/espace-admin", "L'utilisateur a bien été ajouté", "L'utilisateur n'a pas pu être ajouté")
-    })
+    })}
 }
 
 const toggleModifyUser = () => {
@@ -99,8 +100,9 @@ const toggleModifyUser = () => {
     main.replaceChildren("")
 
     // redirection si user n'est pas connecté
-    if(!sessionStorage.getItem("userData"))
+    if(!sessionStorage.getItem("userData")) {
         redirect("/")
+    }else {
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/utilisateurs"))
@@ -165,7 +167,7 @@ const toggleModifyUser = () => {
 
         var label = create("label", div_user, user.name + " "+ user.firstname);
         label.setAttribute("for", "u"+user.id);
-    }})
+    }})}
 }
 
 // delete the user who are checked
@@ -183,8 +185,9 @@ const toggleSupprimeUser = () => {
     main.replaceChildren("")
 
     // redirection si user n'est pas connecté
-    if(!sessionStorage.getItem("userData"))
+    if(!sessionStorage.getItem("userData")){
         redirect("/")
+    }else{
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/utilisateurs"))
@@ -210,7 +213,7 @@ const toggleSupprimeUser = () => {
         const bouton = create("button", form, "Supprimer", ["submitButton", "unstyled-button"])
         bouton.title = "Supprimer"
         bouton.onclick = () => deleteUsersChecked()
-    });
+    })}
 }
 
 

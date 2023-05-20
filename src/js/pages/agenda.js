@@ -174,16 +174,15 @@ const drawAgenda = (user=null, date=null, multi=false, entites=null) => {
 }
 
 const toggleAgenda = (user=null, date=null, multi=false, entites=null) => {
-
     const main = document.querySelector("#app")
     main.replaceChildren("")
 
     // redirection si user n'est pas connecté
-    if(!sessionStorage.getItem("userData"))
+    if(!sessionStorage.getItem("userData")) {
         redirect("/")
-    
-    drawAgenda(user, date, multi, entites)
-
+    } else {
+        drawAgenda(user, date, multi, entites)
+    }
     return main
 }
 

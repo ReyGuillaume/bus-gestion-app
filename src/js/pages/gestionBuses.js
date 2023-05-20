@@ -12,8 +12,9 @@ const DisponibilityBus = () => {
     main.replaceChildren("")
 
     // redirection si user n'est pas connecté
-    if(!sessionStorage.getItem("userData"))
+    if(!sessionStorage.getItem("userData")){
         redirect("/")
+    }else{
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/bus"))
@@ -60,7 +61,7 @@ const DisponibilityBus = () => {
                 })
             }
         })
-    })
+    })}
 }
 
 const AjoutBus = () => {
@@ -68,8 +69,9 @@ const AjoutBus = () => {
     main.replaceChildren("")
 
     // redirection si user n'est pas connecté
-    if(!sessionStorage.getItem("userData"))
+    if(!sessionStorage.getItem("userData")){
         redirect("/")
+    }else {
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/bus"))
@@ -95,7 +97,7 @@ const AjoutBus = () => {
                 fetchUrlRedirectAndAlert(`buses/buses.php?function=create&type=${type.value}`, "/bus", "Le bus a bien été ajouté", "Le bus n'a pas pu être ajouté")
             }
         }
-    })
+    })}
 }
 
 const ModifBus = () => {
@@ -103,8 +105,9 @@ const ModifBus = () => {
     main.replaceChildren("")
 
     // redirection si user n'est pas connecté
-    if(!sessionStorage.getItem("userData"))
+    if(!sessionStorage.getItem("userData")){
         redirect("/")
+    }else{
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/bus"))
@@ -134,7 +137,7 @@ const ModifBus = () => {
         let type = valueFirstElementChecked("input[name='typeBus']");
         let url = `buses/buses.php?function=updatebus&id=${id}&type=${type}`
         fetchUrlRedirectAndAlert(url, "/bus", "Le bus a bien été modifié", "Le bus n'a pas pu être modifié")
-    })
+    })}
 }
 
 const SupprimerBus = () => {
@@ -142,8 +145,9 @@ const SupprimerBus = () => {
     main.replaceChildren("")
 
     // redirection si user n'est pas connecté
-    if(!sessionStorage.getItem("userData"))
+    if(!sessionStorage.getItem("userData")){
         redirect("/")
+    }else {
     
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/bus"))
@@ -171,7 +175,7 @@ const SupprimerBus = () => {
                 fetchUrlRedirectAndAlert(url, "/bus", "Le bus a bien été supprimé", "Le bus n'a pas pu être supprimé")
             }
         }
-    })
+    })}
 }
 
 export {

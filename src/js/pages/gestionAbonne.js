@@ -19,8 +19,9 @@ function changerInfoAbonne (){
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
 
     // redirection si user n'est pas connecté
-    if(!sessionStorage.getItem("userData"))
+    if(!sessionStorage.getItem("userData")){
         redirect("/")
+    }else {
 
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/informations-utilisateur"))
@@ -74,7 +75,7 @@ function changerInfoAbonne (){
             createHeader()
             fetchUrlRedirectAndAlert(url, '/informations-utilisateur', "Votre profil a bien été modifié.", "Votre profil n'a pas été modifié.")
         });
-    })
+    })}
 
     return main
 
@@ -86,8 +87,9 @@ function changerMdpAbonne (){
     main.replaceChildren("");
 
     // redirection si user n'est pas connecté
-    if(!sessionStorage.getItem("userData"))
+    if(!sessionStorage.getItem("userData")) {
         redirect("/")
+    }else {
 
     // recuperation des infos de l'utilisateur
     const sessionData = JSON.parse(sessionStorage.getItem("userData"));
@@ -148,7 +150,7 @@ function changerMdpAbonne (){
             let url = `users/users.php?function=updatepwd&id=${sessionData["id"]}&old=${oldPwdAbo}&new=${newPwdAbo}&confirm=${confNewPwdAbo}`;
             fetchUrlRedirectAndAlert(url, '/informations-utilisateur', "Votre mot de passe a bien été modifié.", "Votre mot de passe n'a pas été modifié.")
         });
-    })
+    })}
     return main
 }
 
