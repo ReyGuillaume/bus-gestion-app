@@ -3,7 +3,6 @@ import { createMenuElement } from "../components/menuItem";
 import { redirect, redirectUser, toggleAlertMessage } from "../utils/redirection";
 import axios from "axios";
 import { displayReserv, displayInscr } from "./gestionAbonne.js";
-import {removeContainerAndRemoveCacheClass} from "./userTask.js";
 
 
 const toggleEspaceAdmin = () => {
@@ -23,7 +22,6 @@ const toggleEspaceAdmin = () => {
     create("h2", main, "Bienvenue sur votre espace Admin")
     create("p", main, "Que souhaitez-vous faire ?", ["presentation"])
         
-    const sessionData = JSON.parse(sessionStorage.getItem("userData"));
     const nav = create("nav", main, null, ['navBar_Admin'])
 
     // agenda
@@ -60,9 +58,6 @@ const toggleEspaceAdmin = () => {
 }
 
 const toggleGestionUsers = () => {
-    // affiche le potentiel message d'alerte en stock
-    toggleAlertMessage()
-
     const main = document.querySelector("#app")
     main.replaceChildren("")
     
@@ -70,8 +65,10 @@ const toggleGestionUsers = () => {
     if(!sessionStorage.getItem("userData")){
         redirect("/")
     }else {
-        
+
+    // affiche le potentiel message d'alerte en stock
     toggleAlertMessage()
+        
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/espace-admin"))
     back.title = "Retour en arrière"

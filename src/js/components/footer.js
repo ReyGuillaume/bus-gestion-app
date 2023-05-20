@@ -14,7 +14,7 @@ const createFooter = () => {
     const list = create("ul", f, null, ['footerList'])
     
     createFooterItem(list, "Conditions générales", "/conditions-generales")
-    createFooterItem(list, "Prendre un rendez-vous", "/reservation")
+    createFooterItem(list, "Prendre un rendez-vous", "/reservations")
 
     return f;
 }

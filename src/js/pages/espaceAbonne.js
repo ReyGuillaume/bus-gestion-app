@@ -118,7 +118,15 @@ function toogleReservAbonne (){
 
     // redirection si user n'est pas connecté
     if(!sessionStorage.getItem("userData"))
-        redirect("/")
+        redirect("/connexion")
+
+    // redirection si l'utilisateur n'est pas un abonné
+    redirectUser(
+        () => redirect("/espace-admin"),
+        () => redirect("/espace-admin"),
+        () => redirect("/espace-utilisateur"),
+        () => null
+    )
 
     const back = create("button", main, '<< Retour', ['return', "unstyled-button"])
     back.addEventListener("click", () => redirect("/espace-abonne"))
