@@ -50,6 +50,19 @@ function messageByTypeMail(typeMail, data=null) {
                 "\n" +
                 "Encore une fois, merci de votre confiance envers GoBus. Nous sommes impatients de vous fournir un service de qualité supérieure."
             break;
+        case "ConfirmInscriptionResponsable":
+            message = "Nous sommes heureux de vous confirmer votre inscription en tant que responsable logistique GoBus. Vous avez désormais accès à tous les services nécessaires pour exercer votre travail avec succès.\n" +
+                "\n" +
+                "Veuillez noter que votre login est ";
+            message += data.login;
+            message += " et que votre mot de passe temporaire est \"gobus123\". Nous vous conseillons de le changer dès que possible pour des raisons de sécurité.\n" +
+                "\n" +
+                "Nous sommes heureux de vous informer que vous pouvez désormais accéder à votre agenda sur notre site web, où vous pouvez visualiser tous vos créneaux pour les semaines à venir. Cela vous permettra de mieux planifier vos journées.\n" +
+                "\n" +
+                "Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter. Nous sommes toujours prêts à vous aider.\n" +
+                "\n" +
+                "Encore une fois, merci de votre confiance envers GoBus. Nous sommes impatients de vous fournir un service de qualité supérieure."
+            break;
         case "RefusInscriptionAbonne" :
             message = "Nous avons bien reçu votre demande d'inscription en tant qu'abonné GoBus. Nous sommes désolés de vous informer que votre demande a été refusée.\n" +
                 "\n" +
@@ -108,6 +121,9 @@ function subjectByTypeMail(typeMail) {
             break;
         case "ConfirmInscriptionConducteur" :
             subject = "Confirmation de l'inscription en tant que conducteur de bus GoBus";
+            break;
+        case "ConfirmInscriptionResponsable" :
+            subject = "Confirmation de l'inscription en tant que responsable logistique GoBus";
             break;
         case "RefusInscriptionAbonne" :
             subject = "Refus de la demande d'inscription à GoBus";

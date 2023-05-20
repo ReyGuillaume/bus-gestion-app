@@ -86,7 +86,14 @@ const toggleAjoutUser = () => {
             sendMail("ConfirmInscriptionConducteur",
                 {firstname: firstname,
                     login:login,
-                    mail : email})
+                    mail : email}
+            )
+        }else if (type === "2"){
+            sendMail("ConfirmInscriptionConducteur",
+                {firstname: firstname,
+                    login:login,
+                    mail : email}
+            )
         }
 
         //creation of the url
