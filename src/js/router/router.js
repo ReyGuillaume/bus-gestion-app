@@ -16,6 +16,7 @@ import { toggleAddLine, toggleAddLineType, toggleModifLine, toggleModifLineType,
 import { toggleAgenda } from '../pages/agenda'
 import { toggleIndisponibilitiForm } from '../pages/indisponibilitiForm'
 import { changerInfoAbonne, changerMdpAbonne } from '../pages/gestionAbonne'
+import { toggleConditionsGenerales } from '../components/footer'
 
 
 // Initialisation du router
@@ -29,6 +30,8 @@ router.on('/connexion', toggleConnexion)
 router.on('/inscription', toggleInscriptionForm)
 router.on('/disconnect', disconnectUser)
 router.on('/notification-center', toggleNotificationCenter)
+
+router.on('/conditions-generales', toggleConditionsGenerales)
 
 router.on('/informations-utilisateur', toggleInfoAbonne)
 router.on('/informations-utilisateur/informations', changerInfoAbonne)
