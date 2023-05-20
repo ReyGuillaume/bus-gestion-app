@@ -397,7 +397,7 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
   color: rgb(49, 88, 188);
 }
 
-.paragraphe a{
+.paragraphe button{
   background-color: rgb(121, 199, 116);
   text-decoration: none;
   color: white;
@@ -406,7 +406,7 @@ input[type="datetime-local"], input[type="week"], input[type="time"], input[type
   text-align: center;
 }
 
-.paragraphe a:hover{
+.paragraphe button:hover{
   background-color: rgb(68, 68, 68);
   transition: 0.5s;
 }
